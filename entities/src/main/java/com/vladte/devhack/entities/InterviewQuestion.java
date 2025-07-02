@@ -3,6 +3,7 @@ package com.vladte.devhack.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "", callSuper = true)
 public class InterviewQuestion extends BasicEntity {
 
     @Column(name = "question_text", nullable = false)
@@ -38,9 +40,9 @@ public class InterviewQuestion extends BasicEntity {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private List<Note> notes = new ArrayList<>();
 }

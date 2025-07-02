@@ -108,9 +108,6 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
     public String newAnswerForm(@RequestParam(required = false) UUID questionId, Model model) {
         logger.debug("Displaying new answer form with access control");
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
-
         // If a question ID is provided, check if the question exists
         if (questionId != null) {
             InterviewQuestion question = questionService.findById(questionId)
@@ -119,9 +116,6 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
             // Add the question to the model
             model.addAttribute("question", question);
         }
-
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
 
         // Delegate to the form service
         answerFormService.prepareNewAnswerForm(questionId, model);
@@ -211,28 +205,20 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * Process the form submission for creating or updating an answer.
      *
      * @param answerDTO  the answer data from the form
-     * @param userId     the ID of the user who created the answer
      * @param questionId the ID of the question being answered
      * @return a redirect to the answer list
      */
     @PostMapping
     public String saveAnswer(
             @ModelAttribute AnswerDTO answerDTO,
-            @RequestParam UUID userId,
             @RequestParam UUID questionId) {
         logger.debug("Saving answer with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
-        // Check if the current user is a manager or is saving their own answer
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to save answer for user with ID: {}", userId);
-            throw new SecurityException("Access denied to save answer for user with ID: " + userId);
-        }
-
         // Save the answer
-        answerFormService.saveAnswer(answerDTO, userId, questionId);
+        answerFormService.saveAnswer(answerDTO, currentUser.getId(), questionId);
         logger.info("Answer saved successfully");
 
         return "redirect:/answers";

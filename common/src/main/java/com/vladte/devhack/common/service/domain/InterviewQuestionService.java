@@ -2,6 +2,7 @@ package com.vladte.devhack.common.service.domain;
 
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,4 +41,19 @@ public interface InterviewQuestionService extends BaseService<InterviewQuestion,
      * @return a page of questions matching the search criteria
      */
     Page<InterviewQuestion> searchQuestions(String query, String difficulty, UUID tagId, Pageable pageable);
+
+    /**
+     * Count questions created by a specific user.
+     *
+     * @param user the user
+     * @return the count of questions created by the user
+     */
+    int countQuestionsByUser(User user);
+
+    /**
+     * Count all questions in the system.
+     *
+     * @return the total count of questions
+     */
+    int countAllQuestions();
 }

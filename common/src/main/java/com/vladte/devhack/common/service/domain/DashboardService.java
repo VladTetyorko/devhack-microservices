@@ -1,6 +1,8 @@
 package com.vladte.devhack.common.service.domain;
 
 import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.User;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
@@ -20,11 +22,27 @@ public interface DashboardService {
     int getQuestionCount();
 
     /**
+     * Get the count of questions created by a specific user.
+     *
+     * @param user the user
+     * @return the number of questions created by the user
+     */
+    int getQuestionCountByUser(User user);
+
+    /**
      * Get the total count of answers.
      *
      * @return the total number of answers
      */
     int getAnswerCount();
+
+    /**
+     * Get the count of answers created by a specific user.
+     *
+     * @param user the user
+     * @return the number of answers created by the user
+     */
+    int getAnswerCountByUser(User user);
 
     /**
      * Get the total count of notes.
@@ -34,11 +52,27 @@ public interface DashboardService {
     int getNoteCount();
 
     /**
+     * Get the count of notes created by a specific user.
+     *
+     * @param user the user
+     * @return the number of notes created by the user
+     */
+    int getNoteCountByUser(User user);
+
+    /**
      * Get the total count of tags.
      *
      * @return the total number of tags
      */
     int getTagCount();
+
+    /**
+     * Get the count of tags used by a specific user in their questions.
+     *
+     * @param user the user
+     * @return the number of tags used by the user
+     */
+    int getTagCountByUser(User user);
 
     /**
      * Calculate progress percentages for questions, answers, notes, and tags.
@@ -48,11 +82,27 @@ public interface DashboardService {
     Map<String, Integer> calculateProgressPercentages();
 
     /**
+     * Calculate progress percentages for questions, answers, notes, and tags for a specific user.
+     *
+     * @param user the user
+     * @return a map containing progress percentages for different metrics for the user
+     */
+    Map<String, Integer> calculateProgressPercentagesByUser(User user);
+
+    /**
      * Get counts of questions by difficulty level.
      *
      * @return a map with difficulty levels as keys and counts as values
      */
     Map<String, Long> getQuestionCountsByDifficulty();
+
+    /**
+     * Get counts of questions by difficulty level for a specific user.
+     *
+     * @param user the user
+     * @return a map with difficulty levels as keys and counts as values for the user
+     */
+    Map<String, Long> getQuestionCountsByDifficultyAndUser(User user);
 
     /**
      * Get counts of answers by difficulty level of the associated questions.
@@ -62,6 +112,14 @@ public interface DashboardService {
     Map<String, Long> getAnswerCountsByDifficulty();
 
     /**
+     * Get counts of answers by difficulty level of the associated questions for a specific user.
+     *
+     * @param user the user
+     * @return a map with difficulty levels as keys and counts as values for the user
+     */
+    Map<String, Long> getAnswerCountsByDifficultyAndUser(User user);
+
+    /**
      * Calculate the percentage of questions answered by difficulty level.
      *
      * @return a map with difficulty levels as keys and percentages as values
@@ -69,11 +127,27 @@ public interface DashboardService {
     Map<String, Integer> calculateAnswerPercentagesByDifficulty();
 
     /**
+     * Calculate the percentage of questions answered by difficulty level for a specific user.
+     *
+     * @param user the user
+     * @return a map with difficulty levels as keys and percentages as values for the user
+     */
+    Map<String, Integer> calculateAnswerPercentagesByDifficultyAndUser(User user);
+
+    /**
      * Calculate progress statistics for each tag.
      *
      * @return a map containing tag IDs mapped to their statistics
      */
     Map<UUID, TagProgress> calculateTagProgress();
+
+    /**
+     * Calculate progress statistics for each tag for a specific user.
+     *
+     * @param user the user
+     * @return a map containing tag IDs mapped to their statistics for the user
+     */
+    Map<UUID, TagProgress> calculateTagProgressByUser(User user);
 
     /**
      * Get all tags.
@@ -85,6 +159,7 @@ public interface DashboardService {
     /**
      * Class to hold progress statistics for a tag.
      */
+    @Getter
     class TagProgress {
         private final int questionCount;
         private final int answerCount;
@@ -94,18 +169,6 @@ public interface DashboardService {
             this.questionCount = questionCount;
             this.answerCount = answerCount;
             this.progressPercentage = progressPercentage;
-        }
-
-        public int getQuestionCount() {
-            return questionCount;
-        }
-
-        public int getAnswerCount() {
-            return answerCount;
-        }
-
-        public int getProgressPercentage() {
-            return progressPercentage;
         }
     }
 }

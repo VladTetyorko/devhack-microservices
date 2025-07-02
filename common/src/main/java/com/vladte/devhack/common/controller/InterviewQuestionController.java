@@ -136,7 +136,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
 
     @PostMapping("/api/generate")
     @ResponseBody
-    public Map<String, Object> generateQuestionsApi(
+    public String generateQuestionsApi(
             @RequestParam String tagName,
             @RequestParam(defaultValue = "5") int count,
             @RequestParam(defaultValue = "Medium") String difficulty) {
@@ -147,7 +147,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         if (!questionGenerationOrchestrationService.validateTagName(tagName)) {
             response.put("success", false);
             response.put("message", "Tag name is required");
-            return response;
+            return response.toString();
         }
 
         // Start the asynchronous generation process without blocking
@@ -166,7 +166,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         response.put("success", true);
         response.put("message", successMessage);
         response.put("redirectUrl", redirectUrl);
-        return response;
+        return "redirect:/questions?showGenerateModal=true";
     }
 
     @GetMapping("/generate")
@@ -262,5 +262,11 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
                 .build();
 
         return "redirect:/questions";
+    }
+
+    @GetMapping("/{id}/delete")
+    public String delete(@PathVariable UUID id) {
+        service.deleteById(id);
+        return "redirect:/tags";
     }
 }

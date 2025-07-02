@@ -53,9 +53,9 @@ public class KafkaProducerService {
         return kafkaTemplate.send(Topics.ANSWER_FEEDBACK_REQUEST, message.getId(), message)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
-                        logger.info("Answer feedback request sent successfully: {}", message);
+                        logger.info("Answer request sent successfully: {}", message);
                     } else {
-                        logger.error("Failed to send answer feedback request: {}", ex.getMessage());
+                        logger.error("Failed to send answer request: {}", ex.getMessage());
                     }
                 });
     }

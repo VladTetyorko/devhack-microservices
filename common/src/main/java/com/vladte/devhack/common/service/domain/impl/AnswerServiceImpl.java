@@ -111,54 +111,85 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
     @Override
     public Answer checkAnswerWithAi(UUID answerId) {
         logger.debug("Checking answer with AI for answer ID: {}", answerId);
+        Answer answer = findAndValidateAnswer(answerId);
 
-        // Find the answer by ID
-        Answer answer = findById(answerId)
+        try {
+            Map<String, Object> cheatingResult = performCheatingCheck(answer);
+            Boolean isCheating = (Boolean) cheatingResult.get("isCheating");
+            updateAnswerWithCheatingResult(answer, isCheating);
+
+            if (Boolean.TRUE.equals(isCheating)) {
+                return handleCheatingDetected(answer);
+            }
+
+            return performRegularAnswerCheck(answer);
+        } catch (Exception e) {
+            logger.error("Error while checking answer with AI: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    private Answer findAndValidateAnswer(UUID answerId) {
+        return findById(answerId)
                 .orElseThrow(() -> {
                     logger.error("Answer not found with ID: {}", answerId);
                     return new NoSuchElementException("Answer not found with ID: " + answerId);
                 });
-        logger.debug("Found answer with ID: {}", answerId);
+    }
 
-        // Get the question text and answer text
+    private Map<String, Object> performCheatingCheck(Answer answer) {
         String questionText = answer.getQuestion().getQuestionText();
         String answerText = answer.getText();
         logger.debug("Processing question text (length: {}) and answer text (length: {})",
                 questionText.length(), answerText.length());
 
-        try {
-            // Generate a message ID
-            String messageId = java.util.UUID.randomUUID().toString();
+        String cheatingMessageId = java.util.UUID.randomUUID().toString();
+        logger.debug("Checking for cheating before evaluating answer");
 
-            // Register the pending request with the Kafka consumer
-            logger.debug("Registering pending request with ID: {}", messageId);
-            CompletableFuture<Map<String, Object>> responseFuture = answerKafkaConsumer.registerPendingRequest(messageId);
+        CompletableFuture<Map<String, Object>> cheatingResponseFuture =
+                answerKafkaConsumer.registerPendingRequest(cheatingMessageId);
+        answerKafkaProvider.sendAnswerCheatingCheckRequest(cheatingMessageId, questionText, answerText);
 
-            // Send the message to the AI module
-            logger.debug("Sending message to AI module with ID: {}", messageId);
-            answerKafkaProvider.sendAnswerFeedbackRequest(messageId, questionText, answerText);
+        return cheatingResponseFuture.join();
+    }
 
-            // Wait for the response from the AI module
-            logger.debug("Waiting for response from AI module");
-            Map<String, Object> result = responseFuture.join();
+    private void updateAnswerWithCheatingResult(Answer answer, Boolean isCheating) {
+        answer.setIsCheating(isCheating);
+        logger.debug("Updated answer with cheating check result: isCheating={}", isCheating);
+    }
 
-            // Extract the score and feedback from the result
-            Double score = (Double) result.get("score");
-            String feedback = (String) result.get("feedback");
-            logger.debug("Received AI feedback: score={}, feedback length={}", score, feedback.length());
+    private Answer handleCheatingDetected(Answer answer) {
+        logger.info("Cheating detected in answer ID: {}. Skipping regular answer check.", answer.getId());
+        answer.setAiScore(0.0);
+        answer.setAiFeedback("This answer appears to contain evidence of cheating. Please provide your own original answer.");
+        return save(answer);
+    }
 
-            // Update the answer with the score and feedback
-            answer.setAiScore(score);
-            answer.setAiFeedback(feedback);
-            logger.debug("Updated answer with AI score and feedback");
+    private Answer performRegularAnswerCheck(Answer answer) {
+        logger.debug("No cheating detected. Proceeding with regular answer check.");
+        String messageId = java.util.UUID.randomUUID().toString();
 
-            // Save and return the updated answer
-            logger.debug("Saving updated answer");
-            return save(answer);
-        } catch (Exception e) {
-            logger.error("Error while checking answer with AI: {}", e.getMessage(), e);
-            throw e;
-        }
+        CompletableFuture<Map<String, Object>> responseFuture =
+                answerKafkaConsumer.registerPendingRequest(messageId);
+
+        answerKafkaProvider.sendAnswerFeedbackRequest(messageId,
+                answer.getQuestion().getQuestionText(),
+                answer.getText());
+
+        Map<String, Object> result = responseFuture.join();
+
+        updateAnswerWithFeedback(answer, result);
+        return save(answer);
+    }
+
+    private void updateAnswerWithFeedback(Answer answer, Map<String, Object> result) {
+        Double score = (Double) result.get("score");
+        String feedback = (String) result.get("feedback");
+        logger.debug("Received AI feedback: score={}, feedback length={}", score, feedback.length());
+
+        answer.setAiScore(score);
+        answer.setAiFeedback(feedback);
+        logger.debug("Updated answer with AI score and feedback");
     }
 
     @Override

@@ -110,6 +110,111 @@
         </div>
     </div>
 
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 0}">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <!-- First page button -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/answers(page=0, size=${size})}"
+                       th:if="${user == null && question == null}"
+                       aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                    <a class="page-link" th:href="@{/answers/user/{userId}(userId=${user.id}, page=0, size=${size})}"
+                       th:if="${user != null}"
+                       aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/question/{questionId}(questionId=${question.id}, page=0, size=${size})}"
+                       th:if="${question != null}"
+                       aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Previous page button -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/answers(page=${currentPage - 1}, size=${size})}"
+                       th:if="${user == null && question == null}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/user/{userId}(userId=${user.id}, page=${currentPage - 1}, size=${size})}"
+                       th:if="${user != null}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/question/{questionId}(questionId=${question.id}, page=${currentPage - 1}, size=${size})}"
+                       th:if="${question != null}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Page numbers -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{/answers(page=${i}, size=${size})}"
+                       th:if="${user == null && question == null}"
+                       th:text="${i + 1}"></a>
+                    <a class="page-link" th:href="@{/answers/user/{userId}(userId=${user.id}, page=${i}, size=${size})}"
+                       th:if="${user != null}"
+                       th:text="${i + 1}"></a>
+                    <a class="page-link"
+                       th:href="@{/answers/question/{questionId}(questionId=${question.id}, page=${i}, size=${size})}"
+                       th:if="${question != null}"
+                       th:text="${i + 1}"></a>
+                </li>
+
+                <!-- Next page button -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/answers(page=${currentPage + 1}, size=${size})}"
+                       th:if="${user == null && question == null}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/user/{userId}(userId=${user.id}, page=${currentPage + 1}, size=${size})}"
+                       th:if="${user != null}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/question/{questionId}(questionId=${question.id}, page=${currentPage + 1}, size=${size})}"
+                       th:if="${question != null}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+
+                <!-- Last page button -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/answers(page=${totalPages - 1}, size=${size})}"
+                       th:if="${user == null && question == null}"
+                       aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/user/{userId}(userId=${user.id}, page=${totalPages - 1}, size=${size})}"
+                       th:if="${user != null}"
+                       aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                    <a class="page-link"
+                       th:href="@{/answers/question/{questionId}(questionId=${question.id}, page=${totalPages - 1}, size=${size})}"
+                       th:if="${question != null}"
+                       aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
     <!-- Empty State -->
     <div class="text-center py-5" th:if="${#lists.isEmpty(answers)}">
         <div class="mb-4">

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(of = "", callSuper = true)
 public class Answer extends BasicEntity {
 
     @Column(name = "answer_text", nullable = false)
@@ -31,6 +31,9 @@ public class Answer extends BasicEntity {
 
     @Column(name = "is_correct")
     private Boolean isCorrect;
+
+    @Column(name = "is_cheating")
+    private Boolean isCheating;
 
     @UpdateTimestamp
     @Column(name = "updated_at")

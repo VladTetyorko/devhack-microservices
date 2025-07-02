@@ -56,7 +56,14 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
     )
     public void consumeAnswerFeedbackRequest(KafkaMessage message) {
         logger.info("Received answer feedback request: {}", message);
-        String responsePayload = handleCheckAnswerWithFeedback(message.getPayload());
+        String responsePayload;
+
+        if ("check-answer-for-cheating".equals(message.getType())) {
+            responsePayload = handleCheckAnswerForCheating(message.getPayload());
+        } else {
+            responsePayload = handleCheckAnswerWithFeedback(message.getPayload());
+        }
+
         sendResponse(message.getId(), responsePayload, "answer-feedback");
     }
 
@@ -78,22 +85,6 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
         }
     }
 
-    private String handleCheckAnswer(String payload) {
-        logger.debug("Handling check-answer request");
-        String[] parts = payload.split("\\|\\|");
-        if (parts.length != 2) {
-            logger.error("Invalid payload format for check-answer: {}", payload);
-            return "Error: Invalid payload format for check-answer";
-        }
-        try {
-            Double score = openAiService.checkAnswerAsync(parts[0], parts[1]).join();
-            return score.toString();
-        } catch (Exception e) {
-            logger.error("Error checking answer: {}", e.getMessage(), e);
-            throw e;
-        }
-    }
-
     private String handleCheckAnswerWithFeedback(String payload) {
         logger.debug("Handling check-answer-with-feedback request");
         String[] parts = payload.split("\\|\\|");
@@ -106,6 +97,22 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
             return "score:" + result.get("score") + "||feedback:" + result.get("feedback");
         } catch (Exception e) {
             logger.error("Error checking answer with feedback: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    private String handleCheckAnswerForCheating(String payload) {
+        logger.debug("Handling check-answer-for-cheating request");
+        String[] parts = payload.split("\\|\\|");
+        if (parts.length != 2) {
+            logger.error("Invalid payload format for check-answer-for-cheating: {}", payload);
+            return "Error: Invalid payload format for check-answer-for-cheating";
+        }
+        try {
+            Boolean isCheating = openAiService.checkAnswerForCheatingAsync(parts[0], parts[1]).join();
+            return isCheating.toString();
+        } catch (Exception e) {
+            logger.error("Error checking answer for cheating: {}", e.getMessage(), e);
             throw e;
         }
     }

@@ -1,7 +1,6 @@
 package com.vladte.devhack.common.controller;
 
 import com.vladte.devhack.common.dto.VacancyResponseDTO;
-import com.vladte.devhack.common.mapper.VacancyResponseMapper;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
@@ -20,6 +19,8 @@ import java.util.UUID;
 
 /**
  * Controller for handling requests related to vacancy responses.
+ * This controller follows the MVC pattern with clear separation between model and view.
+ * It delegates view preparation to specialized service classes to ensure proper synchronization.
  */
 @Controller
 @RequestMapping("/vacancies")
@@ -31,7 +32,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     private final VacancyResponseViewService vacancyResponseViewService;
     private final VacancyResponseFormService vacancyResponseFormService;
     private final VacancyResponseDashboardService vacancyResponseDashboardService;
-    private final VacancyResponseMapper vacancyResponseMapper;
 
     @Autowired
     public VacancyResponseController(
@@ -39,14 +39,12 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             UserService userService,
             VacancyResponseViewService vacancyResponseViewService,
             VacancyResponseFormService vacancyResponseFormService,
-            VacancyResponseDashboardService vacancyResponseDashboardService,
-            VacancyResponseMapper vacancyResponseMapper) {
+            VacancyResponseDashboardService vacancyResponseDashboardService) {
         super(vacancyResponseService, userService);
         this.userService = userService;
         this.vacancyResponseViewService = vacancyResponseViewService;
         this.vacancyResponseFormService = vacancyResponseFormService;
         this.vacancyResponseDashboardService = vacancyResponseDashboardService;
-        this.vacancyResponseMapper = vacancyResponseMapper;
     }
 
     @Override
@@ -80,6 +78,67 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     }
 
     /**
+     * List all vacancy responses for the current user with pagination.
+     * This overrides the default implementation to use the specialized view service.
+     *
+     * @param page  the page number (zero-based)
+     * @param size  the page size
+     * @param model the model
+     * @return the view name
+     */
+    @Override
+    @RequestMapping(method = RequestMethod.GET)
+    public String list(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        logger.debug("Listing vacancy responses for current user with pagination");
+
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
+
+        // Delegate to the view service for view-specific model preparation
+        vacancyResponseViewService.prepareCurrentUserVacancyResponsesModel(page, size, model);
+        vacancyResponseViewService.setCurrentUserVacancyResponsesPageTitle(model);
+
+        return getListViewName();
+    }
+
+    /**
+     * Prepares common model attributes used across multiple views.
+     * This centralizes the model preparation to ensure consistency.
+     *
+     * @param model the model to add attributes to
+     */
+    private void prepareCommonModelAttributes(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("vacancyResponse", new VacancyResponseDTO());
+    }
+
+    /**
+     * Prepares the model for displaying a vacancy response modal dialog.
+     * This handles both new and edit scenarios.
+     *
+     * @param model  the model to add attributes to
+     * @param editId the ID of the vacancy response to edit, or null for a new vacancy response
+     */
+    private void prepareVacancyResponseModal(Model model, UUID editId) {
+        if (editId != null) {
+            // If editId is provided, prepare the model for editing an existing vacancy response
+            VacancyResponseDTO vacancyResponseDTO = vacancyResponseFormService.prepareEditVacancyResponseForm(editId, model);
+            if (vacancyResponseDTO == null) {
+                throw new IllegalArgumentException("Vacancy response not found");
+            }
+            vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
+        } else {
+            // Otherwise, prepare the model for creating a new vacancy response
+            vacancyResponseFormService.prepareNewVacancyResponseForm(model);
+            vacancyResponseFormService.setNewVacancyResponsePageTitle(model);
+        }
+    }
+
+    /**
      * Display the work dashboard with application tracking information.
      *
      * @param page  the page number for the "Top Companies" section
@@ -94,55 +153,26 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             Model model) {
         logger.debug("Displaying dashboard with access control");
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
 
-        // Delegate to the dashboard service
+        // Delegate to the dashboard service for view-specific model preparation
         vacancyResponseDashboardService.prepareDashboardModel(page, size, model);
         vacancyResponseDashboardService.setDashboardPageTitle(model);
-
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
 
         return "vacancies/main";
     }
 
     /**
-     * Display a list of vacancy responses for the current user.
-     *
-     * @param page  the page number
-     * @param size  the page size
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
-    @GetMapping
-    public String list(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
-        logger.debug("Listing vacancy responses with access control and pagination");
-
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
-
-        // Delegate to the view service
-        vacancyResponseViewService.prepareCurrentUserVacancyResponsesModel(page, size, model);
-        vacancyResponseViewService.setCurrentUserVacancyResponsesPageTitle(model);
-
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
-
-        return "vacancies/list";
-    }
-
-    /**
      * Search and filter vacancy responses with pagination.
      *
-     * @param query the search query
-     * @param stage the interview stage to filter by
-     * @param page  the page number
-     * @param size  the page size
-     * @param model the model to add attributes to
+     * @param query            the search query
+     * @param stage            the interview stage to filter by
+     * @param page             the page number
+     * @param size             the page size
+     * @param showVacancyModal whether to show the vacancy response modal
+     * @param editId           the ID of the vacancy response to edit (if any)
+     * @param model            the model to add attributes to
      * @return the name of the view to render
      */
     @GetMapping("/search")
@@ -151,18 +181,22 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(required = false) String stage,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Boolean showVacancyModal,
+            @RequestParam(required = false) UUID editId,
             Model model) {
-        logger.debug("Searching vacancy responses with access control and pagination");
+        logger.debug("Searching vacancy responses with access control and pagination, showVacancyModal: {}, editId: {}", showVacancyModal, editId);
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
 
-        // Delegate to the view service
+        // Delegate to the view service for view-specific model preparation
         vacancyResponseViewService.prepareSearchResultsModel(query, stage, page, size, model);
         vacancyResponseViewService.setSearchResultsPageTitle(model);
 
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
+        // If showVacancyModal is true, prepare the model for the modal
+        if (Boolean.TRUE.equals(showVacancyModal)) {
+            prepareVacancyResponseModal(model, editId);
+        }
 
         return "vacancies/list";
     }
@@ -171,21 +205,26 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * Display a form for creating a new vacancy response.
      *
      * @param model the model to add attributes to
+     * @param useModal whether to use a modal dialog instead of a separate page
      * @return the name of the view to render
      */
     @GetMapping("/new")
-    public String newVacancyResponseForm(Model model) {
-        logger.debug("Displaying new vacancy response form with access control");
+    public String newVacancyResponseForm(
+            Model model,
+            @RequestParam(required = false, defaultValue = "false") boolean useModal) {
+        logger.debug("Displaying new vacancy response form with access control, useModal: {}", useModal);
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
 
-        // Delegate to the form service
+        // Delegate to the form service for view-specific model preparation
         vacancyResponseFormService.prepareNewVacancyResponseForm(model);
         vacancyResponseFormService.setNewVacancyResponsePageTitle(model);
 
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
+        if (useModal) {
+            // If using modal, redirect to the list page with a parameter to show the modal
+            return "redirect:/vacancies?showVacancyModal=true";
+        }
 
         return "vacancies/form";
     }
@@ -205,17 +244,14 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new SecurityException("Access denied to vacancy response with ID: " + id);
         }
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
 
-        // Delegate to the form service
+        // Delegate to the form service for view-specific model preparation
         VacancyResponseDTO vacancyResponseDTO = vacancyResponseFormService.prepareEditVacancyResponseForm(id, model);
         if (vacancyResponseDTO == null) {
             throw new IllegalArgumentException("Vacancy response not found");
         }
-
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
 
         vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
 
@@ -225,13 +261,17 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     /**
      * Display a form for editing an existing vacancy response.
      *
-     * @param id    the ID of the vacancy response to edit
-     * @param model the model to add attributes to
+     * @param id       the ID of the vacancy response to edit
+     * @param model    the model to add attributes to
+     * @param useModal whether to use a modal dialog instead of a separate page
      * @return the name of the view to render
      */
     @GetMapping("/{id}/edit")
-    public String editVacancyResponseForm(@PathVariable UUID id, Model model) {
-        logger.debug("Editing vacancy response with ID: {} with access control", id);
+    public String editVacancyResponseForm(
+            @PathVariable UUID id,
+            Model model,
+            @RequestParam(required = false, defaultValue = "false") boolean useModal) {
+        logger.debug("Editing vacancy response with ID: {} with access control, useModal: {}", id, useModal);
 
         // Get the vacancy response from the service
         VacancyResponse vacancyResponse = service.findById(id)
@@ -243,19 +283,22 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new SecurityException("Access denied to edit vacancy response with ID: " + id);
         }
 
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
 
-        // Delegate to the form service
+        // Delegate to the form service for view-specific model preparation
         VacancyResponseDTO vacancyResponseDTO = vacancyResponseFormService.prepareEditVacancyResponseForm(id, model);
         if (vacancyResponseDTO == null) {
             throw new IllegalArgumentException("Vacancy response not found");
         }
 
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
-
         vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
+
+        if (useModal) {
+            // If using modal, redirect to the list page with parameters to show the modal and load the correct data
+            return "redirect:/vacancies?showVacancyModal=true&editId=" + id;
+        }
+
         return "vacancies/form";
     }
 
@@ -279,7 +322,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new SecurityException("Access denied to save vacancy response for user with ID: " + userId);
         }
 
-        // Delegate to the form service
+        // Delegate to the form service for saving the vacancy response
         VacancyResponseDTO savedResponse = vacancyResponseFormService.saveVacancyResponse(vacancyResponseDTO, userId);
         if (savedResponse == null) {
             throw new IllegalArgumentException("User not found");
@@ -309,7 +352,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new SecurityException("Access denied to delete vacancy response with ID: " + id);
         }
 
-        // Delegate to the form service
+        // Delegate to the form service for deleting the vacancy response
         vacancyResponseFormService.deleteVacancyResponse(id);
 
         logger.info("Vacancy response with ID: {} deleted successfully", id);
@@ -319,10 +362,12 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     /**
      * Display a list of vacancy responses for a specific user.
      *
-     * @param userId the ID of the user to find vacancy responses for
-     * @param page   the page number
-     * @param size   the page size
-     * @param model  the model to add attributes to
+     * @param userId           the ID of the user to find vacancy responses for
+     * @param page             the page number
+     * @param size             the page size
+     * @param showVacancyModal whether to show the vacancy response modal
+     * @param editId           the ID of the vacancy response to edit (if any)
+     * @param model            the model to add attributes to
      * @return the name of the view to render
      */
     @GetMapping("/user/{userId}")
@@ -330,8 +375,10 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @PathVariable UUID userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Boolean showVacancyModal,
+            @RequestParam(required = false) UUID editId,
             Model model) {
-        logger.debug("Getting vacancy responses for user with ID: {} with access control", userId);
+        logger.debug("Getting vacancy responses for user with ID: {} with access control, showVacancyModal: {}, editId: {}", userId, showVacancyModal, editId);
 
         // Get the user from the service
         User user = userService.findById(userId)
@@ -346,16 +393,21 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new SecurityException("Access denied to view vacancy responses for user with ID: " + userId);
         }
 
-        // Delegate to the view service
+        // Prepare common model attributes
+        prepareCommonModelAttributes(model);
+
+        // Delegate to the view service for view-specific model preparation
         User userFromService = vacancyResponseViewService.prepareUserVacancyResponsesModel(userId, page, size, model);
         if (userFromService == null) {
             throw new IllegalArgumentException("User not found");
         }
 
-        // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
-
         vacancyResponseViewService.setUserVacancyResponsesPageTitle(model, user);
+
+        // If showVacancyModal is true, prepare the model for the modal
+        if (Boolean.TRUE.equals(showVacancyModal)) {
+            prepareVacancyResponseModal(model, editId);
+        }
 
         return "vacancies/list";
     }

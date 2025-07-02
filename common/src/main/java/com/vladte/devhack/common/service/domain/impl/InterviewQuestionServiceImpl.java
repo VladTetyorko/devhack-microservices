@@ -4,6 +4,7 @@ import com.vladte.devhack.common.repository.InterviewQuestionRepository;
 import com.vladte.devhack.common.service.domain.InterviewQuestionService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,5 +42,20 @@ public class InterviewQuestionServiceImpl extends BaseServiceImpl<InterviewQuest
     @Override
     public Page<InterviewQuestion> searchQuestions(String query, String difficulty, UUID tagId, Pageable pageable) {
         return repository.searchQuestions(query, difficulty, tagId, pageable);
+    }
+
+    @Override
+    public int countQuestionsByUser(User user) {
+        if (user == null) {
+            return 0;
+        }
+        return (int) findAll().stream()
+                .filter(question -> question.getUser() != null && question.getUser().getId().equals(user.getId()))
+                .count();
+    }
+
+    @Override
+    public int countAllQuestions() {
+        return findAll().size();
     }
 }

@@ -1,19 +1,20 @@
 package com.vladte.devhack.common.controller;
 
 import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.Optional;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Controller for handling authentication-related requests.
+ * Controller for handling authentication operations like login, logout, and registration.
  */
 @Controller
 public class AuthController extends BaseController {
@@ -21,7 +22,8 @@ public class AuthController extends BaseController {
     private final UserService userService;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, @Qualifier("baseViewServiceImpl") BaseViewService baseViewService) {
+        super(baseViewService);
         this.userService = userService;
     }
 
@@ -32,8 +34,8 @@ public class AuthController extends BaseController {
      * @return the name of the view to render
      */
     @GetMapping("/login")
-    public String login(Model model) {
-        setPageTitle(model, "Login - DevHack");
+    public String showLoginForm(Model model) {
+        setPageTitle(model, "Login");
         return "auth/login";
     }
 
@@ -44,48 +46,41 @@ public class AuthController extends BaseController {
      * @return the name of the view to render
      */
     @GetMapping("/register")
-    public String registerForm(Model model) {
+    public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        setPageTitle(model, "Register - DevHack");
+        setPageTitle(model, "Register");
         return "auth/register";
     }
 
     /**
      * Process the registration form submission.
      *
-     * @param user   the user data from the form
-     * @param result the binding result for validation
-     * @param model  the model to add attributes to
-     * @return the name of the view to render
+     * @param user the user data from the form
+     * @param bindingResult the binding result for validation errors
+     * @param redirectAttributes attributes to add to the redirect
+     * @return the redirect URL
      */
     @PostMapping("/register")
-    public String registerSubmit(@ModelAttribute User user, BindingResult result, Model model) {
+    public String registerUser(@ModelAttribute("user") User user, 
+                              BindingResult bindingResult,
+                              RedirectAttributes redirectAttributes) {
         // Check if email already exists
-        Optional<User> existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser.isPresent()) {
-            result.rejectValue("email", "error.user", "An account already exists for this email.");
+        if (userService.findByEmail(user.getEmail()).isPresent()) {
+            bindingResult.rejectValue("email", "error.user", "Email already exists");
         }
 
-        if (result.hasErrors()) {
-            setPageTitle(model, "Register - DevHack");
+        if (bindingResult.hasErrors()) {
             return "auth/register";
         }
 
+        // Set default role is handled in the service
+
+        // Register the user
         userService.reguister(user);
 
-        // Redirect to login page with success message
-        return "redirect:/login?registered";
-    }
+        // Add success message
+        redirectAttributes.addAttribute("registered", true);
 
-    /**
-     * Display the dashboard page.
-     *
-     * @param model the model to add attributes to
-     * @return the name of the view to render
-     */
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        setPageTitle(model, "Dashboard - DevHack");
-        return "dashboard";
+        return "redirect:/login";
     }
 }

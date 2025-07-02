@@ -36,10 +36,22 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/}">
-                            <i class="fas fa-home me-1"></i>Dashboard
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dashboardDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-home me-1"></i>Dashboards
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="dashboardDropdown">
+                            <li><a class="dropdown-item" th:href="@{/}">
+                                <i class="fas fa-home me-1"></i>Main Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/questions/dashboard}">
+                                <i class="fas fa-question-circle me-1"></i>Questions Dashboard
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/vacancies/dashboard}">
+                                <i class="fas fa-briefcase me-1"></i>Vacancies Dashboard
+                            </a></li>
+                        </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="studyDropdown" role="button"

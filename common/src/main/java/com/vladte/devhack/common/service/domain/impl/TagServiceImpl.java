@@ -95,4 +95,34 @@ public class TagServiceImpl extends BaseServiceImpl<Tag, UUID, TagRepository> im
 
         return tags;
     }
+
+    @Override
+    public int countTagsByUser(User user) {
+        if (user == null) {
+            return 0;
+        }
+
+        // Get all tags
+        List<Tag> allTags = findAll();
+
+        // Create a set to store unique tag IDs used by the user
+        Set<UUID> userTagIds = new HashSet<>();
+
+        // For each tag, check if it's used in any of the user's questions
+        for (Tag tag : allTags) {
+            boolean tagUsedByUser = tag.getQuestions().stream()
+                    .anyMatch(question -> question.getUser() != null && question.getUser().getId().equals(user.getId()));
+
+            if (tagUsedByUser) {
+                userTagIds.add(tag.getId());
+            }
+        }
+
+        return userTagIds.size();
+    }
+
+    @Override
+    public int countAllTags() {
+        return findAll().size();
+    }
 }
