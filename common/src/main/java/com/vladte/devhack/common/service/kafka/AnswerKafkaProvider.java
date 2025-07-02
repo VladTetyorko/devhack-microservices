@@ -25,32 +25,6 @@ public class AnswerKafkaProvider {
     }
 
     /**
-     * Sends a request to check an answer with AI and get feedback.
-     *
-     * @param questionText the text of the question
-     * @param answerText   the text of the answer to check
-     * @return a CompletableFuture that will be completed when the send operation completes
-     */
-    public CompletableFuture<SendResult<String, KafkaMessage>> sendAnswerFeedbackRequest(
-            String questionText, String answerText) {
-        logger.info("Sending request to check answer with AI");
-
-        // Format the payload as expected by the AI module
-        String payload = questionText + "||" + answerText;
-
-        // Create the Kafka message
-        KafkaMessage message = KafkaMessage.create(
-                "main-app",
-                "ai-app",
-                "check-answer-with-feedback",
-                payload
-        );
-
-        // Send the message to the AI module
-        return kafkaProducerService.sendAnswerFeedbackRequest(message);
-    }
-
-    /**
      * Sends a request to check an answer with AI and get feedback, using a pre-generated message ID.
      *
      * @param messageId    the ID to use for the message
@@ -71,6 +45,35 @@ public class AnswerKafkaProvider {
                 "main-app",
                 "ai-app",
                 "check-answer-with-feedback",
+                payload,
+                java.time.LocalDateTime.now()
+        );
+
+        // Send the message to the AI module
+        return kafkaProducerService.sendAnswerFeedbackRequest(message);
+    }
+
+    /**
+     * Sends a request to check if an answer contains evidence of cheating, using a pre-generated message ID.
+     *
+     * @param messageId    the ID to use for the message
+     * @param questionText the text of the question
+     * @param answerText   the text of the answer to check
+     * @return a CompletableFuture that will be completed when the send operation completes
+     */
+    public CompletableFuture<SendResult<String, KafkaMessage>> sendAnswerCheatingCheckRequest(
+            String messageId, String questionText, String answerText) {
+        logger.info("Sending request to check answer for cheating with ID: {}", messageId);
+
+        // Format the payload as expected by the AI module
+        String payload = questionText + "||" + answerText;
+
+        // Create the Kafka message with the specified ID
+        KafkaMessage message = new KafkaMessage(
+                messageId,
+                "main-app",
+                "ai-app",
+                "check-answer-for-cheating",
                 payload,
                 java.time.LocalDateTime.now()
         );

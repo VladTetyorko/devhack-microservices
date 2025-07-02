@@ -44,4 +44,19 @@ public interface TagService extends BaseService<Tag, UUID> {
      * @return the list of tags with updated progress information
      */
     List<Tag> calculateProgressForAll(List<Tag> tags, User user);
+
+    /**
+     * Count tags used by a specific user in their questions.
+     *
+     * @param user the user
+     * @return the count of tags used by the user
+     */
+    int countTagsByUser(User user);
+
+    /**
+     * Count all tags in the system.
+     *
+     * @return the total count of tags
+     */
+    int countAllTags();
 }

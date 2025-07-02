@@ -88,14 +88,25 @@ public class AnswerKafkaConsumer {
     /**
      * Parses the response from the AI module.
      * The response format is expected to be "score:[score]||feedback:[feedback]"
+     * or a boolean value for cheating checks.
      *
      * @param payload the response payload
-     * @return a map containing the score and feedback
+     * @return a map containing the score and feedback, or a boolean for cheating checks
      */
     private Map<String, Object> parseResponse(String payload) {
         logger.debug("Parsing response payload: {}", payload);
         Map<String, Object> result = new ConcurrentHashMap<>();
 
+        // Check if the payload is a boolean value (for cheating checks)
+        if ("true".equalsIgnoreCase(payload) || "false".equalsIgnoreCase(payload)) {
+            logger.debug("Payload is a boolean value: {}", payload);
+            Boolean isCheating = Boolean.parseBoolean(payload);
+            result.put("isCheating", isCheating);
+            logger.debug("Extracted cheating result: {}", isCheating);
+            return result;
+        }
+
+        // Otherwise, parse as score and feedback
         String[] parts = payload.split("\\|\\|");
         logger.debug("Split payload into {} parts", parts.length);
 

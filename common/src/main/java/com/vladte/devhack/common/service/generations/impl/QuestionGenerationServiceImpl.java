@@ -5,7 +5,7 @@ import com.vladte.devhack.common.service.domain.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.TagService;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
-import com.vladte.devhack.common.service.kafka.QuestionGenerationKafkaConsumer;
+import com.vladte.devhack.common.service.kafka.QuestionKafkaConsumer;
 import com.vladte.devhack.common.service.kafka.QuestionKafkaProvider;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
@@ -31,7 +31,7 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
     private final TagService tagService;
     private final UserService userService;
     private final InterviewQuestionService questionService;
-    private final QuestionGenerationKafkaConsumer kafkaConsumer;
+    private final QuestionKafkaConsumer kafkaConsumer;
     private final QuestionKafkaProvider questionKafkaProvider;
 
     @Autowired
@@ -41,7 +41,7 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
             InterviewQuestionService questionService,
             @Lazy QuestionGenerationService self,
             QuestionKafkaProvider questionKafkaProvider,
-            QuestionGenerationKafkaConsumer kafkaConsumer) {
+            QuestionKafkaConsumer kafkaConsumer) {
         this.tagService = tagService;
         this.userService = userService;
         this.questionService = questionService;

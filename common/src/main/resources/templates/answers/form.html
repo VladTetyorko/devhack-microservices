@@ -22,20 +22,6 @@
                     </div>
                 </div>
 
-                <!-- User Selection -->
-                <div class="mb-3">
-                    <label for="userId" class="form-label">User</label>
-                    <select name="userId" id="userId" class="form-select" required>
-                        <option value="">Select User</option>
-                        <option th:each="user : ${users}"
-                                th:value="${user.id}"
-                                th:text="${user.name}"
-                                th:selected="${answer.userId != null && answer.userId == user.id}">
-                            User Name
-                        </option>
-                    </select>
-                </div>
-
                 <!-- Question Selection -->
                 <div class="mb-3">
                     <label for="questionId" class="form-label">Question</label>

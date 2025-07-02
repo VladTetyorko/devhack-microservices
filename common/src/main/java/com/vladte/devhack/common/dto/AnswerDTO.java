@@ -21,6 +21,7 @@ public class AnswerDTO implements BaseDTO {
     private Double aiScore;
     private String aiFeedback;
     private Boolean isCorrect;
+    private Boolean isCheating;
     private LocalDateTime updatedAt;
     private UUID userId;
     private String userName;

@@ -19,16 +19,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * Service for consuming question generation responses from the AI module via Kafka.
  */
 @Service
-public class QuestionGenerationKafkaConsumer {
+public class QuestionKafkaConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(QuestionGenerationKafkaConsumer.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuestionKafkaConsumer.class);
     private final QuestionParsingService questionParsingService;
 
     // Map to store pending requests by message ID
     private final Map<String, CompletableFuture<QuestionGenerationResponse>> pendingRequests = new ConcurrentHashMap<>();
 
     @Autowired
-    public QuestionGenerationKafkaConsumer(QuestionParsingService questionParsingService) {
+    public QuestionKafkaConsumer(QuestionParsingService questionParsingService) {
         this.questionParsingService = questionParsingService;
     }
 

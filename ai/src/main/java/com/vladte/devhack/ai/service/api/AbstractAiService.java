@@ -73,13 +73,13 @@ public abstract class AbstractAiService implements OpenAiService {
     protected abstract String getApiUrl();
 
     /**
-     * Generate text using the AI API.
+     * Private helper method to generate text synchronously.
+     * This is used internally by the class.
      *
      * @param prompt the prompt to send to the API
      * @return the generated text
      */
-    @Override
-    public String generateText(String prompt) {
+    private String generateText(String prompt) {
         log.debug("Generating text with prompt length: {}", prompt.length());
 
         try {
@@ -393,15 +393,14 @@ public abstract class AbstractAiService implements OpenAiService {
     }
 
     /**
-     * Generate interview questions based on a tag.
+     * Private helper method to generate interview questions based on a tag.
      *
      * @param tag        the tag to generate questions for
      * @param count      the number of questions to generate
      * @param difficulty the difficulty level of the questions
      * @return the generated questions
      */
-    @Override
-    public String generateQuestionsForTag(String tag, int count, String difficulty) {
+    private String generateQuestionsForTag(String tag, int count, String difficulty) {
         log.debug("Generating {} questions for tag '{}' at {} difficulty", count, tag, difficulty);
 
         String prompt = createQuestionGenerationPrompt(tag, count, difficulty);
@@ -419,6 +418,7 @@ public abstract class AbstractAiService implements OpenAiService {
     protected String createQuestionGenerationPrompt(String tag, int count, String difficulty) {
         return String.format(
                 AiPromptConstraints.GENERATE_QUESTIONS_TEMPLATE,
+                "Java",
                 count, tag, difficulty, tag);
     }
 
@@ -459,14 +459,13 @@ public abstract class AbstractAiService implements OpenAiService {
     }
 
     /**
-     * Check an answer to an interview question and provide a score.
+     * Private helper method to check an answer to an interview question and provide a score.
      *
      * @param questionText the text of the interview question
      * @param answerText   the text of the answer to check
      * @return a score between 0 and 100 indicating how correct the answer is
      */
-    @Override
-    public Double checkAnswer(String questionText, String answerText) {
+    private Double checkAnswer(String questionText, String answerText) {
         log.debug("Checking answer for question: '{}'", questionText);
 
         String prompt = createAnswerCheckPrompt(questionText, answerText);
@@ -546,32 +545,15 @@ public abstract class AbstractAiService implements OpenAiService {
         return normalizedScore;
     }
 
-    /**
-     * Check an answer to an interview question and provide a score asynchronously.
-     *
-     * @param questionText the text of the interview question
-     * @param answerText   the text of the answer to check
-     * @return a CompletableFuture containing a score between 0 and 100 indicating how correct the answer is
-     */
-    @Override
-    @Async
-    public CompletableFuture<Double> checkAnswerAsync(String questionText, String answerText) {
-        log.debug("Checking answer asynchronously for question: '{}'", questionText);
-
-        String prompt = createAnswerCheckPrompt(questionText, answerText);
-        return generateTextAsync(prompt)
-                .thenApply(this::extractScoreFromResponse);
-    }
 
     /**
-     * Check an answer to an interview question and provide a score and feedback.
+     * Private helper method to check an answer to an interview question and provide a score and feedback.
      *
      * @param questionText the text of the interview question
      * @param answerText   the text of the answer to check
      * @return a map containing the score and feedback
      */
-    @Override
-    public Map<String, Object> checkAnswerWithFeedback(String questionText, String answerText) {
+    private Map<String, Object> checkAnswerWithFeedback(String questionText, String answerText) {
         log.debug("Checking answer with feedback for question: '{}'", questionText);
 
         String prompt = createAnswerCheckWithFeedbackPrompt(questionText, answerText);
@@ -716,5 +698,77 @@ public abstract class AbstractAiService implements OpenAiService {
         String prompt = createAnswerCheckWithFeedbackPrompt(questionText, answerText);
         return generateTextAsync(prompt)
                 .thenApply(this::extractScoreAndFeedbackFromResponse);
+    }
+
+    /**
+     * Private helper method to check if an answer to an interview question contains evidence of cheating.
+     *
+     * @param questionText the text of the interview question
+     * @param answerText   the text of the answer to check
+     * @return true if the answer contains evidence of cheating, false otherwise
+     */
+    private Boolean checkAnswerForCheating(String questionText, String answerText) {
+        log.debug("Checking if answer contains cheating for question: '{}'", questionText);
+
+        String prompt = createAnswerCheckForCheatingPrompt(questionText, answerText);
+        String response = generateText(prompt);
+
+        return extractCheatingResultFromResponse(response);
+    }
+
+    /**
+     * Check if an answer to an interview question contains evidence of cheating asynchronously.
+     *
+     * @param questionText the text of the interview question
+     * @param answerText   the text of the answer to check
+     * @return a CompletableFuture containing true if the answer contains evidence of cheating, false otherwise
+     */
+    @Override
+    @Async
+    public CompletableFuture<Boolean> checkAnswerForCheatingAsync(String questionText, String answerText) {
+        log.debug("Checking if answer contains cheating asynchronously for question: '{}'", questionText);
+
+        String prompt = createAnswerCheckForCheatingPrompt(questionText, answerText);
+        return generateTextAsync(prompt)
+                .thenApply(this::extractCheatingResultFromResponse);
+    }
+
+    /**
+     * Creates a prompt for checking if an answer contains cheating.
+     *
+     * @param questionText the text of the interview question
+     * @param answerText   the text of the answer to check
+     * @return the formatted prompt
+     */
+    protected String createAnswerCheckForCheatingPrompt(String questionText, String answerText) {
+        return String.format(
+                AiPromptConstraints.CHECK_ANSWER_FOR_CHEATING_TEMPLATE,
+                questionText, answerText);
+    }
+
+    /**
+     * Extracts a boolean result from the AI response indicating if cheating was detected.
+     *
+     * @param response the response from the AI
+     * @return true if the answer contains evidence of cheating, false otherwise
+     */
+    protected Boolean extractCheatingResultFromResponse(String response) {
+        log.debug("Extracting cheating result from response");
+
+        if (response == null || response.isEmpty()) {
+            log.warn("Empty response received when extracting cheating result");
+            return false;
+        }
+
+        try {
+            // Trim the response and convert to lowercase for case-insensitive comparison
+            String trimmedResponse = response.trim().toLowerCase();
+
+            // Check if the response is "true"
+            return "true".equals(trimmedResponse);
+        } catch (Exception e) {
+            log.error("Error extracting cheating result from response: {}", e.getMessage(), e);
+            return false;
+        }
     }
 }

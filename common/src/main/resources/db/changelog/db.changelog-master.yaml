@@ -9,3 +9,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/04-add-role-to-users.sql
   - include:
       file: classpath:db/changelog/changes/05-add-columns-to-answers.sql
+  - include:
+      file: classpath:db/changelog/changes/06-add-is-cheating-to-answers.sql
