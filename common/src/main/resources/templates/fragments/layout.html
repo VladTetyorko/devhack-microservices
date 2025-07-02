@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)" lang="en">
+<head th:replace="~{fragments/header :: head(${title})}">
+    <title>DevHack</title>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Main Content -->
+<main class="flex-shrink-0">
+    <div class="container mt-4 mb-4">
+        <!-- Page Title -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 th:text="${title}">Page Title</h1>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div th:replace="${content}">
+            Page content goes here
+        </div>
+    </div>
+</main>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

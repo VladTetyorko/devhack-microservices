@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="${pageTitle}">Vacancy Response Form</title>
+</head>
+<body>
+<main>
+    <div class="container mt-4">
+        <h1 th:text="${pageTitle}">Vacancy Response Form</h1>
+
+        <form th:action="@{/vacancies}" method="post" th:object="${vacancyResponse}">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label for="userId" class="form-label">User</label>
+                <select id="userId" name="userId" class="form-select" required>
+                    <option value="">Select a user</option>
+                    <option th:each="user : ${users}"
+                            th:value="${user.id}"
+                            th:text="${user.name}"
+                            th:selected="${vacancyResponse.userId != null && vacancyResponse.userId == user.id}">
+                        User Name
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="companyName" class="form-label">Company Name</label>
+                <input type="text" class="form-control" id="companyName" th:field="*{companyName}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="position" class="form-label">Position</label>
+                <input type="text" class="form-control" id="position" th:field="*{position}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="technologies" class="form-label">Technologies</label>
+                <input type="text" class="form-control" id="technologies" th:field="*{technologies}" required>
+                <div class="form-text">Enter technologies separated by commas (e.g., Java, Spring, React)</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="salary" class="form-label">Salary</label>
+                <input type="text" class="form-control" id="salary" th:field="*{salary}">
+                <div class="form-text">Enter salary information (e.g., $100,000/year, $50-60/hour)</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" th:field="*{location}">
+                <div class="form-text">Enter job location (e.g., New York, Remote, Hybrid)</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="pros" class="form-label">Pros</label>
+                <textarea class="form-control" id="pros" th:field="*{pros}" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="cons" class="form-label">Cons</label>
+                <textarea class="form-control" id="cons" th:field="*{cons}" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" th:field="*{notes}" rows="5"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="interviewStage" class="form-label">Interview Stage</label>
+                <select class="form-select" id="interviewStage" th:field="*{interviewStage}" required>
+                    <option th:each="stage : ${interviewStages}"
+                            th:value="${stage}"
+                            th:text="${stage.displayName}">
+                        Stage
+                    </option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a th:href="@{/vacancies}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>

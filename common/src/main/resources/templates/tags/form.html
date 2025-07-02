@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <div class="card">
+        <div class="card-header">
+            <h3 th:text="${tag.id == null ? 'Create New Tag' : 'Edit Tag'}">Tag Form</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/tags}" th:object="${tag}" method="post">
+                <!-- Hidden ID field for editing -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <!-- Tag Name -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tag Name</label>
+                    <input type="text" th:field="*{name}" class="form-control" id="name"
+                           placeholder="Enter tag name" required>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}"
+                         th:errors="*{name}">Name error
+                    </div>
+                    <div class="form-text">Tag names must be unique and descriptive.</div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a th:href="@{/tags}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Tag</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

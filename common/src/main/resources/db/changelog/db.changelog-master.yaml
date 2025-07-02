@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/changes/01-create-schema.sql
+  - include:
+      file: classpath:db/changelog/changes/02-init-data.sql
+  - include:
+      file: classpath:db/changelog/changes/03-update-schema.sql
+  - include:
+      file: classpath:db/changelog/changes/04-add-role-to-users.sql
+  - include:
+      file: classpath:db/changelog/changes/05-add-columns-to-answers.sql

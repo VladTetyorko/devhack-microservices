@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title th:text="${pageTitle}">View Vacancy Response</title>
+</head>
+<body>
+<main>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 th:text="${pageTitle}">View Vacancy Response</h1>
+            <div>
+                <a th:href="@{/vacancies}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <a th:href="@{/vacancies/{id}/edit(id=${vacancyResponse.id})}" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a th:href="@{/vacancies/{id}/delete(id=${vacancyResponse.id})}"
+                   class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this response?')">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="h4 mb-0" th:text="${vacancyResponse.companyName + ' - ' + vacancyResponse.position}">
+                    Company - Position
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="h5">Basic Information</h3>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th style="width: 30%">Company</th>
+                                <td th:text="${vacancyResponse.companyName}">Company Name</td>
+                            </tr>
+                            <tr>
+                                <th>Position</th>
+                                <td th:text="${vacancyResponse.position}">Position</td>
+                            </tr>
+                            <tr>
+                                <th>Technologies</th>
+                                <td th:text="${vacancyResponse.technologies}">Technologies</td>
+                            </tr>
+                            <tr>
+                                <th>Salary</th>
+                                <td th:text="${vacancyResponse.salary ?: 'Not specified'}">Salary</td>
+                            </tr>
+                            <tr>
+                                <th>Location</th>
+                                <td th:text="${vacancyResponse.location ?: 'Not specified'}">Location</td>
+                            </tr>
+                            <tr>
+                                <th>Interview Stage</th>
+                                <td>
+                                        <span class="badge bg-info"
+                                              th:text="${vacancyResponse.interviewStage.displayName}">
+                                            Stage
+                                        </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Created</th>
+                                <td th:text="${#temporals.format(vacancyResponse.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                    Created Date
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Last Updated</th>
+                                <td th:text="${#temporals.format(vacancyResponse.updatedAt, 'yyyy-MM-dd HH:mm')}">
+                                    Updated Date
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="h5">Pros and Cons</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header bg-success text-white">Pros</div>
+                                    <div class="card-body">
+                                        <p class="card-text" th:text="${vacancyResponse.pros ?: 'No pros specified'}">
+                                            Pros
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header bg-danger text-white">Cons</div>
+                                    <div class="card-body">
+                                        <p class="card-text" th:text="${vacancyResponse.cons ?: 'No cons specified'}">
+                                            Cons
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="h5 mt-4">Notes</h3>
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <p class="card-text" th:text="${vacancyResponse.notes ?: 'No notes available'}">
+                            Notes
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

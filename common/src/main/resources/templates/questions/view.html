@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <!-- Question Details -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-question-circle fa-2x me-3"></i>
+                    <h3 class="mb-0">Interview Question</h3>
+                </div>
+                <div>
+                        <span th:text="${question.difficulty}"
+                              th:class="${question.difficulty == 'Easy' ? 'badge bg-success' : 
+                                         (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
+                            Difficulty
+                        </span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h4 class="card-title" th:text="${question.questionText}">Question Text</h4>
+            </div>
+
+            <div class="mb-3">
+                <h5><i class="fas fa-tags me-2 text-info"></i>Tags</h5>
+                <div>
+                        <span th:each="tag : ${question.tags}" class="badge bg-info me-1 mb-1">
+                            <a th:href="@{/questions/tag/{slug}(slug=${tag.slug})}"
+                               class="text-white text-decoration-none">
+                               <i class="fas fa-tag me-1"></i><span th:text="${tag.name}">Tag Name</span>
+                            </a>
+                        </span>
+                    <span th:if="${#lists.isEmpty(question.tags)}" class="text-muted">
+                            No tags assigned to this question
+                        </span>
+                </div>
+            </div>
+
+            <!-- Edit and Delete buttons removed to make the page view-only -->
+        </div>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-comment text-success me-2"></i>Answers</h4>
+                <a th:href="@{/answers/new(questionId=${question.id})}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus me-1"></i>Add Answer
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div th:if="${not #lists.isEmpty(question.answers)}" class="list-group list-group-flush">
+                <div th:each="answer : ${question.answers}" class="list-group-item border-0 border-bottom">
+                    <div class="d-flex justify-content-between">
+                        <div class="w-100">
+                            <div class="mb-3 answer-text" th:text="${answer.text}">Answer text</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    <span th:text="${answer.user.name}">User Name</span> -
+                                    <i class="fas fa-clock ms-2 me-1"></i>
+                                    <span th:text="${#temporals.format(answer.createdAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                                </div>
+                                <!-- Edit button removed to make the page view-only -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(question.answers)}" class="text-center py-5">
+                <i class="fas fa-comment fa-3x text-muted mb-3"></i>
+                <p class="lead text-muted">No answers yet. Be the first to answer!</p>
+                <a th:href="@{/answers/new(questionId=${question.id})}" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>Add Answer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-sticky-note text-warning me-2"></i>Notes</h4>
+                <a th:href="@{/notes/new(questionId=${question.id})}" class="btn btn-sm btn-warning text-white">
+                    <i class="fas fa-plus me-1"></i>Add Note
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div th:if="${not #lists.isEmpty(question.notes)}" class="list-group list-group-flush">
+                <div th:each="note : ${question.notes}" class="list-group-item border-0 border-bottom">
+                    <div class="d-flex justify-content-between">
+                        <div class="w-100">
+                            <div class="mb-3 note-text" th:text="${note.noteText}">Note text</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted small">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    <span th:text="${note.user.name}">User Name</span> -
+                                    <i class="fas fa-clock ms-2 me-1"></i>
+                                    <span th:text="${#temporals.format(note.createdAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                                </div>
+                                <!-- Edit button removed to make the page view-only -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(question.notes)}" class="text-center py-5">
+                <i class="fas fa-sticky-note fa-3x text-muted mb-3"></i>
+                <p class="lead text-muted">No notes yet. Add your first note!</p>
+                <a th:href="@{/notes/new(questionId=${question.id})}" class="btn btn-warning text-white">
+                    <i class="fas fa-plus me-1"></i>Add Note
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to List Button -->
+    <div class="mt-4">
+        <a th:href="@{/questions}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Questions
+        </a>
+    </div>
+</section>
+</body>
+</html>

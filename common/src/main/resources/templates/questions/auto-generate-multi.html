@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Auto-Generate Easy Questions for Multiple Tags with AI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container mt-4">
+    <h1 th:text="${pageTitle}">Auto-Generate Easy Questions for Multiple Tags with AI</h1>
+
+    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+        Error message
+    </div>
+
+    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
+        Success message
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title">Select Tags for Question Generation</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/questions/auto-generate-multi}" method="post">
+                <div class="mb-3">
+                    <div class="form-text">
+                        <strong>Note:</strong> This will automatically generate 3 easy questions for each selected tag.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAll">
+                        <label class="form-check-label" for="selectAll">
+                            <strong>Select All Tags</strong>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="row">
+                        <div th:each="tag : ${tags}" class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input tag-checkbox" type="checkbox"
+                                       th:id="${'tag-' + tag.id}"
+                                       th:name="tagIds"
+                                       th:value="${tag.id}">
+                                <label class="form-check-label"
+                                       th:for="${'tag-' + tag.id}"
+                                       th:text="${tag.name}">Tag Name</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-text text-warning">
+                        <strong>Note:</strong> This will use AI to generate questions and may take a few seconds per
+                        tag.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Auto-Generate Easy Questions for Selected Tags</button>
+                <a th:href="@{/questions/auto-generate}" class="btn btn-info">Generate for Single Tag</a>
+                <a th:href="@{/questions}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // JavaScript for "Select All" functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+
+        // Select All checkbox functionality
+        selectAllCheckbox.addEventListener('change', function () {
+            const isChecked = this.checked;
+            tagCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        // Update Select All checkbox state based on individual checkboxes
+        function updateSelectAllCheckbox() {
+            const allChecked = Array.from(tagCheckboxes).every(checkbox => checkbox.checked);
+            const someChecked = Array.from(tagCheckboxes).some(checkbox => checkbox.checked);
+
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+        }
+
+        // Add event listeners to all tag checkboxes
+        tagCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectAllCheckbox);
+        });
+    });
+</script>
+</body>
+</html>

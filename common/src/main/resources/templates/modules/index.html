@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modules Integration</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Modules Integration Demo</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    Domain Module
+                </div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${domainGreeting}">Domain greeting will appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    AI Module
+                </div>
+                <div class="card-body">
+                    <p class="card-text" th:text="${aiGreeting}">AI greeting will appear here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            AI Text Analysis
+        </div>
+        <div class="card-body">
+            <form th:action="@{/modules/analyze}" method="post">
+                <div class="mb-3">
+                    <label for="text" class="form-label">Enter text to analyze:</label>
+                    <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Analyze</button>
+            </form>
+
+            <div class="mt-4" th:if="${analysisResult}">
+                <h5>Analysis Result:</h5>
+                <p th:text="${analysisResult}">Analysis result will appear here</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="/" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+
+<script src="/webjars/jquery/3.7.1/jquery.min.js"></script>
+<script src="/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

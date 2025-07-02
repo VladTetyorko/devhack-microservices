@@ -1,0 +1,7 @@
+rootProject.name = 'common'
+
+include ':infra'
+project(':infra').projectDir = new File(settingsDir, '../infra')
+
+include ':entities'
+project(':entities').projectDir = new File(settingsDir, '../entities')

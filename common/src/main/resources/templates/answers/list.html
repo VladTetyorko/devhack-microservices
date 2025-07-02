@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <!-- Filter Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <select class="form-select" aria-label="Filter by user">
+                        <option selected>All Users</option>
+                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">User Name
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <select class="form-select" aria-label="Filter by question">
+                        <option selected>All Questions</option>
+                        <option th:each="question : ${questions}" th:value="${question.id}"
+                                th:text="${#strings.abbreviate(question.questionText, 50)}">Question Text
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-grid">
+                    <a th:href="@{/answers/new}" class="btn btn-primary">Add New Answer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User or Question Filter (if selected) -->
+    <div class="alert alert-info mb-4" th:if="${user != null}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-person-fill me-2"></i>
+                Showing answers by: <strong th:text="${user.name}">User Name</strong>
+            </div>
+            <a th:href="@{/answers}" class="btn btn-sm btn-outline-info">Clear Filter</a>
+        </div>
+    </div>
+
+    <div class="alert alert-info mb-4" th:if="${question != null}">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-question-circle-fill me-2"></i>
+                Showing answers for question: <strong th:text="${#strings.abbreviate(question.questionText, 100)}">Question
+                Text</strong>
+            </div>
+            <a th:href="@{/answers}" class="btn btn-sm btn-outline-info">Clear Filter</a>
+        </div>
+    </div>
+
+    <!-- Answers List -->
+    <div class="row" th:if="${not #lists.isEmpty(answers)}">
+        <div class="col-12">
+            <div class="list-group">
+                <div th:each="answer : ${answers}" class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between mb-2">
+                        <h5 class="mb-1">
+                            <a th:href="@{/answers/{id}(id=${answer.id})}"
+                               th:text="${#strings.abbreviate(answer.questionText, 100)}">Question Text</a>
+                        </h5>
+                        <small th:text="${#temporals.format(answer.createdAt, 'dd MMM yyyy HH:mm')}">Date</small>
+                    </div>
+                    <p class="mb-1" th:text="${answer.text}">Answer text</p>
+
+                    <!-- AI Score (if available) -->
+                    <div class="mt-2 mb-2" th:if="${answer.aiScore != null}">
+                        <div class="d-flex align-items-center">
+                                <span class="badge me-2"
+                                      th:classappend="${answer.aiScore < 50 ? 'bg-danger' : (answer.aiScore < 80 ? 'bg-warning' : 'bg-success')}">
+                                    AI Score: <span
+                                        th:text="${#numbers.formatDecimal(answer.aiScore, 1, 1)} + '%'">70%</span>
+                                </span>
+                            <div class="progress flex-grow-1" style="height: 10px;">
+                                <div class="progress-bar" role="progressbar"
+                                     th:style="'width: ' + ${answer.aiScore} + '%'"
+                                     th:classappend="${answer.aiScore < 50 ? 'bg-danger' : (answer.aiScore < 80 ? 'bg-warning' : 'bg-success')}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <div>
+                            <small>
+                                By: <a th:href="@{/users/{id}(id=${answer.userId})}" th:text="${answer.userName}">User
+                                Name</a>
+                            </small>
+                            <!-- Check with AI button if not evaluated -->
+                            <a th:if="${answer.aiScore == null}"
+                               th:href="@{/answers/{id}/check(id=${answer.id})}"
+                               class="btn btn-sm btn-outline-info ms-2">
+                                <i class="bi bi-robot"></i> Check with AI
+                            </a>
+                        </div>
+                        <div>
+                            <a th:href="@{/answers/{id}(id=${answer.id})}"
+                               class="btn btn-sm btn-outline-secondary me-1">View</a>
+                            <a th:href="@{/answers/{id}/edit(id=${answer.id})}"
+                               class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                            <a th:href="@{/answers/{id}/delete(id=${answer.id})}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Are you sure you want to delete this answer?')">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="text-center py-5" th:if="${#lists.isEmpty(answers)}">
+        <div class="mb-4">
+            <i class="bi bi-chat-dots" style="font-size: 3rem;"></i>
+        </div>
+        <h3>No Answers Found</h3>
+        <p class="text-muted">There are no answers available yet.</p>
+        <a th:href="@{/answers/new}" class="btn btn-primary">Add Your First Answer</a>
+    </div>
+</section>
+</body>
+</html>

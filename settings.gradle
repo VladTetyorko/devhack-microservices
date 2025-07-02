@@ -1,0 +1,6 @@
+rootProject.name = 'DevHack'
+
+include 'ai'
+include 'infra'
+include 'common'
+include 'entities'

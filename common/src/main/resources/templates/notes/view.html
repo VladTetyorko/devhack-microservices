@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <!-- Note Details -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Note Details</h3>
+            <div>
+                <a th:href="@{/notes/{id}/edit(id=${note.id})}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                <a th:href="@{/notes/{id}/delete(id=${note.id})}"
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Are you sure you want to delete this note?')">Delete</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5>Note</h5>
+                <p th:text="${note.noteText}">Note text</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>Created By:</strong>
+                        <a th:href="@{/users/{id}(id=${note.user.id})}" th:text="${note.user.name}">User Name</a>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Created At:</strong>
+                        <span th:text="${#temporals.format(note.createdAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>Last Updated:</strong>
+                        <span th:text="${#temporals.format(note.updatedAt, 'dd MMM yyyy HH:mm')}">Date</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Question -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Related Question</h3>
+        </div>
+        <div class="card-body">
+            <h5>
+                <a th:href="@{/questions/{id}(id=${note.question.id})}"
+                   th:text="${note.question.questionText}">Question Text</a>
+            </h5>
+            <div class="mb-3">
+                    <span th:text="${note.question.difficulty}"
+                          th:class="${note.question.difficulty == 'Easy' ? 'badge bg-success' : 
+                                     (note.question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
+                        Difficulty
+                    </span>
+                <span th:each="tag : ${note.question.tags}" class="badge bg-info ms-1">
+                        <a th:href="@{/tags/{id}(id=${tag.id})}"
+                           th:text="${tag.name}" class="text-white text-decoration-none">Tag Name</a>
+                    </span>
+            </div>
+
+            <!-- Other Notes Count -->
+            <p>
+                <strong>Other Notes:</strong>
+                <span th:text="${note.question.notes.size() - 1}">0</span>
+                <a th:href="@{/questions/{id}(id=${note.question.id})}" class="btn btn-sm btn-outline-primary ms-2">
+                    View All Notes
+                </a>
+            </p>
+
+            <!-- Answers Count -->
+            <p>
+                <strong>Answers:</strong>
+                <span th:text="${note.question.answers.size()}">0</span>
+                <a th:href="@{/answers/new(questionId=${note.question.id})}"
+                   class="btn btn-sm btn-outline-primary ms-2">
+                    Add Answer
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="mt-4 d-flex justify-content-between">
+        <a th:href="@{/notes}" class="btn btn-outline-secondary">Back to Notes</a>
+        <a th:href="@{/notes/new(questionId=${note.question.id})}" class="btn btn-primary">
+            Add Another Note to this Question
+        </a>
+    </div>
+</section>
+</body>
+</html>

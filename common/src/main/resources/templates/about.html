@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">About DevHack</h2>
+                    <p class="card-text">
+                        DevHack is an interview preparation tool designed to help developers organize and manage their
+                        interview preparation process. Whether you're preparing for technical interviews at top tech
+                        companies or just want to keep your skills sharp, DevHack provides the tools you need.
+                    </p>
+                    <p class="card-text">
+                        With DevHack, you can:
+                    </p>
+                    <ul>
+                        <li>Browse and manage interview questions across different difficulty levels</li>
+                        <li>Record your answers to track your progress over time</li>
+                        <li>Take notes on specific questions or topics</li>
+                        <li>Organize content with tags for easy filtering</li>
+                        <li>Collaborate with other users to share knowledge</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">How to Use</h2>
+                    <p class="card-text">
+                        Getting started with DevHack is easy:
+                    </p>
+                    <ol>
+                        <li>Browse the <a th:href="@{/questions}">Questions</a> section to find interview questions</li>
+                        <li>Filter questions by difficulty or <a th:href="@{/tags}">Tags</a> to focus on specific areas
+                        </li>
+                        <li>Record your <a th:href="@{/answers}">Answers</a> to track your progress</li>
+                        <li>Create <a th:href="@{/notes}">Notes</a> to document your learning</li>
+                        <li>Manage your <a th:href="@{/users}">User Profile</a> to personalize your experience</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Features</h3>
+                    <div class="list-group">
+                        <a th:href="@{/questions}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Interview Questions</h5>
+                            </div>
+                            <p class="mb-1">Browse and manage questions</p>
+                        </a>
+                        <a th:href="@{/answers}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Answers</h5>
+                            </div>
+                            <p class="mb-1">Record and review your answers</p>
+                        </a>
+                        <a th:href="@{/notes}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Notes</h5>
+                            </div>
+                            <p class="mb-1">Take and organize notes</p>
+                        </a>
+                        <a th:href="@{/tags}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">Tags</h5>
+                            </div>
+                            <p class="mb-1">Categorize content with tags</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Get Started</h3>
+                    <p class="card-text">Ready to start your interview preparation?</p>
+                    <a th:href="@{/questions}" class="btn btn-primary btn-lg w-100">Browse Questions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <div class="card">
+        <div class="card-header">
+            <h3 th:text="${answer.id == null ? 'Create New Answer' : 'Edit Answer'}">Answer Form</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/answers}" th:object="${answer}" method="post">
+                <!-- Hidden ID field for editing -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <!-- Answer Text -->
+                <div class="mb-3">
+                    <label for="text" class="form-label">Answer Text</label>
+                    <textarea th:field="*{text}" class="form-control" id="text"
+                              rows="5" placeholder="Enter your answer" required></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('text')}"
+                         th:errors="*{text}">Answer text error
+                    </div>
+                </div>
+
+                <!-- User Selection -->
+                <div class="mb-3">
+                    <label for="userId" class="form-label">User</label>
+                    <select name="userId" id="userId" class="form-select" required>
+                        <option value="">Select User</option>
+                        <option th:each="user : ${users}"
+                                th:value="${user.id}"
+                                th:text="${user.name}"
+                                th:selected="${answer.userId != null && answer.userId == user.id}">
+                            User Name
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Question Selection -->
+                <div class="mb-3">
+                    <label for="questionId" class="form-label">Question</label>
+                    <select name="questionId" id="questionId" class="form-select" required
+                            th:disabled="${question != null}">
+                        <option value="">Select Question</option>
+                        <option th:each="q : ${questions}"
+                                th:value="${q.id}"
+                                th:text="${#strings.abbreviate(q.questionText, 100)}"
+                                th:selected="${(answer.questionId != null && answer.questionId == q.id) ||
+                                                  (question != null && question.id == q.id)}">
+                            Question Text
+                        </option>
+                    </select>
+                    <!-- Hidden field to preserve question ID when disabled -->
+                    <input type="hidden" name="questionId" th:if="${question != null}" th:value="${question.id}"/>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a th:href="@{/answers}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Answer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Question Preview (if a question is pre-selected) -->
+    <div class="card mt-4" th:if="${question != null}">
+        <div class="card-header">
+            <h3 class="mb-0">Question Preview</h3>
+        </div>
+        <div class="card-body">
+            <h5 th:text="${question.questionText}">Question Text</h5>
+            <div class="mb-2">
+                    <span th:text="${question.difficulty}"
+                          th:class="${question.difficulty == 'Easy' ? 'badge bg-success' :
+                                     (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
+                        Difficulty
+                    </span>
+                <span th:each="tag : ${question.tags}" class="badge bg-info ms-1">
+                        <span th:text="${tag.name}">Tag Name</span>
+                    </span>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

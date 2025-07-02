@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <!-- Tag Details -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Tag Details</h3>
+            <div>
+                <a th:href="@{/tags/{id}/edit(id=${tag.id})}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                <a th:href="@{/tags/{id}/delete(id=${tag.id})}"
+                   class="btn btn-sm btn-outline-danger"
+                   onclick="return confirm('Are you sure you want to delete this tag?')">Delete</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> <span th:text="${tag.name}">Tag Name</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Questions:</strong> <span th:text="${tag.questions.size()}">0</span></p>
+                </div>
+            </div>
+
+            <!-- Progress Information -->
+            <div class="row mt-3" th:if="${tag.questions.size() > 0}">
+                <div class="col-12">
+                    <h5>Progress</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><strong>Answered Questions:</strong> <span
+                                th:text="${tag.answeredQuestions}">0</span></span>
+                        <span><strong>Progress:</strong> <span
+                                th:text="${#numbers.formatDecimal(tag.progressPercentage, 0, 0)} + '%'">0%</span></span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar"
+                             th:style="'width: ' + ${tag.progressPercentage} + '%'"
+                             th:text="${#numbers.formatDecimal(tag.progressPercentage, 0, 0)} + '%'">0%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tagged Questions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="mb-0">Questions with this Tag</h3>
+        </div>
+        <div class="card-body">
+            <div th:if="${not #lists.isEmpty(tag.questions)}" class="list-group list-group-flush">
+                <div th:each="question : ${tag.questions}" class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">
+                            <a th:href="@{/questions/{id}(id=${question.id})}"
+                               th:text="${question.questionText}">Question Text</a>
+                        </h5>
+                        <small th:text="${question.difficulty}"
+                               th:class="${question.difficulty == 'Easy' ? 'badge bg-success' :
+                                              (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
+                            Difficulty
+                        </small>
+                    </div>
+                    <div class="mb-1">
+                            <span th:each="questionTag : ${question.tags}" class="badge bg-info me-1"
+                                  th:if="${questionTag.id != tag.id}">
+                                <a th:href="@{/tags/{id}(id=${questionTag.id})}"
+                                   th:text="${questionTag.name}" class="text-white text-decoration-none">Tag Name</a>
+                            </span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <small th:text="${question.answers.size()} + ' answers'">0 answers</small>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${#lists.isEmpty(tag.questions)}" class="text-center py-3">
+                <p class="text-muted">No questions are using this tag yet.</p>
+                <a th:href="@{/questions/new}" class="btn btn-primary">Create Question with this Tag</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to List Button -->
+    <div class="mt-4">
+        <a th:href="@{/tags}" class="btn btn-outline-secondary">Back to Tags</a>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <!-- Welcome Banner -->
+    <div class="card bg-success text-white mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="display-5 fw-bold">Work Dashboard</h2>
+                    <p class="lead">Track your job applications and interview progress</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a th:href="@{/vacancies}" class="btn btn-light btn-lg">
+                        <i class="fas fa-list me-2"></i>View Applications
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Stats -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Application Statistics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-briefcase fa-3x text-success mb-3"></i>
+                                    <h5>Total Applications</h5>
+                                    <h2 class="display-6" th:text="${vacancyCount}">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-phone fa-3x text-primary mb-3"></i>
+                                    <h5>Phone Interviews</h5>
+                                    <h2 class="display-6" th:text="${phoneInterviewCount}">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user-tie fa-3x text-warning mb-3"></i>
+                                    <h5>Technical Interviews</h5>
+                                    <h2 class="display-6" th:text="${technicalInterviewCount}">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-check-circle fa-3x text-info mb-3"></i>
+                                    <h5>Offers Received</h5>
+                                    <h2 class="display-6" th:text="${offerCount}">0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Status -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="fas fa-tasks me-2"></i>Application Status</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Applied -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-paper-plane text-primary me-2"></i>
+                                <span>Applied</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary" th:text="${appliedCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-primary" role="progressbar"
+                                 th:style="'width: ' + ${appliedPercentage} + '%'"
+                                 th:aria-valuenow="${appliedPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Interview -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-phone text-info me-2"></i>
+                                <span>Phone Interview</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-info" th:text="${phoneInterviewCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar"
+                                 th:style="'width: ' + ${phoneInterviewPercentage} + '%'"
+                                 th:aria-valuenow="${phoneInterviewPercentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Interview -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-laptop-code text-warning me-2"></i>
+                                <span>Technical Interview</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-warning" th:text="${technicalInterviewCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 th:style="'width: ' + ${technicalInterviewPercentage} + '%'"
+                                 th:aria-valuenow="${technicalInterviewPercentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Final Interview -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-user-tie text-secondary me-2"></i>
+                                <span>Final Interview</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-secondary" th:text="${finalInterviewCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-secondary" role="progressbar"
+                                 th:style="'width: ' + ${finalInterviewPercentage} + '%'"
+                                 th:aria-valuenow="${finalInterviewPercentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Offer -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <span>Offer</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-success" th:text="${offerCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 th:style="'width: ' + ${offerPercentage} + '%'"
+                                 th:aria-valuenow="${offerPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Rejected -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div>
+                                <i class="fas fa-times-circle text-danger me-2"></i>
+                                <span>Rejected</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-danger" th:text="${rejectedCount}">0</span>
+                            </div>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 th:style="'width: ' + ${rejectedPercentage} + '%'"
+                                 th:aria-valuenow="${rejectedPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="fas fa-building me-2"></i>Top Companies</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${not #lists.isEmpty(vacancyResponses)}" class="company-list">
+                        <div th:each="response : ${vacancyResponses}" class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <div>
+                                    <i class="fas fa-building text-info me-2"></i>
+                                    <span th:text="${response.companyName}">Company Name</span>
+                                    <span class="badge bg-secondary ms-2" th:text="${response.position}">Position</span>
+                                </div>
+                                <div>
+                                        <span class="badge"
+                                              th:classappend="${
+                                                response.interviewStage.name() == 'APPLIED' ? 'bg-primary' : 
+                                                (response.interviewStage.name() == 'SCREENING' ? 'bg-info' : 
+                                                (response.interviewStage.name() == 'TECHNICAL_INTERVIEW' ? 'bg-warning' : 
+                                                (response.interviewStage.name() == 'STAKEHOLDER_INTERVIEW' ? 'bg-secondary' : 
+                                                (response.interviewStage.name() == 'OFFER' ? 'bg-success' : 
+                                                'bg-danger'))))
+                                              }"
+                                              th:text="${response.interviewStage.displayName}">
+                                            Stage
+                                        </span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted"
+                                       th:text="${#temporals.format(response.createdAt, 'yyyy-MM-dd')}">
+                                    Date Applied
+                                </small>
+                                <a th:href="@{/vacancies/{id}(id=${response.id})}" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(vacancyResponses)}" class="text-center py-4">
+                        <i class="fas fa-building fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No applications available yet.</p>
+                    </div>
+
+                    <!-- Pagination for Top Companies -->
+                    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 0}">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm">
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/vacancies/dashboard(page=0, size=${size})}"
+                                       aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/vacancies/dashboard(page=${currentPage - 1}, size=${size})}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                                    th:classappend="${currentPage == i} ? 'active'">
+                                    <a class="page-link" th:href="@{/vacancies/dashboard(page=${i}, size=${size})}"
+                                       th:text="${i + 1}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/vacancies/dashboard(page=${currentPage + 1}, size=${size})}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/vacancies/dashboard(page=${totalPages - 1}, size=${size})}"
+                                       aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a th:href="@{/vacancies}" class="btn btn-outline-success">
+                            <i class="fas fa-list me-1"></i>View All Applications
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <a th:href="@{/vacancies/new}" class="text-decoration-none">
+                                <div class="card h-100 border-success hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-plus-circle fa-3x text-success mb-3"></i>
+                                        <h5 class="card-title">Add New Application</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <a th:href="@{/vacancies}" class="text-decoration-none">
+                                <div class="card h-100 border-primary hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-list fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">View All Applications</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <a th:href="@{/users}" class="text-decoration-none">
+                                <div class="card h-100 border-info hover-shadow">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-users fa-3x text-info mb-3"></i>
+                                        <h5 class="card-title">Manage Users</h5>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

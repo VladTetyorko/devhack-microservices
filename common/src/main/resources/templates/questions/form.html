@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<body>
+<section>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-question-circle fa-2x me-3"></i>
+                <h3 class="mb-0" th:text="${question.id == null ? 'Create New Question' : 'Edit Question'}">Question
+                    Form</h3>
+            </div>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/questions}" th:object="${question}" method="post" class="needs-validation" novalidate>
+                <!-- Hidden ID field for editing -->
+                <input type="hidden" th:field="*{id}"/>
+
+                <!-- Question Text -->
+                <div class="mb-4">
+                    <label for="questionText" class="form-label">
+                        <i class="fas fa-pen me-2 text-primary"></i>Question Text
+                    </label>
+                    <textarea th:field="*{questionText}" class="form-control" id="questionText"
+                              rows="4" required placeholder="Enter the interview question here..."></textarea>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('questionText')}"
+                         th:errors="*{questionText}">Question text error
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Write a clear, concise question that interviewers might ask.
+                    </div>
+                </div>
+
+                <!-- Difficulty -->
+                <div class="mb-4">
+                    <label for="difficulty" class="form-label">
+                        <i class="fas fa-signal me-2 text-primary"></i>Difficulty Level
+                    </label>
+                    <select th:field="*{difficulty}" class="form-select" id="difficulty" required>
+                        <option value="">Select Difficulty</option>
+                        <option value="Easy">
+                            <i class="fas fa-circle text-success"></i> Easy
+                        </option>
+                        <option value="Medium">
+                            <i class="fas fa-circle text-warning"></i> Medium
+                        </option>
+                        <option value="Hard">
+                            <i class="fas fa-circle text-danger"></i> Hard
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('difficulty')}"
+                         th:errors="*{difficulty}">Difficulty error
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Choose the appropriate difficulty level for this question.
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="fas fa-tags me-2 text-primary"></i>Tags
+                    </label>
+                    <div class="card border-light bg-light">
+                        <div class="card-body">
+                            <div class="row">
+                                <div th:each="tag : ${tags}" class="col-md-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox"
+                                               th:value="${tag.id}" th:id="${'tag-' + tag.id}"
+                                               name="tagIds"
+                                               th:checked="${question.tags != null && question.tags.contains(tag)}">
+                                        <label class="form-check-label" th:for="${'tag-' + tag.id}">
+                                            <i class="fas fa-tag me-1 text-info"></i>
+                                            <span th:text="${tag.name}">Tag name</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a th:href="@{/tags/new}" class="btn btn-sm btn-outline-info">
+                                    <i class="fas fa-plus me-1"></i>Create New Tag
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Select relevant tags to categorize this question.
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a th:href="@{/questions}" class="btn btn-outline-secondary me-md-2">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-1"></i>Save Question
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>
