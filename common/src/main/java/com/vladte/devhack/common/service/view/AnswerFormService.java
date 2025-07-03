@@ -46,12 +46,12 @@ public interface AnswerFormService {
     void deleteAnswer(UUID id);
 
     /**
-     * Check an answer using AI and update its score and feedback.
+     * Asynchronously check an answer using AI and update its score and feedback.
+     * This method only sends the request and doesn't wait for the response.
      *
      * @param id the ID of the answer to check
-     * @return the updated answer DTO
      */
-    AnswerDTO checkAnswerWithAi(UUID id);
+    void checkAnswerWithAiAsync(UUID id);
 
     /**
      * Set the page title for the new answer form.

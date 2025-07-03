@@ -42,3 +42,7 @@ out/
 ### Properties files with sensitive data ###
 src/main/resources/application.properties
 src/main/resources/application-*.properties
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
+/gradlew
+/gradlew.bat

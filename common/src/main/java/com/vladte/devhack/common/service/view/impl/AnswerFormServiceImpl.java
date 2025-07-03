@@ -107,9 +107,9 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     }
 
     @Override
-    public AnswerDTO checkAnswerWithAi(UUID id) {
-        Answer answer = answerService.checkAnswerWithAi(id);
-        return answerMapper.toDTO(answer);
+    public void checkAnswerWithAiAsync(UUID id) {
+        // Just send the request and don't wait for the result
+        answerService.checkAnswerWithAiAsync(id);
     }
 
     @Override

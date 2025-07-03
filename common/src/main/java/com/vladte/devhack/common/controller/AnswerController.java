@@ -353,6 +353,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
     /**
      * Check an answer using AI and update its score and feedback.
+     * This is a non-blocking method that only sends an async request to check.
      *
      * @param id    the ID of the answer to check
      * @param model the model to add attributes to
@@ -360,7 +361,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      */
     @GetMapping("/{id}/check")
     public String checkAnswerWithAi(@PathVariable UUID id, Model model) {
-        logger.debug("Checking answer with AI for answer with ID: {} with access control", id);
+        logger.debug("Initiating async check of answer with AI for answer with ID: {} with access control", id);
 
         // Get the answer from the service
         Answer answer = service.findById(id)
@@ -375,17 +376,20 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
-        // Delegate to the form service
-        AnswerDTO answerDTO = answerFormService.checkAnswerWithAi(id);
-        if (answerDTO == null) {
-            throw new IllegalArgumentException("Answer not found");
-        }
+        // Get the answer DTO for display
+        AnswerDTO answerDTO = answerFormService.prepareEditAnswerForm(id, model);
 
-        // Add additional information to the model
+        // Add the question to the model for the view
+        if (answerDTO.getQuestionId() != null) {
+            questionService.findById(answerDTO.getQuestionId())
+                    .ifPresent(question -> model.addAttribute("question", question));
+        }
+        // Delegate to the form service - non-blocking call
+        answerFormService.checkAnswerWithAiAsync(id);
+
+        // Add information to the model
         ModelBuilder.of(model)
-                .addAttribute("message", "Answer checked by AI. Score: " + answerDTO.getAiScore())
-                .addAttribute("aiFeedback", answerDTO.getAiFeedback())
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("message", "AI check initiated. The answer will be evaluated in the background. Refresh this page in a few moments to see the results.")
                 .build();
 
         // Set the page title

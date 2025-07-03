@@ -5,6 +5,7 @@ import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,5 +74,6 @@ public interface AnswerService extends BaseService<Answer, UUID> {
      * @param answerId the ID of the answer to check
      * @return a CompletableFuture containing the updated answer with the AI score
      */
+    @Async
     CompletableFuture<Answer> checkAnswerWithAiAsync(UUID answerId);
 }

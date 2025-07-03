@@ -196,7 +196,6 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             @RequestParam String tagName,
             Model model) {
 
-        // Validate input
         if (!questionGenerationOrchestrationService.validateTagName(tagName)) {
             ModelBuilder.of(model)
                     .addAttribute("error", "Tag name is required")
@@ -204,21 +203,15 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             return "redirect:/questions";
         }
 
-        // Start the asynchronous generation process without blocking
         questionGenerationOrchestrationService.startEasyQuestionGeneration(tagName);
 
-        // Add message that generation has started
         ModelBuilder.of(model)
                 .addAttribute("success", questionGenerationOrchestrationService.buildEasyGenerationSuccessMessage(tagName))
                 .build();
 
         // Find the tag to redirect to its questions page
         Optional<Tag> tag = questionGenerationOrchestrationService.findTagByName(tagName);
-        if (tag.isPresent()) {
-            return "redirect:/questions/tag/" + tag.get().getSlug();
-        } else {
-            return "redirect:/questions";
-        }
+        return tag.map(value -> "redirect:/questions/tag/" + value.getSlug()).orElse("redirect:/questions");
     }
 
     @PostMapping("/api/auto-generate")
