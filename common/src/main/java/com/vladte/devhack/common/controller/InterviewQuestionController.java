@@ -92,9 +92,9 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        dashboardViewService.prepareDashboardModel(model);
         dashboardViewService.setDashboardPageTitle(model);
-        return "questions/main";
+        dashboardViewService.prepareDashboardModel(model);
+        return "questions/dashboard";
     }
 
 

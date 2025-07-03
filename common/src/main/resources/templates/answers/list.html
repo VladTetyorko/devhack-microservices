@@ -22,9 +22,6 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-3 d-grid">
-                    <a th:href="@{/answers/new}" class="btn btn-primary">Add New Answer</a>
-                </div>
             </div>
         </div>
     </div>
@@ -44,7 +41,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <i class="bi bi-question-circle-fill me-2"></i>
-                Showing answers for question: <strong th:text="${#strings.abbreviate(question.questionText, 100)}">Question
+                Showing answers for question: <strong th:text="${question.questionText}">Question
                 Text</strong>
             </div>
             <a th:href="@{/answers}" class="btn btn-sm btn-outline-info">Clear Filter</a>
@@ -59,7 +56,7 @@
                     <div class="d-flex w-100 justify-content-between mb-2">
                         <h5 class="mb-1">
                             <a th:href="@{/answers/{id}(id=${answer.id})}"
-                               th:text="${#strings.abbreviate(answer.questionText, 100)}">Question Text</a>
+                               th:text="${answer.questionText}">Question Text</a>
                         </h5>
                         <small th:text="${#temporals.format(answer.createdAt, 'dd MMM yyyy HH:mm')}">Date</small>
                     </div>
@@ -222,7 +219,6 @@
         </div>
         <h3>No Answers Found</h3>
         <p class="text-muted">There are no answers available yet.</p>
-        <a th:href="@{/answers/new}" class="btn btn-primary">Add Your First Answer</a>
     </div>
 </section>
 </body>

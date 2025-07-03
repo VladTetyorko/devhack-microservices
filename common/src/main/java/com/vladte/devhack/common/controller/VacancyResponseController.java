@@ -170,7 +170,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @param stage            the interview stage to filter by
      * @param page             the page number
      * @param size             the page size
-     * @param showVacancyModal whether to show the vacancy response modal
      * @param editId           the ID of the vacancy response to edit (if any)
      * @param model            the model to add attributes to
      * @return the name of the view to render
@@ -181,10 +180,9 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(required = false) String stage,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Boolean showVacancyModal,
             @RequestParam(required = false) UUID editId,
             Model model) {
-        logger.debug("Searching vacancy responses with access control and pagination, showVacancyModal: {}, editId: {}", showVacancyModal, editId);
+        logger.debug("Searching vacancy responses with access control and pagination, editId: {}", editId);
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -193,10 +191,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseViewService.prepareSearchResultsModel(query, stage, page, size, model);
         vacancyResponseViewService.setSearchResultsPageTitle(model);
 
-        // If showVacancyModal is true, prepare the model for the modal
-        if (Boolean.TRUE.equals(showVacancyModal)) {
-            prepareVacancyResponseModal(model, editId);
-        }
 
         return "vacancies/list";
     }
@@ -205,14 +199,12 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * Display a form for creating a new vacancy response.
      *
      * @param model the model to add attributes to
-     * @param useModal whether to use a modal dialog instead of a separate page
      * @return the name of the view to render
      */
     @GetMapping("/new")
     public String newVacancyResponseForm(
-            Model model,
-            @RequestParam(required = false, defaultValue = "false") boolean useModal) {
-        logger.debug("Displaying new vacancy response form with access control, useModal: {}", useModal);
+            Model model) {
+        logger.debug("Displaying new vacancy response form with access control");
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -220,11 +212,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         // Delegate to the form service for view-specific model preparation
         vacancyResponseFormService.prepareNewVacancyResponseForm(model);
         vacancyResponseFormService.setNewVacancyResponsePageTitle(model);
-
-        if (useModal) {
-            // If using modal, redirect to the list page with a parameter to show the modal
-            return "redirect:/vacancies?showVacancyModal=true";
-        }
 
         return "vacancies/form";
     }
@@ -263,15 +250,13 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      *
      * @param id       the ID of the vacancy response to edit
      * @param model    the model to add attributes to
-     * @param useModal whether to use a modal dialog instead of a separate page
      * @return the name of the view to render
      */
     @GetMapping("/{id}/edit")
     public String editVacancyResponseForm(
             @PathVariable UUID id,
-            Model model,
-            @RequestParam(required = false, defaultValue = "false") boolean useModal) {
-        logger.debug("Editing vacancy response with ID: {} with access control, useModal: {}", id, useModal);
+            Model model) {
+        logger.debug("Editing vacancy response with ID: {} with access control", id);
 
         // Get the vacancy response from the service
         VacancyResponse vacancyResponse = service.findById(id)
@@ -293,11 +278,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         }
 
         vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
-
-        if (useModal) {
-            // If using modal, redirect to the list page with parameters to show the modal and load the correct data
-            return "redirect:/vacancies?showVacancyModal=true&editId=" + id;
-        }
 
         return "vacancies/form";
     }

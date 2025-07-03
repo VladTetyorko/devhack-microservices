@@ -38,4 +38,14 @@ public interface InterviewQuestionRepository extends JpaRepository<InterviewQues
             @Param("difficulty") String difficulty,
             @Param("tagId") UUID tagId,
             Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM interview_questions iq " +
+            "WHERE EXISTS ( " +
+            "    SELECT 1 " +
+            "    FROM answers a " +
+            "    INNER JOIN users u ON a.user_id = u.id " +
+            "    WHERE u.id = :userId AND a.question_id = iq.id " +
+            ")", nativeQuery = true)
+    int countAnsweredQuestionsByUserId(@Param("userId") UUID userId);
 }

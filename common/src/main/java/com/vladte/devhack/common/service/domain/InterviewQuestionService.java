@@ -56,4 +56,6 @@ public interface InterviewQuestionService extends BaseService<InterviewQuestion,
      * @return the total count of questions
      */
     int countAllQuestions();
+
+    int findAnsweredQuestionsByUser(User user);
 }

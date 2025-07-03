@@ -7,6 +7,28 @@
         <div class="card-header">
             <h3 th:text="${answer.id == null ? 'Create New Answer' : 'Edit Answer'}">Answer Form</h3>
         </div>
+
+
+        <!-- Question Preview (if a question is pre-selected) -->
+        <div class="card mt-4" th:if="${question != null}">
+            <div class="card-header">
+                <h3 class="mb-0">Question Preview</h3>
+            </div>
+            <div class="card-body">
+                <h5 th:text="${question.questionText}">Question Text</h5>
+                <div class="mb-2">
+                    <span th:text="${question.difficulty}"
+                          th:class="${question.difficulty == 'Easy' ? 'badge bg-success' :
+                                     (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
+                        Difficulty
+                    </span>
+                    <span th:each="tag : ${question.tags}" class="badge bg-info ms-1">
+                        <span th:text="${tag.name}">Tag Name</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <div class="card-body">
             <form th:action="@{/answers}" th:object="${answer}" method="post">
                 <!-- Hidden ID field for editing -->
@@ -46,26 +68,6 @@
                     <button type="submit" class="btn btn-primary">Save Answer</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Question Preview (if a question is pre-selected) -->
-    <div class="card mt-4" th:if="${question != null}">
-        <div class="card-header">
-            <h3 class="mb-0">Question Preview</h3>
-        </div>
-        <div class="card-body">
-            <h5 th:text="${question.questionText}">Question Text</h5>
-            <div class="mb-2">
-                    <span th:text="${question.difficulty}"
-                          th:class="${question.difficulty == 'Easy' ? 'badge bg-success' :
-                                     (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
-                        Difficulty
-                    </span>
-                <span th:each="tag : ${question.tags}" class="badge bg-info ms-1">
-                        <span th:text="${tag.name}">Tag Name</span>
-                    </span>
-            </div>
         </div>
     </div>
 </section>

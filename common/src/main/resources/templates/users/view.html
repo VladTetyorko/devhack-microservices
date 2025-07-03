@@ -112,16 +112,6 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-6 mb-3">
-                            <a th:href="@{/answers/new}" class="text-decoration-none">
-                                <div class="card h-100 border-success hover-shadow">
-                                    <div class="card-body text-center">
-                                        <i class="fas fa-comment fa-3x text-success mb-3"></i>
-                                        <h5 class="card-title">Add Answer</h5>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-3 col-sm-6 mb-3">
                             <a th:href="@{/notes/new}" class="text-decoration-none">
                                 <div class="card h-100 border-warning hover-shadow">
                                     <div class="card-body text-center">
@@ -159,12 +149,6 @@
 
     <!-- User's Answers -->
     <div class="card mb-4">
-        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h4 class="mb-0"><i class="fas fa-comment text-success me-2"></i>Answers</h4>
-            <a th:href="@{/answers/new}" class="btn btn-sm btn-success">
-                <i class="fas fa-plus me-1"></i>Add Answer
-            </a>
-        </div>
         <div class="card-body">
             <div th:if="${not #lists.isEmpty(user.answers)}" class="list-group list-group-flush">
                 <div th:each="answer : ${user.answers}" class="list-group-item">
@@ -192,9 +176,6 @@
             <div th:if="${#lists.isEmpty(user.answers)}" class="text-center py-5">
                 <i class="fas fa-comment fa-3x text-muted mb-3"></i>
                 <p class="lead text-muted">No answers yet.</p>
-                <a th:href="@{/answers/new}" class="btn btn-success">
-                    <i class="fas fa-plus me-1"></i>Add Answer
-                </a>
             </div>
         </div>
     </div>

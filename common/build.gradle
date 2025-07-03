@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.webjars:bootstrap:5.3.2'
     implementation 'org.webjars:jquery:3.7.1'
     implementation 'org.webjars:popper.js:2.11.7'
+    implementation 'org.webjars:select2:4.0.13'
     implementation 'org.projectlombok:lombok'
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.kafka:spring-kafka'

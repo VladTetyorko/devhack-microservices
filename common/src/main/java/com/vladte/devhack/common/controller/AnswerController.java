@@ -105,7 +105,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
 
     @GetMapping("/new")
-    public String newAnswerForm(@RequestParam(required = false) UUID questionId, Model model) {
+    public String newAnswerForm(@RequestParam UUID questionId, Model model) {
         logger.debug("Displaying new answer form with access control");
 
         // If a question ID is provided, check if the question exists
@@ -372,9 +372,6 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
             logger.warn("Access denied to check answer with AI for answer with ID: {}", id);
             throw new SecurityException("Access denied to check answer with AI for answer with ID: " + id);
         }
-
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
 
         // Get the answer DTO for display
         AnswerDTO answerDTO = answerFormService.prepareEditAnswerForm(id, model);

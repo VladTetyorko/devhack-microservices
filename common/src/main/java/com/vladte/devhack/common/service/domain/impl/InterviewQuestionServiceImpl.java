@@ -58,4 +58,14 @@ public class InterviewQuestionServiceImpl extends BaseServiceImpl<InterviewQuest
     public int countAllQuestions() {
         return findAll().size();
     }
+
+    @Override
+    public int findAnsweredQuestionsByUser(User user) {
+        if (user == null) {
+            return 0;
+        }
+        return repository.countAnsweredQuestionsByUserId(user.getId());
+    }
+
+
 }

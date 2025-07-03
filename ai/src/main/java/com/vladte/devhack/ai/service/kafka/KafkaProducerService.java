@@ -27,7 +27,7 @@ public class KafkaProducerService {
      * @param message The question generation result message to send
      */
     public void sendQuestionGenerateResult(KafkaMessage message) {
-        logger.info("Sending question generation result: {}", message);
+        logger.debug("Sending question generation result: {}", message);
         kafkaTemplate.send(Topics.QUESTION_GENERATE_RESULT, message.getId(), message)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
@@ -44,7 +44,7 @@ public class KafkaProducerService {
      * @param message The answer feedback result message to send
      */
     public void sendAnswerFeedbackResult(KafkaMessage message) {
-        logger.info("Sending answer feedback result: {}", message);
+        logger.debug("Sending answer feedback result: {}", message);
         kafkaTemplate.send(Topics.ANSWER_FEEDBACK_RESULT, message.getId(), message)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
