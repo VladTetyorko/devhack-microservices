@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.qameta.allure' version '2.11.2'
 }
 
 group = 'com.vladte.devhack'
@@ -41,9 +42,30 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'com.h2database:h2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Allure reporting
+    testImplementation 'io.qameta.allure:allure-junit5:2.24.0'
+    testImplementation 'io.qameta.allure:allure-java-commons:2.24.0'
+
+    // AspectJ
+    implementation 'org.aspectj:aspectjweaver:1.9.20'
+    testImplementation 'org.aspectj:aspectjrt:1.9.20'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+
+    // Enable Allure reporting
+    systemProperty 'allure.results.directory', "${buildDir}/allure-results"
+}
+
+allure {
+    version = '2.24.0'
+    autoconfigure = true
+    aspectjweaver = false // Disable AspectJ weaving for now to avoid issues
+    useJUnit5 {
+        version = '2.24.0'
+    }
 }

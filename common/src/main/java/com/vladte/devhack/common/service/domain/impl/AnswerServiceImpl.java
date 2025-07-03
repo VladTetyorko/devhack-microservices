@@ -54,14 +54,6 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
         this.answerKafkaConsumer = answerKafkaConsumer;
     }
 
-    @Override
-    public Answer save(Answer answer) {
-        logger.debug("Saving answer and scheduling AI check");
-        Answer saved = super.save(answer);
-        logger.debug("Answer saved with ID: {}, scheduling async AI check", saved.getId());
-        self.checkAnswerWithAiAsync(saved.getId());
-        return saved;
-    }
 
     @Override
     public List<Answer> findAnswersByUser(User user) {

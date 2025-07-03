@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,9 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
     @Override
     public T save(T entity) {
         logger.debug("Saving entity of type {}", entity.getClass().getSimpleName());
+        if (entity.getId() == null) {
+            entity.setCreatedAt(LocalDateTime.now());
+        }
         T savedEntity = repository.save(entity);
         logger.debug("Entity saved with ID: {}", savedEntity.getId());
         return savedEntity;
