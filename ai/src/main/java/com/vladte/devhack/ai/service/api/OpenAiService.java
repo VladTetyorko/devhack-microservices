@@ -1,5 +1,7 @@
 package com.vladte.devhack.ai.service.api;
 
+import org.springframework.scheduling.annotation.Async;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -43,4 +45,6 @@ public interface OpenAiService {
      * @return a CompletableFuture containing true if the answer contains evidence of cheating, false otherwise
      */
     CompletableFuture<Boolean> checkAnswerForCheatingAsync(String questionText, String answerText);
+
+    CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(String vacancyDescription);
 }

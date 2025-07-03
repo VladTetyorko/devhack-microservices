@@ -1,6 +1,9 @@
 package com.vladte.devhack.ai.service.kafka;
 
 import com.vladte.devhack.ai.service.api.OpenAiService;
+import com.vladte.devhack.infra.message.MessageDestinations;
+import com.vladte.devhack.infra.message.MessageSources;
+import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
@@ -41,7 +44,7 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
     public void consumeQuestionGenerateRequest(KafkaMessage message) {
         logger.info("Received question generation request: {}", message);
         String responsePayload = handleGenerateQuestions(message.getPayload());
-        sendResponse(message.getId(), responsePayload, "question-generate");
+        sendResponse(message.getId(), responsePayload, message.getType());
     }
 
     /**
@@ -58,13 +61,72 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
         logger.info("Received answer feedback request: {}", message);
         String responsePayload;
 
-        if ("check-answer-for-cheating".equals(message.getType())) {
+        if (MessageTypes.CHECK_ANSWER_FOR_CHEATING.getValue().equals(message.getType())) {
             responsePayload = handleCheckAnswerForCheating(message.getPayload());
-        } else {
+        } else if (MessageTypes.CHECK_ANSWER_WITH_FEEDBACK.getValue().equals(message.getType())) {
             responsePayload = handleCheckAnswerWithFeedback(message.getPayload());
+        } else {
+            responsePayload = "Error: Invalid message type: " + message.getType();
         }
 
-        sendResponse(message.getId(), responsePayload, "answer-feedback");
+        sendResponse(message.getId(), responsePayload, message.getType());
+    }
+
+    /**
+     * Consumes question generation request messages.
+     *
+     * @param message The question generation request message
+     */
+    @KafkaListener(
+            topics = Topics.VACANCY_PARSING_REQUEST,
+            groupId = "${spring.kafka.consumer.group-id}",
+            concurrency = "2"
+    )
+    public void consumeVacancyParsingRequest(KafkaMessage message) {
+        logger.info("Received question generation request: {}", message);
+        String responsePayload = handleVacancyParsing(message.getPayload());
+        sendResponse(message.getId(), responsePayload, message.getType());
+    }
+
+
+    // helper methods
+
+
+    /**
+     * Sends a response for a message with a specific type.
+     *
+     * @param messageId       The ID of the original message
+     * @param responsePayload The response payload
+     * @param messageType     The type of the original message
+     */
+    private void sendResponse(String messageId, String responsePayload, String messageType) {
+        logger.debug("Sending response for message ID: {} with type: {}", messageId, messageType);
+        KafkaMessage.KafkaMessageBuilder responseBuilder = KafkaMessage.builder()
+                .source(MessageSources.AI_APP)
+                .destination(MessageDestinations.MAIN_APP)
+                .payload(responsePayload);
+        responseBuilder.id(messageId);
+
+
+        switch (MessageTypes.valueOf(messageType)) {
+            case QUESTION_GENERATE ->
+                    kafkaProducerService.sendQuestionGenerateResult(
+                    responseBuilder
+                            .type(MessageTypes.QUESTION_GENERATE_RESULT.getValue())
+                            .build());
+            case VACANCY_PARSING ->
+                    kafkaProducerService.sendQuestionGenerateResult(responseBuilder
+                    .type(MessageTypes.VACANCY_PARSING_RESULT.getValue())
+                    .build());
+            case CHECK_ANSWER_FOR_CHEATING, CHECK_ANSWER_WITH_FEEDBACK ->
+                    kafkaProducerService.sendAnswerFeedbackResult(responseBuilder
+                            .type(MessageTypes.CHECK_ANSWER_RESULT.getValue())
+                            .build());
+            default -> {
+                logger.warn("Unknown message type: {}", messageType);
+                kafkaProducerService.sendAnswerFeedbackResult(responseBuilder.build());
+            }
+        }
     }
 
     private String handleGenerateQuestions(String payload) {
@@ -117,31 +179,14 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
         }
     }
 
-    /**
-     * Sends a response for a message with a specific type.
-     *
-     * @param messageId       The ID of the original message
-     * @param responsePayload The response payload
-     * @param messageType     The type of the original message
-     */
-    private void sendResponse(String messageId, String responsePayload, String messageType) {
-        logger.debug("Sending response for message ID: {} with type: {}", messageId, messageType);
-        KafkaMessage response = KafkaMessage.create(
-                "ai-app",
-                "main-app",
-                "ai-response",
-                responsePayload
-        );
-        response.setId(messageId);
-
-        // Send to the appropriate topic based on the message type
-        if (messageType != null && messageType.equals("question-generate")) {
-            // Send to question generation result topic
-            kafkaProducerService.sendQuestionGenerateResult(response);
-        } else {
-            // Default to answer feedback result topic
-            kafkaProducerService.sendAnswerFeedbackResult(response);
+    private String handleVacancyParsing(String payload) {
+        logger.debug("Handling vacancy parsing request");
+        try {
+            Map<String, Object> result = openAiService.extractVacancyModelFromDescription(payload).join();
+            return result.toString();
+        } catch (Exception e) {
+            logger.error("Error parsing vacancy description: {}", e.getMessage(), e);
+            throw e;
         }
     }
-
 }

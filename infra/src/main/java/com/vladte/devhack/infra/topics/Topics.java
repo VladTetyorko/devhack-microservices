@@ -15,6 +15,10 @@ public class Topics {
     public static final String ANSWER_FEEDBACK_REQUEST = "answer.feedback.request";
     public static final String ANSWER_FEEDBACK_RESULT = "answer.feedback.result";
 
+
+    public static final String VACANCY_PARSING_REQUEST = "vacancy.parsing.request";
+    public static final String VACANCY_PARSING_RESULT = "vacancy.parsing.result";
+
     private Topics() {
         // Private constructor to prevent instantiation
     }

@@ -27,7 +27,6 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
         logger.debug("Parsing generated text of length: {} characters", generatedText.length());
         List<String> questions = new ArrayList<>();
 
-        // Split the text by lines
         String[] lines = generatedText.split("\n");
         logger.debug("Split text into {} lines", lines.length);
 
@@ -35,38 +34,60 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
         int questionCount = 0;
 
         for (String line : lines) {
-            // If the line starts with "Question: ", it's a new question
-            if (line.trim().startsWith("Question: ")) {
-                // If we have a current question, add it to the list
-                if (currentQuestion.length() > 0) {
-                    questions.add(currentQuestion.toString().trim());
-                    logger.debug("Added question #{}: {}", questionCount++,
-                            currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
-                    currentQuestion = new StringBuilder();
-                }
-                // Add the new question text without the "Question: " prefix
-                String questionText = line.trim().substring("Question: ".length());
-                logger.debug("Found new question starting with: {}",
-                        questionText.length() > 50 ? questionText.substring(0, 47) + "..." : questionText);
-                currentQuestion.append(questionText);
-            } else if (currentQuestion.length() > 0) {
-                // If we have a current question and the line doesn't start with "Question: ",
-                // it's a continuation of the current question
-                logger.trace("Adding continuation line to current question: {}", line.trim());
-                currentQuestion.append(" ").append(line.trim());
-            } else {
-                logger.trace("Skipping line: {}", line.trim());
+            processLine(line, currentQuestion, questions, questionCount);
+            if (isNewQuestionStart(line) && currentQuestion.length() > 0) {
+                questionCount++;
             }
         }
 
-        // Add the last question if there is one
-        if (currentQuestion.length() > 0) {
-            questions.add(currentQuestion.toString().trim());
-            logger.debug("Added final question #{}: {}", questionCount++,
-                    currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
-        }
+        handleFinalQuestion(currentQuestion, questions, questionCount);
 
         logger.info("Parsed {} questions from generated text", questions.size());
         return questions;
+    }
+
+    private void processLine(String line, StringBuilder currentQuestion, List<String> questions, int questionCount) {
+        String trimmedLine = line.trim();
+        if (isNewQuestionStart(trimmedLine)) {
+            handleCurrentQuestion(currentQuestion, questions, questionCount);
+            addNewQuestion(trimmedLine, currentQuestion);
+        } else if (currentQuestion.length() > 0) {
+            appendToCurrentQuestion(trimmedLine, currentQuestion);
+        } else {
+            logger.trace("Skipping line: {}", trimmedLine);
+        }
+    }
+
+    private boolean isNewQuestionStart(String line) {
+        return line.startsWith("Question: ");
+    }
+
+    private void handleCurrentQuestion(StringBuilder currentQuestion, List<String> questions, int questionCount) {
+        if (currentQuestion.length() > 0) {
+            questions.add(currentQuestion.toString().trim());
+            logger.debug("Added question #{}: {}", questionCount,
+                    currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
+            currentQuestion.setLength(0);
+        }
+    }
+
+    private void addNewQuestion(String line, StringBuilder currentQuestion) {
+        String questionText = line.substring("Question: ".length());
+        logger.debug("Found new question starting with: {}",
+                questionText.length() > 50 ? questionText.substring(0, 47) + "..." : questionText);
+        currentQuestion.append(questionText);
+    }
+
+    private void appendToCurrentQuestion(String line, StringBuilder currentQuestion) {
+        logger.trace("Adding continuation line to current question: {}", line);
+        currentQuestion.append(" ").append(line);
+    }
+
+    private void handleFinalQuestion(StringBuilder currentQuestion, List<String> questions, int questionCount) {
+        if (currentQuestion.length() > 0) {
+            questions.add(currentQuestion.toString().trim());
+            logger.debug("Added final question #{}: {}", questionCount,
+                    currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
+        }
     }
 }

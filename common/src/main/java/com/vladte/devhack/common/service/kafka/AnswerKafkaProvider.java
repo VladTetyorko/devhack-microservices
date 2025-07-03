@@ -1,5 +1,8 @@
 package com.vladte.devhack.common.service.kafka;
 
+import com.vladte.devhack.infra.message.MessageDestinations;
+import com.vladte.devhack.infra.message.MessageSources;
+import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +45,9 @@ public class AnswerKafkaProvider {
         // Create the Kafka message with the specified ID
         KafkaMessage message = new KafkaMessage(
                 messageId,
-                "main-app",
-                "ai-app",
-                "check-answer-with-feedback",
+                MessageSources.MAIN_APP,
+                MessageDestinations.AI_APP,
+                MessageTypes.CHECK_ANSWER_WITH_FEEDBACK.getValue(),
                 payload,
                 java.time.LocalDateTime.now()
         );
@@ -71,9 +74,9 @@ public class AnswerKafkaProvider {
         // Create the Kafka message with the specified ID
         KafkaMessage message = new KafkaMessage(
                 messageId,
-                "main-app",
-                "ai-app",
-                "check-answer-for-cheating",
+                MessageSources.MAIN_APP,
+                MessageDestinations.AI_APP,
+                MessageTypes.CHECK_ANSWER_FOR_CHEATING.getValue() ,
                 payload,
                 java.time.LocalDateTime.now()
         );

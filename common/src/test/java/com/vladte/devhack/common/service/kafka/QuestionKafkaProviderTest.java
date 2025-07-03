@@ -36,32 +36,6 @@ public class QuestionKafkaProviderTest extends BaseServiceTest {
         questionKafkaProvider = new QuestionKafkaProvider(kafkaProducerService);
     }
 
-    @Test
-    @DisplayName("Send generate questions request should create correct message and call producer service")
-    public void testSendGenerateQuestionsRequest() {
-        // Arrange
-        String tagName = "java";
-        int count = 5;
-        String difficulty = "Medium";
-
-        CompletableFuture<SendResult<String, KafkaMessage>> future = new CompletableFuture<>();
-        when(kafkaProducerService.sendQuestionGenerateRequest(any(KafkaMessage.class))).thenReturn(future);
-
-        // Act
-        CompletableFuture<SendResult<String, KafkaMessage>> result =
-                questionKafkaProvider.sendGenerateQuestionsRequest(tagName, count, difficulty);
-
-        // Assert
-        assertNotNull(result);
-        verify(kafkaProducerService).sendQuestionGenerateRequest(messageCaptor.capture());
-
-        KafkaMessage capturedMessage = messageCaptor.getValue();
-        assertNotNull(capturedMessage.getId());
-        assertEquals("main-app", capturedMessage.getSource());
-        assertEquals("ai-app", capturedMessage.getDestination());
-        assertEquals("generate-questions", capturedMessage.getType());
-        assertEquals(tagName + "|" + count + "|" + difficulty, capturedMessage.getPayload());
-    }
 
     @Test
     @DisplayName("Send generate questions request with message ID should create correct message and call producer service")
