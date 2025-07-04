@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.service.kafka;
 
 import com.vladte.devhack.common.service.BaseServiceTest;
+import com.vladte.devhack.common.service.kafka.producers.impl.QuestionKafkaProviderImpl;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,11 +30,11 @@ public class QuestionKafkaProviderTest extends BaseServiceTest {
     @Captor
     private ArgumentCaptor<KafkaMessage> messageCaptor;
 
-    private QuestionKafkaProvider questionKafkaProvider;
+    private QuestionKafkaProviderImpl questionKafkaProvider;
 
     @BeforeEach
     public void setup() {
-        questionKafkaProvider = new QuestionKafkaProvider(kafkaProducerService);
+        questionKafkaProvider = new QuestionKafkaProviderImpl(kafkaProducerService);
     }
 
 
@@ -47,7 +48,7 @@ public class QuestionKafkaProviderTest extends BaseServiceTest {
         String difficulty = "Medium";
 
         CompletableFuture<SendResult<String, KafkaMessage>> future = new CompletableFuture<>();
-        when(kafkaProducerService.sendQuestionGenerateRequest(any(KafkaMessage.class))).thenReturn(future);
+        when(kafkaProducerService.sendMessage(any(KafkaMessage.class))).thenReturn(future);
 
         // Act
         CompletableFuture<SendResult<String, KafkaMessage>> result =
@@ -55,7 +56,7 @@ public class QuestionKafkaProviderTest extends BaseServiceTest {
 
         // Assert
         assertNotNull(result);
-        verify(kafkaProducerService).sendQuestionGenerateRequest(messageCaptor.capture());
+        verify(kafkaProducerService).sendMessage(messageCaptor.capture());
 
         KafkaMessage capturedMessage = messageCaptor.getValue();
         assertEquals(messageId, capturedMessage.getId());

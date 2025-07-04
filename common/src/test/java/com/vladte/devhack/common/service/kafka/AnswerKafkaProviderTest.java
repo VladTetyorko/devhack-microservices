@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.service.kafka;
 
 import com.vladte.devhack.common.service.BaseServiceTest;
+import com.vladte.devhack.common.service.kafka.producers.impl.AnswerKafkaProviderImpl;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
@@ -33,11 +34,11 @@ public class AnswerKafkaProviderTest extends BaseServiceTest {
     @Captor
     private ArgumentCaptor<KafkaMessage> messageCaptor;
 
-    private AnswerKafkaProvider answerKafkaProvider;
+    private AnswerKafkaProviderImpl answerKafkaProvider;
 
     @BeforeEach
     public void setup() {
-        answerKafkaProvider = new AnswerKafkaProvider(kafkaProducerService);
+        answerKafkaProvider = new AnswerKafkaProviderImpl(kafkaProducerService);
     }
 
     @Test
@@ -51,7 +52,7 @@ public class AnswerKafkaProviderTest extends BaseServiceTest {
         String answerText = "The capital of France is Paris.";
 
         CompletableFuture<SendResult<String, KafkaMessage>> future = new CompletableFuture<>();
-        when(kafkaProducerService.sendAnswerFeedbackRequest(any(KafkaMessage.class))).thenReturn(future);
+        when(kafkaProducerService.sendMessage(any(KafkaMessage.class))).thenReturn(future);
 
         // Act
         CompletableFuture<SendResult<String, KafkaMessage>> result =
@@ -59,7 +60,7 @@ public class AnswerKafkaProviderTest extends BaseServiceTest {
 
         // Assert
         assertNotNull(result);
-        verify(kafkaProducerService).sendAnswerFeedbackRequest(messageCaptor.capture());
+        verify(kafkaProducerService).sendMessage(messageCaptor.capture());
 
         KafkaMessage capturedMessage = messageCaptor.getValue();
         assertEquals(messageId, capturedMessage.getId());
@@ -80,7 +81,7 @@ public class AnswerKafkaProviderTest extends BaseServiceTest {
         String answerText = "The capital of France is Paris.";
 
         CompletableFuture<SendResult<String, KafkaMessage>> future = new CompletableFuture<>();
-        when(kafkaProducerService.sendAnswerFeedbackRequest(any(KafkaMessage.class))).thenReturn(future);
+        when(kafkaProducerService.sendMessage(any(KafkaMessage.class))).thenReturn(future);
 
         // Act
         CompletableFuture<SendResult<String, KafkaMessage>> result =
@@ -88,7 +89,7 @@ public class AnswerKafkaProviderTest extends BaseServiceTest {
 
         // Assert
         assertNotNull(result);
-        verify(kafkaProducerService).sendAnswerFeedbackRequest(messageCaptor.capture());
+        verify(kafkaProducerService).sendMessage(messageCaptor.capture());
 
         KafkaMessage capturedMessage = messageCaptor.getValue();
         assertEquals(messageId, capturedMessage.getId());

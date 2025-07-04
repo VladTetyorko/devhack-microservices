@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Implementation of the VacancyResponseService interface.
@@ -40,6 +41,13 @@ public class VacancyResponseServiceImpl extends UserOwnedServiceImpl<VacancyResp
                 VacancyResponseSpecification.searchVacancyResponses(query, stage),
                 pageable
         );
+    }
+
+    @Override
+    public CompletableFuture<VacancyResponse> generateVacancyResponseFromTextDescription(String textDescription, User user) {
+
+
+        return null;
     }
 
     @Override

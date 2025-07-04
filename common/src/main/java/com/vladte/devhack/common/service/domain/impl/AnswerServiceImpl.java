@@ -2,8 +2,8 @@ package com.vladte.devhack.common.service.domain.impl;
 
 import com.vladte.devhack.common.repository.AnswerRepository;
 import com.vladte.devhack.common.service.domain.AnswerService;
-import com.vladte.devhack.common.service.kafka.AnswerKafkaConsumer;
-import com.vladte.devhack.common.service.kafka.AnswerKafkaProvider;
+import com.vladte.devhack.common.service.kafka.concumers.AnswerKafkaConsumer;
+import com.vladte.devhack.common.service.kafka.producers.AnswerKafkaProvider;
 import com.vladte.devhack.entities.Answer;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;

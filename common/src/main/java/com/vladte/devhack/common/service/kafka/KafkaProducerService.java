@@ -1,5 +1,6 @@
 package com.vladte.devhack.common.service.kafka;
 
+import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
@@ -17,45 +18,39 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaProducerService {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
-    private final KafkaTemplate<String, com.vladte.devhack.infra.model.KafkaMessage> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaMessage> kafkaTemplate;
 
     public KafkaProducerService(KafkaTemplate<String, KafkaMessage> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-
     /**
-     * Sends a question generation request to the AI module.
+     * Sends a message to a Kafka topic.
      *
-     * @param message The question generation request message to send
+     * @param message The message to send
      * @return A CompletableFuture that will be completed when the send operation completes
      */
-    public CompletableFuture<SendResult<String, KafkaMessage>> sendQuestionGenerateRequest(KafkaMessage message) {
-        logger.info("Sending question generation request: {}", message);
-        return kafkaTemplate.send(Topics.QUESTION_GENERATE_REQUEST, message.getId(), message)
-                .whenComplete((result, ex) -> {
-                    if (ex == null) {
-                        logger.info("Question generation request sent successfully: {}", message);
-                    } else {
-                        logger.error("Failed to send question generation request: {}", ex.getMessage());
-                    }
-                });
-    }
+    public CompletableFuture<SendResult<String, KafkaMessage>> sendMessage(KafkaMessage message) {
+        logger.debug("Sending message: {}", message);
+        String topic;
 
-    /**
-     * Sends an answer feedback request to the AI module.
-     *
-     * @param message The answer feedback request message to send
-     * @return A CompletableFuture that will be completed when the send operation completes
-     */
-    public CompletableFuture<SendResult<String, KafkaMessage>> sendAnswerFeedbackRequest(KafkaMessage message) {
-        logger.info("Sending answer feedback request: {}", message);
-        return kafkaTemplate.send(Topics.ANSWER_FEEDBACK_REQUEST, message.getId(), message)
+        switch (MessageTypes.fromValue(message.getType())) {
+            case MessageTypes.QUESTION_GENERATE -> topic = Topics.QUESTION_GENERATE_REQUEST;
+            case MessageTypes.CHECK_ANSWER_WITH_FEEDBACK,
+                 MessageTypes.CHECK_ANSWER_FOR_CHEATING -> topic = Topics.ANSWER_FEEDBACK_REQUEST;
+            case MessageTypes.VACANCY_PARSING -> topic = Topics.VACANCY_PARSING_REQUEST;
+            default -> {
+                logger.error("Unknown message type: {}", message.getType());
+                throw new IllegalArgumentException("Unknown message type: " + message.getType());
+            }
+        }
+
+        return kafkaTemplate.send(topic, message.getId(), message)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
-                        logger.info("Answer request sent successfully: {}", message);
+                        logger.info("Message sent successfully: {}", message);
                     } else {
-                        logger.error("Failed to send answer request: {}", ex.getMessage());
+                        logger.error("Failed to send message: {}", ex.getMessage());
                     }
                 });
     }

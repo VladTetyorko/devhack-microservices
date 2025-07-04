@@ -1,7 +1,5 @@
 package com.vladte.devhack.ai.service.api;
 
-import org.springframework.scheduling.annotation.Async;
-
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 

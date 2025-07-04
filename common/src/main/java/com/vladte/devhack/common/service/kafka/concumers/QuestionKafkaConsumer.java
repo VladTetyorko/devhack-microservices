@@ -1,4 +1,4 @@
-package com.vladte.devhack.common.service.kafka;
+package com.vladte.devhack.common.service.kafka.concumers;
 
 import com.vladte.devhack.common.model.QuestionGenerationResponse;
 import com.vladte.devhack.common.service.generations.QuestionParsingService;

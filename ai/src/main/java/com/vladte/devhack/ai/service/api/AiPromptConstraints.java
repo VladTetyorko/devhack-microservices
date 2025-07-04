@@ -138,13 +138,13 @@ public class AiPromptConstraints {
                     \s""";
 
     public static String PARSE_VACANCY_DESCRIPTION = """
-            You are a strict JSON parser.
+            You are a strict JSON generator.
             
             Input: A vacancy description.
             
             Your task:
-            - Carefully parse the vacancy description.
-            - Return a plain JSON object with the following fields:
+            - Extract data from the vacancy description.
+            - Return only a plain JSON object with these fields:
               - companyName (String)
               - position (String)
               - technologies (String)
@@ -153,19 +153,19 @@ public class AiPromptConstraints {
               - notes (String)
               - salary (String)
               - location (String)
-              - interviewStage (String, default to "APPLIED" if not specified)
+              - interviewStage (String, default to "APPLIED" if not found)
             
             Rules:
-            - Do not add comments or explanations.
-            - If a field is missing in the description, leave it as an empty string.
-            - The JSON must match the structure of the provided Java class fields exactly.
-            - Do not include the 'user', 'updatedAt', or any extra fields in the JSON.
-            - Output only the JSON object. Nothing else.
+            - Output strictly valid JSON. No comments, explanations, or extra text.
+            - If a field is missing, output an empty string for that field.
+            - Include only the specified fields. Do not add any other fields or metadata.
+            - The output must be valid JSON and start with { and end with }.
+            - DONT ADD ANY EXPLANATIONS, ANY ADDITIONAL INFORMATION
+            - OUTPUT STARTS WITH { AND ENDS WITH }
+            - OUTPUT CONTAIN ONLY JSON OBJECT
             
             Vacancy Description:
-            
             %s
-            
             """;
 
 

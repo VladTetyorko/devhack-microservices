@@ -83,7 +83,7 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
             concurrency = "2"
     )
     public void consumeVacancyParsingRequest(KafkaMessage message) {
-        logger.info("Received question generation request: {}", message);
+        logger.info("Received parse vacancy request: {}", message);
         String responsePayload = handleVacancyParsing(message.getPayload());
         sendResponse(message.getId(), responsePayload, message.getType());
     }
@@ -108,14 +108,13 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
         responseBuilder.id(messageId);
 
 
-        switch (MessageTypes.valueOf(messageType)) {
+        switch (MessageTypes.fromValue(messageType)) {
             case QUESTION_GENERATE ->
                     kafkaProducerService.sendQuestionGenerateResult(
                     responseBuilder
                             .type(MessageTypes.QUESTION_GENERATE_RESULT.getValue())
                             .build());
-            case VACANCY_PARSING ->
-                    kafkaProducerService.sendQuestionGenerateResult(responseBuilder
+            case VACANCY_PARSING -> kafkaProducerService.sendParsedVacancyResult(responseBuilder
                     .type(MessageTypes.VACANCY_PARSING_RESULT.getValue())
                     .build());
             case CHECK_ANSWER_FOR_CHEATING, CHECK_ANSWER_WITH_FEEDBACK ->
@@ -183,7 +182,7 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
         logger.debug("Handling vacancy parsing request");
         try {
             Map<String, Object> result = openAiService.extractVacancyModelFromDescription(payload).join();
-            return result.toString();
+            return result.get("data").toString();
         } catch (Exception e) {
             logger.error("Error parsing vacancy description: {}", e.getMessage(), e);
             throw e;

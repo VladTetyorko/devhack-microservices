@@ -1,9 +1,12 @@
 package com.vladte.devhack.infra.message;
 
+import lombok.Getter;
+
 /**
  * Centralized definition of Kafka message types used for communication between modules.
  * This class contains constants for all message types used in the application.
  */
+@Getter
 public enum MessageTypes {
 
     // Answer feedback message types
@@ -24,7 +27,14 @@ public enum MessageTypes {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
+    public static MessageTypes fromValue(String value) {
+        for (MessageTypes type : values()) {
+            if (type.value.equals(value)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown MessageType value: " + value);
     }
+
+
 }

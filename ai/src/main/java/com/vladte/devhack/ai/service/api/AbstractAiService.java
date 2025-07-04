@@ -1,5 +1,7 @@
 package com.vladte.devhack.ai.service.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.entities.VacancyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +15,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -276,7 +275,7 @@ public abstract class AbstractAiService implements OpenAiService {
         return generateTextAsync(prompt)
                 .thenApply(this::extractScoreAndFeedbackFromResponse);
     }
-    
+
     @Override
     @Async
     public CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(String vacancyDescription) {
@@ -405,15 +404,23 @@ public abstract class AbstractAiService implements OpenAiService {
             result.put("message", "Empty response");
             return result;
         }
+        String cleanJson = "";
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            VacancyResponse vacancyResponse = mapper.readValue(response, VacancyResponse.class);
+            String rawOutput = response.trim();
+            int start = rawOutput.indexOf("{");
+            int end = rawOutput.lastIndexOf("}");
+            if (start >= 0 && end >= 0) {
+                cleanJson = rawOutput.substring(start, end + 1);
+            }
+
+            VacancyResponse vacancyResponse = mapper.readValue(cleanJson, VacancyResponse.class);
             result.put("success", vacancyResponse != null);
             result.put("message", vacancyResponse != null ? "Successfully parsed vacancy model" : "Failed to parse vacancy model");
-            result.put("data", vacancyResponse);
+            result.put("data", cleanJson);
         } catch (JsonProcessingException e) {
-            log.error("Error parsing vacancy response JSON: {}", e.getMessage(), e);
+            log.error("Error parsing vacancy response JSON: {}", cleanJson, e);
             result.put("success", false);
             result.put("message", "Error parsing JSON: " + e.getMessage());
         }

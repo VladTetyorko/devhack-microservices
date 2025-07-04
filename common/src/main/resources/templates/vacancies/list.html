@@ -41,10 +41,14 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-3 d-grid">
-                    <a th:href="@{/vacancies/new}" class="btn btn-success">
+                <div class="col-md-3 d-flex gap-2">
+                    <a th:href="@{/vacancies/new}" class="btn btn-success flex-grow-1">
                         <i class="fas fa-plus me-2"></i>Add New Response
                     </a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#vacancyTextModal">
+                        <i class="fas fa-file-alt me-2"></i>Parse Text
+                    </button>
                 </div>
             </form>
         </div>
@@ -236,6 +240,53 @@
 
     <!-- Include the modal script -->
     <script th:replace="~{fragments/vacancy-response-modal :: vacancyResponseModalScript}"></script>
+
+    <!-- Vacancy Text Modal -->
+    <div class="modal fade" id="vacancyTextModal" tabindex="-1" aria-labelledby="vacancyTextModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="vacancyTextModalLabel">Parse Vacancy Text</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="vacancyTextForm" th:action="@{/vacancies/process-text}" method="post">
+                        <div class="mb-3">
+                            <label for="vacancyText" class="form-label">Paste Vacancy Text</label>
+                            <textarea class="form-control" id="vacancyText" name="vacancyText" rows="10"
+                                      required></textarea>
+                            <div class="form-text">Paste the full text of the vacancy here. The system will
+                                automatically extract relevant information.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="submitVacancyTextForm">Process</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for the Vacancy Text Modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Submit form when the Process button is clicked
+            document.getElementById('submitVacancyTextForm').addEventListener('click', function () {
+                const form = document.getElementById('vacancyTextForm');
+                const vacancyText = document.getElementById('vacancyText').value;
+
+                if (!vacancyText.trim()) {
+                    alert('Please paste the vacancy text');
+                    return;
+                }
+
+                form.submit();
+            });
+        });
+    </script>
 </section>
 </body>
 </html>

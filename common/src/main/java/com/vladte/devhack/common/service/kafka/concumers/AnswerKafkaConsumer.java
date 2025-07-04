@@ -1,4 +1,4 @@
-package com.vladte.devhack.common.service.kafka;
+package com.vladte.devhack.common.service.kafka.concumers;
 
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
