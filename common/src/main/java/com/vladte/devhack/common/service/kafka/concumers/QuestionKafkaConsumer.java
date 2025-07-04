@@ -1,7 +1,8 @@
-package com.vladte.devhack.common.service.kafka;
+package com.vladte.devhack.common.service.kafka.concumers;
 
 import com.vladte.devhack.common.model.QuestionGenerationResponse;
 import com.vladte.devhack.common.service.generations.QuestionParsingService;
+import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class QuestionKafkaConsumer {
         logger.info("Received message from AI: {}", message);
 
         // Check if this is a response to a question generation request
-        if ("ai-response".equals(message.getType())) {
+        if (MessageTypes.QUESTION_GENERATE_RESULT.getValue().equals(message.getType())) {
             CompletableFuture<QuestionGenerationResponse> future = pendingRequests.remove(message.getId());
 
             if (future != null) {

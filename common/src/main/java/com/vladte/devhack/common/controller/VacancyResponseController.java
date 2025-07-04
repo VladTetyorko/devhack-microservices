@@ -3,6 +3,7 @@ package com.vladte.devhack.common.controller;
 import com.vladte.devhack.common.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
+import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;
 import com.vladte.devhack.common.service.view.VacancyResponseViewService;
@@ -32,6 +33,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     private final VacancyResponseViewService vacancyResponseViewService;
     private final VacancyResponseFormService vacancyResponseFormService;
     private final VacancyResponseDashboardService vacancyResponseDashboardService;
+    private final VacancyResponseKafkaProvider vacancyResponseProvider;
 
     @Autowired
     public VacancyResponseController(
@@ -39,12 +41,14 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             UserService userService,
             VacancyResponseViewService vacancyResponseViewService,
             VacancyResponseFormService vacancyResponseFormService,
-            VacancyResponseDashboardService vacancyResponseDashboardService) {
+            VacancyResponseDashboardService vacancyResponseDashboardService,
+            VacancyResponseKafkaProvider vacancyResponseProvider) {
         super(vacancyResponseService, userService);
         this.userService = userService;
         this.vacancyResponseViewService = vacancyResponseViewService;
         this.vacancyResponseFormService = vacancyResponseFormService;
         this.vacancyResponseDashboardService = vacancyResponseDashboardService;
+        this.vacancyResponseProvider = vacancyResponseProvider;
     }
 
     @Override
@@ -336,6 +340,31 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseFormService.deleteVacancyResponse(id);
 
         logger.info("Vacancy response with ID: {} deleted successfully", id);
+        return "redirect:/vacancies";
+    }
+
+    /**
+     * Process plain text vacancy and generate a vacancy response asynchronously.
+     * This method accepts plain text of a vacancy, sends it to the Kafka service for processing,
+     * and returns to the vacancy list view.
+     *
+     * @param vacancyText the plain text of the vacancy
+     * @return a redirect to the vacancy response list
+     */
+    @PostMapping("/process-text")
+    public String processVacancyText(@RequestParam String vacancyText) {
+        logger.debug("Processing vacancy text with access control");
+
+        // Get the current authenticated user
+        User currentUser = getCurrentUser();
+
+        // Generate a unique message ID
+        String messageId = UUID.randomUUID().toString();
+
+        // Send the vacancy text to Kafka for processing, including the current user
+        vacancyResponseProvider.parseVacancyResponse(messageId, vacancyText, currentUser);
+
+        logger.info("Vacancy text sent for processing with message ID: {} for user: {}", messageId, currentUser.getName());
         return "redirect:/vacancies";
     }
 

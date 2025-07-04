@@ -3,6 +3,10 @@ package com.vladte.devhack.common.service.kafka;
 import com.vladte.devhack.common.config.KafkaTestConfig;
 import com.vladte.devhack.common.model.QuestionGenerationResponse;
 import com.vladte.devhack.common.service.generations.QuestionParsingService;
+import com.vladte.devhack.common.service.kafka.concumers.AnswerKafkaConsumer;
+import com.vladte.devhack.common.service.kafka.concumers.QuestionKafkaConsumer;
+import com.vladte.devhack.common.service.kafka.producers.impl.AnswerKafkaProviderImpl;
+import com.vladte.devhack.common.service.kafka.producers.impl.QuestionKafkaProviderImpl;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import io.qameta.allure.Description;
@@ -58,16 +62,16 @@ public class KafkaIntegrationTest {
     private AnswerKafkaConsumer answerKafkaConsumer;
     private QuestionKafkaConsumer questionKafkaConsumer;
     private KafkaProducerService kafkaProducerService;
-    private AnswerKafkaProvider answerKafkaProvider;
-    private QuestionKafkaProvider questionKafkaProvider;
+    private AnswerKafkaProviderImpl answerKafkaProvider;
+    private QuestionKafkaProviderImpl questionKafkaProvider;
 
     @BeforeEach
     public void setup() {
         answerKafkaConsumer = new AnswerKafkaConsumer();
         questionKafkaConsumer = new QuestionKafkaConsumer(questionParsingService);
         kafkaProducerService = new KafkaProducerService(kafkaTemplate);
-        answerKafkaProvider = new AnswerKafkaProvider(kafkaProducerService);
-        questionKafkaProvider = new QuestionKafkaProvider(kafkaProducerService);
+        answerKafkaProvider = new AnswerKafkaProviderImpl(kafkaProducerService);
+        questionKafkaProvider = new QuestionKafkaProviderImpl(kafkaProducerService);
     }
 
     @Test

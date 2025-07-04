@@ -51,7 +51,7 @@ public class KafkaProducerServiceTest extends BaseServiceTest {
                 .thenReturn(future);
 
         // Act
-        CompletableFuture<SendResult<String, KafkaMessage>> result = kafkaProducerService.sendQuestionGenerateRequest(message);
+        CompletableFuture<SendResult<String, KafkaMessage>> result = kafkaProducerService.sendMessage(message);
 
         // Assert
         assertNotNull(result);
@@ -71,7 +71,7 @@ public class KafkaProducerServiceTest extends BaseServiceTest {
                 .thenReturn(future);
 
         // Act
-        CompletableFuture<SendResult<String, KafkaMessage>> result = kafkaProducerService.sendAnswerFeedbackRequest(message);
+        CompletableFuture<SendResult<String, KafkaMessage>> result = kafkaProducerService.sendMessage(message);
 
         // Assert
         assertNotNull(result);

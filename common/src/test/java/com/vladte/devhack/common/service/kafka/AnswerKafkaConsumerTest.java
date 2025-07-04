@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.service.kafka;
 
 import com.vladte.devhack.common.service.BaseServiceTest;
+import com.vladte.devhack.common.service.kafka.concumers.AnswerKafkaConsumer;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;

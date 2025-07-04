@@ -43,4 +43,6 @@ public interface OpenAiService {
      * @return a CompletableFuture containing true if the answer contains evidence of cheating, false otherwise
      */
     CompletableFuture<Boolean> checkAnswerForCheatingAsync(String questionText, String answerText);
+
+    CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(String vacancyDescription);
 }
