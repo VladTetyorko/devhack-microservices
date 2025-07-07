@@ -10,6 +10,7 @@ import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,9 @@ import java.util.concurrent.CompletableFuture;
  */
 @Service
 public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, AnswerRepository> implements AnswerService {
+
+    @Value("${devhack.cheating-check.enabled}")
+    private boolean shouldBeCheckedOnCheating;
 
     private static final Logger logger = LoggerFactory.getLogger(AnswerServiceImpl.class);
 
@@ -106,11 +110,7 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
         Answer answer = findAndValidateAnswer(answerId);
 
         try {
-            Map<String, Object> cheatingResult = performCheatingCheck(answer);
-            Boolean isCheating = (Boolean) cheatingResult.get("isCheating");
-            updateAnswerWithCheatingResult(answer, isCheating);
-
-            if (Boolean.TRUE.equals(isCheating)) {
+            if (shouldBeCheckedOnCheating && checkOnCheating(answer)) {
                 return handleCheatingDetected(answer);
             }
 
@@ -119,6 +119,17 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
             logger.error("Error while checking answer with AI: {}", e.getMessage(), e);
             throw e;
         }
+    }
+
+    private boolean checkOnCheating(Answer answer) {
+        Map<String, Object> cheatingResult = performCheatingCheck(answer);
+        Boolean isCheating = (Boolean) cheatingResult.get("isCheating");
+        updateAnswerWithCheatingResult(answer, isCheating);
+
+        if (Boolean.TRUE.equals(isCheating)) {
+            return true;
+        }
+        return false;
     }
 
     private Answer findAndValidateAnswer(UUID answerId) {

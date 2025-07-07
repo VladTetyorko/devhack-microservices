@@ -191,7 +191,15 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      */
     protected String getModelAttributeName(boolean plural) {
         String name = getEntityName().toLowerCase();
-        return plural ? name + "s" : name;
+        return plural ? getPluralName(name) : name;
+    }
+
+    private String getPluralName(String name) {
+        if (name.endsWith("y")) {
+            return name.substring(0, name.length() - 1) + "ies";
+        } else {
+            return name + "s";
+        }
     }
 
     /**

@@ -11,3 +11,7 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/05-add-columns-to-answers.sql
   - include:
       file: classpath:db/changelog/changes/06-add-is-cheating-to-answers.sql
+  - include:
+      file: classpath:db/changelog/changes/07-update-vacancy-responses-table.sql
+  - include:
+      file: classpath:db/changelog/changes/08-migrate-vacancy-data.sql

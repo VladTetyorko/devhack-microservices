@@ -21,6 +21,7 @@ public class VacancyResponseDTO implements BaseDTO {
     private UUID id;
     private UUID userId;
     private String userName;
+    private UUID vacancyId;
     private String companyName;
     private String position;
     private String technologies;

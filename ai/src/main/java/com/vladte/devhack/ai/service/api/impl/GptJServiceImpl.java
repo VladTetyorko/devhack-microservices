@@ -1,8 +1,10 @@
 package com.vladte.devhack.ai.service.api.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.ai.service.api.AbstractAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
@@ -22,6 +24,11 @@ import java.util.Map;
 public class GptJServiceImpl extends AbstractAiService {
     private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
 
+    @Autowired
+    public GptJServiceImpl(ObjectMapper objectMapper) {
+        super(objectMapper);
+    }
+
     @Value("${gptj.api.key}")
     private String apiKey;
 
@@ -34,12 +41,6 @@ public class GptJServiceImpl extends AbstractAiService {
     @Value("${gptj.api.url}")
     private String apiUrl;
 
-    /**
-     * Default constructor.
-     */
-    public GptJServiceImpl() {
-        super();
-    }
 
     @Override
     protected String getApiKey() {

@@ -145,15 +145,7 @@ public class AiPromptConstraints {
             Your task:
             - Extract data from the vacancy description.
             - Return only a plain JSON object with these fields:
-              - companyName (String)
-              - position (String)
-              - technologies (String)
-              - pros (String)
-              - cons (String)
-              - notes (String)
-              - salary (String)
-              - location (String)
-              - interviewStage (String, default to "APPLIED" if not found)
+            %s
             
             Rules:
             - Output strictly valid JSON. No comments, explanations, or extra text.
@@ -163,6 +155,7 @@ public class AiPromptConstraints {
             - DONT ADD ANY EXPLANATIONS, ANY ADDITIONAL INFORMATION
             - OUTPUT STARTS WITH { AND ENDS WITH }
             - OUTPUT CONTAIN ONLY JSON OBJECT
+            - status should be APPLIED if not added another information
             
             Vacancy Description:
             %s

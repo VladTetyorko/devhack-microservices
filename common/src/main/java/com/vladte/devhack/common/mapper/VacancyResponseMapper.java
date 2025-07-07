@@ -21,9 +21,15 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
 
         VacancyResponseDTO dto = new VacancyResponseDTO();
         dto.setId(entity.getId());
-        dto.setCompanyName(entity.getCompanyName());
-        dto.setPosition(entity.getPosition());
-        dto.setTechnologies(entity.getTechnologies());
+
+        // Get company-related properties from the Vacancy entity
+        if (entity.getVacancy() != null) {
+            dto.setCompanyName(entity.getVacancy().getCompanyName());
+            dto.setPosition(entity.getVacancy().getPosition());
+            dto.setTechnologies(entity.getVacancy().getTechnologies());
+            dto.setVacancyId(entity.getVacancy().getId());
+        }
+
         dto.setPros(entity.getPros());
         dto.setCons(entity.getCons());
         dto.setNotes(entity.getNotes());
@@ -58,9 +64,7 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
 
         VacancyResponse entity = new VacancyResponse();
         entity.setId(dto.getId());
-        entity.setCompanyName(dto.getCompanyName());
-        entity.setPosition(dto.getPosition());
-        entity.setTechnologies(dto.getTechnologies());
+        // Vacancy will be set by the service layer
         entity.setPros(dto.getPros());
         entity.setCons(dto.getCons());
         entity.setNotes(dto.getNotes());
@@ -70,7 +74,7 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
         entity.setCreatedAt(dto.getCreatedAt());
         entity.setUpdatedAt(dto.getUpdatedAt());
 
-        // Note: User and tags need to be set by the service layer
+        // Note: User, vacancy, and tags need to be set by the service layer
         // as they require fetching the related entities from the database
 
         return entity;
@@ -82,9 +86,7 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
             return entity;
         }
 
-        entity.setCompanyName(dto.getCompanyName());
-        entity.setPosition(dto.getPosition());
-        entity.setTechnologies(dto.getTechnologies());
+        // Vacancy will be updated by the service layer
         entity.setPros(dto.getPros());
         entity.setCons(dto.getCons());
         entity.setNotes(dto.getNotes());
@@ -93,7 +95,7 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
         entity.setInterviewStage(dto.getInterviewStage());
         entity.setCreatedAt(dto.getCreatedAt());
 
-        // Note: User and tags need to be updated by the service layer
+        // Note: User, vacancy, and tags need to be updated by the service layer
         // as they require fetching the related entities from the database
 
         return entity;

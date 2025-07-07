@@ -24,7 +24,7 @@ import java.util.UUID;
  * It delegates view preparation to specialized service classes to ensure proper synchronization.
  */
 @Controller
-@RequestMapping("/vacancies")
+@RequestMapping("/vacancies/my-responses")
 public class VacancyResponseController extends UserEntityController<VacancyResponse, UUID, VacancyResponseService> {
 
     private static final Logger logger = LoggerFactory.getLogger(VacancyResponseController.class);
@@ -58,12 +58,12 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
     @Override
     protected String getListViewName() {
-        return "vacancies/list";
+        return "vacancy-responses/list";
     }
 
     @Override
     protected String getDetailViewName() {
-        return "vacancies/view";
+        return "vacancy-responses/view";
     }
 
     @Override
@@ -164,7 +164,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseDashboardService.prepareDashboardModel(page, size, model);
         vacancyResponseDashboardService.setDashboardPageTitle(model);
 
-        return "vacancies/main";
+        return "vacancy-responses/main";
     }
 
     /**
@@ -196,7 +196,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseViewService.setSearchResultsPageTitle(model);
 
 
-        return "vacancies/list";
+        return "vacancy-responses/list";
     }
 
     /**
@@ -217,11 +217,10 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseFormService.prepareNewVacancyResponseForm(model);
         vacancyResponseFormService.setNewVacancyResponsePageTitle(model);
 
-        return "vacancies/form";
+        return "vacancy-responses/form";
     }
 
     @Override
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String view(@PathVariable UUID id, Model model) {
         logger.debug("Viewing vacancy response with ID: {} with access control", id);
 
@@ -246,7 +245,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
 
-        return "vacancies/view";
+        return "vacancy-responses/view";
     }
 
     /**
@@ -283,7 +282,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
 
-        return "vacancies/form";
+        return "vacancy-responses/form";
     }
 
     /**
@@ -313,7 +312,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         }
 
         logger.info("Vacancy response saved successfully");
-        return "redirect:/vacancies";
+        return "redirect:/vacancies/my-responses";
     }
 
     /**
@@ -340,7 +339,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseFormService.deleteVacancyResponse(id);
 
         logger.info("Vacancy response with ID: {} deleted successfully", id);
-        return "redirect:/vacancies";
+        return "redirect:/vacancies/my-responses";
     }
 
     /**
@@ -365,7 +364,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         vacancyResponseProvider.parseVacancyResponse(messageId, vacancyText, currentUser);
 
         logger.info("Vacancy text sent for processing with message ID: {} for user: {}", messageId, currentUser.getName());
-        return "redirect:/vacancies";
+        return "redirect:/vacancies/my-responses";
     }
 
     /**
@@ -418,6 +417,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             prepareVacancyResponseModal(model, editId);
         }
 
-        return "vacancies/list";
+        return "vacancy-responses/list";
     }
 }
