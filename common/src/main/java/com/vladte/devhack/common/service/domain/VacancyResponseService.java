@@ -2,6 +2,7 @@ package com.vladte.devhack.common.service.domain;
 
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.Vacancy;
 import com.vladte.devhack.entities.VacancyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,4 +36,6 @@ public interface VacancyResponseService extends BaseService<VacancyResponse, UUI
 
 
     CompletableFuture<VacancyResponse> generateVacancyResponseFromTextDescription(String textDescription, User user);
+
+    VacancyResponse saveNewResponseForUserAndVacancy(User user, Vacancy vacancy);
 }

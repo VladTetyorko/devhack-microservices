@@ -21,6 +21,7 @@ DevHack
 ├── ai           - AI service integration module
 ├── common       - Main application module with controllers, services, and views
 ├── entities     - Domain entities and data models
+├── parser       - Parser for job sites (🔧 in progress)
 └── infra        - Infrastructure components (Kafka, etc.)
 ```
 
@@ -38,6 +39,13 @@ DevHack
                     │     AI      │────▶│  External   │
                     │   Module    │◀────│  AI APIs    │
                     └─────────────┘     └─────────────┘
+                          │
+                          |
+                          ▼
+                    ┌─────────────┐
+                    │   Parser    │
+                    │  (in prog)  │
+                    └─────────────┘
 ```
 
 ### Data Flow

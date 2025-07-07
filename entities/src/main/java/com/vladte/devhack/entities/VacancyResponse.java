@@ -24,14 +24,9 @@ public class VacancyResponse extends BasicEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "company_name", nullable = false)
-    private String companyName;
-
-    @Column(name = "position", nullable = false)
-    private String position;
-
-    @Column(name = "technologies", nullable = false)
-    private String technologies;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vacancy_id", nullable = false)
+    private Vacancy vacancy;
 
     @Column(name = "pros")
     private String pros;

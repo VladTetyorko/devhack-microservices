@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -88,4 +90,12 @@ public class AuditServiceImpl extends BaseServiceImpl<Audit, UUID, AuditReposito
 
         return savedAudit;
     }
+
+    public static void main(String[] args) {
+        UUID currentId = UUID.randomUUID();
+        Map<UUID, Integer> countMap = new HashMap<>();
+        countMap.compute(currentId, (k, v) -> v == null ? 1 : v + 1);
+
+    }
+
 }

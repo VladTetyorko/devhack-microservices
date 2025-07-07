@@ -2,7 +2,8 @@ package com.vladte.devhack.ai.service.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.ai.util.JsonFieldExtractor;
+import com.vladte.devhack.entities.Vacancy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -36,6 +37,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     protected final RestTemplate restTemplate;
     protected final WebClient webClient;
+    protected final ObjectMapper objectMapper;
 
     // Abstract methods for configuration
     protected abstract String getApiKey();
@@ -46,7 +48,8 @@ public abstract class AbstractAiService implements OpenAiService {
 
     protected abstract String getApiUrl();
 
-    protected AbstractAiService() {
+    protected AbstractAiService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();
         this.webClient = WebClient.builder().build();
         log.debug("Initialized AbstractAiService with default RestTemplate and WebClient");
@@ -307,7 +310,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     protected String createVacancyDescriptionPrompt(String vacancyDescription) {
         return String.format(
-                AiPromptConstraints.PARSE_VACANCY_DESCRIPTION,
+                AiPromptConstraints.PARSE_VACANCY_DESCRIPTION, JsonFieldExtractor.parse(Vacancy.class),
                 vacancyDescription);
     }
 
@@ -406,7 +409,6 @@ public abstract class AbstractAiService implements OpenAiService {
         }
         String cleanJson = "";
 
-        ObjectMapper mapper = new ObjectMapper();
         try {
             String rawOutput = response.trim();
             int start = rawOutput.indexOf("{");
@@ -415,9 +417,9 @@ public abstract class AbstractAiService implements OpenAiService {
                 cleanJson = rawOutput.substring(start, end + 1);
             }
 
-            VacancyResponse vacancyResponse = mapper.readValue(cleanJson, VacancyResponse.class);
-            result.put("success", vacancyResponse != null);
-            result.put("message", vacancyResponse != null ? "Successfully parsed vacancy model" : "Failed to parse vacancy model");
+            Vacancy vacancy = objectMapper.readValue(cleanJson, Vacancy.class);
+            result.put("success", vacancy != null);
+            result.put("message", vacancy != null ? "Successfully parsed vacancy model" : "Failed to parse vacancy model");
             result.put("data", cleanJson);
         } catch (JsonProcessingException e) {
             log.error("Error parsing vacancy response JSON: {}", cleanJson, e);

@@ -5,6 +5,7 @@ import com.vladte.devhack.common.repository.specification.VacancyResponseSpecifi
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.Vacancy;
 import com.vladte.devhack.entities.VacancyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +49,15 @@ public class VacancyResponseServiceImpl extends UserOwnedServiceImpl<VacancyResp
 
 
         return null;
+    }
+
+    @Override
+    public VacancyResponse saveNewResponseForUserAndVacancy(User user, Vacancy vacancy) {
+        VacancyResponse vacancyResponse = new VacancyResponse();
+        vacancyResponse.setUser(user);
+        vacancyResponse.setVacancy(vacancy);
+        vacancyResponse.setInterviewStage(InterviewStage.APPLIED);
+        return save(vacancyResponse);
     }
 
     @Override

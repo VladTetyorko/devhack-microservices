@@ -47,7 +47,7 @@ public class SecurityConfig {
                         // Manager-only pages
                         .requestMatchers("/admin/**").hasRole("MANAGER")
                         // User-specific resources
-                        .requestMatchers("/answers/**", "/notes/**", "/vacancy-responses/**").hasAnyRole("USER", "MANAGER")
+                        .requestMatchers("/answers/**", "/notes/**", "/vacancies/my-responses/**").hasAnyRole("USER", "MANAGER")
                         // Secured pages
                         .anyRequest().authenticated()
                 )
