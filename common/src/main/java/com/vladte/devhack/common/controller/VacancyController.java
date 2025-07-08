@@ -140,7 +140,7 @@ public class VacancyController extends BaseCrudController<Vacancy, VacancyDTO, U
             mapper.updateEntityFromDTO(vacancy, vacancyDTO);
         }
         service.save(vacancy);
-        return "redirect:/vacancy";
+        return "redirect:/vacancies";
     }
 
     /**
@@ -153,7 +153,7 @@ public class VacancyController extends BaseCrudController<Vacancy, VacancyDTO, U
     public String delete(@PathVariable UUID id) {
         log.debug("Deleting vacancy with ID: {}", id);
         service.deleteById(id);
-        return "redirect:/vacancy";
+        return "redirect:/vacancies";
     }
 
     /**
