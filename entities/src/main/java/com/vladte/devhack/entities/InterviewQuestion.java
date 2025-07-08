@@ -40,9 +40,9 @@ public class InterviewQuestion extends BasicEntity {
     )
     private Set<Tag> tags = new HashSet<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Note> notes = new ArrayList<>();
 }

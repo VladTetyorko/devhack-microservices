@@ -47,5 +47,7 @@ public interface InterviewQuestionRepository extends JpaRepository<InterviewQues
             "    INNER JOIN users u ON a.user_id = u.id " +
             "    WHERE u.id = :userId AND a.question_id = iq.id " +
             ")", nativeQuery = true)
-    int countAnsweredQuestionsByUserId(@Param("userId") UUID userId);
+    int countQuestionsWithAnswerByUserId(@Param("userId") UUID userId);
+
+    int countInterviewQuestionsByUserId(UUID userId);
 }

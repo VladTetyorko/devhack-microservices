@@ -1,10 +1,7 @@
 package com.vladte.devhack.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "name", callSuper = false)
+@ToString(exclude = {"questions"})
 public class Tag extends BasicEntity {
 
     @Column(unique = true, nullable = false)

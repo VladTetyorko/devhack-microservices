@@ -34,11 +34,12 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
                                     <h5>Questions</h5>
-                                    <h2 class="display-6" th:text="${questionCount} + '/100'">0/100</h2>
+                                    <h2 class="display-6" th:text="${userQuestionCount} + '/' + ${questionCount}">
+                                        0/100</h2>
                                     <div class="progress mt-2">
                                         <div class="progress-bar" role="progressbar"
-                                             th:style="'width: ' + ${questionProgress} + '%'"
-                                             th:aria-valuenow="${questionProgress}" aria-valuemin="0"
+                                             th:style="'width: ' + ${userQuestionProgress} + '%'"
+                                             th:aria-valuenow="${userQuestionProgress}" aria-valuemin="0"
                                              aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -49,11 +50,11 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-comment fa-3x text-success mb-3"></i>
                                     <h5>Answers</h5>
-                                    <h2 class="display-6" th:text="${answerCount} + '/100'">0/100</h2>
+                                    <h2 class="display-6" th:text="${userAnswerCount} + '/' + ${answerCount}">0/Max</h2>
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-success" role="progressbar"
-                                             th:style="'width: ' + ${answerProgress} + '%'"
-                                             th:aria-valuenow="${answerProgress}" aria-valuemin="0"
+                                             th:style="'width: ' + ${userAnswerProgress} + '%'"
+                                             th:aria-valuenow="${userAnswerProgress}" aria-valuemin="0"
                                              aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -64,11 +65,11 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-sticky-note fa-3x text-warning mb-3"></i>
                                     <h5>Notes</h5>
-                                    <h2 class="display-6" th:text="${noteCount} + '/100'">0/100</h2>
+                                    <h2 class="display-6" th:text="${userNoteCount} + '/' + ${noteCount}">0/100</h2>
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-warning" role="progressbar"
-                                             th:style="'width: ' + ${noteProgress} + '%'"
-                                             th:aria-valuenow="${noteProgress}" aria-valuemin="0"
+                                             th:style="'width: ' + ${userNoteProgress} + '%'"
+                                             th:aria-valuenow="${userNoteProgress}" aria-valuemin="0"
                                              aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -79,11 +80,11 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-tags fa-3x text-info mb-3"></i>
                                     <h5>Topics Covered</h5>
-                                    <h2 class="display-6" th:text="${tagCount} + '/20'">0/20</h2>
+                                    <h2 class="display-6" th:text="${userTagCount} + '/' + ${tagCount}">0/20</h2>
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-info" role="progressbar"
-                                             th:style="'width: ' + ${tagProgress} + '%'"
-                                             th:aria-valuenow="${tagProgress}" aria-valuemin="0"
+                                             th:style="'width: ' + ${userTagProgress} + '%'"
+                                             th:aria-valuenow="${userTagProgress}" aria-valuemin="0"
                                              aria-valuemax="100"></div>
                                     </div>
                                 </div>
@@ -112,16 +113,17 @@
                             </div>
                             <div>
                                 <span class="badge bg-success"
-                                      th:text="${easyAnswerCount} + '/' + ${easyQuestionCount}">0/0</span>
+                                      th:text="${userEasyAnswerCount} + '/' + ${userEasyQuestionCount}">0/0</span>
                             </div>
                         </div>
                         <div class="progress" style="height: 10px;">
                             <div class="progress-bar bg-success" role="progressbar"
-                                 th:style="'width: ' + ${easyAnswerPercentage} + '%'"
-                                 th:aria-valuenow="${easyAnswerPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                                 th:style="'width: ' + ${userEasyAnswerPercentage} + '%'"
+                                 th:aria-valuenow="${userEasyAnswerPercentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
                         </div>
                         <div class="text-end mt-1">
-                            <small class="text-muted" th:text="${easyAnswerPercentage} + '% completed'">0%
+                            <small class="text-muted" th:text="${userEasyAnswerPercentage} + '% completed'">0%
                                 completed</small>
                         </div>
                     </div>
@@ -135,17 +137,17 @@
                             </div>
                             <div>
                                 <span class="badge bg-warning"
-                                      th:text="${mediumAnswerCount} + '/' + ${mediumQuestionCount}">0/0</span>
+                                      th:text="${userMediumAnswerCount} + '/' + ${userMediumQuestionCount}">0/0</span>
                             </div>
                         </div>
                         <div class="progress" style="height: 10px;">
                             <div class="progress-bar bg-warning" role="progressbar"
-                                 th:style="'width: ' + ${mediumAnswerPercentage} + '%'"
-                                 th:aria-valuenow="${mediumAnswerPercentage}" aria-valuemin="0"
+                                 th:style="'width: ' + ${userMediumAnswerPercentage} + '%'"
+                                 th:aria-valuenow="${userMediumAnswerPercentage}" aria-valuemin="0"
                                  aria-valuemax="100"></div>
                         </div>
                         <div class="text-end mt-1">
-                            <small class="text-muted" th:text="${mediumAnswerPercentage} + '% completed'">0%
+                            <small class="text-muted" th:text="${userMediumAnswerPercentage} + '% completed'">0%
                                 completed</small>
                         </div>
                     </div>
@@ -158,16 +160,18 @@
                                 <span>Hard Questions</span>
                             </div>
                             <div>
-                                <span class="badge bg-danger" th:text="${hardAnswerCount} + '/' + ${hardQuestionCount}">0/0</span>
+                                <span class="badge bg-danger"
+                                      th:text="${userHardAnswerCount} + '/' + ${userHardQuestionCount}">0/0</span>
                             </div>
                         </div>
                         <div class="progress" style="height: 10px;">
                             <div class="progress-bar bg-danger" role="progressbar"
-                                 th:style="'width: ' + ${hardAnswerPercentage} + '%'"
-                                 th:aria-valuenow="${hardAnswerPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                                 th:style="'width: ' + ${userHardAnswerPercentage} + '%'"
+                                 th:aria-valuenow="${userHardAnswerPercentage}" aria-valuemin="0"
+                                 aria-valuemax="100"></div>
                         </div>
                         <div class="text-end mt-1">
-                            <small class="text-muted" th:text="${hardAnswerPercentage} + '% completed'">0%
+                            <small class="text-muted" th:text="${userHardAnswerPercentage} + '% completed'">0%
                                 completed</small>
                         </div>
                     </div>
@@ -187,7 +191,7 @@
                     <h4 class="mb-0"><i class="fas fa-tags me-2"></i>Progress by Topic</h4>
                 </div>
                 <div class="card-body">
-                    <div th:if="${not #lists.isEmpty(allTags)}" class="tag-progress">
+                    <div th:if="${allTags != null and not #lists.isEmpty(allTags)}" class="tag-progress">
                         <div th:each="tag : ${allTags}" class="mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div>
@@ -203,17 +207,17 @@
                             </div>
                             <div class="progress" style="height: 8px;">
                                 <div class="progress-bar bg-info" role="progressbar"
-                                     th:style="'width: ' + ${tagProgressPercentages.get(tag.id)} + '%'"
-                                     th:aria-valuenow="${tagProgressPercentages.get(tag.id)}"
+                                     th:style="'width: ' + ${tagProgressPercentages != null and tagProgressPercentages.containsKey(tag.id) ? tagProgressPercentages.get(tag.id) : 0} + '%'"
+                                     th:aria-valuenow="${tagProgressPercentages != null and tagProgressPercentages.containsKey(tag.id) ? tagProgressPercentages.get(tag.id) : 0}"
                                      aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="d-flex justify-content-between mt-1">
                                 <small class="text-muted"
-                                       th:text="${tagAnswerCounts.get(tag.id)} + '/' + ${tagQuestionCounts.get(tag.id)} + ' questions answered'">
+                                       th:text="${tagAnswerCounts != null and tagAnswerCounts.containsKey(tag.id) ? tagAnswerCounts.get(tag.id) : 0} + '/' + ${tagQuestionCounts != null and tagQuestionCounts.containsKey(tag.id) ? tagQuestionCounts.get(tag.id) : 0} + ' questions answered'">
                                     0/0 questions answered
                                 </small>
                                 <small class="text-muted"
-                                       th:text="${tagProgressPercentages.get(tag.id)} + '% completed'">
+                                       th:text="${tagProgressPercentages != null and tagProgressPercentages.containsKey(tag.id) ? tagProgressPercentages.get(tag.id) : 0} + '% completed'">
                                     0% completed
                                 </small>
                             </div>

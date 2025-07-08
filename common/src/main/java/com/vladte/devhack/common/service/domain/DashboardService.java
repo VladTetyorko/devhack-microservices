@@ -1,10 +1,8 @@
 package com.vladte.devhack.common.service.domain;
 
-import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -148,13 +146,6 @@ public interface DashboardService {
      * @return a map containing tag IDs mapped to their statistics for the user
      */
     Map<UUID, TagProgress> calculateTagProgressByUser(User user);
-
-    /**
-     * Get all tags.
-     *
-     * @return a list of all tags
-     */
-    List<Tag> getAllTags();
 
     /**
      * Class to hold progress statistics for a tag.

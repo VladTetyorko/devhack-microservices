@@ -49,9 +49,7 @@ public class InterviewQuestionServiceImpl extends BaseServiceImpl<InterviewQuest
         if (user == null) {
             return 0;
         }
-        return (int) findAll().stream()
-                .filter(question -> question.getUser() != null && question.getUser().getId().equals(user.getId()))
-                .count();
+        return repository.countInterviewQuestionsByUserId(user.getId());
     }
 
     @Override
@@ -64,7 +62,7 @@ public class InterviewQuestionServiceImpl extends BaseServiceImpl<InterviewQuest
         if (user == null) {
             return 0;
         }
-        return repository.countAnsweredQuestionsByUserId(user.getId());
+        return repository.countQuestionsWithAnswerByUserId(user.getId());
     }
 
 
