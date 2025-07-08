@@ -1,10 +1,12 @@
 package com.vladte.devhack.common.repository;
 
+import com.vladte.devhack.entities.Vacancy;
 import com.vladte.devhack.entities.VacancyResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -12,6 +14,7 @@ import java.util.UUID;
  */
 @Repository
 public interface VacancyResponseRepository extends JpaRepository<VacancyResponse, UUID>, JpaSpecificationExecutor<VacancyResponse> {
+    List<VacancyResponse> findAllByVacancy(Vacancy vacancy);
 
     // All query methods have been replaced with specifications
     // See VacancyResponseSpecification class for the available specifications

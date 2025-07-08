@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Implementation of the VacancyResponseService interface.
@@ -45,19 +45,17 @@ public class VacancyResponseServiceImpl extends UserOwnedServiceImpl<VacancyResp
     }
 
     @Override
-    public CompletableFuture<VacancyResponse> generateVacancyResponseFromTextDescription(String textDescription, User user) {
-
-
-        return null;
-    }
-
-    @Override
     public VacancyResponse saveNewResponseForUserAndVacancy(User user, Vacancy vacancy) {
         VacancyResponse vacancyResponse = new VacancyResponse();
         vacancyResponse.setUser(user);
         vacancyResponse.setVacancy(vacancy);
         vacancyResponse.setInterviewStage(InterviewStage.APPLIED);
         return save(vacancyResponse);
+    }
+
+    @Override
+    public List<VacancyResponse> getVacancyResponsesByVacancy(Vacancy vacancy) {
+        return repository.findAllByVacancy(vacancy);
     }
 
     @Override

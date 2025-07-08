@@ -2,10 +2,13 @@ package com.vladte.devhack.common.controller;
 
 import com.vladte.devhack.common.dto.VacancyDTO;
 import com.vladte.devhack.common.mapper.VacancyMapper;
+import com.vladte.devhack.common.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.service.domain.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.VacancyService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.VacancyResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -24,6 +27,9 @@ import java.util.UUID;
 @Slf4j
 public class VacancyController extends BaseCrudController<Vacancy, VacancyDTO, UUID, VacancyService, VacancyMapper> {
 
+    private final VacancyResponseService vacancyResponseService;
+    private final VacancyResponseMapper vacancyResponseMapper;
+
     /**
      * Constructor with service, mapper, and view service injection.
      *
@@ -34,8 +40,11 @@ public class VacancyController extends BaseCrudController<Vacancy, VacancyDTO, U
     public VacancyController(
             VacancyService vacancyService,
             VacancyMapper vacancyMapper,
-            @Qualifier("baseViewServiceImpl") BaseViewService baseViewService) {
+            VacancyResponseService vacancyResponseService,
+            @Qualifier("baseViewServiceImpl") BaseViewService baseViewService, VacancyResponseMapper vacancyResponseMapper) {
         super(vacancyService, vacancyMapper);
+        this.vacancyResponseMapper = vacancyResponseMapper;
+        this.vacancyResponseService = vacancyResponseService;
         setBaseViewService(baseViewService);
     }
 
@@ -114,9 +123,10 @@ public class VacancyController extends BaseCrudController<Vacancy, VacancyDTO, U
     public String view(@PathVariable UUID id, Model model) {
         log.debug("Displaying details for vacancy with ID: {}", id);
         Vacancy vacancy = getEntityOrThrow(service.findById(id), "Vacancy not found");
-
+        List<VacancyResponse> vacancyResponses = vacancyResponseService.getVacancyResponsesByVacancy(vacancy);
         ModelBuilder.of(model)
                 .addAttribute("vacancy", mapper.toDTO(vacancy))
+                .addAttribute("vacancyResponses", vacancyResponseMapper.toDTOList(vacancyResponses))
                 .setPageTitle(getDetailPageTitle())
                 .build();
 

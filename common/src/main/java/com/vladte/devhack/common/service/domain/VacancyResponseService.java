@@ -7,8 +7,8 @@ import com.vladte.devhack.entities.VacancyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Service interface for managing VacancyResponse entities.
@@ -35,7 +35,7 @@ public interface VacancyResponseService extends BaseService<VacancyResponse, UUI
     Page<VacancyResponse> searchVacancyResponses(String query, InterviewStage stage, Pageable pageable);
 
 
-    CompletableFuture<VacancyResponse> generateVacancyResponseFromTextDescription(String textDescription, User user);
-
     VacancyResponse saveNewResponseForUserAndVacancy(User user, Vacancy vacancy);
+
+    List<VacancyResponse> getVacancyResponsesByVacancy(Vacancy vacancy);
 }
