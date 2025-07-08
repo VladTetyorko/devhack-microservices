@@ -48,7 +48,7 @@ public class KafkaProducerService {
         return kafkaTemplate.send(topic, message.getId(), message)
                 .whenComplete((result, ex) -> {
                     if (ex == null) {
-                        logger.info("Message sent successfully: {}", message);
+                        logger.info("Message sent successfully: {}", message.getId());
                     } else {
                         logger.error("Failed to send message: {}", ex.getMessage());
                     }

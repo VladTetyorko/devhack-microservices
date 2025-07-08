@@ -83,7 +83,7 @@ public class KafkaConsumerService extends com.vladte.devhack.infra.service.kafka
             concurrency = "2"
     )
     public void consumeVacancyParsingRequest(KafkaMessage message) {
-        logger.info("Received parse vacancy request: {}", message);
+        logger.info("Received parse vacancy request: {}", message.getId());
         String responsePayload = handleVacancyParsing(message.getPayload());
         sendResponse(message.getId(), responsePayload, message.getType());
     }

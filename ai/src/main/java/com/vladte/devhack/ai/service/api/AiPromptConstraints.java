@@ -155,7 +155,8 @@ public class AiPromptConstraints {
             - DONT ADD ANY EXPLANATIONS, ANY ADDITIONAL INFORMATION
             - OUTPUT STARTS WITH { AND ENDS WITH }
             - OUTPUT CONTAIN ONLY JSON OBJECT
-            - status should be APPLIED if not added another information
+            - status should be "APPLIED" if not added another information, in uppercase as mentioned
+            - Straightly follow this rules, DONT add anything extra, dont break any rule and structure
             
             Vacancy Description:
             %s

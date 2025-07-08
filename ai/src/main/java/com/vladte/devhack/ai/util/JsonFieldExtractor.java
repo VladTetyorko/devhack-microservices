@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class JsonFieldExtractor {
 
-    private static final Set<String> FIELDS_NOT_INCLUDE = new HashSet<>(Set.of("responses", "deadline", "createdAt", "updatedAt"));
+    private static final Set<String> FIELDS_NOT_INCLUDE = new HashSet<>(Set.of("responses", "deadline", "createdAt", "updatedAt", "appliedAt"));
 
     @SneakyThrows
     public static String parse(Class clazz) {
