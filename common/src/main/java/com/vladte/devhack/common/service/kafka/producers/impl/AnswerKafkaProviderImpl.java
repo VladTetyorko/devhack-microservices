@@ -8,7 +8,6 @@ import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class AnswerKafkaProviderImpl implements AnswerKafkaProvider {
     private static final Logger logger = LoggerFactory.getLogger(AnswerKafkaProviderImpl.class);
     private final KafkaProducerService kafkaProducerService;
 
-    @Autowired
+
     public AnswerKafkaProviderImpl(@Qualifier("MainKafkaProducerService") KafkaProducerService kafkaProducerService) {
         this.kafkaProducerService = kafkaProducerService;
     }

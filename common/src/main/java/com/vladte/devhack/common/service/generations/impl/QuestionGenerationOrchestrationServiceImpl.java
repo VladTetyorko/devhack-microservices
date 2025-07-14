@@ -7,7 +7,6 @@ import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +25,7 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
     private final TagService tagService;
     private final QuestionGenerationService questionGenerationService;
 
-    @Autowired
+
     public QuestionGenerationOrchestrationServiceImpl(
             TagService tagService,
             QuestionGenerationService questionGenerationService

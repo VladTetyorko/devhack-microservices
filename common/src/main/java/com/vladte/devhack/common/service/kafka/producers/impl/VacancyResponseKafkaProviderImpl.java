@@ -9,7 +9,6 @@ import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class VacancyResponseKafkaProviderImpl implements VacancyResponseKafkaPro
     private final KafkaProducerService kafkaProducerService;
     private final Map<String, CompletableFuture<Map<String, Object>>> pendingRequests = new ConcurrentHashMap<>();
 
-    @Autowired
+
     public VacancyResponseKafkaProviderImpl(@Qualifier("MainKafkaProducerService") KafkaProducerService kafkaProducerService) {
         this.kafkaProducerService = kafkaProducerService;
     }

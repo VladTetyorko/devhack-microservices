@@ -71,10 +71,11 @@
 
             <div class="mb-3">
                 <label for="interviewStage" class="form-label">Interview Stage</label>
-                <select class="form-select" id="interviewStage" th:field="*{interviewStage}" required>
+                <select class="form-select" id="interviewStage" th:field="*{interviewStageId}" required>
                     <option th:each="stage : ${interviewStages}"
-                            th:value="${stage}"
-                            th:text="${stage.displayName}">
+                            th:value="${stage.id}"
+                            th:text="${stage.label}"
+                            th:selected="${vacancyResponse.interviewStageId != null && vacancyResponse.interviewStageId == stage.id}">
                         Stage
                     </option>
                 </select>

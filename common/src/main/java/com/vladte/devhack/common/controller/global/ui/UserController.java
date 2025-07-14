@@ -1,11 +1,11 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.ui;
 
+import com.vladte.devhack.common.controller.BaseCrudController;
 import com.vladte.devhack.common.dto.UserDTO;
 import com.vladte.devhack.common.mapper.UserMapper;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController extends BaseCrudController<User, UserDTO, UUID, UserService, UserMapper> {
 
-    @Autowired
+
     public UserController(UserService userService, UserMapper userMapper) {
         super(userService, userMapper);
     }
@@ -99,7 +99,7 @@ public class UserController extends BaseCrudController<User, UserDTO, UUID, User
      * @param id the ID of the user to delete
      * @return a redirect to the user list
      */
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteUser(@PathVariable UUID id) {
         service.deleteById(id);
         return "redirect:/users";

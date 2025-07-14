@@ -1,5 +1,6 @@
 package com.vladte.devhack.common.controller;
 
+import com.vladte.devhack.common.controller.global.basic.ui.HomeController;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.DashboardViewService;
 import org.junit.jupiter.api.BeforeEach;

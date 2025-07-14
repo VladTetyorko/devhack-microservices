@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.personalized;
 
+import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.domain.BaseService;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
@@ -96,17 +97,17 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      * @param entity the entity to check
      * @return true if the current user has access to the entity, false otherwise
      */
-    protected boolean hasAccessToEntity(E entity) {
+    protected boolean dontHaveAccessToEntity(E entity) {
         // Managers have access to all entities
         if (isCurrentUserManager()) {
-            return true;
+            return false;
         }
 
         // Users have access only to their own entities
         User entityUser = getEntityUser(entity);
         User currentUser = getCurrentUser();
 
-        return entityUser != null && entityUser.getId().equals(currentUser.getId());
+        return entityUser == null || !entityUser.getId().equals(currentUser.getId());
     }
 
     /**
@@ -195,7 +196,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
                 .orElseThrow(() -> new IllegalArgumentException(getEntityName() + " not found with ID: " + id));
 
         // Check if the current user has access to the entity
-        if (!hasAccessToEntity(entity)) {
+        if (dontHaveAccessToEntity(entity)) {
             logger.warn("Access denied to {} with ID: {}", getEntityName(), id);
             throw new SecurityException("Access denied to " + getEntityName() + " with ID: " + id);
         }

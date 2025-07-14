@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.personalized.ui;
 
+import com.vladte.devhack.common.controller.personalized.UserEntityController;
 import com.vladte.devhack.common.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
@@ -11,7 +12,6 @@ import com.vladte.devhack.entities.User;
 import com.vladte.devhack.entities.VacancyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +35,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     private final VacancyResponseDashboardService vacancyResponseDashboardService;
     private final VacancyResponseKafkaProvider vacancyResponseProvider;
 
-    @Autowired
+
     public VacancyResponseController(
             VacancyResponseService vacancyResponseService,
             UserService userService,
@@ -168,6 +168,25 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     }
 
     /**
+     * Display the Jira-style board view with vacancy responses organized by interview stage category.
+     *
+     * @param model        the model to add attributes to
+     * @param categoryCode the code of the interview stage category to display (optional)
+     * @return the name of the view to render
+     */
+    @GetMapping("/board")
+    public String board(Model model, @RequestParam(required = false) String categoryCode) {
+        logger.debug("Displaying vacancy responses board view with access control for category: {}", categoryCode);
+        User currentUser = getCurrentUser();
+
+        prepareCommonModelAttributes(model);
+
+        vacancyResponseDashboardService.prepareBoardModelByCategory(model, currentUser, categoryCode);
+
+        return "vacancy-responses/board";
+    }
+
+    /**
      * Search and filter vacancy responses with pagination.
      *
      * @param query            the search query
@@ -229,7 +248,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
 
         // Check if the current user has access to the vacancy response
-        if (!hasAccessToEntity(vacancyResponse)) {
+        if (dontHaveAccessToEntity(vacancyResponse)) {
             logger.warn("Access denied to vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to vacancy response with ID: " + id);
         }
@@ -266,7 +285,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
 
         // Check if the current user has access to the vacancy response
-        if (!hasAccessToEntity(vacancyResponse)) {
+        if (dontHaveAccessToEntity(vacancyResponse)) {
             logger.warn("Access denied to edit vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to edit vacancy response with ID: " + id);
         }
@@ -293,7 +312,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @return a redirect to the vacancy response list
      */
     @PostMapping
-    public String saveVacancyResponse(@ModelAttribute VacancyResponseDTO vacancyResponseDTO, @RequestParam UUID userId) {
+    public String saveVacancyResponse(@ModelAttribute VacancyResponseDTO vacancyResponseDTO, @RequestParam UUID userId, @RequestParam UUID interviewStageId ) {
         logger.debug("Saving vacancy response with access control");
 
         // Get the current authenticated user
@@ -306,7 +325,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         }
 
         // Delegate to the form service for saving the vacancy response
-        VacancyResponseDTO savedResponse = vacancyResponseFormService.saveVacancyResponse(vacancyResponseDTO, userId);
+        VacancyResponseDTO savedResponse = vacancyResponseFormService.saveVacancyResponse(vacancyResponseDTO, userId, interviewStageId);
         if (savedResponse == null) {
             throw new IllegalArgumentException("User not found");
         }
@@ -321,7 +340,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @param id the ID of the vacancy response to delete
      * @return a redirect to the vacancy response list
      */
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteVacancyResponse(@PathVariable UUID id) {
         logger.debug("Deleting vacancy response with ID: {} with access control", id);
 
@@ -330,7 +349,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
 
         // Check if the current user has access to the vacancy response
-        if (!hasAccessToEntity(vacancyResponse)) {
+        if (dontHaveAccessToEntity(vacancyResponse)) {
             logger.warn("Access denied to delete vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to delete vacancy response with ID: " + id);
         }

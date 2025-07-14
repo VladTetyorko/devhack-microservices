@@ -13,6 +13,12 @@ import java.util.stream.Collectors;
 @Component
 public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, VacancyResponseDTO> {
 
+    private final InterviewStageMapper interviewStageMapper;
+
+    public VacancyResponseMapper(InterviewStageMapper interviewStageMapper) {
+        this.interviewStageMapper = interviewStageMapper;
+    }
+
     @Override
     public VacancyResponseDTO toDTO(VacancyResponse entity) {
         if (entity == null) {
@@ -35,7 +41,14 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
         dto.setNotes(entity.getNotes());
         dto.setSalary(entity.getSalary());
         dto.setLocation(entity.getLocation());
-        dto.setInterviewStage(entity.getInterviewStage());
+
+        // Map interview stage
+        if (entity.getInterviewStage() != null) {
+            dto.setInterviewStageId(entity.getInterviewStage().getId().toString());
+            dto.setInterviewStage(entity.getInterviewStage().getCode());
+            dto.setInterviewStageDTO(interviewStageMapper.toDTO(entity.getInterviewStage()));
+        }
+
         dto.setUpdatedAt(entity.getUpdatedAt());
         dto.setCreatedAt(entity.getCreatedAt());
 
@@ -70,11 +83,10 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
         entity.setNotes(dto.getNotes());
         entity.setSalary(dto.getSalary());
         entity.setLocation(dto.getLocation());
-        entity.setInterviewStage(dto.getInterviewStage());
         entity.setCreatedAt(dto.getCreatedAt());
         entity.setUpdatedAt(dto.getUpdatedAt());
 
-        // Note: User, vacancy, and tags need to be set by the service layer
+        // Note: User, vacancy, interview stage and tags need to be set by the service layer
         // as they require fetching the related entities from the database
 
         return entity;
@@ -92,10 +104,9 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
         entity.setNotes(dto.getNotes());
         entity.setSalary(dto.getSalary());
         entity.setLocation(dto.getLocation());
-        entity.setInterviewStage(dto.getInterviewStage());
         entity.setCreatedAt(dto.getCreatedAt());
 
-        // Note: User, vacancy, and tags need to be updated by the service layer
+        // Note: User, vacancy, interview stage and tags need to be updated by the service layer
         // as they require fetching the related entities from the database
 
         return entity;

@@ -10,7 +10,6 @@ import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Answer;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -29,7 +28,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     private final InterviewQuestionService questionService;
     private final AnswerMapper answerMapper;
 
-    @Autowired
+
     public AnswerFormServiceImpl(AnswerService answerService,
                                  UserService userService,
                                  InterviewQuestionService questionService,

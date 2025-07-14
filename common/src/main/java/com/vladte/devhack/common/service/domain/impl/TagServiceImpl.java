@@ -7,7 +7,6 @@ import com.vladte.devhack.entities.Answer;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,7 +26,7 @@ public class TagServiceImpl extends BaseServiceImpl<Tag, UUID, TagRepository> im
      * @param repository    the tag repository
      * @param answerService the answer service
      */
-    @Autowired
+
     public TagServiceImpl(TagRepository repository, AnswerService answerService) {
         super(repository);
         this.answerService = answerService;

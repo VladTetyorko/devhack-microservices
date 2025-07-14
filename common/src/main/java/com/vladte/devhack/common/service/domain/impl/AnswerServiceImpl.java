@@ -9,7 +9,6 @@ import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -46,7 +45,7 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
      * @param answerKafkaProvider the Answer Kafka provider service
      * @param answerKafkaConsumer the Kafka consumer for answer responses
      */
-    @Autowired
+
     public AnswerServiceImpl(
             AnswerRepository repository,
             @Lazy AnswerService self,

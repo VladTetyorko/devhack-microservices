@@ -6,7 +6,6 @@ import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,7 +41,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository>
      * @param auditUtil       the audit utility
      * @param passwordEncoder for password encoding
      */
-    @Autowired
+
     public UserServiceImpl(UserRepository repository, AuditService auditUtil, PasswordEncoder passwordEncoder, @Lazy UserService self) {
         super(repository, auditUtil);
         this.passwordEncoder = passwordEncoder;

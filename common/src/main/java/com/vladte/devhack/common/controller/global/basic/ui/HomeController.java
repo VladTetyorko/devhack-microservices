@@ -1,7 +1,7 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.basic.ui;
 
+import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.view.DashboardViewService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,6 @@ public class HomeController extends BaseController {
 
     private final DashboardViewService dashboardViewService;
 
-    @Autowired
     public HomeController(
             DashboardViewService dashboardViewService) {
         this.dashboardViewService = dashboardViewService;

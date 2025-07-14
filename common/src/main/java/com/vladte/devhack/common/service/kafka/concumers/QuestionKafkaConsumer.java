@@ -7,7 +7,6 @@ import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public class QuestionKafkaConsumer {
     // Map to store pending requests by message ID
     private final Map<String, CompletableFuture<QuestionGenerationResponse>> pendingRequests = new ConcurrentHashMap<>();
 
-    @Autowired
+
     public QuestionKafkaConsumer(QuestionParsingService questionParsingService) {
         this.questionParsingService = questionParsingService;
     }

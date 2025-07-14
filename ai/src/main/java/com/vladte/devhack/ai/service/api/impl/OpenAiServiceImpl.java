@@ -2,7 +2,6 @@ package com.vladte.devhack.ai.service.api.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.ai.service.api.AbstractAiService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,6 @@ public class OpenAiServiceImpl extends AbstractAiService {
 
     private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
 
-    @Autowired
     public OpenAiServiceImpl(ObjectMapper objectMapper) {
         super(objectMapper);
     }

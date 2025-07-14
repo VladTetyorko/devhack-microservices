@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.personalized.ui;
 
+import com.vladte.devhack.common.controller.personalized.UserEntityController;
 import com.vladte.devhack.common.dto.AnswerDTO;
 import com.vladte.devhack.common.mapper.AnswerMapper;
 import com.vladte.devhack.common.service.domain.AnswerService;
@@ -12,7 +13,6 @@ import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +32,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
     private final AnswerFormService answerFormService;
     private final AnswerMapper answerMapper;
 
-    @Autowired
+
     public AnswerController(AnswerService answerService,
                             UserService userService,
                             InterviewQuestionService questionService,
@@ -140,7 +140,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
         // Check if the current user has access to the answer
-        if (!hasAccessToEntity(answer)) {
+        if (dontHaveAccessToEntity(answer)) {
             logger.warn("Access denied to answer with ID: {}", id);
             throw new SecurityException("Access denied to answer with ID: " + id);
         }
@@ -181,7 +181,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
         // Check if the current user has access to the answer
-        if (!hasAccessToEntity(answer)) {
+        if (dontHaveAccessToEntity(answer)) {
             logger.warn("Access denied to edit answer with ID: {}", id);
             throw new SecurityException("Access denied to edit answer with ID: " + id);
         }
@@ -230,7 +230,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * @param id the ID of the answer to delete
      * @return a redirect to the answer list
      */
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteAnswer(@PathVariable UUID id) {
         logger.debug("Deleting answer with ID: {} with access control", id);
 
@@ -239,7 +239,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
         // Check if the current user has access to the answer
-        if (!hasAccessToEntity(answer)) {
+        if (dontHaveAccessToEntity(answer)) {
             logger.warn("Access denied to delete answer with ID: {}", id);
             throw new SecurityException("Access denied to delete answer with ID: " + id);
         }
@@ -368,7 +368,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
         // Check if the current user has access to the answer
-        if (!hasAccessToEntity(answer)) {
+        if (dontHaveAccessToEntity(answer)) {
             logger.warn("Access denied to check answer with AI for answer with ID: {}", id);
             throw new SecurityException("Access denied to check answer with AI for answer with ID: " + id);
         }

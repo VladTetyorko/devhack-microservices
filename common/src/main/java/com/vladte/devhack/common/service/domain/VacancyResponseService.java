@@ -38,4 +38,6 @@ public interface VacancyResponseService extends BaseService<VacancyResponse, UUI
     VacancyResponse saveNewResponseForUserAndVacancy(User user, Vacancy vacancy);
 
     List<VacancyResponse> getVacancyResponsesByVacancy(Vacancy vacancy);
+
+    List<VacancyResponse> findVacancyResponsesByStageForUser(User user, Integer stageIndex);
 }

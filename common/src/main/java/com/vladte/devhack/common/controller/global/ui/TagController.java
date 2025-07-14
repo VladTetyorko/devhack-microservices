@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.ui;
 
+import com.vladte.devhack.common.controller.BaseCrudController;
 import com.vladte.devhack.common.dto.TagDTO;
 import com.vladte.devhack.common.mapper.TagMapper;
 import com.vladte.devhack.common.service.domain.TagService;
@@ -8,7 +9,6 @@ import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestra
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +30,7 @@ public class TagController extends BaseCrudController<Tag, TagDTO, UUID, TagServ
     private final UserService userService;
     private final QuestionGenerationOrchestrationService questionGenerationOrchestrationService;
 
-    @Autowired
+
     public TagController(TagService tagService, TagMapper tagMapper, UserService userService, QuestionGenerationOrchestrationService questionGenerationOrchestrationService) {
         super(tagService, tagMapper);
         this.mapper = tagMapper;
@@ -135,7 +135,7 @@ public class TagController extends BaseCrudController<Tag, TagDTO, UUID, TagServ
         return "redirect:/tags";
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteTag(@PathVariable UUID id) {
         service.deleteById(id);
         return "redirect:/tags";

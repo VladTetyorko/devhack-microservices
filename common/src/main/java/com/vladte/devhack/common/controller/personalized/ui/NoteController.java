@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.personalized.ui;
 
+import com.vladte.devhack.common.controller.personalized.UserEntityController;
 import com.vladte.devhack.common.service.domain.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.NoteService;
 import com.vladte.devhack.common.service.domain.UserService;
@@ -9,7 +10,6 @@ import com.vladte.devhack.entities.Note;
 import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
     private final InterviewQuestionService questionService;
 
-    @Autowired
+
     public NoteController(NoteService noteService, UserService userService, InterviewQuestionService questionService) {
         super(noteService, userService);
         this.questionService = questionService;
@@ -71,7 +71,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
 
         // Check if the current user has access to the note
-        if (!hasAccessToEntity(note)) {
+        if (dontHaveAccessToEntity(note)) {
             logger.warn("Access denied to note with ID: {}", id);
             throw new SecurityException("Access denied to note with ID: " + id);
         }
@@ -126,7 +126,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
 
         // Check if the current user has access to the note
-        if (!hasAccessToEntity(note)) {
+        if (dontHaveAccessToEntity(note)) {
             logger.warn("Access denied to edit note with ID: {}", id);
             throw new SecurityException("Access denied to edit note with ID: " + id);
         }
@@ -173,7 +173,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "redirect:/notes";
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String deleteNote(@PathVariable UUID id) {
         logger.debug("Deleting note with ID: {} with access control", id);
 
@@ -182,7 +182,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
 
         // Check if the current user has access to the note
-        if (!hasAccessToEntity(note)) {
+        if (dontHaveAccessToEntity(note)) {
             logger.warn("Access denied to delete note with ID: {}", id);
             throw new SecurityException("Access denied to delete note with ID: " + id);
         }

@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.ui;
 
+import com.vladte.devhack.common.controller.BaseCrudController;
 import com.vladte.devhack.common.dto.InterviewQuestionDTO;
 import com.vladte.devhack.common.mapper.InterviewQuestionMapper;
 import com.vladte.devhack.common.service.domain.InterviewQuestionService;
@@ -9,7 +10,6 @@ import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -29,7 +29,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
     private final TagQuestionService tagQuestionService;
     private final SearchViewService searchViewService;
 
-    @Autowired
+
     public InterviewQuestionController(
             InterviewQuestionService questionService,
             InterviewQuestionMapper interviewQuestionMapper,
@@ -134,7 +134,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return "questions/list";
     }
 
-    @PostMapping("/api/generate")
+    @PostMapping("/generate/api")
     @ResponseBody
     public String generateQuestionsApi(
             @RequestParam String tagName,
@@ -169,20 +169,26 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return "redirect:/questions?showGenerateModal=true";
     }
 
+    @GetMapping("/generate/ai")
+    public String showAiGenerateQuestionsForm(Model model) {
+        // Redirect to the questions list page where the modal will be shown
+        return "redirect:/questions?showGenerateModal=true";
+    }
+
     @GetMapping("/generate")
     public String showGenerateQuestionsForm(Model model) {
         // Redirect to the questions list page where the modal will be shown
         return "redirect:/questions?showGenerateModal=true";
     }
 
-    @GetMapping("/auto-generate")
+    @GetMapping("/generate/auto")
     public String showAutoGenerateQuestionsForm(Model model) {
         questionFormService.prepareAutoGenerateQuestionsForm(model);
         questionFormService.setAutoGenerateQuestionsPageTitle(model);
         return "questions/auto-generate";
     }
 
-    @GetMapping("/auto-generate-multi")
+    @GetMapping("/generate/multi")
     public String showMultiTagAutoGenerateQuestionsForm(Model model) {
         questionFormService.prepareAutoGenerateQuestionsForm(model);
         ModelBuilder.of(model)
@@ -191,7 +197,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return "questions/auto-generate-multi";
     }
 
-    @PostMapping("/auto-generate")
+    @PostMapping("/generate/auto")
     public String autoGenerateEasyQuestions(
             @RequestParam String tagName,
             Model model) {
@@ -214,7 +220,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return tag.map(value -> "redirect:/questions/tag/" + value.getSlug()).orElse("redirect:/questions");
     }
 
-    @PostMapping("/api/auto-generate")
+    @PostMapping("/generate/api/auto")
     @ResponseBody
     public Map<String, Object> apiAutoGenerateEasyQuestions(@RequestParam String tagName) {
         // Validate input
@@ -231,7 +237,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
                 String.format("Started auto-generating 3 easy questions for tag '%s'", tagName));
     }
 
-    @PostMapping("/auto-generate-multi")
+    @PostMapping("/generate/multi")
     public String autoGenerateEasyQuestionsForMultipleTags(
             @RequestParam(value = "tagIds", required = false) List<UUID> tagIds,
             Model model) {
@@ -241,7 +247,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             ModelBuilder.of(model)
                     .addAttribute("error", "At least one tag must be selected")
                     .build();
-            return "redirect:/questions/auto-generate-multi";
+            return "redirect:/questions/generate/multi";
         }
 
         logger.info("Starting asynchronous generation of easy questions for {} tags", tagIds.size());
@@ -257,7 +263,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return "redirect:/questions";
     }
 
-    @GetMapping("/{id}/delete")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable UUID id) {
         service.deleteById(id);
         return "redirect:/tags";

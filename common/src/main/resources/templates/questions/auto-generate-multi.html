@@ -1,53 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle}">Auto-Generate Easy Questions for Multiple Tags with AI</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
 <body>
-<div class="container mt-4">
-    <h1 th:text="${pageTitle}">Auto-Generate Easy Questions for Multiple Tags with AI</h1>
-
-    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
+<section>
+    <style>
+        @import "/css/question-generator.css";
+    </style>
+    <div th:if="${error}" class="alert alert-danger fade-in" role="alert" th:text="${error}">
         Error message
     </div>
 
-    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
+    <div th:if="${success}" class="alert alert-success fade-in" role="alert" th:text="${success}">
         Success message
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title">Select Tags for Question Generation</h5>
+    <div class="card mb-4 hover-shadow fade-in">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-layer-group me-2"></i>Multi-Tag Question Generator
+            </h5>
         </div>
         <div class="card-body">
-            <form th:action="@{/questions/auto-generate-multi}" method="post">
-                <div class="mb-3">
-                    <div class="form-text">
-                        <strong>Note:</strong> This will automatically generate 3 easy questions for each selected tag.
+            <form th:action="@{/questions/generate/multi}" method="post" id="generateMultiForm">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="form-check form-switch me-3">
+                                <input class="form-check-input" type="checkbox" id="difficultyToggle" checked>
+                                <label class="form-check-label" for="difficultyToggle">Easy Questions</label>
+                            </div>
+
+                            <div id="questionCount" class="badge bg-primary p-2 fs-6">
+                                <i class="fas fa-list-ol me-1"></i>3 Questions per Tag
+                            </div>
+                        </div>
+
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Tags</h6>
+                                    <div class="input-group input-group-sm" style="width: 60%;">
+                                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        <input type="text" class="form-control" id="tagFilter"
+                                               placeholder="Search tags...">
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="selectAll">
+                                        <i class="fas fa-check-square me-1"></i>Select All
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAll">
+                                        <i class="fas fa-square me-1"></i>Deselect All
+                                    </button>
+                                </div>
+
+                                <div class="selected-count mb-2 text-center">
+                                    <span class="badge bg-secondary" id="selectedCount">0 tags selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Select multiple tags to generate interview questions
+                            for each one. AI will create 3 questions per selected tag.
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                <i class="fas fa-bolt me-2"></i>Generate Questions
+                                <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner" role="status"
+                                      aria-hidden="true"></span>
+                            </button>
+
+                            <div class="btn-group">
+                                <a th:href="@{/questions/generate/auto}" class="btn btn-outline-info">
+                                    <i class="fas fa-tag me-1"></i>Single Tag
+                                </a>
+                                <a th:href="@{/questions}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i>Back to Questions
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="selectAll">
-                        <label class="form-check-label" for="selectAll">
-                            <strong>Select All Tags</strong>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <div class="row">
-                        <div th:each="tag : ${tags}" class="col-md-4 mb-2">
-                            <div class="form-check">
+                <div class="tag-container">
+                    <div class="row" id="tagCheckboxes">
+                        <div th:each="tag : ${tags}" class="col-md-3 mb-2 tag-item fade-in">
+                            <div class="form-check tag-checkbox-container">
                                 <input class="form-check-input tag-checkbox" type="checkbox"
                                        th:id="${'tag-' + tag.id}"
                                        th:name="tagIds"
-                                       th:value="${tag.id}">
+                                       th:value="${tag.id}"
+                                       th:data-tag-name="${tag.name}">
                                 <label class="form-check-label"
                                        th:for="${'tag-' + tag.id}"
                                        th:text="${tag.name}">Tag Name</label>
@@ -55,51 +103,167 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <div class="form-text text-warning">
-                        <strong>Note:</strong> This will use AI to generate questions and may take a few seconds per
-                        tag.
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Auto-Generate Easy Questions for Selected Tags</button>
-                <a th:href="@{/questions/auto-generate}" class="btn btn-info">Generate for Single Tag</a>
-                <a th:href="@{/questions}" class="btn btn-secondary">Cancel</a>
             </form>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // JavaScript for "Select All" functionality
-    document.addEventListener('DOMContentLoaded', function () {
-        const selectAllCheckbox = document.getElementById('selectAll');
-        const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="card p-4 text-center">
+            <div class="loading-spinner mx-auto mb-3"></div>
+            <h5>Generating Questions</h5>
+            <p class="text-muted">AI is working its magic for multiple tags...</p>
+            <div class="progress mt-3" style="height: 10px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar"
+                     style="width: 0"></div>
+            </div>
+            <small class="text-muted mt-2" id="progressText">Preparing...</small>
+        </div>
+    </div>
 
-        // Select All checkbox functionality
-        selectAllCheckbox.addEventListener('change', function () {
-            const isChecked = this.checked;
-            tagCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked;
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Elements
+            const selectAllBtn = document.getElementById('selectAll');
+            const deselectAllBtn = document.getElementById('deselectAll');
+            const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+            const selectedCountBadge = document.getElementById('selectedCount');
+            const tagFilter = document.getElementById('tagFilter');
+            const form = document.getElementById('generateMultiForm');
+            const generateBtn = document.getElementById('generateBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const difficultyToggle = document.getElementById('difficultyToggle');
+            const difficultyLabel = difficultyToggle.nextElementSibling;
+
+            // Update selected count
+            function updateSelectedCount() {
+                const selectedCount = document.querySelectorAll('.tag-checkbox:checked').length;
+                selectedCountBadge.textContent = selectedCount + ' tags selected';
+
+                // Change badge color based on selection
+                if (selectedCount === 0) {
+                    selectedCountBadge.className = 'badge bg-secondary';
+                } else if (selectedCount < 5) {
+                    selectedCountBadge.className = 'badge bg-primary';
+                } else if (selectedCount < 10) {
+                    selectedCountBadge.className = 'badge bg-success';
+                } else {
+                    selectedCountBadge.className = 'badge bg-warning text-dark';
+                }
+
+                // Enable/disable generate button
+                generateBtn.disabled = selectedCount === 0;
+            }
+
+            // Select All button
+            selectAllBtn.addEventListener('click', function () {
+                tagCheckboxes.forEach(checkbox => {
+                    const container = checkbox.closest('.tag-item');
+                    if (!container.classList.contains('d-none')) {
+                        checkbox.checked = true;
+                    }
+                });
+                updateSelectedCount();
             });
+
+            // Deselect All button
+            deselectAllBtn.addEventListener('click', function () {
+                tagCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updateSelectedCount();
+            });
+
+            tagFilter.addEventListener('input', function () {
+                const filterValue = this.value.toLowerCase();
+
+                document.querySelectorAll('.tag-item').forEach(item => {
+                    const tagName = item.querySelector('.tag-checkbox').getAttribute('data-tag-name').toLowerCase();
+
+                    if (tagName.includes(filterValue)) {
+                        item.classList.remove('d-none');
+                    } else {
+                        item.classList.add('d-none');
+                    }
+                });
+            });
+
+
+            // Handle form submission
+            form.addEventListener('submit', function (e) {
+                const selectedCount = document.querySelectorAll('.tag-checkbox:checked').length;
+
+                if (selectedCount === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one tag');
+                    return;
+                }
+
+                // Disable button and show spinner
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-cog fa-spin me-2"></i>Generating...';
+                loadingSpinner.classList.remove('d-none');
+
+                // Show loading overlay
+                loadingOverlay.classList.add('active');
+
+                // Simulate progress for multiple tags
+                let progress = 0;
+                const selectedTags = document.querySelectorAll('.tag-checkbox:checked');
+                const increment = 100 / selectedTags.length;
+
+                // Update progress text
+                progressText.textContent = `Processing 0 of ${selectedTags.length} tags...`;
+
+                // Simulate progress updates
+                const progressInterval = setInterval(function () {
+                    if (progress >= 95) {
+                        clearInterval(progressInterval);
+                        return;
+                    }
+
+                    // Increment progress
+                    progress += (Math.random() * increment / 3);
+                    if (progress > 95) progress = 95;
+
+                    // Update progress bar
+                    progressBar.style.width = progress + '%';
+
+                    // Update text
+                    const tagsCompleted = Math.floor((progress / 100) * selectedTags.length);
+                    progressText.textContent = `Processing ${tagsCompleted} of ${selectedTags.length} tags...`;
+
+                    // If we're near the end, show a different message
+                    if (progress > 85) {
+                        progressText.textContent = 'Almost done! Finalizing questions...';
+                    }
+                }, 800);
+            });
+
+            // Difficulty toggle
+            difficultyToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    difficultyLabel.textContent = 'Easy Questions';
+                } else {
+                    difficultyLabel.textContent = 'Advanced Questions';
+                }
+            });
+
+            // Initialize
+            updateSelectedCount();
+
+            // Add staggered animation to tag items
+            document.querySelectorAll('.tag-item').forEach((item, index) => {
+                item.style.animationDelay = (index * 0.03) + 's';
+            });
+
+            // Add animation to the card
+            document.querySelector('.card').classList.add('animate-on-scroll');
         });
-
-        // Update Select All checkbox state based on individual checkboxes
-        function updateSelectAllCheckbox() {
-            const allChecked = Array.from(tagCheckboxes).every(checkbox => checkbox.checked);
-            const someChecked = Array.from(tagCheckboxes).some(checkbox => checkbox.checked);
-
-            selectAllCheckbox.checked = allChecked;
-            selectAllCheckbox.indeterminate = someChecked && !allChecked;
-        }
-
-        // Add event listeners to all tag checkboxes
-        tagCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateSelectAllCheckbox);
-        });
-    });
-</script>
+    </script>
+</section>
 </body>
 </html>

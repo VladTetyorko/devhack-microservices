@@ -5,7 +5,6 @@ import com.vladte.devhack.common.service.domain.TagService;
 import com.vladte.devhack.common.service.view.SearchService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class SearchServiceImpl implements SearchService {
     private final InterviewQuestionService questionService;
     private final TagService tagService;
 
-    @Autowired
+
     public SearchServiceImpl(InterviewQuestionService questionService, TagService tagService) {
         this.questionService = questionService;
         this.tagService = tagService;

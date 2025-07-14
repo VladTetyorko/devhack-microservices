@@ -1,7 +1,6 @@
 package com.vladte.devhack.common.controller;
 
 import com.vladte.devhack.common.service.view.BaseViewService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -22,7 +21,6 @@ public abstract class BaseController {
      *
      * @param baseViewService the base view service
      */
-    @Autowired
     protected BaseController(@Qualifier("baseViewServiceImpl") BaseViewService baseViewService) {
         this.baseViewService = baseViewService;
     }
@@ -40,7 +38,6 @@ public abstract class BaseController {
      *
      * @param baseViewService the base view service
      */
-    @Autowired
     @Qualifier("baseViewServiceImpl")
     public void setBaseViewService(BaseViewService baseViewService) {
         this.baseViewService = baseViewService;

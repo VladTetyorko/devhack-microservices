@@ -1,5 +1,6 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.ui;
 
+import com.vladte.devhack.common.controller.BaseCrudController;
 import com.vladte.devhack.common.dto.VacancyDTO;
 import com.vladte.devhack.common.mapper.VacancyMapper;
 import com.vladte.devhack.common.mapper.VacancyResponseMapper;

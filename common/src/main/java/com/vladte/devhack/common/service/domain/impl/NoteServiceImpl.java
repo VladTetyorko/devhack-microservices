@@ -5,7 +5,6 @@ import com.vladte.devhack.common.service.domain.NoteService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Note;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class NoteServiceImpl extends UserOwnedServiceImpl<Note, UUID, NoteReposi
      *
      * @param repository the note repository
      */
-    @Autowired
+
     public NoteServiceImpl(NoteRepository repository) {
         super(repository);
     }

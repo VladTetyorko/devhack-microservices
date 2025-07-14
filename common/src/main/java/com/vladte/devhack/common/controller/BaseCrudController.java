@@ -7,7 +7,6 @@ import com.vladte.devhack.common.service.view.BaseCrudViewService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.BasicEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -76,7 +75,6 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      *
      * @param baseCrudViewService the base CRUD view service
      */
-    @Autowired
     public void setBaseCrudViewService(BaseCrudViewService baseCrudViewService) {
         this.baseCrudViewService = baseCrudViewService;
     }

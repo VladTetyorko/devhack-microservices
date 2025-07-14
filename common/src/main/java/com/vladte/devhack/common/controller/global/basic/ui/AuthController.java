@@ -1,9 +1,9 @@
-package com.vladte.devhack.common.controller;
+package com.vladte.devhack.common.controller.global.basic.ui;
 
+import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +21,7 @@ public class AuthController extends BaseController {
 
     private final UserService userService;
 
-    @Autowired
+
     public AuthController(UserService userService, @Qualifier("baseViewServiceImpl") BaseViewService baseViewService) {
         super(baseViewService);
         this.userService = userService;

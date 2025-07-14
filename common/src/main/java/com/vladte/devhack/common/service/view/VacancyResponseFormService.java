@@ -36,6 +36,8 @@ public interface VacancyResponseFormService {
      */
     VacancyResponseDTO saveVacancyResponse(VacancyResponseDTO vacancyResponseDTO, UUID userId);
 
+    VacancyResponseDTO saveVacancyResponse(VacancyResponseDTO vacancyResponseDTO, UUID userId, UUID interviewStageId);
+
     /**
      * Delete a vacancy response by ID.
      *

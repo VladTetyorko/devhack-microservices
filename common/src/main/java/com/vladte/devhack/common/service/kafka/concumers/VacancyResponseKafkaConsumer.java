@@ -11,7 +11,6 @@ import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public class VacancyResponseKafkaConsumer {
     private final VacancyResponseService vacancyResponseService;
     private final VacancyResponseKafkaProvider vacancyResponseKafkaProvider;
 
-    @Autowired
+
     public VacancyResponseKafkaConsumer(VacancyService vacancyService, VacancyResponseService vacancyResponseService, VacancyResponseKafkaProvider vacancyResponseKafkaProvider) {
         this.vacancyService = vacancyService;
         this.vacancyResponseService = vacancyResponseService;

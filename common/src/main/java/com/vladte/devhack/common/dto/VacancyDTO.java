@@ -1,6 +1,11 @@
 package com.vladte.devhack.common.dto;
 
 import com.vladte.devhack.entities.VacancyStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,20 +20,57 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Vacancy data transfer object")
 public class VacancyDTO implements BaseDTO {
+
+    @Schema(description = "Unique identifier", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
+
+    @NotBlank(message = "Company name is required")
+    @Size(min = 2, max = 100, message = "Company name must be between 2 and 100 characters")
+    @Schema(description = "Company name", example = "Acme Inc.", required = true)
     private String companyName;
+
+    @NotBlank(message = "Position is required")
+    @Size(min = 2, max = 100, message = "Position must be between 2 and 100 characters")
+    @Schema(description = "Job position", example = "Senior Java Developer", required = true)
     private String position;
+
+    @Schema(description = "Required technologies", example = "Java, Spring Boot, PostgreSQL")
     private String technologies;
+
+    @Schema(description = "Source of the vacancy", example = "LinkedIn")
     private String source;
+
+    @Schema(description = "URL of the vacancy posting", example = "https://example.com/jobs/123")
     private String url;
+
+    @Schema(description = "Date when applied to the vacancy")
     private LocalDateTime appliedAt;
+
+    @NotNull(message = "Status is required")
+    @Schema(description = "Current status of the vacancy", required = true)
     private VacancyStatus status;
+
+    @Schema(description = "Contact person name", example = "John Doe")
     private String contactPerson;
+
+    @Email(message = "Invalid email format")
+    @Schema(description = "Contact person email", example = "john.doe@example.com")
     private String contactEmail;
+
+    @Schema(description = "Application deadline")
     private LocalDateTime deadline;
+
+    @Schema(description = "Whether remote work is allowed", example = "true")
     private Boolean remoteAllowed;
+
+    @Schema(description = "Creation timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
+
+    @Schema(description = "Last update timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
+
+    @Schema(description = "Number of responses to this vacancy", accessMode = Schema.AccessMode.READ_ONLY)
     private int responseCount;
 }
