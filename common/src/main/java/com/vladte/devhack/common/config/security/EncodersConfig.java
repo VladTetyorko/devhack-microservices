@@ -1,4 +1,4 @@
-package com.vladte.devhack.common.config;
+package com.vladte.devhack.common.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.vladte.devhack.common.controller.global.rest;
+package com.vladte.devhack.common.controller.global.basic.rest;
 
 import com.vladte.devhack.common.dto.UserDTO;
 import com.vladte.devhack.common.mapper.UserMapper;
