@@ -1,0 +1,11 @@
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+.badge {
+    font-size: 0.85em;
+}

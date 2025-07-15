@@ -1,0 +1,79 @@
+<div class="container">
+    <div class="page-header">
+        <h2>{{ isManagerRegistration ? 'Register Manager' : 'Register User' }}</h2>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{{ isManagerRegistration ? 'Manager Registration' : 'User Registration' }}</h5>
+                    <button
+                            type="button"
+                            class="btn btn-sm btn-outline-light"
+                            (click)="toggleRegistrationType()"
+                    >
+                        Switch to {{ isManagerRegistration ? 'User' : 'Manager' }} Registration
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="registerForm" (ngSubmit)="register()">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input
+                                    type="text"
+                                    id="name"
+                                    formControlName="name"
+                                    class="form-control"
+                                    [ngClass]="{'is-invalid': registerForm.get('name')?.invalid && registerForm.get('name')?.touched}"
+                            />
+                            <div class="invalid-feedback" *ngIf="registerForm.get('name')?.errors?.['required']">
+                                Name is required
+                            </div>
+                            <div class="invalid-feedback" *ngIf="registerForm.get('name')?.errors?.['minlength']">
+                                Name must be at least 2 characters
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input
+                                    type="email"
+                                    id="email"
+                                    formControlName="email"
+                                    class="form-control"
+                                    [ngClass]="{'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}"
+                            />
+                            <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['required']">
+                                Email is required
+                            </div>
+                            <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['email']">
+                                Please enter a valid email address
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" (click)="cancel()">
+                                Cancel
+                            </button>
+                            <button
+                                    type="submit"
+                                    class="btn btn-success"
+                                    [disabled]="registerForm.invalid || isSubmitting"
+                            >
+                                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+                                      aria-hidden="true"></span>
+                                Register
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
