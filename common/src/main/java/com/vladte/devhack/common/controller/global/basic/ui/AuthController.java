@@ -55,15 +55,15 @@ public class AuthController extends BaseController {
     /**
      * Process the registration form submission.
      *
-     * @param user the user data from the form
-     * @param bindingResult the binding result for validation errors
+     * @param user               the user data from the form
+     * @param bindingResult      the binding result for validation errors
      * @param redirectAttributes attributes to add to the redirect
      * @return the redirect URL
      */
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user, 
-                              BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) {
+    public String registerUser(@ModelAttribute("user") User user,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
         // Check if email already exists
         if (userService.findByEmail(user.getEmail()).isPresent()) {
             bindingResult.rejectValue("email", "error.user", "Email already exists");

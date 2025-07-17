@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     /**
      * Handle entity not found exceptions.
      *
-     * @param ex the exception
+     * @param ex      the exception
      * @param request the web request
      * @return an error response
      */
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
     /**
      * Handle all other exceptions.
      *
-     * @param ex the exception
+     * @param ex      the exception
      * @param request the web request
      * @return an error response
      */

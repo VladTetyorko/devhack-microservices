@@ -44,14 +44,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatusCode status,
             WebRequest request) {
         log.error("Validation error: {}", ex.getMessage());
-        
+
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 "Validation error",
@@ -59,7 +59,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 errors,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -72,14 +72,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
         log.error("Constraint violation: {}", ex.getMessage());
-        
+
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations().forEach(violation -> {
             String propertyPath = violation.getPropertyPath().toString();
             String message = violation.getMessage();
             errors.put(propertyPath, message);
         });
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST,
                 "Constraint violation",
@@ -87,7 +87,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 errors,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -100,7 +100,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
         log.error("Entity not found: {}", ex.getMessage());
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.NOT_FOUND,
                 "Entity not found",
@@ -108,7 +108,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 null,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
@@ -121,7 +121,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         log.error("Data integrity violation: {}", ex.getMessage());
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.CONFLICT,
                 "Data integrity violation",
@@ -129,7 +129,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 null,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
@@ -142,7 +142,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex) {
         log.error("Access denied: {}", ex.getMessage());
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.FORBIDDEN,
                 "Access denied",
@@ -150,7 +150,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 null,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
     }
 
@@ -163,7 +163,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
         log.error("Unexpected error: {}", ex.getMessage(), ex);
-        
+
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "Internal server error",
@@ -171,7 +171,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 null,
                 LocalDateTime.now()
         );
-        
+
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -94,7 +94,7 @@
                             </div>
                         </div>
                         <div class="mb-2">
-                                <span th:each="tag : ${question.tags}" class="badge bg-info me-1">
+                                <span th:each="tag : ${question.tagNames}" class="badge bg-info me-1">
                                     <a th:href="@{/questions/tag/{slug}(slug=${tag.slug})}"
                                        th:text="${tag.name}"
                                        th:attr="data-tag-name=${tag.name}"
@@ -107,11 +107,11 @@
                             <div>
                                     <span class="badge bg-light text-dark me-2">
                                         <i class="fas fa-comment text-success me-1"></i>
-                                        <span th:text="${question.answers.size()} + ' answers'">0 answers</span>
+                                        <span th:text="${question.answerIds.size()} + ' answers'">0 answers</span>
                                     </span>
                                 <span class="badge bg-light text-dark">
                                         <i class="fas fa-sticky-note text-warning me-1"></i>
-                                        <span th:text="${question.notes.size()} + ' notes'">0 notes</span>
+                                        <span th:text="${question.noteIds.size()} + ' notes'">0 notes</span>
                                     </span>
                             </div>
                             <div>

@@ -1,10 +1,13 @@
 package com.vladte.devhack.common.service.kafka.producers;
 
-import com.vladte.devhack.infra.model.KafkaMessage;
-import org.springframework.kafka.support.SendResult;
+import com.vladte.devhack.infra.model.arguments.response.QuestionGenerateResponseArguments;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Service for sending question generation requests to the AI module via Kafka.
+ * Uses generic Kafka messages for scalable and type-safe communication.
+ */
 public interface QuestionKafkaProvider {
 
     /**
@@ -16,7 +19,7 @@ public interface QuestionKafkaProvider {
      * @param difficulty the difficulty level of the questions
      * @return a CompletableFuture that will be completed when the send operation completes
      */
-    CompletableFuture<SendResult<String, KafkaMessage>> sendGenerateQuestionsRequest(
+    CompletableFuture<QuestionGenerateResponseArguments> sendGenerateQuestionsRequest(
             String messageId, String tagName, int count, String difficulty);
 
 }

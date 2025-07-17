@@ -4,7 +4,7 @@ import com.vladte.devhack.common.controller.personalized.UserEntityController;
 import com.vladte.devhack.common.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
-import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
+import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;
 import com.vladte.devhack.common.service.view.VacancyResponseViewService;
@@ -27,13 +27,13 @@ import java.util.UUID;
 @RequestMapping("/vacancies/my-responses")
 public class VacancyResponseController extends UserEntityController<VacancyResponse, UUID, VacancyResponseService> {
 
-    private static final Logger logger = LoggerFactory.getLogger(VacancyResponseController.class);
+    private static final Logger log = LoggerFactory.getLogger(VacancyResponseController.class);
 
     private final UserService userService;
     private final VacancyResponseViewService vacancyResponseViewService;
     private final VacancyResponseFormService vacancyResponseFormService;
     private final VacancyResponseDashboardService vacancyResponseDashboardService;
-    private final VacancyResponseKafkaProvider vacancyResponseProvider;
+    private final VacancyParsingService vacancyParsingService;
 
 
     public VacancyResponseController(
@@ -42,13 +42,13 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             VacancyResponseViewService vacancyResponseViewService,
             VacancyResponseFormService vacancyResponseFormService,
             VacancyResponseDashboardService vacancyResponseDashboardService,
-            VacancyResponseKafkaProvider vacancyResponseProvider) {
+            VacancyParsingService vacancyParsingService) {
         super(vacancyResponseService, userService);
         this.userService = userService;
         this.vacancyResponseViewService = vacancyResponseViewService;
         this.vacancyResponseFormService = vacancyResponseFormService;
         this.vacancyResponseDashboardService = vacancyResponseDashboardService;
-        this.vacancyResponseProvider = vacancyResponseProvider;
+        this.vacancyParsingService = vacancyParsingService;
     }
 
     @Override
@@ -96,7 +96,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model) {
-        logger.debug("Listing vacancy responses for current user with pagination");
+        log.debug("Listing vacancy responses for current user with pagination");
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -155,7 +155,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             Model model) {
-        logger.debug("Displaying dashboard with access control");
+        log.debug("Displaying dashboard with access control");
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -176,7 +176,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      */
     @GetMapping("/board")
     public String board(Model model, @RequestParam(required = false) String categoryCode) {
-        logger.debug("Displaying vacancy responses board view with access control for category: {}", categoryCode);
+        log.debug("Displaying vacancy responses board view with access control for category: {}", categoryCode);
         User currentUser = getCurrentUser();
 
         prepareCommonModelAttributes(model);
@@ -189,12 +189,12 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     /**
      * Search and filter vacancy responses with pagination.
      *
-     * @param query            the search query
-     * @param stage            the interview stage to filter by
-     * @param page             the page number
-     * @param size             the page size
-     * @param editId           the ID of the vacancy response to edit (if any)
-     * @param model            the model to add attributes to
+     * @param query  the search query
+     * @param stage  the interview stage to filter by
+     * @param page   the page number
+     * @param size   the page size
+     * @param editId the ID of the vacancy response to edit (if any)
+     * @param model  the model to add attributes to
      * @return the name of the view to render
      */
     @GetMapping("/search")
@@ -205,7 +205,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) UUID editId,
             Model model) {
-        logger.debug("Searching vacancy responses with access control and pagination, editId: {}", editId);
+        log.debug("Searching vacancy responses with access control and pagination, editId: {}", editId);
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -227,7 +227,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     @GetMapping("/new")
     public String newVacancyResponseForm(
             Model model) {
-        logger.debug("Displaying new vacancy response form with access control");
+        log.debug("Displaying new vacancy response form with access control");
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -241,7 +241,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
     @Override
     public String view(@PathVariable UUID id, Model model) {
-        logger.debug("Viewing vacancy response with ID: {} with access control", id);
+        log.debug("Viewing vacancy response with ID: {} with access control", id);
 
         // Get the vacancy response from the service
         VacancyResponse vacancyResponse = service.findById(id)
@@ -249,7 +249,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         // Check if the current user has access to the vacancy response
         if (dontHaveAccessToEntity(vacancyResponse)) {
-            logger.warn("Access denied to vacancy response with ID: {}", id);
+            log.warn("Access denied to vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to vacancy response with ID: " + id);
         }
 
@@ -270,15 +270,15 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     /**
      * Display a form for editing an existing vacancy response.
      *
-     * @param id       the ID of the vacancy response to edit
-     * @param model    the model to add attributes to
+     * @param id    the ID of the vacancy response to edit
+     * @param model the model to add attributes to
      * @return the name of the view to render
      */
     @GetMapping("/{id}/edit")
     public String editVacancyResponseForm(
             @PathVariable UUID id,
             Model model) {
-        logger.debug("Editing vacancy response with ID: {} with access control", id);
+        log.debug("Editing vacancy response with ID: {} with access control", id);
 
         // Get the vacancy response from the service
         VacancyResponse vacancyResponse = service.findById(id)
@@ -286,7 +286,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         // Check if the current user has access to the vacancy response
         if (dontHaveAccessToEntity(vacancyResponse)) {
-            logger.warn("Access denied to edit vacancy response with ID: {}", id);
+            log.warn("Access denied to edit vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to edit vacancy response with ID: " + id);
         }
 
@@ -312,15 +312,15 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @return a redirect to the vacancy response list
      */
     @PostMapping
-    public String saveVacancyResponse(@ModelAttribute VacancyResponseDTO vacancyResponseDTO, @RequestParam UUID userId, @RequestParam UUID interviewStageId ) {
-        logger.debug("Saving vacancy response with access control");
+    public String saveVacancyResponse(@ModelAttribute VacancyResponseDTO vacancyResponseDTO, @RequestParam UUID userId, @RequestParam UUID interviewStageId) {
+        log.debug("Saving vacancy response with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is saving their own vacancy response
         if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to save vacancy response for user with ID: {}", userId);
+            log.warn("Access denied to save vacancy response for user with ID: {}", userId);
             throw new SecurityException("Access denied to save vacancy response for user with ID: " + userId);
         }
 
@@ -330,7 +330,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             throw new IllegalArgumentException("User not found");
         }
 
-        logger.info("Vacancy response saved successfully");
+        log.info("Vacancy response saved successfully");
         return "redirect:/vacancies/my-responses";
     }
 
@@ -342,7 +342,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      */
     @PostMapping("/{id}/delete")
     public String deleteVacancyResponse(@PathVariable UUID id) {
-        logger.debug("Deleting vacancy response with ID: {} with access control", id);
+        log.debug("Deleting vacancy response with ID: {} with access control", id);
 
         // Get the vacancy response from the service
         VacancyResponse vacancyResponse = service.findById(id)
@@ -350,14 +350,14 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         // Check if the current user has access to the vacancy response
         if (dontHaveAccessToEntity(vacancyResponse)) {
-            logger.warn("Access denied to delete vacancy response with ID: {}", id);
+            log.warn("Access denied to delete vacancy response with ID: {}", id);
             throw new SecurityException("Access denied to delete vacancy response with ID: " + id);
         }
 
         // Delegate to the form service for deleting the vacancy response
         vacancyResponseFormService.deleteVacancyResponse(id);
 
-        logger.info("Vacancy response with ID: {} deleted successfully", id);
+        log.info("Vacancy response with ID: {} deleted successfully", id);
         return "redirect:/vacancies/my-responses";
     }
 
@@ -371,18 +371,15 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      */
     @PostMapping("/process-text")
     public String processVacancyText(@RequestParam String vacancyText) {
-        logger.debug("Processing vacancy text with access control");
+        log.debug("Processing vacancy text with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
-        // Generate a unique message ID
-        String messageId = UUID.randomUUID().toString();
-
         // Send the vacancy text to Kafka for processing, including the current user
-        vacancyResponseProvider.parseVacancyResponse(messageId, vacancyText, currentUser);
+        vacancyParsingService.parseVacancyText(vacancyText, currentUser);
 
-        logger.info("Vacancy text sent for processing with message ID: {} for user: {}", messageId, currentUser.getName());
+        log.info("Vacancy text sent for processing for user: {}", currentUser.getName());
         return "redirect:/vacancies/my-responses";
     }
 
@@ -405,7 +402,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
             @RequestParam(required = false) Boolean showVacancyModal,
             @RequestParam(required = false) UUID editId,
             Model model) {
-        logger.debug("Getting vacancy responses for user with ID: {} with access control, showVacancyModal: {}, editId: {}", userId, showVacancyModal, editId);
+        log.debug("Getting vacancy responses for user with ID: {} with access control, showVacancyModal: {}, editId: {}", userId, showVacancyModal, editId);
 
         // Get the user from the service
         User user = userService.findById(userId)
@@ -416,7 +413,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
 
         // Check if the current user is a manager or is viewing their own vacancy responses
         if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to view vacancy responses for user with ID: {}", userId);
+            log.warn("Access denied to view vacancy responses for user with ID: {}", userId);
             throw new SecurityException("Access denied to view vacancy responses for user with ID: " + userId);
         }
 

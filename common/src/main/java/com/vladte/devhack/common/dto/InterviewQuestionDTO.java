@@ -44,9 +44,6 @@ public class InterviewQuestionDTO implements BaseDTO {
     @Schema(description = "IDs of tags associated with this question", accessMode = Schema.AccessMode.READ_ONLY)
     private Set<UUID> tagIds = new HashSet<>();
 
-    @Schema(description = "Names of tags associated with this question", accessMode = Schema.AccessMode.READ_ONLY)
-    private Set<String> tagNames = new HashSet<>();
-
     @Schema(description = "IDs of answers to this question", accessMode = Schema.AccessMode.READ_ONLY)
     private List<UUID> answerIds = new ArrayList<>();
 

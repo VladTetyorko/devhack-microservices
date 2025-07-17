@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -39,4 +40,7 @@ public interface AnswerRepository extends JpaRepository<Answer, UUID> {
             @Param("userId") UUID userId,
             @Param("questionId") UUID questionId,
             Pageable pageable);
+
+    @Query("SELECT a FROM Answer a JOIN FETCH a.question WHERE a.id = :id")
+    Optional<Answer> findByIdWithQuestion(@Param("id") UUID id);
 }

@@ -4,7 +4,6 @@ import com.vladte.devhack.common.repository.InterviewStageRepository;
 import com.vladte.devhack.common.service.domain.AuditService;
 import com.vladte.devhack.common.service.domain.InterviewStageService;
 import com.vladte.devhack.entities.InterviewStage;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,10 +20,10 @@ public class InterviewStageServiceImpl extends BaseServiceImpl<InterviewStage, U
     /**
      * Constructor with repository injection.
      *
-     * @param repository the interview stage repository
+     * @param repository   the interview stage repository
      * @param auditService the audit service
      */
-    
+
     public InterviewStageServiceImpl(InterviewStageRepository repository, AuditService auditService) {
         super(repository, auditService);
     }
@@ -62,26 +61,26 @@ public class InterviewStageServiceImpl extends BaseServiceImpl<InterviewStage, U
     @Override
     public Optional<InterviewStage> getNextStage(InterviewStage currentStage) {
         List<InterviewStage> activeStages = findAllActiveOrderByOrderIndex();
-        
+
         for (int i = 0; i < activeStages.size() - 1; i++) {
             if (activeStages.get(i).getId().equals(currentStage.getId())) {
                 return Optional.of(activeStages.get(i + 1));
             }
         }
-        
+
         return Optional.empty();
     }
 
     @Override
     public Optional<InterviewStage> getPreviousStage(InterviewStage currentStage) {
         List<InterviewStage> activeStages = findAllActiveOrderByOrderIndex();
-        
+
         for (int i = 1; i < activeStages.size(); i++) {
             if (activeStages.get(i).getId().equals(currentStage.getId())) {
                 return Optional.of(activeStages.get(i - 1));
             }
         }
-        
+
         return Optional.empty();
     }
 }
