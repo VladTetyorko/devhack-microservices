@@ -68,7 +68,7 @@ public class AnswerKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        answerKafkaConsumer.consumeAnswerFeedbackResult(message);
+        answerKafkaConsumer.consumeMessage(message);
 
         // Assert
         assertTrue(future.isDone());
@@ -96,7 +96,7 @@ public class AnswerKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        answerKafkaConsumer.consumeAnswerFeedbackResult(message);
+        answerKafkaConsumer.consumeMessage(message);
 
         // Assert
         assertTrue(future.isCompletedExceptionally());
@@ -122,7 +122,7 @@ public class AnswerKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        answerKafkaConsumer.consumeAnswerFeedbackResult(message);
+        answerKafkaConsumer.consumeMessage(message);
 
         // Assert
         assertTrue(future.isDone());
@@ -149,7 +149,7 @@ public class AnswerKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        answerKafkaConsumer.consumeAnswerFeedbackResult(message);
+        answerKafkaConsumer.consumeMessage(message);
 
         // Assert
         assertFalse(future.isDone());
@@ -173,6 +173,6 @@ public class AnswerKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act & Assert
-        assertDoesNotThrow(() -> answerKafkaConsumer.consumeAnswerFeedbackResult(message));
+        assertDoesNotThrow(() -> answerKafkaConsumer.consumeMessage(message));
     }
 }

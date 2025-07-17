@@ -19,7 +19,7 @@ import java.util.UUID;
 @Service
 public class AuditServiceImpl extends BaseServiceImpl<Audit, UUID, AuditRepository> implements AuditService {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuditServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(AuditServiceImpl.class);
 
     /**
      * Constructor with repository injection.
@@ -35,28 +35,28 @@ public class AuditServiceImpl extends BaseServiceImpl<Audit, UUID, AuditReposito
 
     @Override
     public Audit auditCreate(String entityType, String entityId, User user, String details) {
-        logger.debug("Creating audit record for CREATE operation on entity: {}, ID: {}, user: {}",
+        log.debug("Creating audit record for CREATE operation on entity: {}, ID: {}, user: {}",
                 entityType, entityId, user != null ? user.getName() : "null");
         return createAudit(Audit.OperationType.CREATE, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditRead(String entityType, String entityId, User user, String details) {
-        logger.debug("Creating audit record for READ operation on entity: {}, ID: {}, user: {}",
+        log.debug("Creating audit record for READ operation on entity: {}, ID: {}, user: {}",
                 entityType, entityId, user != null ? user.getName() : "null");
         return createAudit(Audit.OperationType.READ, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditUpdate(String entityType, String entityId, User user, String details) {
-        logger.debug("Creating audit record for UPDATE operation on entity: {}, ID: {}, user: {}",
+        log.debug("Creating audit record for UPDATE operation on entity: {}, ID: {}, user: {}",
                 entityType, entityId, user != null ? user.getName() : "null");
         return createAudit(Audit.OperationType.UPDATE, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditDelete(String entityType, String entityId, User user, String details) {
-        logger.debug("Creating audit record for DELETE operation on entity: {}, ID: {}, user: {}",
+        log.debug("Creating audit record for DELETE operation on entity: {}, ID: {}, user: {}",
                 entityType, entityId, user != null ? user.getName() : "null");
         return createAudit(Audit.OperationType.DELETE, entityType, entityId, user, details);
     }
@@ -72,7 +72,7 @@ public class AuditServiceImpl extends BaseServiceImpl<Audit, UUID, AuditReposito
      * @return the created audit record
      */
     private Audit createAudit(Audit.OperationType operationType, String entityType, String entityId, User user, String details) {
-        logger.debug("Building audit record: operation={}, entity={}, ID={}",
+        log.debug("Building audit record: operation={}, entity={}, ID={}",
                 operationType, entityType, entityId);
 
         Audit audit = Audit.builder()
@@ -84,9 +84,9 @@ public class AuditServiceImpl extends BaseServiceImpl<Audit, UUID, AuditReposito
                 .details(details)
                 .build();
 
-        logger.debug("Saving audit record to repository");
+        log.debug("Saving audit record to repository");
         Audit savedAudit = repository.save(audit);
-        logger.debug("Audit record saved with ID: {}", savedAudit.getId());
+        log.debug("Audit record saved with ID: {}", savedAudit.getId());
 
         return savedAudit;
     }

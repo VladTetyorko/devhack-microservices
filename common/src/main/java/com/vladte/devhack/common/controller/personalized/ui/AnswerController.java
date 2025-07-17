@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequestMapping("/answers")
 public class AnswerController extends UserEntityController<Answer, UUID, AnswerService> {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnswerController.class);
+    private static final Logger log = LoggerFactory.getLogger(AnswerController.class);
 
     private final InterviewQuestionService questionService;
     private final AnswerFormService answerFormService;
@@ -79,7 +79,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model) {
-        logger.debug("Listing answers with access control and pagination");
+        log.debug("Listing answers with access control and pagination");
 
         // Get the current authenticated user using the parent class method
         User currentUser = getCurrentUser();
@@ -106,7 +106,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
     @GetMapping("/new")
     public String newAnswerForm(@RequestParam UUID questionId, Model model) {
-        logger.debug("Displaying new answer form with access control");
+        log.debug("Displaying new answer form with access control");
 
         // If a question ID is provided, check if the question exists
         if (questionId != null) {
@@ -133,7 +133,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      */
     @GetMapping("/{id}")
     public String view(@PathVariable UUID id, Model model) {
-        logger.debug("Viewing answer with ID: {} with access control", id);
+        log.debug("Viewing answer with ID: {} with access control", id);
 
         // Get the answer from the service
         Answer answer = service.findById(id)
@@ -141,7 +141,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
         // Check if the current user has access to the answer
         if (dontHaveAccessToEntity(answer)) {
-            logger.warn("Access denied to answer with ID: {}", id);
+            log.warn("Access denied to answer with ID: {}", id);
             throw new SecurityException("Access denied to answer with ID: " + id);
         }
 
@@ -174,7 +174,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      */
     @GetMapping("/{id}/edit")
     public String editAnswerForm(@PathVariable UUID id, Model model) {
-        logger.debug("Editing answer with ID: {} with access control", id);
+        log.debug("Editing answer with ID: {} with access control", id);
 
         // Get the answer from the service
         Answer answer = service.findById(id)
@@ -182,7 +182,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
         // Check if the current user has access to the answer
         if (dontHaveAccessToEntity(answer)) {
-            logger.warn("Access denied to edit answer with ID: {}", id);
+            log.warn("Access denied to edit answer with ID: {}", id);
             throw new SecurityException("Access denied to edit answer with ID: " + id);
         }
 
@@ -212,14 +212,14 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
     public String saveAnswer(
             @ModelAttribute AnswerDTO answerDTO,
             @RequestParam UUID questionId) {
-        logger.debug("Saving answer with access control");
+        log.debug("Saving answer with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
         // Save the answer
         answerFormService.saveAnswer(answerDTO, currentUser.getId(), questionId);
-        logger.info("Answer saved successfully");
+        log.info("Answer saved successfully");
 
         return "redirect:/answers";
     }
@@ -232,7 +232,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      */
     @PostMapping("/{id}/delete")
     public String deleteAnswer(@PathVariable UUID id) {
-        logger.debug("Deleting answer with ID: {} with access control", id);
+        log.debug("Deleting answer with ID: {} with access control", id);
 
         // Get the answer from the service
         Answer answer = service.findById(id)
@@ -240,13 +240,13 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
         // Check if the current user has access to the answer
         if (dontHaveAccessToEntity(answer)) {
-            logger.warn("Access denied to delete answer with ID: {}", id);
+            log.warn("Access denied to delete answer with ID: {}", id);
             throw new SecurityException("Access denied to delete answer with ID: " + id);
         }
 
         // Delete the answer
         service.deleteById(id);
-        logger.info("Answer with ID: {} deleted successfully", id);
+        log.info("Answer with ID: {} deleted successfully", id);
 
         return "redirect:/answers";
     }
@@ -266,7 +266,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model) {
-        logger.debug("Getting answers for user with ID: {} with access control and pagination", userId);
+        log.debug("Getting answers for user with ID: {} with access control and pagination", userId);
 
         // Get the user from the service
         User user = getEntityOrThrow(userService.findById(userId), "User not found");
@@ -276,7 +276,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
         // Check if the current user is a manager or is viewing their own answers
         if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to view answers for user with ID: {}", userId);
+            log.warn("Access denied to view answers for user with ID: {}", userId);
             throw new SecurityException("Access denied to view answers for user with ID: " + userId);
         }
 
@@ -315,7 +315,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model) {
-        logger.debug("Getting answers for question with ID: {} with access control and pagination", questionId);
+        log.debug("Getting answers for question with ID: {} with access control and pagination", questionId);
 
         // Get the question from the service
         InterviewQuestion question = getEntityOrThrow(questionService.findById(questionId), "Question not found");
@@ -327,7 +327,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         // For simplicity, we'll allow access if the user is a manager or if the question is public
         // In a real application, you might want to check if the user has access to the question based on other criteria
         if (!isCurrentUserManager()) {
-            logger.warn("Access denied to view answers for question with ID: {}", questionId);
+            log.warn("Access denied to view answers for question with ID: {}", questionId);
             throw new SecurityException("Access denied to view answers for question with ID: " + questionId);
         }
 
@@ -361,7 +361,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      */
     @GetMapping("/{id}/check")
     public String checkAnswerWithAi(@PathVariable UUID id, Model model) {
-        logger.debug("Initiating async check of answer with AI for answer with ID: {} with access control", id);
+        log.debug("Initiating async check of answer with AI for answer with ID: {} with access control", id);
 
         // Get the answer from the service
         Answer answer = service.findById(id)
@@ -369,7 +369,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
 
         // Check if the current user has access to the answer
         if (dontHaveAccessToEntity(answer)) {
-            logger.warn("Access denied to check answer with AI for answer with ID: {}", id);
+            log.warn("Access denied to check answer with AI for answer with ID: {}", id);
             throw new SecurityException("Access denied to check answer with AI for answer with ID: " + id);
         }
 

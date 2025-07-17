@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/notes")
 public class NoteController extends UserEntityController<Note, UUID, NoteService> {
 
-    private static final Logger logger = LoggerFactory.getLogger(NoteController.class);
+    private static final Logger log = LoggerFactory.getLogger(NoteController.class);
 
     private final InterviewQuestionService questionService;
 
@@ -64,7 +64,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
     @Override
     public String view(@PathVariable UUID id, Model model) {
-        logger.debug("Viewing note with ID: {} with access control", id);
+        log.debug("Viewing note with ID: {} with access control", id);
 
         // Get the note from the service
         Note note = service.findById(id)
@@ -72,7 +72,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         // Check if the current user has access to the note
         if (dontHaveAccessToEntity(note)) {
-            logger.warn("Access denied to note with ID: {}", id);
+            log.warn("Access denied to note with ID: {}", id);
             throw new SecurityException("Access denied to note with ID: " + id);
         }
 
@@ -90,7 +90,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
     @GetMapping("/new")
     public String newNoteForm(@RequestParam(required = false) UUID questionId, Model model) {
-        logger.debug("Displaying new note form with access control");
+        log.debug("Displaying new note form with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
@@ -119,7 +119,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
     @GetMapping("/{id}/edit")
     public String editNoteForm(@PathVariable UUID id, Model model) {
-        logger.debug("Editing note with ID: {} with access control", id);
+        log.debug("Editing note with ID: {} with access control", id);
 
         // Get the note from the service
         Note note = service.findById(id)
@@ -127,7 +127,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         // Check if the current user has access to the note
         if (dontHaveAccessToEntity(note)) {
-            logger.warn("Access denied to edit note with ID: {}", id);
+            log.warn("Access denied to edit note with ID: {}", id);
             throw new SecurityException("Access denied to edit note with ID: " + id);
         }
 
@@ -150,14 +150,14 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
             @ModelAttribute Note note,
             @RequestParam UUID userId,
             @RequestParam UUID questionId) {
-        logger.debug("Saving note with access control");
+        log.debug("Saving note with access control");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is saving their own note
         if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to save note for user with ID: {}", userId);
+            log.warn("Access denied to save note for user with ID: {}", userId);
             throw new SecurityException("Access denied to save note for user with ID: " + userId);
         }
 
@@ -168,14 +168,14 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         note.setQuestion(question);
 
         service.save(note);
-        logger.info("Note saved successfully");
+        log.info("Note saved successfully");
 
         return "redirect:/notes";
     }
 
     @PostMapping("/{id}/delete")
     public String deleteNote(@PathVariable UUID id) {
-        logger.debug("Deleting note with ID: {} with access control", id);
+        log.debug("Deleting note with ID: {} with access control", id);
 
         // Get the note from the service
         Note note = service.findById(id)
@@ -183,20 +183,20 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         // Check if the current user has access to the note
         if (dontHaveAccessToEntity(note)) {
-            logger.warn("Access denied to delete note with ID: {}", id);
+            log.warn("Access denied to delete note with ID: {}", id);
             throw new SecurityException("Access denied to delete note with ID: " + id);
         }
 
         // Delete the note
         service.deleteById(id);
 
-        logger.info("Note with ID: {} deleted successfully", id);
+        log.info("Note with ID: {} deleted successfully", id);
         return "redirect:/notes";
     }
 
     @GetMapping("/user/{userId}")
     public String getNotesByUser(@PathVariable UUID userId, Model model) {
-        logger.debug("Getting notes for user with ID: {} with access control", userId);
+        log.debug("Getting notes for user with ID: {} with access control", userId);
 
         // Get the user from the service
         User user = userService.findById(userId)
@@ -207,7 +207,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         // Check if the current user is a manager or is viewing their own notes
         if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
-            logger.warn("Access denied to view notes for user with ID: {}", userId);
+            log.warn("Access denied to view notes for user with ID: {}", userId);
             throw new SecurityException("Access denied to view notes for user with ID: " + userId);
         }
 
@@ -226,7 +226,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
     @GetMapping("/question/{questionId}")
     public String getNotesByQuestion(@PathVariable UUID questionId, Model model) {
-        logger.debug("Getting notes for question with ID: {} with access control", questionId);
+        log.debug("Getting notes for question with ID: {} with access control", questionId);
 
         // Get the question from the service
         InterviewQuestion question = questionService.findById(questionId)
@@ -239,7 +239,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         // For simplicity, we'll allow access if the user is a manager
         // In a real application, you might want to check if the user has access to the question based on other criteria
         if (!isCurrentUserManager()) {
-            logger.warn("Access denied to view notes for question with ID: {}", questionId);
+            log.warn("Access denied to view notes for question with ID: {}", questionId);
             throw new SecurityException("Access denied to view notes for question with ID: " + questionId);
         }
 

@@ -40,7 +40,7 @@ public abstract class BaseRepositoryTest {
      */
     @Step("Starting repository test: {testName}")
     protected void logTestStart(String testName) {
-        logger.info("Starting repository test: {}", testName);
+        log.info("Starting repository test: {}", testName);
     }
 
     /**
@@ -50,7 +50,7 @@ public abstract class BaseRepositoryTest {
      */
     @Step("Finished repository test: {testName}")
     protected void logTestEnd(String testName) {
-        logger.info("Finished repository test: {}", testName);
+        log.info("Finished repository test: {}", testName);
     }
 
     /**

@@ -54,7 +54,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
 
     @Test
     @DisplayName("Consume from AI should complete future with parsed questions")
-    public void testConsumeFromAi() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testProcessMessage() throws ExecutionException, InterruptedException, TimeoutException {
         // Arrange
         String messageId = UUID.randomUUID().toString();
         CompletableFuture<QuestionGenerationResponse> future = questionKafkaConsumer.registerPendingRequest(messageId);
@@ -74,7 +74,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        questionKafkaConsumer.consumeFromAi(message);
+        questionKafkaConsumer.processMessage(message);
 
         // Assert
         assertTrue(future.isDone());
@@ -85,7 +85,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
 
     @Test
     @DisplayName("Consume from AI with error should complete future with error response")
-    public void testConsumeFromAiWithError() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testProcessMessageWithError() throws ExecutionException, InterruptedException, TimeoutException {
         // Arrange
         String messageId = UUID.randomUUID().toString();
         CompletableFuture<QuestionGenerationResponse> future = questionKafkaConsumer.registerPendingRequest(messageId);
@@ -100,7 +100,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        questionKafkaConsumer.consumeFromAi(message);
+        questionKafkaConsumer.processMessage(message);
 
         // Assert
         assertTrue(future.isDone());
@@ -111,7 +111,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
 
     @Test
     @DisplayName("Consume from AI with parsing exception should complete future with error response")
-    public void testConsumeFromAiWithParsingException() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testProcessMessageWithParsingException() throws ExecutionException, InterruptedException, TimeoutException {
         // Arrange
         String messageId = UUID.randomUUID().toString();
         CompletableFuture<QuestionGenerationResponse> future = questionKafkaConsumer.registerPendingRequest(messageId);
@@ -129,7 +129,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        questionKafkaConsumer.consumeFromAi(message);
+        questionKafkaConsumer.processMessage(message);
 
         // Assert
         assertTrue(future.isDone());
@@ -140,7 +140,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
 
     @Test
     @DisplayName("Consume from AI with wrong message type should not complete future")
-    public void testConsumeFromAiWithWrongType() throws InterruptedException {
+    public void testProcessMessageWithWrongType() throws InterruptedException {
         // Arrange
         String messageId = UUID.randomUUID().toString();
         CompletableFuture<QuestionGenerationResponse> future = questionKafkaConsumer.registerPendingRequest(messageId);
@@ -155,7 +155,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act
-        questionKafkaConsumer.consumeFromAi(message);
+        questionKafkaConsumer.processMessage(message);
 
         // Assert
         assertFalse(future.isDone());
@@ -163,7 +163,7 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
 
     @Test
     @DisplayName("Consume from AI with unknown message ID should not throw exception")
-    public void testConsumeFromAiWithUnknownId() {
+    public void testProcessMessageWithUnknownId() {
         // Arrange
         String messageId = UUID.randomUUID().toString();
 
@@ -177,6 +177,6 @@ public class QuestionKafkaConsumerTest extends BaseServiceTest {
         );
 
         // Act & Assert
-        assertDoesNotThrow(() -> questionKafkaConsumer.consumeFromAi(message));
+        assertDoesNotThrow(() -> questionKafkaConsumer.processMessage(message));
     }
 }

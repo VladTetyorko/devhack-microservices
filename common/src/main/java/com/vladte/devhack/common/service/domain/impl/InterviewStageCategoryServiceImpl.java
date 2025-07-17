@@ -13,13 +13,13 @@ import java.util.UUID;
  * Implementation of the InterviewStageCategoryService interface.
  */
 @Service
-public class InterviewStageCategoryServiceImpl extends BaseServiceImpl<InterviewStageCategory, UUID, InterviewStageCategoryRepository> 
+public class InterviewStageCategoryServiceImpl extends BaseServiceImpl<InterviewStageCategory, UUID, InterviewStageCategoryRepository>
         implements InterviewStageCategoryService {
 
     /**
      * Constructor with repository injection.
      *
-     * @param repository the interview stage category repository
+     * @param repository   the interview stage category repository
      * @param auditService the audit service
      */
     public InterviewStageCategoryServiceImpl(InterviewStageCategoryRepository repository, AuditService auditService) {

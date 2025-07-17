@@ -8,7 +8,6 @@ import com.vladte.devhack.common.service.domain.TagService;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -41,10 +40,10 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
     /**
      * Constructor with service and mapper injection.
      *
-     * @param questionService          the interview question service
-     * @param interviewQuestionMapper  the interview question mapper
-     * @param tagService               the tag service
-     * @param userService              the user service
+     * @param questionService           the interview question service
+     * @param interviewQuestionMapper   the interview question mapper
+     * @param tagService                the tag service
+     * @param userService               the user service
      * @param questionGenerationService the question generation service
      */
     public InterviewQuestionRestController(

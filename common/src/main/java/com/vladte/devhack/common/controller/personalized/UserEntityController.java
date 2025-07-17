@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
  */
 public abstract class UserEntityController<E extends BasicEntity, ID, S extends BaseService<E, ID>> extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserEntityController.class);
+    private static final Logger log = LoggerFactory.getLogger(UserEntityController.class);
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     protected final S service;
@@ -158,7 +158,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             Model model) {
-        logger.debug("Listing entities with access control and pagination");
+        log.debug("Listing entities with access control and pagination");
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
@@ -189,7 +189,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      */
     @GetMapping("/{id}")
     public String view(@PathVariable ID id, Model model) {
-        logger.debug("Viewing entity with ID: {} with access control", id);
+        log.debug("Viewing entity with ID: {} with access control", id);
 
         // Get the entity from the service
         E entity = service.findById(id)
@@ -197,7 +197,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
 
         // Check if the current user has access to the entity
         if (dontHaveAccessToEntity(entity)) {
-            logger.warn("Access denied to {} with ID: {}", getEntityName(), id);
+            log.warn("Access denied to {} with ID: {}", getEntityName(), id);
             throw new SecurityException("Access denied to " + getEntityName() + " with ID: " + id);
         }
 

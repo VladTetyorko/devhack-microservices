@@ -19,7 +19,7 @@ public class EntityNotFoundException extends RuntimeException {
      * Constructs a new exception with the specified detail message and cause.
      *
      * @param message the detail message
-     * @param cause the cause
+     * @param cause   the cause
      */
     public EntityNotFoundException(String message, Throwable cause) {
         super(message, cause);
@@ -29,7 +29,7 @@ public class EntityNotFoundException extends RuntimeException {
      * Constructs a new exception for a specific entity type and ID.
      *
      * @param entityType the entity type
-     * @param id the entity ID
+     * @param id         the entity ID
      */
     public EntityNotFoundException(String entityType, Object id) {
         super(entityType + " not found with id: " + id);

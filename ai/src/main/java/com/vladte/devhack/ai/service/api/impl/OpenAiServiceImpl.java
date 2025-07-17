@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service("openApiService")
 public class OpenAiServiceImpl extends AbstractAiService {
 
+    private static final String MODEL_NAME = "gpt-4";
+
     @Value("${openai.api.key}")
     private String apiKey;
 
@@ -24,6 +26,11 @@ public class OpenAiServiceImpl extends AbstractAiService {
 
     public OpenAiServiceImpl(ObjectMapper objectMapper) {
         super(objectMapper);
+    }
+
+    @Override
+    protected String getModelName() {
+        return MODEL_NAME;
     }
 
     @Override

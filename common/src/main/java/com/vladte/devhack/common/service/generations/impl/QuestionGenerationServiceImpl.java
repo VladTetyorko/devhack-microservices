@@ -1,6 +1,5 @@
 package com.vladte.devhack.common.service.generations.impl;
 
-import com.vladte.devhack.common.model.QuestionGenerationResponse;
 import com.vladte.devhack.common.service.domain.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.TagService;
 import com.vladte.devhack.common.service.domain.UserService;
@@ -9,6 +8,7 @@ import com.vladte.devhack.common.service.kafka.concumers.QuestionKafkaConsumer;
 import com.vladte.devhack.common.service.kafka.producers.QuestionKafkaProvider;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.infra.model.arguments.response.QuestionGenerateResponseArguments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class QuestionGenerationServiceImpl implements QuestionGenerationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(QuestionGenerationServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionGenerationServiceImpl.class);
     private final QuestionGenerationService self;
     private final TagService tagService;
     private final UserService userService;
@@ -60,47 +60,47 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
     @Override
     @Async
     public CompletableFuture<List<InterviewQuestion>> generateAndSaveQuestions(String tagName, int count, String difficulty) {
-        logger.info("Starting to generate {} {} difficulty questions for tag: {}", count, difficulty, tagName);
+        log.info("Starting to generate {} {} difficulty questions for tag: {}", count, difficulty, tagName);
 
         // Find or create the tag
         Tag tag = findOrCreateTag(tagName);
-        logger.debug("Using tag: {}", tag.getName());
+        log.debug("Using tag: {}", tag.getName());
 
         // Generate questions using AI module via Kafka
-        logger.info("Sending question generation request to AI module via Kafka");
+        log.info("Sending question generation request to AI module via Kafka");
         try {
             // Generate a message ID
             String messageId = java.util.UUID.randomUUID().toString();
 
-            // Register the pending request with the Kafka consumer
-            CompletableFuture<QuestionGenerationResponse> responseFuture = kafkaConsumer.registerPendingRequest(messageId);
-
             // Send the message to the AI module
-            questionKafkaProvider.sendGenerateQuestionsRequest(messageId, tagName, count, difficulty);
-            logger.debug("Sent question generation request to AI module with ID: {}", messageId);
+            CompletableFuture<QuestionGenerateResponseArguments> responseFuture = questionKafkaProvider.sendGenerateQuestionsRequest(messageId, tagName, count, difficulty);
+            log.debug("Sent question generation request to AI module with ID: {}", messageId);
 
             // Wait for the response from the AI module
-            QuestionGenerationResponse response = responseFuture.join();
-            logger.debug("Received response from AI module: {}", response);
+            QuestionGenerateResponseArguments response = responseFuture.join();
+            log.debug("Received response from AI module: {}", response);
 
-            if ("error".equals(response.getStatus())) {
-                throw new RuntimeException("Error from AI module: " + response.getErrorMessage());
+            // Get the questions array from the response
+            String[] questions = response.getQuestions();
+
+            if (questions == null || questions.length == 0) {
+                throw new RuntimeException("No questions generated");
             }
 
-            // Get the question texts from the response
-            List<String> questionTexts = response.getQuestionTexts();
-            logger.info("Received {} questions from AI module", questionTexts.size());
+            // Convert array to list
+            List<String> questionTexts = List.of(questions);
+            log.info("Received {} questions from AI module", questionTexts.size());
 
             // Create and save question entities
             List<InterviewQuestion> savedQuestions = new ArrayList<>();
-            logger.info("Saving questions to database");
+            log.info("Saving questions to database");
 
             self.saveQuestionsToDatabase(questionTexts, difficulty, tag, savedQuestions);
 
-            logger.info("Successfully generated and saved {} questions for tag: {}", savedQuestions.size(), tagName);
+            log.info("Successfully generated and saved {} questions for tag: {}", savedQuestions.size(), tagName);
             return CompletableFuture.completedFuture(savedQuestions);
         } catch (Exception e) {
-            logger.error("Error while processing generated questions", e);
+            log.error("Error while processing generated questions", e);
             CompletableFuture<List<InterviewQuestion>> future = new CompletableFuture<>();
             future.completeExceptionally(new RuntimeException("Failed to process generated questions: " + e.getMessage(), e));
             return future;
@@ -120,7 +120,7 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
     @Override
     public void saveQuestionsToDatabase(List<String> questionTexts, String difficulty, Tag tag, List<InterviewQuestion> savedQuestions) {
         for (String questionText : questionTexts) {
-            logger.debug("Processing question: {}", questionText.length() > 50 ? questionText.substring(0, 47) + "..." : questionText);
+            log.debug("Processing question: {}", questionText.length() > 50 ? questionText.substring(0, 47) + "..." : questionText);
 
             InterviewQuestion question = new InterviewQuestion();
             question.setQuestionText(questionText);
@@ -134,7 +134,7 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
             // Save the question
             InterviewQuestion savedQuestion = questionService.save(question);
             savedQuestions.add(savedQuestion);
-            logger.debug("Saved question with ID: {}", savedQuestion.getId());
+            log.debug("Saved question with ID: {}", savedQuestion.getId());
         }
     }
 
@@ -145,17 +145,17 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
      * @return the tag entity
      */
     private Tag findOrCreateTag(String tagName) {
-        logger.debug("Finding or creating tag: {}", tagName);
+        log.debug("Finding or creating tag: {}", tagName);
         Optional<Tag> existingTag = tagService.findTagByName(tagName);
         if (existingTag.isPresent()) {
-            logger.debug("Found existing tag: {}", tagName);
+            log.debug("Found existing tag: {}", tagName);
             return existingTag.get();
         } else {
-            logger.info("Creating new tag: {}", tagName);
+            log.info("Creating new tag: {}", tagName);
             Tag newTag = new Tag();
             newTag.setName(tagName);
             Tag savedTag = tagService.save(newTag);
-            logger.debug("Created new tag with ID: {}", savedTag.getId());
+            log.debug("Created new tag with ID: {}", savedTag.getId());
             return savedTag;
         }
     }

@@ -3,6 +3,7 @@ package com.vladte.devhack.common.service.kafka;
 import com.vladte.devhack.common.service.BaseServiceTest;
 import com.vladte.devhack.common.service.kafka.producers.impl.QuestionKafkaProviderImpl;
 import com.vladte.devhack.infra.model.KafkaMessage;
+import com.vladte.devhack.infra.service.kafka.KafkaProducerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

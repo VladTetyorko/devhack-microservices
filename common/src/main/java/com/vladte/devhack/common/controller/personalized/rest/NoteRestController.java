@@ -36,15 +36,15 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
     /**
      * Constructor with service and mapper injection.
      *
-     * @param noteService       the note service
-     * @param noteMapper        the note mapper
-     * @param questionService   the question service
-     * @param userService       the user service
+     * @param noteService     the note service
+     * @param noteMapper      the note mapper
+     * @param questionService the question service
+     * @param userService     the user service
      */
-    public NoteRestController(NoteService noteService, 
-                             NoteMapper noteMapper,
-                             InterviewQuestionService questionService,
-                             UserService userService) {
+    public NoteRestController(NoteService noteService,
+                              NoteMapper noteMapper,
+                              InterviewQuestionService questionService,
+                              UserService userService) {
         super(noteService, noteMapper);
         this.questionService = questionService;
         this.userService = userService;
@@ -57,8 +57,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
      * @return a list of notes
      */
     @GetMapping("/my-notes")
-    @Operation(summary = "Get all notes for the authenticated user", 
-               description = "Returns a list of notes for the authenticated user")
+    @Operation(summary = "Get all notes for the authenticated user",
+            description = "Returns a list of notes for the authenticated user")
     public ResponseEntity<List<NoteDTO>> getMyNotes(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
@@ -74,8 +74,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
      * @return a list of notes
      */
     @GetMapping("/by-question/{questionId}")
-    @Operation(summary = "Get all notes for a specific question", 
-               description = "Returns a list of notes for the specified question")
+    @Operation(summary = "Get all notes for a specific question",
+            description = "Returns a list of notes for the specified question")
     public ResponseEntity<List<NoteDTO>> getNotesByQuestion(
             @Parameter(description = "ID of the question")
             @PathVariable UUID questionId) {
@@ -95,8 +95,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
      * @return a list of notes
      */
     @GetMapping("/by-user/{userId}")
-    @Operation(summary = "Get all notes for a specific user", 
-               description = "Returns a list of notes for the specified user")
+    @Operation(summary = "Get all notes for a specific user",
+            description = "Returns a list of notes for the specified user")
     public ResponseEntity<List<NoteDTO>> getNotesByUser(
             @Parameter(description = "ID of the user")
             @PathVariable UUID userId) {
@@ -117,8 +117,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
      * @return a list of notes
      */
     @GetMapping("/by-user-and-question")
-    @Operation(summary = "Get all notes for a specific user and question", 
-               description = "Returns a list of notes for the specified user and question")
+    @Operation(summary = "Get all notes for a specific user and question",
+            description = "Returns a list of notes for the specified user and question")
     public ResponseEntity<List<NoteDTO>> getNotesByUserAndQuestion(
             @Parameter(description = "ID of the user")
             @RequestParam UUID userId,

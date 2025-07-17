@@ -19,8 +19,8 @@
 
     <!-- Category Navigation -->
     <div class="d-flex justify-content-between align-items-center mb-4" th:if="${totalCategories > 1}">
-        <a th:href="@{/vacancies/my-responses/board(categoryCode=${previousCategoryCode})}" 
-           class="btn btn-outline-primary" 
+        <a th:href="@{/vacancies/my-responses/board(categoryCode=${previousCategoryCode})}"
+           class="btn btn-outline-primary"
            th:classappend="${!hasPreviousCategory} ? 'disabled' : ''"
            th:if="${hasPreviousCategory}">
             <i class="fas fa-chevron-left me-2"></i>Previous Category
@@ -30,15 +30,16 @@
         </span>
 
         <div class="text-center">
-            <span class="badge bg-secondary me-2" th:text="${currentCategoryIndex} + ' of ' + ${totalCategories}">1 of 3</span>
+            <span class="badge bg-secondary me-2"
+                  th:text="${currentCategoryIndex} + ' of ' + ${totalCategories}">1 of 3</span>
             <span class="text-muted">Use arrows to navigate between categories</span>
             <div class="mt-1" th:if="${currentCategory != null}">
                 <span class="badge bg-primary" th:text="${currentCategory.label}">Current Category</span>
             </div>
         </div>
 
-        <a th:href="@{/vacancies/my-responses/board(categoryCode=${nextCategoryCode})}" 
-           class="btn btn-outline-primary" 
+        <a th:href="@{/vacancies/my-responses/board(categoryCode=${nextCategoryCode})}"
+           class="btn btn-outline-primary"
            th:classappend="${!hasNextCategory} ? 'disabled' : ''"
            th:if="${hasNextCategory}">
             Next Category<i class="fas fa-chevron-right ms-2"></i>
@@ -66,8 +67,9 @@
     </div>
 
     <!-- Kanban Board - All stages in current category -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 kanban-board" th:if="${currentCategory != null}">
-        <div class="col" th:each="stage : ${categoryStages}" 
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 kanban-board"
+         th:if="${currentCategory != null}">
+        <div class="col" th:each="stage : ${categoryStages}"
              th:with="responses=${stage.responses}, stageName=${stage.code}, badgeColor=${stage.colorClass}, icon=${stage.iconClass}">
             <div class="card border" th:classappend="' border-' + ${badgeColor}" th:data-stage="${stageName}">
                 <div class="card-header text-white" th:classappend="' bg-' + ${badgeColor}">
@@ -92,13 +94,16 @@
                             <p class="card-text small text-muted mb-1" th:text="${response.position}">Position</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <span th:if="${response.salary}" class="badge bg-success me-1 small" th:text="${response.salary}">Salary</span>
-                                    <span th:if="${response.location}" class="badge bg-info small" th:text="${response.location}">Location</span>
+                                    <span th:if="${response.salary}" class="badge bg-success me-1 small"
+                                          th:text="${response.salary}">Salary</span>
+                                    <span th:if="${response.location}" class="badge bg-info small"
+                                          th:text="${response.location}">Location</span>
                                 </div>
                                 <small class="text-muted" th:text="${#temporals.format(response.createdAt, 'MMM dd')}">Date</small>
                             </div>
                             <div class="mt-2">
-                                <a th:href="@{/vacancies/my-responses/{id}(id=${response.id})}" class="btn btn-sm btn-outline-primary w-100">
+                                <a th:href="@{/vacancies/my-responses/{id}(id=${response.id})}"
+                                   class="btn btn-sm btn-outline-primary w-100">
                                     <i class="fas fa-eye me-1"></i>View
                                 </a>
                             </div>

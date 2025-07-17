@@ -25,7 +25,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository> implements UserService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private static final String SYSTEM_ROLE = "SYSTEM";
     private static final String SYSTEM_USER_NAME = "system";
     private static final String SYSTEM_USER_EMAIL = "system@devhack.com";
@@ -58,16 +58,16 @@ public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository>
     @Transactional
     @Cacheable(value = "users", key = "#root.methodName")
     public User getSystemUser() {
-        logger.debug("Getting system user");
+        log.debug("Getting system user");
 
         Optional<User> systemUser = repository.findByRole(SYSTEM_ROLE);
 
         if (systemUser.isPresent()) {
-            logger.debug("Found existing system user with ID: {}", systemUser.get().getId());
+            log.debug("Found existing system user with ID: {}", systemUser.get().getId());
             return systemUser.get();
         }
 
-        logger.info("System user not found, creating a new one");
+        log.info("System user not found, creating a new one");
 
         User newSystemUser = new User();
         newSystemUser.setName(SYSTEM_USER_NAME);
@@ -76,14 +76,14 @@ public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository>
         newSystemUser.setRole(SYSTEM_ROLE);
 
         User savedSystemUser = repository.save(newSystemUser);
-        logger.info("Created new system user with ID: {}", savedSystemUser.getId());
+        log.info("Created new system user with ID: {}", savedSystemUser.getId());
 
         return savedSystemUser;
     }
 
     @Override
     public User reguister(User user) {
-        logger.debug("Registering user: {}", user);
+        log.debug("Registering user: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
 
@@ -97,7 +97,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository>
      * @return the registered user
      */
     public User registerManager(User user) {
-        logger.debug("Registering manager user: {}", user);
+        log.debug("Registering manager user: {}", user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("MANAGER");
 
@@ -137,7 +137,7 @@ public class UserServiceImpl extends BaseServiceImpl<User, UUID, UserRepository>
      */
     @Override
     public Optional<User> findByEmail(String email) {
-        logger.debug("Finding user by email: {}", email);
+        log.debug("Finding user by email: {}", email);
         return repository.findByEmail(email);
     }
 

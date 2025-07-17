@@ -107,7 +107,6 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
     @Override
     public void checkAnswerWithAiAsync(UUID id) {
-        // Just send the request and don't wait for the result
         answerService.checkAnswerWithAiAsync(id);
     }
 

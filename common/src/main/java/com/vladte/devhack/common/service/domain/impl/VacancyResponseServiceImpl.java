@@ -27,7 +27,7 @@ public class VacancyResponseServiceImpl extends UserOwnedServiceImpl<VacancyResp
     /**
      * Constructor with repository injection.
      *
-     * @param repository the vacancy response repository
+     * @param repository            the vacancy response repository
      * @param interviewStageService the interview stage service
      */
 
