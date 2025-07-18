@@ -23,6 +23,8 @@ import java.util.Map;
 public class GptJServiceImpl extends AbstractAiService {
     private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
 
+    private static final String MODEL_NAME = "gptJ";
+
     public GptJServiceImpl(ObjectMapper objectMapper) {
         super(objectMapper);
     }
@@ -39,6 +41,11 @@ public class GptJServiceImpl extends AbstractAiService {
     @Value("${gptj.api.url}")
     private String apiUrl;
 
+
+    @Override
+    protected String getModelName() {
+        return MODEL_NAME;
+    }
 
     @Override
     protected String getApiKey() {
