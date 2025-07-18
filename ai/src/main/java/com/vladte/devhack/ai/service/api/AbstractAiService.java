@@ -1,9 +1,12 @@
 package com.vladte.devhack.ai.service.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.ai.util.JsonFieldExtractor;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.ai.util.ResponseExtractorUtil;
+import com.vladte.devhack.infra.model.arguments.KafkaPayloadArguments;
+import com.vladte.devhack.infra.model.arguments.request.AnswerCheckRequestArguments;
+import com.vladte.devhack.infra.model.arguments.request.QuestionGenerateRequestArguments;
+import com.vladte.devhack.infra.model.arguments.request.VacancyParseFromTestRequestArguments;
+import com.vladte.devhack.infra.model.payload.RequestPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -22,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Abstract base class for AI service implementations.
@@ -53,22 +54,6 @@ public abstract class AbstractAiService implements OpenAiService {
         this.restTemplate = new RestTemplate();
         this.webClient = WebClient.builder().build();
         log.debug("Initialized AbstractAiService with default RestTemplate and WebClient");
-    }
-
-    // Core text generation methods
-    private String generateText(String prompt) {
-        log.debug("Generating text with prompt length: {}", prompt.length());
-        try {
-            return executeTextGeneration(prompt);
-        } catch (Exception e) {
-            return handleTextGenerationError(e);
-        }
-    }
-
-    private String executeTextGeneration(String prompt) {
-        HttpEntity<Map<String, Object>> request = createApiRequest(prompt);
-        Map<String, Object> responseBody = callApi(request);
-        return parseApiResponse(responseBody);
     }
 
     // API Request/Response handling
@@ -255,178 +240,55 @@ public abstract class AbstractAiService implements OpenAiService {
 
     @Override
     @Async
-    public CompletableFuture<String> generateQuestionsForTagAsync(String tag, int count, String difficulty) {
-        log.debug("Generating questions asynchronously for tag '{}' at {} difficulty", tag, difficulty);
-        String prompt = createQuestionGenerationPrompt(tag, count, difficulty);
+    public CompletableFuture<String> generateQuestionsForTagAsync(RequestPayload<QuestionGenerateRequestArguments> payload) {
+        log.debug("Generating questions asynchronously for tag '{}' at {} difficulty", payload.getArguments().getTag(), payload.getArguments().getDifficulty());
+        String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt);
     }
 
     @Override
     @Async
-    public CompletableFuture<Boolean> checkAnswerForCheatingAsync(String questionText, String answerText) {
-        log.debug("Checking if answer contains cheating asynchronously for question: '{}'", questionText);
-        String prompt = createAnswerCheckForCheatingPrompt(questionText, answerText);
+    public CompletableFuture<Boolean> checkAnswerForCheatingAsync(RequestPayload<AnswerCheckRequestArguments> payload) {
+        log.debug("Checking if answer contains cheating asynchronously for question: '{}'", payload.getArguments().getQuestion());
+        String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
-                .thenApply(this::extractCheatingResultFromResponse);
+                .thenApply(ResponseExtractorUtil::extractCheatingResultFromResponse);
     }
 
     @Override
     @Async
-    public CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(String questionText, String answerText) {
-        log.debug("Checking answer with feedback asynchronously for question: '{}'", questionText);
-        String prompt = createAnswerCheckWithFeedbackPrompt(questionText, answerText);
+    public CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(RequestPayload<AnswerCheckRequestArguments> payload) {
+        log.debug("Checking answer with feedback asynchronously for question: '{}'", payload.getArguments().getQuestion());
+        String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
-                .thenApply(this::extractScoreAndFeedbackFromResponse);
+                .thenApply(ResponseExtractorUtil::extractScoreAndFeedbackFromResponse);
     }
 
     @Override
     @Async
-    public CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(String vacancyDescription) {
-        log.debug("Extracting vacancy model from description asynchronously for vacancy description: '{}'", vacancyDescription);
-        String prompt = createVacancyDescriptionPrompt(vacancyDescription);
+    public CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(RequestPayload<VacancyParseFromTestRequestArguments> payload) {
+        log.debug("Extracting vacancy model from description asynchronously for vacancy description: '{}'", payload.getArguments().getText());
+        String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
-                .thenApply(this::extractVacancyModelFromResponse);
+                .thenApply(responseFromAi -> ResponseExtractorUtil.extractVacancyModelFromResponse(responseFromAi, objectMapper));
     }
 
-    // Helper Methods
-    protected String createQuestionGenerationPrompt(String tag, int count, String difficulty) {
-        return String.format(
-                AiPromptConstraints.GENERATE_QUESTIONS_TEMPLATE,
-                "Java",
-                count, tag, difficulty, tag);
+
+    protected <T extends KafkaPayloadArguments> String generateTextForAiRequest(RequestPayload<T> payload) {
+        return formatPromptTemplate(payload.getPrompt(), payload.getArguments().getAsList());
     }
 
-    protected String createAnswerCheckForCheatingPrompt(String questionText, String answerText) {
-        return String.format(
-                AiPromptConstraints.CHECK_ANSWER_FOR_CHEATING_TEMPLATE,
-                questionText, answerText);
-    }
-
-    protected String createAnswerCheckWithFeedbackPrompt(String questionText, String answerText) {
-        return String.format(
-                AiPromptConstraints.CHECK_ANSWER_WITH_FEEDBACK_TEMPLATE,
-                questionText, answerText);
-    }
-
-    protected String createVacancyDescriptionPrompt(String vacancyDescription) {
-        return String.format(
-                AiPromptConstraints.PARSE_VACANCY_DESCRIPTION, JsonFieldExtractor.parse(Vacancy.class),
-                vacancyDescription);
-    }
-
-    private String handleTextGenerationError(Exception e) {
-        log.error("Error generating text: {}", e.getMessage(), e);
-        return "Error generating text: " + e.getMessage();
-    }
-
-    protected Boolean extractCheatingResultFromResponse(String response) {
-        log.debug("Extracting cheating result from response");
-        if (response == null || response.isEmpty()) {
-            log.warn("Empty response received when extracting cheating result");
-            return false;
+    protected String formatPromptTemplate(String promptTemplate, List<String> arguments) {
+        if (promptTemplate == null || arguments == null) {
+            log.warn("Null prompt template or arguments received");
+            return "";
         }
         try {
-            String trimmedResponse = response.trim().toLowerCase();
-            return "true".equals(trimmedResponse);
+            return String.format(promptTemplate, arguments.toArray());
         } catch (Exception e) {
-            log.error("Error extracting cheating result from response: {}", e.getMessage(), e);
-            return false;
+            log.error("Error formatting prompt template: {}", e.getMessage(), e);
+            return "";
         }
-    }
-
-    protected Map<String, Object> extractScoreAndFeedbackFromResponse(String response) {
-        log.debug("Extracting score and feedback from response");
-        if (response == null || response.isEmpty()) {
-            return createEmptyResponseResult();
-        }
-        try {
-            return extractScoreAndFeedback(response);
-        } catch (Exception e) {
-            return handleExtractionError(e);
-        }
-    }
-
-    private Map<String, Object> createEmptyResponseResult() {
-        log.warn("Empty response received when extracting score and feedback");
-        Map<String, Object> result = new HashMap<>();
-        result.put("score", 0.0);
-        result.put("feedback", "No response received from AI service");
-        return result;
-    }
-
-    private Map<String, Object> extractScoreAndFeedback(String response) {
-        Map<String, Object> result = new HashMap<>();
-        extractScoreForFeedback(response, result);
-        extractFeedback(response, result);
-        log.debug("Successfully extracted score ({}) and feedback", result.get("score"));
-        return result;
-    }
-
-    private Map<String, Object> handleExtractionError(Exception e) {
-        log.error("Error parsing response for score and feedback: {}", e.getMessage(), e);
-        Map<String, Object> result = new HashMap<>();
-        result.put("score", 0.0);
-        result.put("feedback", "Error evaluating answer: " + e.getMessage());
-        return result;
-    }
-
-    private void extractScoreForFeedback(String response, Map<String, Object> result) {
-        Pattern scorePattern = Pattern.compile("Score:\\s*(\\d+(\\.\\d+)?)");
-        Matcher scoreMatcher = scorePattern.matcher(response);
-        if (scoreMatcher.find()) {
-            Double score = Double.parseDouble(scoreMatcher.group(1));
-            Double normalizedScore = Math.min(Math.max(score, 0.0), 100.0);
-            log.debug("Extracted score: {} (normalized to: {})", score, normalizedScore);
-            result.put("score", normalizedScore);
-        } else {
-            log.warn("No score found in response, using default value");
-            result.put("score", 0.0);
-        }
-    }
-
-    private void extractFeedback(String response, Map<String, Object> result) {
-        Pattern feedbackPattern = Pattern.compile("Feedback:\\s*(.+)", Pattern.DOTALL);
-        Matcher feedbackMatcher = feedbackPattern.matcher(response);
-        if (feedbackMatcher.find()) {
-            String feedback = feedbackMatcher.group(1).trim();
-            log.debug("Extracted feedback of length: {}", feedback.length());
-            result.put("feedback", feedback);
-        } else {
-            log.info("No feedback section found, using entire response as feedback");
-            result.put("feedback", response.trim());
-        }
-    }
-
-    private Map<String, Object> extractVacancyModelFromResponse(String response) {
-        log.debug("Extracting vacancy model from response");
-        Map<String, Object> result = new HashMap<>();
-
-        if (response == null || response.isEmpty()) {
-            log.warn("Empty response received when extracting vacancy model");
-            result.put("success", false);
-            result.put("message", "Empty response");
-            return result;
-        }
-        String cleanJson = "";
-
-        try {
-            String rawOutput = response.trim();
-            int start = rawOutput.indexOf("{");
-            int end = rawOutput.lastIndexOf("}");
-            if (start >= 0 && end >= 0) {
-                cleanJson = rawOutput.substring(start, end + 1);
-            }
-
-            Vacancy vacancy = objectMapper.readValue(cleanJson, Vacancy.class);
-            result.put("success", vacancy != null);
-            result.put("message", vacancy != null ? "Successfully parsed vacancy model" : "Failed to parse vacancy model");
-            result.put("data", cleanJson);
-        } catch (JsonProcessingException e) {
-            log.error("Error parsing vacancy response JSON: {}", cleanJson, e);
-            result.put("success", false);
-            result.put("message", "Error parsing JSON: " + e.getMessage());
-        }
-        return result;
     }
 
 

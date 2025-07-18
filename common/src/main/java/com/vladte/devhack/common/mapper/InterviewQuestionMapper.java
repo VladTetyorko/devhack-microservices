@@ -37,9 +37,6 @@ public class InterviewQuestionMapper implements EntityDTOMapper<InterviewQuestio
             dto.setTagIds(entity.getTags().stream()
                     .map(Tag::getId)
                     .collect(Collectors.toSet()));
-            dto.setTagNames(entity.getTags().stream()
-                    .map(Tag::getName)
-                    .collect(Collectors.toSet()));
         }
 
         if (entity.getAnswers() != null) {

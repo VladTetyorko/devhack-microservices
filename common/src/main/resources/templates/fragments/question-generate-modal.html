@@ -14,7 +14,7 @@
                 <div id="modalError" class="alert alert-danger d-none" role="alert"></div>
                 <div id="modalSuccess" class="alert alert-success d-none" role="alert"></div>
 
-                <form id="generateQuestionsForm" th:action="@{/questions/api/generate}" method="post">
+                <form id="generateQuestionsForm" th:action="@{/questions/generate/api}" method="post">
                     <div class="mb-3">
                         <label for="tagName" class="form-label">Tag Name:</label>
                         <input type="text" class="form-control" id="tagName" name="tagName" required

@@ -46,3 +46,5 @@ src/main/resources/application-*.properties
 /gradle/wrapper/gradle-wrapper.properties
 /gradlew
 /gradlew.bat
+/angular-ui/.angular/*
+/angular-ui/node_modules/*

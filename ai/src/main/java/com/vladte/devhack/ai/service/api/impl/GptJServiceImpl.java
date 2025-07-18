@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.ai.service.api.AbstractAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
@@ -24,7 +23,6 @@ import java.util.Map;
 public class GptJServiceImpl extends AbstractAiService {
     private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
 
-    @Autowired
     public GptJServiceImpl(ObjectMapper objectMapper) {
         super(objectMapper);
     }
@@ -100,7 +98,7 @@ public class GptJServiceImpl extends AbstractAiService {
             List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
 
             if (choices != null && !choices.isEmpty()) {
-                Map<String, Object> choice = choices.get(0);
+                Map<String, Object> choice = choices.getFirst();
                 if (choice.containsKey("text")) {
                     String text = (String) choice.get("text");
                     log.debug("Successfully parsed response with choices, text length: {}", text.length());

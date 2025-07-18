@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.3'
+    id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'io.qameta.allure' version '2.11.2'
 }
@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time:3.0.4.RELEASE'
     implementation 'org.webjars:bootstrap:5.3.2'
@@ -35,6 +36,16 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'io.minio:minio:8.5.7'
+
+
+    // OpenAPI/Swagger documentation
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'
+
+    // JWT dependencies
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     implementation project(':infra')
     implementation project(':entities')

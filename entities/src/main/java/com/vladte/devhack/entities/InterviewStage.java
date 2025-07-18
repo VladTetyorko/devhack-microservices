@@ -1,27 +1,77 @@
 package com.vladte.devhack.entities;
 
-import lombok.Getter;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+import java.time.Instant;
+import java.util.List;
 
-/**
- * Enum representing the different stages of an interview process.
- */
-@Getter
-public enum InterviewStage implements Serializable {
-    APPLIED("Applied"),
-    PRE_SCREEN("Pre-Screen"),
-    SCREENING("Screening"),
-    TECHNICAL_INTERVIEW("Technical Interview"),
-    PM_INTERVIEW("PM Interview"),
-    STAKEHOLDER_INTERVIEW("Stakeholder Interview"),
-    OFFER("Offer"),
-    REJECTED("Rejected"),
-    ACCEPTED("Accepted");
+@Entity
+@Table(name = "interview_stage",
+        uniqueConstraints = @UniqueConstraint(columnNames = "code"))
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class InterviewStage extends BasicEntity {
 
-    private final String displayName;
+    /**
+     * e.g. APPLIED, SCREENING, OFFER, etc.
+     */
+    @Column(nullable = false, length = 50)
+    private String code;
 
-    InterviewStage(String displayName) {
-        this.displayName = displayName;
+    /**
+     * Human label shown in UI
+     */
+    @Column(nullable = false, length = 100)
+    private String label;
+
+    /**
+     * Sort order on Kanban board
+     */
+    @Column(name = "order_index")
+    private Integer orderIndex;
+
+    /**
+     * e.g. primary, warning
+     */
+    @Column(name = "color_class", length = 30)
+    private String colorClass;
+
+    /**
+     * FontAwesome icon class
+     */
+    @Column(name = "icon_class", length = 50)
+    private String iconClass;
+
+    @Column
+    private Boolean active;
+
+    @Column(name = "final_stage")
+    private Boolean finalStage;
+
+    @Column(name = "internal_only")
+    private Boolean internalOnly;
+
+    /**
+     * FK to category table
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private InterviewStageCategory category;
+
+    @OneToMany(mappedBy = "interviewStage", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<VacancyResponse> responses;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @PreUpdate
+    public void onUpdate() {
+        updatedAt = Instant.now();
     }
 }

@@ -1,7 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.common.dto.VacancyResponseDTO;
-import org.springframework.data.domain.Page;
+import com.vladte.devhack.entities.User;
 import org.springframework.ui.Model;
 
 /**
@@ -16,9 +15,8 @@ public interface VacancyResponseDashboardService {
      * @param page  the page number
      * @param size  the page size
      * @param model the model to add attributes to
-     * @return the page of vacancy response DTOs
      */
-    Page<VacancyResponseDTO> prepareDashboardModel(int page, int size, Model model);
+    void prepareDashboardModel(int page, int size, Model model);
 
     /**
      * Set the page title for the dashboard page.
@@ -26,4 +24,20 @@ public interface VacancyResponseDashboardService {
      * @param model the model to add the title to
      */
     void setDashboardPageTitle(Model model);
+
+    /**
+     * Prepare the model for the Jira board view with vacancy responses grouped by interview stage.
+     *
+     * @param model the model to add attributes to
+     */
+    void prepareBoardModel(Model model, User currentUser, Integer stageIndex);
+
+    /**
+     * Prepare the model for the Jira board view with vacancy responses grouped by interview stage category.
+     *
+     * @param model        the model to add attributes to
+     * @param currentUser  the current user
+     * @param categoryCode the code of the interview stage category to display (optional)
+     */
+    void prepareBoardModelByCategory(Model model, User currentUser, String categoryCode);
 }

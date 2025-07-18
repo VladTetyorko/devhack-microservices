@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class QuestionParsingServiceImpl implements QuestionParsingService {
 
-    private static final Logger logger = LoggerFactory.getLogger(QuestionParsingServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionParsingServiceImpl.class);
 
     /**
      * Parse the generated text into a list of question texts.
@@ -24,11 +24,11 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
      */
     @Override
     public List<String> parseQuestionTexts(String generatedText) {
-        logger.debug("Parsing generated text of length: {} characters", generatedText.length());
+        log.debug("Parsing generated text of length: {} characters", generatedText.length());
         List<String> questions = new ArrayList<>();
 
         String[] lines = generatedText.split("\n");
-        logger.debug("Split text into {} lines", lines.length);
+        log.debug("Split text into {} lines", lines.length);
 
         StringBuilder currentQuestion = new StringBuilder();
         int questionCount = 0;
@@ -42,7 +42,7 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
 
         handleFinalQuestion(currentQuestion, questions, questionCount);
 
-        logger.info("Parsed {} questions from generated text", questions.size());
+        log.info("Parsed {} questions from generated text", questions.size());
         return questions;
     }
 
@@ -54,7 +54,7 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
         } else if (currentQuestion.length() > 0) {
             appendToCurrentQuestion(trimmedLine, currentQuestion);
         } else {
-            logger.trace("Skipping line: {}", trimmedLine);
+            log.trace("Skipping line: {}", trimmedLine);
         }
     }
 
@@ -65,7 +65,7 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
     private void handleCurrentQuestion(StringBuilder currentQuestion, List<String> questions, int questionCount) {
         if (currentQuestion.length() > 0) {
             questions.add(currentQuestion.toString().trim());
-            logger.debug("Added question #{}: {}", questionCount,
+            log.debug("Added question #{}: {}", questionCount,
                     currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
             currentQuestion.setLength(0);
         }
@@ -73,20 +73,20 @@ public class QuestionParsingServiceImpl implements QuestionParsingService {
 
     private void addNewQuestion(String line, StringBuilder currentQuestion) {
         String questionText = line.substring("Question: ".length());
-        logger.debug("Found new question starting with: {}",
+        log.debug("Found new question starting with: {}",
                 questionText.length() > 50 ? questionText.substring(0, 47) + "..." : questionText);
         currentQuestion.append(questionText);
     }
 
     private void appendToCurrentQuestion(String line, StringBuilder currentQuestion) {
-        logger.trace("Adding continuation line to current question: {}", line);
+        log.trace("Adding continuation line to current question: {}", line);
         currentQuestion.append(" ").append(line);
     }
 
     private void handleFinalQuestion(StringBuilder currentQuestion, List<String> questions, int questionCount) {
         if (currentQuestion.length() > 0) {
             questions.add(currentQuestion.toString().trim());
-            logger.debug("Added final question #{}: {}", questionCount,
+            log.debug("Added final question #{}: {}", questionCount,
                     currentQuestion.length() > 50 ? currentQuestion.substring(0, 47) + "..." : currentQuestion);
         }
     }

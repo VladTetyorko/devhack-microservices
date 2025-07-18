@@ -12,8 +12,11 @@
                     <p class="lead">Track your job applications and interview progress</p>
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a th:href="@{/vacancies/my-responses}" class="btn btn-light btn-lg">
+                    <a th:href="@{/vacancies/my-responses}" class="btn btn-light btn-lg me-2">
                         <i class="fas fa-list me-2"></i>View Applications
+                    </a>
+                    <a th:href="@{/vacancies/my-responses/board}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-columns me-2"></i>Board View
                     </a>
                 </div>
             </div>
@@ -204,21 +207,14 @@
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <div>
                                     <i class="fas fa-building text-info me-2"></i>
-                                    <span th:text="${response.vacancy.companyName}">Company Name</span>
-                                    <span class="badge bg-secondary ms-2" th:text="${response.vacancy.position}">Position</span>
+                                    <span th:text="${response.companyName}">Company Name</span>
+                                    <span class="badge bg-secondary ms-2" th:text="${response.position}">Position</span>
                                 </div>
                                 <div>
-                                        <span class="badge"
-                                              th:classappend="${
-                                                response.interviewStage.name() == 'APPLIED' ? 'bg-primary' :
-                                                (response.interviewStage.name() == 'SCREENING' ? 'bg-info' : 
-                                                (response.interviewStage.name() == 'TECHNICAL_INTERVIEW' ? 'bg-warning' : 
-                                                (response.interviewStage.name() == 'STAKEHOLDER_INTERVIEW' ? 'bg-secondary' : 
-                                                (response.interviewStage.name() == 'OFFER' ? 'bg-success' : 
-                                                'bg-danger'))))
-                                              }"
-                                              th:text="${response.interviewStage.displayName}">
-                                            Stage
+                                        <span th:class="'badge bg-' + ${response.interviewStageDTO.colorClass ?: 'secondary'}">
+                                            <i th:if="${response.interviewStageDTO.iconClass}"
+                                               th:class="${response.interviewStageDTO.iconClass + ' me-1'}"></i>
+                                            <span th:text="${response.interviewStageDTO.label}">Stage</span>
                                         </span>
                                 </div>
                             </div>

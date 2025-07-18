@@ -1,10 +1,7 @@
 package com.vladte.devhack.common.repository;
 
 import com.vladte.devhack.common.repository.specification.VacancyResponseSpecification;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.*;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -39,8 +36,16 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private TagRepository tagRepository;
 
+    @Autowired
+    private InterviewStageRepository interviewStageRepository;
+
+    @Autowired
+    private InterviewStageCategoryRepository interviewStageCategoryRepository;
+
     private User testUser;
     private Tag testTag;
+    private InterviewStage appliedStage;
+    private InterviewStage technicalInterviewStage;
 
     @BeforeEach
     void setup() {
@@ -55,6 +60,40 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         testTag = new Tag();
         testTag.setName("Java");
         tagRepository.save(testTag);
+
+        // Create interview stage categories
+        InterviewStageCategory initialCategory = InterviewStageCategory.builder()
+                .code("INITIAL")
+                .label("Initial Stage")
+                .build();
+        interviewStageCategoryRepository.save(initialCategory);
+
+        InterviewStageCategory technicalCategory = InterviewStageCategory.builder()
+                .code("TECHNICAL")
+                .label("Technical Assessment")
+                .build();
+        interviewStageCategoryRepository.save(technicalCategory);
+
+        // Create interview stages
+        appliedStage = InterviewStage.builder()
+                .code("APPLIED")
+                .label("Applied")
+                .orderIndex(1)
+                .active(true)
+                .finalStage(false)
+                .category(initialCategory)
+                .build();
+        interviewStageRepository.save(appliedStage);
+
+        technicalInterviewStage = InterviewStage.builder()
+                .code("TECHNICAL_INTERVIEW")
+                .label("Technical Interview")
+                .orderIndex(4)
+                .active(true)
+                .finalStage(false)
+                .category(technicalCategory)
+                .build();
+        interviewStageRepository.save(technicalInterviewStage);
 
         // Clear any existing vacancy responses
         vacancyResponseRepository.deleteAll();
@@ -77,7 +116,7 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         assertEquals("Google", savedResponse.getCompanyName());
         assertEquals("Software Engineer", savedResponse.getPosition());
         assertEquals(testUser.getId(), savedResponse.getUser().getId());
-        assertEquals(InterviewStage.APPLIED, savedResponse.getInterviewStage());
+        assertEquals(appliedStage, savedResponse.getInterviewStage());
     }
 
     @Test
@@ -113,14 +152,14 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         // Act
         savedResponse.setCompanyName("Microsoft");
         savedResponse.setPosition("Senior Developer");
-        savedResponse.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        savedResponse.setInterviewStage(technicalInterviewStage);
         VacancyResponse updatedResponse = vacancyResponseRepository.save(savedResponse);
 
         // Assert
         assertEquals(responseId, updatedResponse.getId());
         assertEquals("Microsoft", updatedResponse.getCompanyName());
         assertEquals("Senior Developer", updatedResponse.getPosition());
-        assertEquals(InterviewStage.TECHNICAL_INTERVIEW, updatedResponse.getInterviewStage());
+        assertEquals(technicalInterviewStage, updatedResponse.getInterviewStage());
         assertNotNull(updatedResponse.getUpdatedAt());
     }
 
@@ -224,25 +263,25 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
     void testFindByInterviewStageSpecification() {
         // Arrange
         VacancyResponse response1 = createTestVacancyResponse("Google", "Software Engineer");
-        response1.setInterviewStage(InterviewStage.APPLIED);
+        response1.setInterviewStage(appliedStage);
 
         VacancyResponse response2 = createTestVacancyResponse("Microsoft", "Developer");
-        response2.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response2.setInterviewStage(technicalInterviewStage);
 
         VacancyResponse response3 = createTestVacancyResponse("Amazon", "Senior Software Engineer");
-        response3.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response3.setInterviewStage(technicalInterviewStage);
 
         vacancyResponseRepository.save(response1);
         vacancyResponseRepository.save(response2);
         vacancyResponseRepository.save(response3);
 
         // Act
-        Specification<VacancyResponse> spec = VacancyResponseSpecification.byInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        Specification<VacancyResponse> spec = VacancyResponseSpecification.byInterviewStage(technicalInterviewStage);
         List<VacancyResponse> responses = vacancyResponseRepository.findAll(spec);
 
         // Assert
         assertEquals(2, responses.size());
-        assertTrue(responses.stream().allMatch(r -> r.getInterviewStage() == InterviewStage.TECHNICAL_INTERVIEW));
+        assertTrue(responses.stream().allMatch(r -> r.getInterviewStage().equals(technicalInterviewStage)));
     }
 
     @Test
@@ -252,15 +291,15 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
     void testSearchVacancyResponses() {
         // Arrange
         VacancyResponse response1 = createTestVacancyResponse("Google", "Java Developer");
-        response1.setInterviewStage(InterviewStage.APPLIED);
+        response1.setInterviewStage(appliedStage);
         response1.setTechnologies("Java, Spring, Hibernate");
 
         VacancyResponse response2 = createTestVacancyResponse("Microsoft", "Java Engineer");
-        response2.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response2.setInterviewStage(technicalInterviewStage);
         response2.setTechnologies("Java, .NET, Azure");
 
         VacancyResponse response3 = createTestVacancyResponse("Amazon", "Python Developer");
-        response3.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response3.setInterviewStage(technicalInterviewStage);
         response3.setTechnologies("Python, AWS, Django");
 
         vacancyResponseRepository.save(response1);
@@ -271,14 +310,14 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
 
         // Act - Search by query and stage
         Specification<VacancyResponse> spec = VacancyResponseSpecification.searchVacancyResponses(
-                "Java", InterviewStage.TECHNICAL_INTERVIEW);
+                "Java", technicalInterviewStage);
         Page<VacancyResponse> responses = vacancyResponseRepository.findAll(spec, pageable);
 
         // Assert
         assertEquals(1, responses.getContent().size());
         assertEquals("Microsoft", responses.getContent().get(0).getCompanyName());
         assertEquals("Java Engineer", responses.getContent().get(0).getPosition());
-        assertEquals(InterviewStage.TECHNICAL_INTERVIEW, responses.getContent().get(0).getInterviewStage());
+        assertEquals(technicalInterviewStage, responses.getContent().get(0).getInterviewStage());
     }
 
     @Test
@@ -288,13 +327,13 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
     void testCombineSpecifications() {
         // Arrange
         VacancyResponse response1 = createTestVacancyResponse("Google", "Java Developer");
-        response1.setInterviewStage(InterviewStage.APPLIED);
+        response1.setInterviewStage(appliedStage);
 
         VacancyResponse response2 = createTestVacancyResponse("Microsoft", "Java Engineer");
-        response2.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response2.setInterviewStage(technicalInterviewStage);
 
         VacancyResponse response3 = createTestVacancyResponse("Amazon", "Python Developer");
-        response3.setInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        response3.setInterviewStage(technicalInterviewStage);
 
         vacancyResponseRepository.save(response1);
         vacancyResponseRepository.save(response2);
@@ -302,7 +341,7 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
 
         // Act - Combine specifications with AND
         Specification<VacancyResponse> spec1 = VacancyResponseSpecification.byPositionContainingIgnoreCase("Developer");
-        Specification<VacancyResponse> spec2 = VacancyResponseSpecification.byInterviewStage(InterviewStage.TECHNICAL_INTERVIEW);
+        Specification<VacancyResponse> spec2 = VacancyResponseSpecification.byInterviewStage(technicalInterviewStage);
         Specification<VacancyResponse> combinedAnd = spec1.and(spec2);
 
         List<VacancyResponse> andResults = vacancyResponseRepository.findAll(combinedAnd);
@@ -333,7 +372,7 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         response.setPosition(position);
         response.setTechnologies("Java, Spring, Hibernate");
         response.setUser(testUser);
-        response.setInterviewStage(InterviewStage.APPLIED);
+        response.setInterviewStage(appliedStage);
         return response;
     }
 }

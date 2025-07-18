@@ -75,7 +75,7 @@
                         <select class="form-select" id="interviewStage" th:field="*{interviewStage}" required>
                             <option th:each="stage : ${interviewStages}"
                                     th:value="${stage}"
-                                    th:text="${stage.displayName}">
+                                    th:text="${stage.label}">
                                 Stage
                             </option>
                         </select>

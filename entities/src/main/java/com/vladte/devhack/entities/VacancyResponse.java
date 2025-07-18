@@ -43,9 +43,8 @@ public class VacancyResponse extends BasicEntity {
     @Column(name = "location")
     private String location;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "interview_stage", nullable = false)
-    private InterviewStage interviewStage = InterviewStage.APPLIED;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private InterviewStage interviewStage;
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
@@ -58,4 +57,35 @@ public class VacancyResponse extends BasicEntity {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    // Convenience methods to access vacancy properties
+    public String getCompanyName() {
+        return vacancy != null ? vacancy.getCompanyName() : null;
+    }
+
+    public void setCompanyName(String companyName) {
+        if (vacancy != null) {
+            vacancy.setCompanyName(companyName);
+        }
+    }
+
+    public String getPosition() {
+        return vacancy != null ? vacancy.getPosition() : null;
+    }
+
+    public void setPosition(String position) {
+        if (vacancy != null) {
+            vacancy.setPosition(position);
+        }
+    }
+
+    public String getTechnologies() {
+        return vacancy != null ? vacancy.getTechnologies() : null;
+    }
+
+    public void setTechnologies(String technologies) {
+        if (vacancy != null) {
+            vacancy.setTechnologies(technologies);
+        }
+    }
 }

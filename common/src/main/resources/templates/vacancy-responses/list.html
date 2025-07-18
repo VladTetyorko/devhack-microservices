@@ -45,6 +45,9 @@
                     <a th:href="@{/vacancies/my-responses/new}" class="btn btn-success flex-grow-1">
                         <i class="fas fa-plus me-2"></i>Add New Response
                     </a>
+                    <a th:href="@{/vacancies/my-responses/board}" class="btn btn-info">
+                        <i class="fas fa-columns me-2"></i>Board
+                    </a>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#vacancyTextModal">
                         <i class="fas fa-file-alt me-2"></i>Parse Text
@@ -83,24 +86,10 @@
                             </div>
                         </div>
                         <div class="mb-2">
-                                <span class="badge"
-                                      th:classappend="${
-                                        response.interviewStage.name() == 'APPLIED' ? 'bg-primary' : 
-                                        (response.interviewStage.name() == 'SCREENING' ? 'bg-info' : 
-                                        (response.interviewStage.name() == 'TECHNICAL_INTERVIEW' ? 'bg-warning' : 
-                                        (response.interviewStage.name() == 'STAKEHOLDER_INTERVIEW' ? 'bg-secondary' : 
-                                        (response.interviewStage.name() == 'OFFER' ? 'bg-success' : 
-                                        'bg-danger'))))
-                                      }">
-                                    <i th:class="${
-                                        response.interviewStage.name() == 'APPLIED' ? 'fas fa-paper-plane me-1' : 
-                                        (response.interviewStage.name() == 'SCREENING' ? 'fas fa-phone me-1' : 
-                                        (response.interviewStage.name() == 'TECHNICAL_INTERVIEW' ? 'fas fa-laptop-code me-1' : 
-                                        (response.interviewStage.name() == 'STAKEHOLDER_INTERVIEW' ? 'fas fa-user-tie me-1' : 
-                                        (response.interviewStage.name() == 'OFFER' ? 'fas fa-check-circle me-1' : 
-                                        'fas fa-times-circle me-1'))))
-                                      }"></i>
-                                    <span th:text="${response.interviewStage.displayName}">Interview Stage</span>
+                                <span th:class="'badge bg-' + ${response.interviewStageDTO.colorClass ?: 'secondary'}">
+                                    <i th:if="${response.interviewStageDTO.iconClass}"
+                                       th:class="${response.interviewStageDTO.iconClass + ' me-1'}"></i>
+                                    <span th:text="${response.interviewStageDTO.label}">Interview Stage</span>
                                 </span>
                         </div>
                         <p class="mb-2">
@@ -128,11 +117,13 @@
                                    class="btn btn-sm btn-outline-warning me-1">
                                     <i class="fas fa-edit me-1"></i> Edit
                                 </a>
-                                <a th:href="@{/vacancies/my-responses/{id}/delete(id=${response.id})}"
-                                   class="btn btn-sm btn-outline-danger"
-                                   onclick="return confirm('Are you sure you want to delete this response?')">
-                                    <i class="fas fa-trash-alt me-1"></i> Delete
-                                </a>
+                                <form th:action="@{/vacancies/my-responses/{id}/delete(id=${response.id})}"
+                                      method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Are you sure you want to delete this response?')">
+                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

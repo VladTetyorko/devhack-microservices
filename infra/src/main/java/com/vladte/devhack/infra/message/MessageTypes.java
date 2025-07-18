@@ -18,8 +18,8 @@ public enum MessageTypes {
     QUESTION_GENERATE("question-generate"),
     QUESTION_GENERATE_RESULT("question-generate-result"),
 
-    VACANCY_PARSING ("vacancy-parsing"),
-    VACANCY_PARSING_RESULT ("vacancy-parsing-result");
+    VACANCY_PARSING("vacancy-parsing"),
+    VACANCY_PARSING_RESULT("vacancy-parsing-result");
 
     private final String value;
 

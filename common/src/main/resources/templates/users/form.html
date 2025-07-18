@@ -32,13 +32,51 @@
                     </div>
                 </div>
 
-                <!-- Password -->
-                <div class="mb-3">
+                <!-- Password (only for new users) -->
+                <div class="mb-3" th:if="${user.id == null}">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" th:field="*{password}" class="form-control" id="password"
+                    <input type="password" name="password" class="form-control" id="password"
                            placeholder="Enter your password" required>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}"
                          th:errors="*{password}">Password error
+                    </div>
+                </div>
+
+                <!-- AI Usage Settings -->
+                <div class="mb-3">
+                    <div class="card border-light mb-3">
+                        <div class="card-header bg-light">AI Settings</div>
+                        <div class="card-body">
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{aiUsageAllowed}"
+                                       id="aiUsageAllowed">
+                                <label class="form-check-label" for="aiUsageAllowed">Allow AI Usage</label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" th:field="*{aiUsageEnabled}"
+                                       id="aiUsageEnabled">
+                                <label class="form-check-label" for="aiUsageEnabled">Enable AI Features</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="aiPreferredLanguage" class="form-label">Preferred AI Language</label>
+                                <select class="form-select" th:field="*{aiPreferredLanguage}" id="aiPreferredLanguage">
+                                    <option value="en">English</option>
+                                    <option value="ru">Russian</option>
+                                    <option value="de">German</option>
+                                    <option value="fr">French</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visibility Settings -->
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" th:field="*{isVisibleToRecruiters}"
+                               id="isVisibleToRecruiters">
+                        <label class="form-check-label" for="isVisibleToRecruiters">Visible to Recruiters</label>
+                        <div class="form-text">If enabled, recruiters can see your profile and CV</div>
                     </div>
                 </div>
 

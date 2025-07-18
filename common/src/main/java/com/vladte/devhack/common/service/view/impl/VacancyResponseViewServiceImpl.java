@@ -2,6 +2,7 @@ package com.vladte.devhack.common.service.view.impl;
 
 import com.vladte.devhack.common.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.service.domain.InterviewStageService;
 import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.domain.VacancyResponseService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
@@ -9,7 +10,6 @@ import com.vladte.devhack.common.service.view.VacancyResponseViewService;
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.User;
 import com.vladte.devhack.entities.VacancyResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,14 +34,17 @@ public class VacancyResponseViewServiceImpl implements VacancyResponseViewServic
     private final VacancyResponseService vacancyResponseService;
     private final UserService userService;
     private final VacancyResponseMapper vacancyResponseMapper;
+    private final InterviewStageService interviewStageService;
 
-    @Autowired
+
     public VacancyResponseViewServiceImpl(VacancyResponseService vacancyResponseService,
                                           UserService userService,
-                                          VacancyResponseMapper vacancyResponseMapper) {
+                                          VacancyResponseMapper vacancyResponseMapper,
+                                          InterviewStageService interviewStageService) {
         this.vacancyResponseService = vacancyResponseService;
         this.userService = userService;
         this.vacancyResponseMapper = vacancyResponseMapper;
+        this.interviewStageService = interviewStageService;
     }
 
     @Override
@@ -88,14 +91,10 @@ public class VacancyResponseViewServiceImpl implements VacancyResponseViewServic
 
     @Override
     public void prepareSearchResultsModel(String query, String stage, int page, int size, Model model) {
-        // Convert stage string to enum if provided
+        // Look up stage by code if provided
         InterviewStage interviewStage = null;
         if (stage != null && !stage.isEmpty()) {
-            try {
-                interviewStage = InterviewStage.valueOf(stage);
-            } catch (IllegalArgumentException e) {
-                // Invalid stage parameter, ignore it
-            }
+            interviewStage = interviewStageService.findByCode(stage).orElse(null);
         }
 
         // Create pageable object
@@ -141,9 +140,14 @@ public class VacancyResponseViewServiceImpl implements VacancyResponseViewServic
             // Get user's vacancies with pagination
             Page<VacancyResponse> vacancyResponsePage = vacancyResponseService.getVacancyResponsesByUser(user, pageable);
 
+            // Convert entities to DTOs
+            List<VacancyResponseDTO> vacancyResponseDTOs = vacancyResponsePage.getContent().stream()
+                    .map(vacancyResponseMapper::toDTO)
+                    .collect(Collectors.toList());
+
             // Add pagination data to model using ModelBuilder
             ModelBuilder.of(model)
-                    .addAttribute("vacancyResponses", vacancyResponsePage.getContent())
+                    .addAttribute("vacancyResponses", vacancyResponseDTOs)
                     .addAttribute("currentPage", page)
                     .addAttribute("totalPages", vacancyResponsePage.getTotalPages())
                     .addAttribute("totalItems", vacancyResponsePage.getTotalElements())

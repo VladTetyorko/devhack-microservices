@@ -5,7 +5,6 @@ import com.vladte.devhack.common.service.domain.UserService;
 import com.vladte.devhack.common.service.view.DashboardViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,7 @@ public class DashboardViewServiceImpl implements DashboardViewService {
     private final DashboardService dashboardService;
     private final UserService userService;
 
-    @Autowired
+
     public DashboardViewServiceImpl(DashboardService dashboardService, UserService userService) {
         this.dashboardService = dashboardService;
         this.userService = userService;

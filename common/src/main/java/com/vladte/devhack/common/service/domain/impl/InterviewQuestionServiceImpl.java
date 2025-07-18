@@ -5,7 +5,6 @@ import com.vladte.devhack.common.service.domain.InterviewQuestionService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class InterviewQuestionServiceImpl extends BaseServiceImpl<InterviewQuest
      *
      * @param repository the interview question repository
      */
-    @Autowired
+
     public InterviewQuestionServiceImpl(InterviewQuestionRepository repository) {
         super(repository);
     }

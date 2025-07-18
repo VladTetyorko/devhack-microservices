@@ -177,16 +177,10 @@
                             </small>
                         </div>
                         <div class="text-end">
-                        <span class="badge"
-                              th:classappend="${
-                                response.interviewStage == 'APPLIED' ? 'bg-primary' :
-                                (response.interviewStage == 'SCREENING' ? 'bg-info' :
-                                (response.interviewStage == 'TECHNICAL_INTERVIEW' ? 'bg-warning' :
-                                (response.interviewStage == 'STAKEHOLDER_INTERVIEW' ? 'bg-secondary' :
-                                (response.interviewStage == 'OFFER' ? 'bg-success' :
-                                'bg-danger'))))
-                              }">
-                            <span th:text="${response.interviewStage}">Stage</span>
+                        <span th:class="'badge bg-' + ${response.interviewStageDTO.colorClass ?: 'secondary'}">
+                            <i th:if="${response.interviewStageDTO.iconClass}"
+                               th:class="${response.interviewStageDTO.iconClass + ' me-1'}"></i>
+                            <span th:text="${response.interviewStageDTO.label}">Stage</span>
                         </span>
                             <small class="d-block mt-1 text-muted"
                                    th:text="${#temporals.format(response.createdAt, 'yyyy-MM-dd')}">Date</small>

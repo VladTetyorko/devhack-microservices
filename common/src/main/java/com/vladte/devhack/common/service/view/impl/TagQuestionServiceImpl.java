@@ -6,7 +6,6 @@ import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.TagQuestionService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class TagQuestionServiceImpl implements TagQuestionService {
     private final TagService tagService;
     private final InterviewQuestionService questionService;
 
-    @Autowired
+
     public TagQuestionServiceImpl(TagService tagService, InterviewQuestionService questionService) {
         this.tagService = tagService;
         this.questionService = questionService;

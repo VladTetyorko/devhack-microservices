@@ -171,9 +171,9 @@ public class AnswerServiceTest extends BaseServiceTest {
         when(answerKafkaConsumer.registerPendingRequest(any())).thenReturn(aiFuture);
 
         // Mock the Kafka provider methods
-        when(answerKafkaProvider.sendAnswerCheatingCheckRequest(any(), any(), any()))
+        when(answerKafkaProvider.subscribeToAnswerCheatingCheck(any(), any(), any()))
                 .thenReturn(CompletableFuture.completedFuture(mock(SendResult.class)));
-        when(answerKafkaProvider.sendAnswerFeedbackRequest(any(), any(), any()))
+        when(answerKafkaProvider.subscribeToAnswerFeedbackCheck(any(), any(), any()))
                 .thenReturn(CompletableFuture.completedFuture(mock(SendResult.class)));
 
         when(answerRepository.save(any(Answer.class))).thenReturn(answer);
@@ -188,8 +188,8 @@ public class AnswerServiceTest extends BaseServiceTest {
 
         // Verify repository and Kafka provider were called
         verify(answerRepository).findById(answerId);
-        verify(answerKafkaProvider).sendAnswerCheatingCheckRequest(any(), any(), any());
-        verify(answerKafkaProvider).sendAnswerFeedbackRequest(any(), any(), any());
+        verify(answerKafkaProvider).subscribeToAnswerCheatingCheck(any(), any(), any());
+        verify(answerKafkaProvider).subscribeToAnswerFeedbackCheck(any(), any(), any());
         verify(answerRepository).save(any(Answer.class));
     }
 
@@ -225,9 +225,9 @@ public class AnswerServiceTest extends BaseServiceTest {
         when(answerKafkaConsumer.registerPendingRequest(any())).thenReturn(aiFuture);
 
         // Mock the Kafka provider methods
-        when(answerKafkaProvider.sendAnswerCheatingCheckRequest(any(), any(), any()))
+        when(answerKafkaProvider.subscribeToAnswerCheatingCheck(any(), any(), any()))
                 .thenReturn(CompletableFuture.completedFuture(mock(SendResult.class)));
-        when(answerKafkaProvider.sendAnswerFeedbackRequest(any(), any(), any()))
+        when(answerKafkaProvider.subscribeToAnswerFeedbackCheck(any(), any(), any()))
                 .thenReturn(CompletableFuture.completedFuture(mock(SendResult.class)));
 
         when(answerRepository.save(any(Answer.class))).thenReturn(answer);

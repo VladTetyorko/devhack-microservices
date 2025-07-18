@@ -19,7 +19,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -68,11 +68,24 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/v1/models" ]
       interval: 10s
       retries: 5
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"   # API порт
+      - "9001:9001"   # Web UI порт
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  postgres-data: 
+  postgres-data:
   postgres-backup-data:
+  minio_data:
