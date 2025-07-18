@@ -160,7 +160,7 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
         if (existingEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         E entity = existingEntity.get();
         mapper.updateEntityFromDTO(entity, dto);
         E savedEntity = service.save(entity);
@@ -188,7 +188,7 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
         if (existingEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         service.deleteById(id);
         return ResponseEntity.noContent().build();
     }

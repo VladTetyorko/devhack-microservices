@@ -1,4 +1,4 @@
-package com.vladte.devhack.ai.util;
+package com.vladte.devhack.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;

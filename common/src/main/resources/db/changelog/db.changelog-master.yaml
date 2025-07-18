@@ -19,3 +19,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/09-create-interview-stages-and-categories.sql
   - include:
       file: classpath:db/changelog/changes/10-add-order-index-to-interview_stage_category.sql
+  - include:
+      file: classpath:db/changelog/changes/11-added-user-friendly-table-for-ai-usage.sql

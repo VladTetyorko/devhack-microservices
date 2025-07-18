@@ -22,7 +22,7 @@ import java.util.*;
 @RequestMapping("/questions")
 public class InterviewQuestionController extends BaseCrudController<InterviewQuestion, InterviewQuestionDTO, UUID, InterviewQuestionService, InterviewQuestionMapper> {
 
-    private static final Logger logger = LoggerFactory.getLogger(InterviewQuestionController.class);
+    private static final Logger log = LoggerFactory.getLogger(InterviewQuestionController.class);
     private final QuestionGenerationOrchestrationService questionGenerationOrchestrationService;
     private final DashboardViewService dashboardViewService;
     private final QuestionFormService questionFormService;
@@ -228,7 +228,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             return questionGenerationOrchestrationService.buildApiResponse(false, "Tag name is required");
         }
 
-        logger.info("API: Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
+        log.info("API: Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
 
         // Start the asynchronous generation process without blocking
         questionGenerationOrchestrationService.startEasyQuestionGeneration(tagName);
@@ -250,7 +250,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             return "redirect:/questions/generate/multi";
         }
 
-        logger.info("Starting asynchronous generation of easy questions for {} tags", tagIds.size());
+        log.info("Starting asynchronous generation of easy questions for {} tags", tagIds.size());
 
         // Start the asynchronous generation process without blocking
         questionGenerationOrchestrationService.startEasyQuestionGenerationForMultipleTags(tagIds);

@@ -3,7 +3,6 @@ package com.vladte.devhack.common.mapper;
 import com.vladte.devhack.common.dto.InterviewStageDTO;
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.InterviewStageCategory;
-
 import org.springframework.stereotype.Component;
 
 /**

@@ -9,6 +9,9 @@
             <div class="d-flex align-items-center">
                 <i class="fas fa-user-circle fa-2x me-3"></i>
                 <h3 class="mb-0" th:text="${user.name}">User Profile</h3>
+                <span class="badge bg-light text-dark ms-2" th:if="${user.role != null}"
+                      th:text="${user.role}">ROLE</span>
+                <span class="badge bg-success ms-2" th:if="${user.isVisibleToRecruiters}">Visible to Recruiters</span>
             </div>
             <div>
                 <a th:href="@{/users/{id}/edit(id=${user.id})}" class="btn btn-sm btn-light me-1">
@@ -31,6 +34,51 @@
                             <hr>
                             <p><strong>Name:</strong> <span th:text="${user.name}">User Name</span></p>
                             <p><strong>Email:</strong> <span th:text="${user.email}">user@example.com</span></p>
+                            <p><strong>Created:</strong> <span
+                                    th:text="${#temporals.format(user.createdAt, 'dd MMM yyyy')}">01 Jan 2023</span></p>
+
+                            <!-- CV Information -->
+                            <div class="mt-4" th:if="${user.cvFileName != null}">
+                                <h6><i class="fas fa-file-alt me-2"></i>CV Information</h6>
+                                <hr>
+                                <p>
+                                    <strong>File:</strong>
+                                    <a th:href="${user.cvFileHref}" th:text="${user.cvFileName}" target="_blank">resume.pdf</a>
+                                    <span class="text-muted ms-2"
+                                          th:text="'(' + ${#numbers.formatDecimal(user.cvFileSize / 1024, 0, 1)} + ' KB)'"></span>
+                                </p>
+                                <p><strong>Uploaded:</strong> <span
+                                        th:text="${#temporals.format(user.cvUploadedAt, 'dd MMM yyyy')}">01 Jan 2023</span>
+                                </p>
+                                <p th:if="${user.aiCvScore != null}">
+                                    <strong>CV Score:</strong>
+                                    <span class="badge"
+                                          th:classappend="${user.aiCvScore >= 80 ? 'bg-success' : (user.aiCvScore >= 50 ? 'bg-warning' : 'bg-danger')}"
+                                          th:text="${user.aiCvScore} + '/100'">80/100</span>
+                                </p>
+                            </div>
+
+                            <!-- AI Settings -->
+                            <div class="mt-4">
+                                <h6><i class="fas fa-robot me-2"></i>AI Settings</h6>
+                                <hr>
+                                <p>
+                                    <strong>AI Usage:</strong>
+                                    <span class="badge"
+                                          th:classappend="${user.aiUsageAllowed ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${user.aiUsageAllowed ? 'Allowed' : 'Not Allowed'}">Allowed</span>
+                                </p>
+                                <p>
+                                    <strong>AI Features:</strong>
+                                    <span class="badge"
+                                          th:classappend="${user.aiUsageEnabled ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${user.aiUsageEnabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                                </p>
+                                <p th:if="${user.aiPreferredLanguage != null}">
+                                    <strong>Language:</strong>
+                                    <span th:text="${user.aiPreferredLanguage == 'en' ? 'English' : (user.aiPreferredLanguage == 'ru' ? 'Russian' : (user.aiPreferredLanguage == 'de' ? 'German' : (user.aiPreferredLanguage == 'fr' ? 'French' : user.aiPreferredLanguage)))}">English</span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -39,16 +87,43 @@
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-chart-line me-2"></i>Progress Overview</h5>
                             <hr>
+                            <!-- AI Analysis Section (if available) -->
+                            <div class="mb-4"
+                                 th:if="${user.aiSkillsSummary != null || user.aiSuggestedImprovements != null}">
+                                <h6><i class="fas fa-robot text-primary me-2"></i>AI CV Analysis</h6>
+                                <div class="row">
+                                    <div class="col-md-6" th:if="${user.aiSkillsSummary != null}">
+                                        <div class="card border-primary mb-3">
+                                            <div class="card-header bg-primary text-white">Skills Summary</div>
+                                            <div class="card-body">
+                                                <p class="card-text" th:text="${user.aiSkillsSummary}">Skills summary
+                                                    will appear here.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" th:if="${user.aiSuggestedImprovements != null}">
+                                        <div class="card border-info mb-3">
+                                            <div class="card-header bg-info text-white">Suggested Improvements</div>
+                                            <div class="card-body">
+                                                <p class="card-text" th:text="${user.aiSuggestedImprovements}">
+                                                    Improvement suggestions will appear here.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span><i class="fas fa-comment text-success me-2"></i>Answers</span>
-                                        <span class="badge bg-success" th:text="${user.answers.size()}">0</span>
+                                        <span class="badge bg-success"
+                                              th:text="${user.answerIds != null ? user.answerIds.size() : 0}">0</span>
                                     </div>
                                     <div class="progress" style="height: 10px;">
                                         <div class="progress-bar bg-success" role="progressbar"
-                                             th:style="'width: ' + ${user.answers.size() > 0 ? (user.answers.size() <= 50 ? user.answers.size()*2 : 100) : 0} + '%'"
-                                             th:aria-valuenow="${user.answers.size()}" aria-valuemin="0"
+                                             th:style="'width: ' + ${user.answerIds != null && user.answerIds.size() > 0 ? (user.answerIds.size() <= 50 ? user.answerIds.size()*2 : 100) : 0} + '%'"
+                                             th:aria-valuenow="${user.answerIds != null ? user.answerIds.size() : 0}"
+                                             aria-valuemin="0"
                                              aria-valuemax="50">
                                         </div>
                                     </div>
@@ -56,12 +131,14 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span><i class="fas fa-sticky-note text-warning me-2"></i>Notes</span>
-                                        <span class="badge bg-warning" th:text="${user.notes.size()}">0</span>
+                                        <span class="badge bg-warning"
+                                              th:text="${user.noteIds != null ? user.noteIds.size() : 0}">0</span>
                                     </div>
                                     <div class="progress" style="height: 10px;">
                                         <div class="progress-bar bg-warning" role="progressbar"
-                                             th:style="'width: ' + ${user.notes.size() > 0 ? (user.notes.size() <= 50 ? user.notes.size()*2 : 100) : 0} + '%'"
-                                             th:aria-valuenow="${user.notes.size()}" aria-valuemin="0"
+                                             th:style="'width: ' + ${user.noteIds != null && user.noteIds.size() > 0 ? (user.noteIds.size() <= 50 ? user.noteIds.size()*2 : 100) : 0} + '%'"
+                                             th:aria-valuenow="${user.noteIds != null ? user.noteIds.size() : 0}"
+                                             aria-valuemin="0"
                                              aria-valuemax="50">
                                         </div>
                                     </div>
@@ -71,12 +148,14 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span><i class="fas fa-briefcase text-info me-2"></i>Vacancies</span>
-                                        <span class="badge bg-info" th:text="${user.vacancyResponses.size()}">0</span>
+                                        <span class="badge bg-info"
+                                              th:text="${user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0}">0</span>
                                     </div>
                                     <div class="progress" style="height: 10px;">
                                         <div class="progress-bar bg-info" role="progressbar"
-                                             th:style="'width: ' + ${user.vacancyResponses.size() > 0 ? (user.vacancyResponses.size() <= 10 ? user.vacancyResponses.size()*10 : 100) : 0} + '%'"
-                                             th:aria-valuenow="${user.vacancyResponses.size()}" aria-valuemin="0"
+                                             th:style="'width: ' + ${user.vacancyResponseIds != null && user.vacancyResponseIds.size() > 0 ? (user.vacancyResponseIds.size() <= 10 ? user.vacancyResponseIds.size()*10 : 100) : 0} + '%'"
+                                             th:aria-valuenow="${user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0}"
+                                             aria-valuemin="0"
                                              aria-valuemax="10">
                                         </div>
                                     </div>
@@ -85,12 +164,12 @@
                                     <div class="d-flex justify-content-between align-items-center mb-1">
                                         <span><i class="fas fa-tasks text-primary me-2"></i>Total Progress</span>
                                         <span class="badge bg-primary"
-                                              th:text="${user.answers.size() + user.notes.size() + user.vacancyResponses.size()}">0</span>
+                                              th:text="${(user.answerIds != null ? user.answerIds.size() : 0) + (user.noteIds != null ? user.noteIds.size() : 0) + (user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0)}">0</span>
                                     </div>
                                     <div class="progress" style="height: 10px;">
                                         <div class="progress-bar bg-primary" role="progressbar"
-                                             th:style="'width: ' + ${(user.answers.size() + user.notes.size() + user.vacancyResponses.size()) > 0 ? ((user.answers.size() + user.notes.size() + user.vacancyResponses.size()) <= 100 ? (user.answers.size() + user.notes.size() + user.vacancyResponses.size()) : 100) : 0} + '%'"
-                                             th:aria-valuenow="${user.answers.size() + user.notes.size() + user.vacancyResponses.size()}"
+                                             th:style="'width: ' + ${((user.answerIds != null ? user.answerIds.size() : 0) + (user.noteIds != null ? user.noteIds.size() : 0) + (user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0)) > 0 ? (((user.answerIds != null ? user.answerIds.size() : 0) + (user.noteIds != null ? user.noteIds.size() : 0) + (user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0)) <= 100 ? ((user.answerIds != null ? user.answerIds.size() : 0) + (user.noteIds != null ? user.noteIds.size() : 0) + (user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0)) : 100) : 0} + '%'"
+                                             th:aria-valuenow="${(user.answerIds != null ? user.answerIds.size() : 0) + (user.noteIds != null ? user.noteIds.size() : 0) + (user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0)}"
                                              aria-valuemin="0" aria-valuemax="100">
                                         </div>
                                     </div>
@@ -150,13 +229,19 @@
 
     <!-- User's Answers -->
     <div class="card mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h4 class="mb-0"><i class="fas fa-comment text-success me-2"></i>Answers</h4>
+            <a th:href="@{/questions}" class="btn btn-sm btn-success">
+                <i class="fas fa-plus me-1"></i>Answer Questions
+            </a>
+        </div>
         <div class="card-body">
-            <div th:if="${not #lists.isEmpty(user.answers)}" class="list-group list-group-flush">
-                <div th:each="answer : ${user.answers}" class="list-group-item">
+            <div th:if="${userAnswers != null && not #lists.isEmpty(userAnswers)}" class="list-group list-group-flush">
+                <div th:each="answer : ${userAnswers}" class="list-group-item">
                     <div class="d-flex w-100 justify-content-between mb-2">
                         <h5 class="mb-1">
-                            <a th:href="@{/questions/{id}(id=${answer.question.id})}"
-                               th:text="${#strings.abbreviate(answer.question.questionText, 100)}">Question Text</a>
+                            <a th:href="@{/questions/{id}(id=${answer.questionId})}"
+                               th:text="${#strings.abbreviate(answer.questionText, 100)}">Question Text</a>
                         </h5>
                         <small th:text="${#temporals.format(answer.createdAt, 'dd MMM yyyy HH:mm')}">Date</small>
                     </div>
@@ -176,9 +261,12 @@
                     </div>
                 </div>
             </div>
-            <div th:if="${#lists.isEmpty(user.answers)}" class="text-center py-5">
+            <div th:if="${userAnswers == null || #lists.isEmpty(userAnswers)}" class="text-center py-5">
                 <i class="fas fa-comment fa-3x text-muted mb-3"></i>
                 <p class="lead text-muted">No answers yet.</p>
+                <a th:href="@{/questions}" class="btn btn-success">
+                    <i class="fas fa-plus me-1"></i>Answer Questions
+                </a>
             </div>
         </div>
     </div>
@@ -192,12 +280,12 @@
             </a>
         </div>
         <div class="card-body">
-            <div th:if="${not #lists.isEmpty(user.notes)}" class="list-group list-group-flush">
-                <div th:each="note : ${user.notes}" class="list-group-item">
+            <div th:if="${userNotes != null && not #lists.isEmpty(userNotes)}" class="list-group list-group-flush">
+                <div th:each="note : ${userNotes}" class="list-group-item">
                     <div class="d-flex w-100 justify-content-between mb-2">
                         <h5 class="mb-1">
-                            <a th:href="@{/questions/{id}(id=${note.question.id})}"
-                               th:text="${#strings.abbreviate(note.question.questionText, 100)}">Question Text</a>
+                            <a th:href="@{/questions/{id}(id=${note.questionId})}"
+                               th:text="${#strings.abbreviate(note.questionText, 100)}">Question Text</a>
                         </h5>
                         <small th:text="${#temporals.format(note.updatedAt, 'dd MMM yyyy HH:mm')}">Date</small>
                     </div>
@@ -216,7 +304,7 @@
                     </div>
                 </div>
             </div>
-            <div th:if="${#lists.isEmpty(user.notes)}" class="text-center py-5">
+            <div th:if="${userNotes == null || #lists.isEmpty(userNotes)}" class="text-center py-5">
                 <i class="fas fa-sticky-note fa-3x text-muted mb-3"></i>
                 <p class="lead text-muted">No notes yet.</p>
                 <a th:href="@{/notes/new}" class="btn btn-warning text-white">

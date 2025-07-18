@@ -123,7 +123,7 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
         if (currentStage.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         Optional<InterviewStage> nextStage = service.getNextStage(currentStage.get());
         return nextStage.map(s -> ResponseEntity.ok(mapper.toDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
@@ -145,7 +145,7 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
         if (currentStage.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        
+
         Optional<InterviewStage> previousStage = service.getPreviousStage(currentStage.get());
         return previousStage.map(s -> ResponseEntity.ok(mapper.toDTO(s)))
                 .orElse(ResponseEntity.notFound().build());

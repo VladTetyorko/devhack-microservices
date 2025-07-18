@@ -21,7 +21,7 @@ import java.util.Arrays;
 @Component
 public class TestLoggingAspect {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestLoggingAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(TestLoggingAspect.class);
 
     /**
      * Pointcut for all service methods in the test packages.
@@ -47,7 +47,7 @@ public class TestLoggingAspect {
         // Log method entry
         String entryMessage = String.format("Entering %s.%s with parameters: %s",
                 className, methodName, Arrays.toString(args));
-        logger.debug(entryMessage);
+        log.debug(entryMessage);
 
         // Measure execution time
         long startTime = System.currentTimeMillis();
@@ -61,7 +61,7 @@ public class TestLoggingAspect {
             long executionTime = System.currentTimeMillis() - startTime;
             String exitMessage = String.format("Exiting %s.%s (execution time: %d ms) with result: %s",
                     className, methodName, executionTime, result);
-            logger.debug(exitMessage);
+            log.debug(exitMessage);
 
             // Attach to Allure report
             attachToAllureReport(className, methodName, args, result, executionTime, null);
@@ -72,7 +72,7 @@ public class TestLoggingAspect {
             long executionTime = System.currentTimeMillis() - startTime;
             String errorMessage = String.format("Exception in %s.%s (execution time: %d ms): %s",
                     className, methodName, executionTime, e.getMessage());
-            logger.error(errorMessage, e);
+            log.error(errorMessage, e);
 
             // Attach to Allure report
             attachToAllureReport(className, methodName, args, null, executionTime, e);

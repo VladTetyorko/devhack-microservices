@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class QuestionGenerationOrchestrationServiceImpl implements QuestionGenerationOrchestrationService {
 
-    private static final Logger logger = LoggerFactory.getLogger(QuestionGenerationOrchestrationServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(QuestionGenerationOrchestrationServiceImpl.class);
 
     private final TagService tagService;
     private final QuestionGenerationService questionGenerationService;
@@ -41,35 +41,35 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
 
     @Override
     public CompletableFuture<List<InterviewQuestion>> startQuestionGeneration(String tagName, int count, String difficulty) {
-        logger.info("Starting asynchronous generation of {} {} difficulty questions for tag: {}",
+        log.info("Starting asynchronous generation of {} {} difficulty questions for tag: {}",
                 count, difficulty, tagName);
 
         return questionGenerationService.generateAndSaveQuestions(tagName, count, difficulty)
                 .thenApply(questions -> {
-                    logger.info("Successfully generated {} questions for tag: {}", questions.size(), tagName);
+                    log.info("Successfully generated {} questions for tag: {}", questions.size(), tagName);
                     return questions;
                 })
                 .exceptionally(ex -> {
                     // Log the error but don't block the user
-                    logger.error("Error generating questions: {}", ex.getMessage(), ex);
+                    log.error("Error generating questions: {}", ex.getMessage(), ex);
                     return null;
                 });
     }
 
     @Override
     public CompletableFuture<List<InterviewQuestion>> startEasyQuestionGeneration(String tagName) {
-        logger.info("Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
+        log.info("Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
 
         // Create a single future for the tag to optimize processing
         CompletableFuture<List<InterviewQuestion>> future = startQuestionGeneration(tagName, 3, "easy");
 
         // Apply optimizations for this specific tag
         return future.thenApply(questions -> {
-            logger.info("Successfully generated {} easy questions for tag: {}",
+            log.info("Successfully generated {} easy questions for tag: {}",
                     questions != null ? questions.size() : 0, tagName);
             return questions;
         }).exceptionally(ex -> {
-            logger.error("Error generating easy questions for tag {}: {}", tagName, ex.getMessage(), ex);
+            log.error("Error generating easy questions for tag {}: {}", tagName, ex.getMessage(), ex);
             return null;
         });
     }
@@ -105,7 +105,7 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
 
     @Override
     public void startEasyQuestionGenerationForMultipleTags(List<UUID> tagIds) {
-        logger.info("Starting asynchronous generation of easy questions for multiple tags: {}", tagIds);
+        log.info("Starting asynchronous generation of easy questions for multiple tags: {}", tagIds);
 
         // Use CompletableFuture.runAsync to make this method truly async and independent
         CompletableFuture.runAsync(() -> {
@@ -128,11 +128,11 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
                                 totalQuestions += questions.size();
                             }
                         }
-                        logger.info("Successfully generated a total of {} questions for {} tags",
+                        log.info("Successfully generated a total of {} questions for {} tags",
                                 totalQuestions, tagIds.size());
                     })
                     .exceptionally(ex -> {
-                        logger.error("Error generating questions for multiple tags: {}", ex.getMessage(), ex);
+                        log.error("Error generating questions for multiple tags: {}", ex.getMessage(), ex);
                         return null;
                     });
         });

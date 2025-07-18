@@ -49,9 +49,9 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      * @param vacancyService         the vacancy service
      */
     public VacancyResponseRestController(VacancyResponseService vacancyResponseService,
-                                        VacancyResponseMapper vacancyResponseMapper,
-                                        UserService userService,
-                                        VacancyService vacancyService) {
+                                         VacancyResponseMapper vacancyResponseMapper,
+                                         UserService userService,
+                                         VacancyService vacancyService) {
         super(vacancyResponseService, vacancyResponseMapper);
         this.userService = userService;
         this.vacancyService = vacancyService;
@@ -66,7 +66,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @GetMapping("/my-responses")
     @Operation(summary = "Get all vacancy responses for the authenticated user",
-               description = "Returns a page of vacancy responses for the authenticated user")
+            description = "Returns a page of vacancy responses for the authenticated user")
     public ResponseEntity<Page<VacancyResponseDTO>> getMyVacancyResponses(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user,
@@ -87,7 +87,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @GetMapping("/search")
     @Operation(summary = "Search for vacancy responses",
-               description = "Returns a page of vacancy responses matching the search criteria")
+            description = "Returns a page of vacancy responses matching the search criteria")
     public ResponseEntity<Page<VacancyResponseDTO>> searchVacancyResponses(
             @Parameter(description = "Search query for company name, position, or technologies")
             @RequestParam(required = false) String query,
@@ -109,7 +109,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @PostMapping("/for-vacancy/{vacancyId}")
     @Operation(summary = "Create a new vacancy response for a vacancy",
-               description = "Creates a new vacancy response for the specified vacancy and authenticated user")
+            description = "Creates a new vacancy response for the specified vacancy and authenticated user")
     public ResponseEntity<VacancyResponseDTO> createVacancyResponse(
             @Parameter(description = "ID of the vacancy")
             @PathVariable UUID vacancyId,
@@ -132,7 +132,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @GetMapping("/by-vacancy/{vacancyId}")
     @Operation(summary = "Get all vacancy responses for a specific vacancy",
-               description = "Returns a list of vacancy responses for the specified vacancy")
+            description = "Returns a list of vacancy responses for the specified vacancy")
     public ResponseEntity<List<VacancyResponseDTO>> getVacancyResponsesByVacancy(
             @Parameter(description = "ID of the vacancy")
             @PathVariable UUID vacancyId) {
@@ -154,7 +154,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @GetMapping("/by-user/{userId}")
     @Operation(summary = "Get all vacancy responses for a specific user",
-               description = "Returns a page of vacancy responses for the specified user")
+            description = "Returns a page of vacancy responses for the specified user")
     public ResponseEntity<Page<VacancyResponseDTO>> getVacancyResponsesByUser(
             @Parameter(description = "ID of the user")
             @PathVariable UUID userId,
@@ -179,23 +179,23 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
      */
     @PutMapping("/{id}/status")
     @Operation(summary = "Update the interview stage of a vacancy response",
-               description = "Updates the interview stage of the specified vacancy response")
+            description = "Updates the interview stage of the specified vacancy response")
     public ResponseEntity<VacancyResponseDTO> updateVacancyResponseStatus(
             @Parameter(description = "ID of the vacancy response")
             @PathVariable UUID id,
             @Valid @RequestBody StatusUpdateRequest request,
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to update status of vacancy response: {} to stage: {} by user: {}", 
-                  id, request.getInterviewStage(), user.getName());
+        log.debug("REST request to update status of vacancy response: {} to stage: {} by user: {}",
+                id, request.getInterviewStage(), user.getName());
 
         VacancyResponse vacancyResponse = service.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
 
         // Check if the current user owns this vacancy response
         if (!vacancyResponse.getUser().getId().equals(user.getId())) {
-            log.warn("User {} attempted to update vacancy response {} owned by user {}", 
-                     user.getName(), id, vacancyResponse.getUser().getName());
+            log.warn("User {} attempted to update vacancy response {} owned by user {}",
+                    user.getName(), id, vacancyResponse.getUser().getName());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
@@ -215,7 +215,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
         @Parameter(description = "New interview stage", required = true)
         private InterviewStage interviewStage;
 
-        public StatusUpdateRequest() {}
+        public StatusUpdateRequest() {
+        }
 
         public StatusUpdateRequest(InterviewStage interviewStage) {
             this.interviewStage = interviewStage;

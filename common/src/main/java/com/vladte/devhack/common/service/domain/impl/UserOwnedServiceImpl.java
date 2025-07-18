@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends JpaRepository<T, ID>>
         extends BaseServiceImpl<T, ID, R> {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserOwnedServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(UserOwnedServiceImpl.class);
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     /**
@@ -72,7 +72,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
         // If authentication is null (e.g., when called from an async thread), allow access
         // This is a security trade-off to allow async operations to work
         if (authentication == null) {
-            logger.warn("Authentication is null when checking access to entity. This may be due to an async call. Allowing access.");
+            log.warn("Authentication is null when checking access to entity. This may be due to an async call. Allowing access.");
             return true;
         }
 
@@ -94,7 +94,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
     protected String getCurrentUserEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            logger.warn("Authentication is null when getting current user email. This may be due to an async call.");
+            log.warn("Authentication is null when getting current user email. This may be due to an async call.");
             return "system"; // Return a default value for async operations
         }
         return authentication.getName();
@@ -108,7 +108,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
     protected boolean isCurrentUserManager() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
-            logger.warn("Authentication is null when checking if current user is manager. This may be due to an async call.");
+            log.warn("Authentication is null when checking if current user is manager. This may be due to an async call.");
             return false; // Default to non-manager for security
         }
         return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER));
@@ -121,12 +121,12 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
      */
     @Override
     public List<T> findAll() {
-        logger.debug("Finding all entities with access control");
+        log.debug("Finding all entities with access control");
         List<T> allEntities = repository.findAll();
 
         // If the current user is a manager, return all entities
         if (isCurrentUserManager()) {
-            logger.debug("Current user is a manager, returning all {} entities", allEntities.size());
+            log.debug("Current user is a manager, returning all {} entities", allEntities.size());
             return allEntities;
         }
 
@@ -135,7 +135,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
                 .filter(this::hasAccessToEntity)
                 .collect(Collectors.toList());
 
-        logger.debug("Filtered {} entities down to {} accessible entities for current user",
+        log.debug("Filtered {} entities down to {} accessible entities for current user",
                 allEntities.size(), accessibleEntities.size());
 
         return accessibleEntities;
@@ -149,12 +149,12 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
      */
     @Override
     public Page<T> findAll(Pageable pageable) {
-        logger.debug("Finding all entities with pagination and access control");
+        log.debug("Finding all entities with pagination and access control");
         Page<T> page = repository.findAll(pageable);
 
         // If the current user is a manager, return all entities
         if (isCurrentUserManager()) {
-            logger.debug("Current user is a manager, returning all entities");
+            log.debug("Current user is a manager, returning all entities");
             return page;
         }
 
@@ -166,7 +166,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
                 .filter(this::hasAccessToEntity)
                 .collect(Collectors.toList());
 
-        logger.debug("Filtered page content from {} entities to {} accessible entities",
+        log.debug("Filtered page content from {} entities to {} accessible entities",
                 page.getContent().size(), filteredContent.size());
 
         // Create a new page with the filtered content
@@ -184,7 +184,7 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
      */
     @Override
     public Optional<T> findById(ID id) {
-        logger.debug("Finding entity by ID: {} with access control", id);
+        log.debug("Finding entity by ID: {} with access control", id);
         Optional<T> entityOpt = repository.findById(id);
 
         if (entityOpt.isPresent()) {
@@ -192,15 +192,15 @@ public abstract class UserOwnedServiceImpl<T extends BasicEntity, ID, R extends 
 
             // Check if the current user has access to the entity
             if (hasAccessToEntity(entity)) {
-                logger.debug("Current user has access to entity with ID: {}", id);
+                log.debug("Current user has access to entity with ID: {}", id);
                 return entityOpt;
             } else {
-                logger.debug("Current user does not have access to entity with ID: {}", id);
+                log.debug("Current user does not have access to entity with ID: {}", id);
                 return Optional.empty();
             }
         }
 
-        logger.debug("No entity found with ID: {}", id);
+        log.debug("No entity found with ID: {}", id);
         return Optional.empty();
     }
 }

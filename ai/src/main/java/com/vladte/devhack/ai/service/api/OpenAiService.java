@@ -1,5 +1,10 @@
 package com.vladte.devhack.ai.service.api;
 
+import com.vladte.devhack.infra.model.arguments.request.AnswerCheckRequestArguments;
+import com.vladte.devhack.infra.model.arguments.request.QuestionGenerateRequestArguments;
+import com.vladte.devhack.infra.model.arguments.request.VacancyParseFromTestRequestArguments;
+import com.vladte.devhack.infra.model.payload.RequestPayload;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,30 +24,32 @@ public interface OpenAiService {
     /**
      * Generate interview questions based on a tag asynchronously.
      *
-     * @param tag        the tag to generate questions for
-     * @param count      the number of questions to generate
-     * @param difficulty the difficulty level of the questions
+     * @param payload the payload containing question generation arguments including tag, count and difficulty
      * @return a CompletableFuture containing the generated questions
      */
-    CompletableFuture<String> generateQuestionsForTagAsync(String tag, int count, String difficulty);
+    CompletableFuture<String> generateQuestionsForTagAsync(RequestPayload<QuestionGenerateRequestArguments> payload);
 
     /**
      * Check an answer to an interview question and provide a score and feedback asynchronously.
      *
-     * @param questionText the text of the interview question
-     * @param answerText   the text of the answer to check
+     * @param payload the payload containing the question and answer to check
      * @return a CompletableFuture containing a map with the score and feedback
      */
-    CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(String questionText, String answerText);
+    CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(RequestPayload<AnswerCheckRequestArguments> payload);
 
     /**
      * Check if an answer to an interview question contains evidence of cheating asynchronously.
      *
-     * @param questionText the text of the interview question
-     * @param answerText   the text of the answer to check
+     * @param payload the payload containing the question and answer to check for cheating
      * @return a CompletableFuture containing true if the answer contains evidence of cheating, false otherwise
      */
-    CompletableFuture<Boolean> checkAnswerForCheatingAsync(String questionText, String answerText);
+    CompletableFuture<Boolean> checkAnswerForCheatingAsync(RequestPayload<AnswerCheckRequestArguments> payload);
 
-    CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(String vacancyDescription);
+    /**
+     * Extract a structured vacancy model from a text description asynchronously.
+     *
+     * @param payload the payload containing the vacancy text description
+     * @return a CompletableFuture containing a map with the extracted vacancy model data
+     */
+    CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(RequestPayload<VacancyParseFromTestRequestArguments> payload);
 }

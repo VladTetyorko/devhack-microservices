@@ -37,15 +37,15 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
     /**
      * Constructor with service and mapper injection.
      *
-     * @param answerService       the answer service
-     * @param answerMapper        the answer mapper
-     * @param questionService     the question service
-     * @param userService         the user service
+     * @param answerService   the answer service
+     * @param answerMapper    the answer mapper
+     * @param questionService the question service
+     * @param userService     the user service
      */
-    public AnswerRestController(AnswerService answerService, 
-                               AnswerMapper answerMapper,
-                               InterviewQuestionService questionService,
-                               UserService userService) {
+    public AnswerRestController(AnswerService answerService,
+                                AnswerMapper answerMapper,
+                                InterviewQuestionService questionService,
+                                UserService userService) {
         super(answerService, answerMapper);
         this.questionService = questionService;
         this.userService = userService;
@@ -59,8 +59,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
      * @return a page of answers
      */
     @GetMapping("/my-answers")
-    @Operation(summary = "Get all answers for the authenticated user", 
-               description = "Returns a page of answers for the authenticated user")
+    @Operation(summary = "Get all answers for the authenticated user",
+            description = "Returns a page of answers for the authenticated user")
     public ResponseEntity<Page<AnswerDTO>> getMyAnswers(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user,
@@ -79,8 +79,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
      * @return a page of answers
      */
     @GetMapping("/by-question/{questionId}")
-    @Operation(summary = "Get all answers for a specific question", 
-               description = "Returns a page of answers for the specified question")
+    @Operation(summary = "Get all answers for a specific question",
+            description = "Returns a page of answers for the specified question")
     public ResponseEntity<Page<AnswerDTO>> getAnswersByQuestion(
             @Parameter(description = "ID of the question")
             @PathVariable UUID questionId,
@@ -98,13 +98,13 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
     /**
      * Get all answers for a specific user.
      *
-     * @param userId    the ID of the user
-     * @param pageable  pagination information
+     * @param userId   the ID of the user
+     * @param pageable pagination information
      * @return a page of answers
      */
     @GetMapping("/by-user/{userId}")
-    @Operation(summary = "Get all answers for a specific user", 
-               description = "Returns a page of answers for the specified user")
+    @Operation(summary = "Get all answers for a specific user",
+            description = "Returns a page of answers for the specified user")
     public ResponseEntity<Page<AnswerDTO>> getAnswersByUser(
             @Parameter(description = "ID of the user")
             @PathVariable UUID userId,
@@ -126,8 +126,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
      * @return the updated answer
      */
     @PostMapping("/{id}/check")
-    @Operation(summary = "Check an answer using AI", 
-               description = "Initiates an AI check for the specified answer and returns a status")
+    @Operation(summary = "Check an answer using AI",
+            description = "Initiates an AI check for the specified answer and returns a status")
     public ResponseEntity<String> checkAnswerWithAi(
             @Parameter(description = "ID of the answer to check")
             @PathVariable UUID id) {

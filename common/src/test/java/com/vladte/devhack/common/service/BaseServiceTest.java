@@ -41,7 +41,7 @@ public abstract class BaseServiceTest {
      */
     @Step("Starting test: {testName}")
     protected void logTestStart(String testName) {
-        logger.info("Starting test: {}", testName);
+        log.info("Starting test: {}", testName);
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class BaseServiceTest {
      */
     @Step("Finished test: {testName}")
     protected void logTestEnd(String testName) {
-        logger.info("Finished test: {}", testName);
+        log.info("Finished test: {}", testName);
     }
 
     /**

@@ -1,15 +1,15 @@
 /**
  * Initialize Select2 for all select elements
  */
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize Select2 on all select elements
-    $('select').each(function() {
+    $('select').each(function () {
         // Skip select elements that already have Select2 initialized
         if (!$(this).hasClass('select2-hidden-accessible')) {
             $(this).select2({
                 width: '100%',
                 // Add placeholder text based on the first option if it has no value
-                placeholder: function() {
+                placeholder: function () {
                     // If the first option has no value, use its text as placeholder
                     const firstOption = $(this).find('option:first-child');
                     if (firstOption.val() === '') {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Add custom styling to make Select2 match Bootstrap theme
     $('<style>')
         .prop('type', 'text/css')

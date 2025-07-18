@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRepository<T, ID>> implements BaseService<T, ID> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseServiceImpl.class);
 
     protected final R repository;
     protected final AuditService auditService;
@@ -53,12 +53,12 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
 
     @Override
     public T save(T entity) {
-        logger.debug("Saving entity of type {}", entity.getClass().getSimpleName());
+        log.debug("Saving entity of type {}", entity.getClass().getSimpleName());
         if (entity.getId() == null) {
             entity.setCreatedAt(LocalDateTime.now());
         }
         T savedEntity = repository.save(entity);
-        logger.debug("Entity saved with ID: {}", savedEntity.getId());
+        log.debug("Entity saved with ID: {}", savedEntity.getId());
         return savedEntity;
     }
 
@@ -72,24 +72,24 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
      */
     public T save(T entity, User user, String details) {
         boolean isNew = entity.getId() == null;
-        logger.debug("Saving entity of type {} with audit, isNew: {}", entity.getClass().getSimpleName(), isNew);
+        log.debug("Saving entity of type {} with audit, isNew: {}", entity.getClass().getSimpleName(), isNew);
 
         T savedEntity = repository.save(entity);
-        logger.debug("Entity saved with ID: {}", savedEntity.getId());
+        log.debug("Entity saved with ID: {}", savedEntity.getId());
 
         if (auditService != null) {
             String entityType = entity.getClass().getSimpleName();
             String entityId = savedEntity.getId().toString();
 
             if (isNew) {
-                logger.debug("Creating audit record for new entity: {}, ID: {}", entityType, entityId);
+                log.debug("Creating audit record for new entity: {}, ID: {}", entityType, entityId);
                 auditService.auditCreate(entityType, entityId, user, details);
             } else {
-                logger.debug("Creating audit record for updated entity: {}, ID: {}", entityType, entityId);
+                log.debug("Creating audit record for updated entity: {}, ID: {}", entityType, entityId);
                 auditService.auditUpdate(entityType, entityId, user, details);
             }
         } else {
-            logger.debug("Audit service is null, skipping audit record creation");
+            log.debug("Audit service is null, skipping audit record creation");
         }
 
         return savedEntity;
@@ -97,30 +97,30 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
 
     @Override
     public List<T> findAll() {
-        logger.debug("Finding all entities");
+        log.debug("Finding all entities");
         List<T> entities = repository.findAll();
-        logger.debug("Found {} entities", entities.size());
+        log.debug("Found {} entities", entities.size());
         return entities;
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
-        logger.debug("Finding all entities with pagination: page {}, size {}",
+        log.debug("Finding all entities with pagination: page {}, size {}",
                 pageable.getPageNumber(), pageable.getPageSize());
         Page<T> page = repository.findAll(pageable);
-        logger.debug("Found {} entities (page {} of {})",
+        log.debug("Found {} entities (page {} of {})",
                 page.getNumberOfElements(), page.getNumber() + 1, page.getTotalPages());
         return page;
     }
 
     @Override
     public Optional<T> findById(ID id) {
-        logger.debug("Finding entity by ID: {}", id);
+        log.debug("Finding entity by ID: {}", id);
         Optional<T> entity = repository.findById(id);
         if (entity.isPresent()) {
-            logger.debug("Found entity of type {}", entity.get().getClass().getSimpleName());
+            log.debug("Found entity of type {}", entity.get().getClass().getSimpleName());
         } else {
-            logger.debug("No entity found with ID: {}", id);
+            log.debug("No entity found with ID: {}", id);
         }
         return entity;
     }
@@ -134,21 +134,21 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
      * @return an Optional containing the entity, or empty if not found
      */
     public Optional<T> findById(ID id, User user, String details) {
-        logger.debug("Finding entity by ID: {} with audit", id);
+        log.debug("Finding entity by ID: {} with audit", id);
         Optional<T> result = repository.findById(id);
 
         if (result.isPresent()) {
-            logger.debug("Found entity of type {}", result.get().getClass().getSimpleName());
+            log.debug("Found entity of type {}", result.get().getClass().getSimpleName());
 
             if (auditService != null) {
                 String entityType = result.get().getClass().getSimpleName();
-                logger.debug("Creating audit record for read operation on entity: {}, ID: {}", entityType, id);
+                log.debug("Creating audit record for read operation on entity: {}, ID: {}", entityType, id);
                 auditService.auditRead(entityType, id.toString(), user, details);
             } else {
-                logger.debug("Audit service is null, skipping audit record creation");
+                log.debug("Audit service is null, skipping audit record creation");
             }
         } else {
-            logger.debug("No entity found with ID: {}", id);
+            log.debug("No entity found with ID: {}", id);
         }
 
         return result;
@@ -156,9 +156,9 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
 
     @Override
     public void deleteById(ID id) {
-        logger.debug("Deleting entity with ID: {}", id);
+        log.debug("Deleting entity with ID: {}", id);
         repository.deleteById(id);
-        logger.debug("Entity deleted with ID: {}", id);
+        log.debug("Entity deleted with ID: {}", id);
     }
 
     /**
@@ -170,16 +170,16 @@ public abstract class BaseServiceImpl<T extends BasicEntity, ID, R extends JpaRe
      * @param details     additional details about the operation
      */
     public void deleteById(ID id, Class<?> entityClass, User user, String details) {
-        logger.debug("Deleting entity of type {} with ID: {} with audit", entityClass.getSimpleName(), id);
+        log.debug("Deleting entity of type {} with ID: {} with audit", entityClass.getSimpleName(), id);
         repository.deleteById(id);
-        logger.debug("Entity deleted with ID: {}", id);
+        log.debug("Entity deleted with ID: {}", id);
 
         if (auditService != null) {
             String entityType = entityClass.getSimpleName();
-            logger.debug("Creating audit record for delete operation on entity: {}, ID: {}", entityType, id);
+            log.debug("Creating audit record for delete operation on entity: {}, ID: {}", entityType, id);
             auditService.auditDelete(entityType, id.toString(), user, details);
         } else {
-            logger.debug("Audit service is null, skipping audit record creation");
+            log.debug("Audit service is null, skipping audit record creation");
         }
     }
 }
