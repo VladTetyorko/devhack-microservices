@@ -112,7 +112,7 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
 
     private boolean checkOnCheating(Answer answer) {
         AnswerCheckResponseArguments cheatingResult = performCheatingCheck(answer);
-        Boolean isCheating = cheatingResult.isHasCheating();
+        boolean isCheating = cheatingResult.isHasCheating();
         updateAnswerWithCheatingResult(answer, isCheating);
 
         return isCheating;
@@ -136,7 +136,7 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
         log.debug("Checking for cheating before evaluating answer");
 
 
-        CompletableFuture<AnswerCheckResponseArguments> cheatingResponseFuture = answerKafkaProvider.sendAnswerCheatingCheckRequest(cheatingMessageId, questionText, answerText);
+        CompletableFuture<AnswerCheckResponseArguments> cheatingResponseFuture = answerKafkaProvider.subscribeToAnswerCheatingCheck(cheatingMessageId, questionText, answerText);
 
         return cheatingResponseFuture.join();
     }
@@ -159,7 +159,7 @@ public class AnswerServiceImpl extends UserOwnedServiceImpl<Answer, UUID, Answer
 
 
         CompletableFuture<AnswerCheckResponseArguments> responseFuture =
-                answerKafkaProvider.sendAnswerFeedbackRequest(messageId,
+                answerKafkaProvider.subscribeToAnswerFeedbackCheck(messageId,
                         answer.getQuestion().getQuestionText(),
                         answer.getText());
 

@@ -1,7 +1,7 @@
 package com.vladte.devhack.infra.model.payload.response;
 
 import com.vladte.devhack.infra.model.arguments.response.QuestionGenerateResponseArguments;
-import com.vladte.devhack.infra.model.payload.AiResponsePayload;
+import com.vladte.devhack.infra.model.payload.ResponsePayload;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class QuestionGenerateResponsePayload extends AiResponsePayload<QuestionGenerateResponseArguments> {
+public class QuestionGenerateResponsePayload extends ResponsePayload<QuestionGenerateResponseArguments> {
 
 
     public static QuestionGenerateResponsePayload error(String invalidPayloadFormat) {

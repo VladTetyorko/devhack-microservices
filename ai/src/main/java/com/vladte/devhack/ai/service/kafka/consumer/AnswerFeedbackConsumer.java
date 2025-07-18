@@ -6,7 +6,7 @@ import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.payload.request.AnswerCheckRequestPayload;
 import com.vladte.devhack.infra.model.payload.response.AnswerCheckResponsePayload;
-import com.vladte.devhack.infra.service.kafka.AbstractKafkaResponder;
+import com.vladte.devhack.infra.service.kafka.producer.publish.KafkaResponsePublisher;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +20,15 @@ import java.util.Map;
  * Service for consuming answer feedback request messages.
  */
 @Service
-public class AnswerFeedbackConsumer extends AbstractAiConsumer<AnswerCheckRequestPayload, AnswerCheckResponsePayload> {
+public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AnswerCheckRequestPayload, AnswerCheckResponsePayload> {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerFeedbackConsumer.class);
     private final OpenAiService openAiService;
 
-
-    public AnswerFeedbackConsumer(@Qualifier("AnswerKafkaProvider") AbstractKafkaResponder<AnswerCheckResponsePayload> responder,
+    public AnswerFeedbackConsumer(@Qualifier("AnswerKafkaProvider") KafkaResponsePublisher<AnswerCheckResponsePayload> responsePublisher,
                                   @Qualifier("gptJService") OpenAiService openAiService,
                                   ObjectMapper objectMapper) {
-        super(responder, objectMapper, AnswerCheckRequestPayload.class);
+        super(responsePublisher, objectMapper, AnswerCheckRequestPayload.class);
         this.openAiService = openAiService;
     }
 
@@ -39,32 +38,47 @@ public class AnswerFeedbackConsumer extends AbstractAiConsumer<AnswerCheckReques
     }
 
     @Override
-    protected AnswerCheckResponsePayload handleRequest(KafkaMessage<AnswerCheckRequestPayload> message) {
+    protected AnswerCheckResponsePayload performAiRequest(KafkaMessage<AnswerCheckRequestPayload> message) {
         AnswerCheckRequestPayload payload = message.getPayload();
-        if (payload == null || payload.getArguments() == null || payload.getArguments().necessaryArgumentsAreEmpty()) {
+
+        if (!isValidPayload(payload)) {
             log.error("Invalid payload received: null arguments");
             return AnswerCheckResponsePayload.error("Invalid payload format");
         }
 
         try {
-            if (MessageTypes.CHECK_ANSWER_FOR_CHEATING.getValue().equals(message.getType())) {
-                log.debug("Handling CHECK_ANSWER_FOR_CHEATING message");
-                Boolean isCheating = openAiService.checkAnswerForCheatingAsync(payload).join();
-                return AnswerCheckResponsePayload.fromCheatingResult(isCheating);
-
-            } else if (MessageTypes.CHECK_ANSWER_WITH_FEEDBACK.getValue().equals(message.getType())) {
-                log.debug("Handling CHECK_ANSWER_WITH_FEEDBACK message");
-                Map<String, Object> result = openAiService.checkAnswerWithFeedbackAsync(payload).join();
-                return AnswerCheckResponsePayload.fromScoreAndFeedback(result);
-            } else {
-                log.error("Unknown message type: {}", message.getType());
-                return AnswerCheckResponsePayload.error("Unknown message type: " + message.getType());
-            }
+            return switch (MessageTypes.fromValue(message.getType())) {
+                case MessageTypes.CHECK_ANSWER_FOR_CHEATING -> handleCheatingCheck(payload);
+                case MessageTypes.CHECK_ANSWER_WITH_FEEDBACK -> handleAnswerFeedback(payload);
+                default -> {
+                    log.error("Unknown message type: {}", message.getType());
+                    yield AnswerCheckResponsePayload.error("Unknown message type: " + message.getType());
+                }
+            };
         } catch (Exception e) {
             log.error("Error processing message: {}", message.getId(), e);
             return AnswerCheckResponsePayload.error("Internal error: " + e.getMessage());
         }
     }
+
+    private boolean isValidPayload(AnswerCheckRequestPayload payload) {
+        return payload != null &&
+                payload.getArguments() != null &&
+                !payload.getArguments().necessaryArgumentsAreEmpty();
+    }
+
+    private AnswerCheckResponsePayload handleCheatingCheck(AnswerCheckRequestPayload payload) {
+        log.debug("Handling CHECK_ANSWER_FOR_CHEATING message");
+        Boolean isCheating = openAiService.checkAnswerForCheatingAsync(payload).join();
+        return AnswerCheckResponsePayload.fromCheatingResult(isCheating);
+    }
+
+    private AnswerCheckResponsePayload handleAnswerFeedback(AnswerCheckRequestPayload payload) {
+        log.debug("Handling CHECK_ANSWER_WITH_FEEDBACK message");
+        Map<String, Object> result = openAiService.checkAnswerWithFeedbackAsync(payload).join();
+        return AnswerCheckResponsePayload.fromScoreAndFeedback(result);
+    }
+
 
     @Override
     protected AnswerCheckResponsePayload createErrorResponse(String message) {

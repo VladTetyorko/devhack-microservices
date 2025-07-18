@@ -1,7 +1,7 @@
 package com.vladte.devhack.infra.model.payload.response;
 
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
-import com.vladte.devhack.infra.model.payload.AiResponsePayload;
+import com.vladte.devhack.infra.model.payload.ResponsePayload;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class VacancyParseResponsePayload extends AiResponsePayload<VacancyParseResultArguments> {
+public class VacancyParseResponsePayload extends ResponsePayload<VacancyParseResultArguments> {
 
     public static VacancyParseResponsePayload error(String message) {
         return VacancyParseResponsePayload.builder()

@@ -1,11 +1,11 @@
 package com.vladte.devhack.ai.service.kafka.producers.impl;
 
-import com.vladte.devhack.ai.service.kafka.producers.AnswerKafkaProvider;
+import com.vladte.devhack.ai.service.kafka.producers.KafkaResponseProvider;
 import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.payload.response.AnswerCheckResponsePayload;
-import com.vladte.devhack.infra.service.kafka.AbstractKafkaResponder;
+import com.vladte.devhack.infra.service.kafka.producer.publish.KafkaResponsePublisher;
 import com.vladte.devhack.infra.topics.Topics;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
  * Implementation of AnswerKafkaProvider for sending answer feedback results.
  */
 @Service("AnswerKafkaProvider")
-public class AnswerKafkaProviderImpl extends AbstractKafkaResponder<AnswerCheckResponsePayload> implements AnswerKafkaProvider<AnswerCheckResponsePayload> {
+public class AnswerKafkaProviderImpl
+        extends KafkaResponsePublisher<AnswerCheckResponsePayload>
+        implements KafkaResponseProvider<AnswerCheckResponsePayload> {
 
     public AnswerKafkaProviderImpl(KafkaTemplate<String, KafkaMessage<AnswerCheckResponsePayload>> kafkaTemplate) {
         super(kafkaTemplate);
@@ -38,10 +40,5 @@ public class AnswerKafkaProviderImpl extends AbstractKafkaResponder<AnswerCheckR
     @Override
     protected String getDestination() {
         return MessageDestinations.MAIN_APP;
-    }
-
-    @Override
-    public void sendAnswerFeedbackResult(String messageId, AnswerCheckResponsePayload payload) {
-        super.sendResponse(messageId, payload);
     }
 }

@@ -19,7 +19,7 @@ public interface QuestionKafkaProvider {
      * @param difficulty the difficulty level of the questions
      * @return a CompletableFuture that will be completed when the send operation completes
      */
-    CompletableFuture<QuestionGenerateResponseArguments> sendGenerateQuestionsRequest(
+    CompletableFuture<QuestionGenerateResponseArguments> subscribeToQuestionGeneration(
             String messageId, String tagName, int count, String difficulty);
 
 }

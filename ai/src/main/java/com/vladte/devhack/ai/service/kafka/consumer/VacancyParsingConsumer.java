@@ -5,7 +5,7 @@ import com.vladte.devhack.ai.service.api.OpenAiService;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.payload.request.VacancyParseRequestPayload;
 import com.vladte.devhack.infra.model.payload.response.VacancyParseResponsePayload;
-import com.vladte.devhack.infra.service.kafka.AbstractKafkaResponder;
+import com.vladte.devhack.infra.service.kafka.producer.publish.KafkaResponsePublisher;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,15 +19,15 @@ import java.util.Map;
  * Service for consuming vacancy parsing request messages.
  */
 @Service
-public class VacancyParsingConsumer extends AbstractAiConsumer<VacancyParseRequestPayload, VacancyParseResponsePayload> {
+public class VacancyParsingConsumer extends KafkaAiRequestConsumer<VacancyParseRequestPayload, VacancyParseResponsePayload> {
 
     private static final Logger log = LoggerFactory.getLogger(VacancyParsingConsumer.class);
     private final OpenAiService openAiService;
 
-    public VacancyParsingConsumer(@Qualifier("VacancyKafkaProvider") AbstractKafkaResponder<VacancyParseResponsePayload> responder,
+    public VacancyParsingConsumer(@Qualifier("VacancyKafkaProvider") KafkaResponsePublisher<VacancyParseResponsePayload> responsePublisher,
                                   @Qualifier("gptJService") OpenAiService openAiService,
                                   ObjectMapper objectMapper) {
-        super(responder, objectMapper, VacancyParseRequestPayload.class);
+        super(responsePublisher, objectMapper, VacancyParseRequestPayload.class);
         this.openAiService = openAiService;
     }
 
@@ -41,7 +41,7 @@ public class VacancyParsingConsumer extends AbstractAiConsumer<VacancyParseReque
     }
 
     @Override
-    protected VacancyParseResponsePayload handleRequest(KafkaMessage<VacancyParseRequestPayload> message) {
+    protected VacancyParseResponsePayload performAiRequest(KafkaMessage<VacancyParseRequestPayload> message) {
         VacancyParseRequestPayload payload = message.getPayload();
 
         if (payload == null || payload.getArguments() == null || payload.getArguments().necessaryArgumentsAreEmpty()) {

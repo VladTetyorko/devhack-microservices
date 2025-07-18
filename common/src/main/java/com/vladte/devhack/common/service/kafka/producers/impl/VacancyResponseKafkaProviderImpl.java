@@ -1,26 +1,27 @@
 package com.vladte.devhack.common.service.kafka.producers.impl;
 
-import com.vladte.devhack.common.service.kafka.producers.AbstractMainKafkaProviderService;
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
-import com.vladte.devhack.common.service.kafka.util.PendingRequestManager;
 import com.vladte.devhack.common.util.JsonFieldExtractor;
 import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
+import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.arguments.request.VacancyParseFromTestRequestArguments;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
 import com.vladte.devhack.infra.model.payload.request.VacancyParseRequestPayload;
-import com.vladte.devhack.infra.service.kafka.KafkaProducerService;
+import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
+import com.vladte.devhack.infra.service.kafka.producer.subscribe.KafkaRequestSubscriber;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class VacancyResponseKafkaProviderImpl
-        extends AbstractMainKafkaProviderService<VacancyParseRequestPayload, VacancyParseResultArguments>
+        extends KafkaRequestSubscriber<VacancyParseRequestPayload, VacancyParseResultArguments>
         implements VacancyResponseKafkaProvider {
 
     private static final Logger log = LoggerFactory.getLogger(VacancyResponseKafkaProviderImpl.class);
@@ -51,27 +52,10 @@ public class VacancyResponseKafkaProviderImpl
                     %s
                     """;
 
-    public VacancyResponseKafkaProviderImpl(@Qualifier("MainKafkaProducerService") KafkaProducerService<VacancyParseRequestPayload> kafkaProducerService, PendingRequestManager<VacancyParseResultArguments> pendingRequestManager) {
-        super(kafkaProducerService, pendingRequestManager);
+    public VacancyResponseKafkaProviderImpl(KafkaTemplate<String, KafkaMessage<VacancyParseRequestPayload>> kafkaTemplate,
+                                            PendingRequestManager<VacancyParseResultArguments> pendingRequestManager) {
+        super(kafkaTemplate, pendingRequestManager);
     }
-
-    @Override
-    public CompletableFuture<VacancyParseResultArguments> parseVacancyResponse(
-            String messageId, String vacancyText) {
-        log.info("Sending request to check answer with AI with ID: {}", messageId);
-
-        VacancyParseFromTestRequestArguments arguments = new VacancyParseFromTestRequestArguments(
-                JsonFieldExtractor.parse(Vacancy.class), vacancyText);
-
-        VacancyParseRequestPayload payload = VacancyParseRequestPayload.builder()
-                .prompt(String.format(VACANCY_TEXT_DESCRIPTION_PROMPT, JsonFieldExtractor.parse(Vacancy.class), vacancyText))
-                .arguments(arguments)
-                .language("en")
-                .build();
-
-        return sendRequest(messageId, payload);
-    }
-
 
     @Override
     protected String getTopic() {
@@ -81,6 +65,35 @@ public class VacancyResponseKafkaProviderImpl
     @Override
     protected String getMessageType() {
         return MessageTypes.VACANCY_PARSING.getValue();
+    }
+
+    @Override
+    protected String getSource() {
+        return MessageDestinations.MAIN_APP;
+    }
+
+    @Override
+    protected String getDestination() {
+        return MessageDestinations.AI_APP;
+    }
+
+    @Override
+    public CompletableFuture<VacancyParseResultArguments> parseVacancyResponse(
+            String messageId, String vacancyText) {
+        log.info("Sending request to check answer with AI with ID: {}", messageId);
+        VacancyParseRequestPayload payload = preparePayload(vacancyText);
+        return subscribeToResponse(messageId, payload);
+    }
+
+    private static VacancyParseRequestPayload preparePayload(String vacancyText) {
+        VacancyParseFromTestRequestArguments arguments = new VacancyParseFromTestRequestArguments(
+                JsonFieldExtractor.parse(Vacancy.class), vacancyText);
+
+        return VacancyParseRequestPayload.builder()
+                .prompt(String.format(VACANCY_TEXT_DESCRIPTION_PROMPT, JsonFieldExtractor.parse(Vacancy.class), vacancyText))
+                .arguments(arguments)
+                .language("en")
+                .build();
     }
 
 }

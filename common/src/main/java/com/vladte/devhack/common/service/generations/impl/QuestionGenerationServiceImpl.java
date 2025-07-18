@@ -73,7 +73,7 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
             String messageId = java.util.UUID.randomUUID().toString();
 
             // Send the message to the AI module
-            CompletableFuture<QuestionGenerateResponseArguments> responseFuture = questionKafkaProvider.sendGenerateQuestionsRequest(messageId, tagName, count, difficulty);
+            CompletableFuture<QuestionGenerateResponseArguments> responseFuture = questionKafkaProvider.subscribeToQuestionGeneration(messageId, tagName, count, difficulty);
             log.debug("Sent question generation request to AI module with ID: {}", messageId);
 
             // Wait for the response from the AI module

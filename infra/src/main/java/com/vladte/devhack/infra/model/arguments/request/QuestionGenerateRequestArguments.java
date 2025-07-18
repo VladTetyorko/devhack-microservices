@@ -16,13 +16,14 @@ import java.util.Objects;
 @Builder
 public class QuestionGenerateRequestArguments extends KafkaPayloadArguments {
     private String tag;
+    private String language;
     private Integer count;
     private String difficulty;
 
     @Override
     @JsonIgnore
     public List<String> getAsList() {
-        return List.of(tag, count.toString(), difficulty);
+        return List.of(count.toString(), tag, difficulty, language);
     }
 
     @Override

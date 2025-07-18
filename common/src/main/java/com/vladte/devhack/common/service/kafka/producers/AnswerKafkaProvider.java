@@ -9,9 +9,9 @@ import java.util.concurrent.CompletableFuture;
  * Uses generic Kafka messages for scalable and type-safe communication.
  */
 public interface AnswerKafkaProvider {
-    CompletableFuture<AnswerCheckResponseArguments> sendAnswerCheatingCheckRequest(
+    CompletableFuture<AnswerCheckResponseArguments> subscribeToAnswerCheatingCheck(
             String messageId, String questionText, String answerText);
 
-    CompletableFuture<AnswerCheckResponseArguments> sendAnswerFeedbackRequest(
+    CompletableFuture<AnswerCheckResponseArguments> subscribeToAnswerFeedbackCheck(
             String messageId, String questionText, String answerText);
 }

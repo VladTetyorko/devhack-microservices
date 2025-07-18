@@ -1,20 +1,20 @@
 package com.vladte.devhack.common.service.kafka.concumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.common.service.kafka.util.PendingRequestManager;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
 import com.vladte.devhack.infra.model.payload.response.VacancyParseResponsePayload;
+import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
+import com.vladte.devhack.infra.service.kafka.consumer.KafkaSubscribedMessageHandler;
 import com.vladte.devhack.infra.topics.Topics;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VacancyResponseKafkaConsumer
-        extends AbstractMainConsumer<VacancyParseResultArguments, VacancyParseResponsePayload> {
+        extends KafkaSubscribedMessageHandler<VacancyParseResultArguments, VacancyParseResponsePayload> {
 
 
     public VacancyResponseKafkaConsumer(ObjectMapper objectMapper,
@@ -22,7 +22,6 @@ public class VacancyResponseKafkaConsumer
         super(objectMapper, VacancyParseResponsePayload.class, pendingRequestManager);
     }
 
-    @Transactional
     @KafkaListener(topics = Topics.VACANCY_PARSING_RESULT, groupId = "${spring.kafka.consumer.group-id}")
     public void listen(KafkaMessage<VacancyParseResponsePayload> message) {
         processMessage(message);

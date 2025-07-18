@@ -1,17 +1,19 @@
 package com.vladte.devhack.common.service.kafka.producers.impl;
 
-import com.vladte.devhack.common.service.kafka.producers.AbstractMainKafkaProviderService;
 import com.vladte.devhack.common.service.kafka.producers.AnswerKafkaProvider;
-import com.vladte.devhack.common.service.kafka.util.PendingRequestManager;
+import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
+import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.arguments.request.AnswerCheckRequestArguments;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 import com.vladte.devhack.infra.model.payload.request.AnswerCheckRequestPayload;
-import com.vladte.devhack.infra.service.kafka.KafkaProducerService;
+import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
+import com.vladte.devhack.infra.service.kafka.producer.subscribe.KafkaRequestSubscriber;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -22,14 +24,14 @@ import java.util.concurrent.CompletableFuture;
  */
 @Service
 public class AnswerKafkaProviderImpl
-        extends AbstractMainKafkaProviderService<AnswerCheckRequestPayload, AnswerCheckResponseArguments>
+        extends KafkaRequestSubscriber<AnswerCheckRequestPayload, AnswerCheckResponseArguments>
         implements AnswerKafkaProvider {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerKafkaProviderImpl.class);
 
-    public AnswerKafkaProviderImpl(@Qualifier("MainKafkaProducerService") KafkaProducerService<AnswerCheckRequestPayload> kafkaProducerService,
+    public AnswerKafkaProviderImpl(KafkaTemplate<String, KafkaMessage<AnswerCheckRequestPayload>> kafkaTemplate,
                                    @Qualifier("answerPendingRequestManager") PendingRequestManager<AnswerCheckResponseArguments> pendingRequestManager) {
-        super(kafkaProducerService, pendingRequestManager);
+        super(kafkaTemplate, pendingRequestManager);
     }
 
     @Override
@@ -38,42 +40,50 @@ public class AnswerKafkaProviderImpl
     }
 
     @Override
-    public CompletableFuture<AnswerCheckResponseArguments> sendAnswerCheatingCheckRequest(
-            String messageId, String questionText, String answerText) {
-
-        log.info("Sending cheating check request [id={}]", messageId);
-
-        AnswerCheckRequestArguments arguments = new AnswerCheckRequestArguments(questionText, answerText, true);
-        AnswerCheckRequestPayload payload = AnswerCheckRequestPayload.builder()
-                .prompt(CHECK_ANSWER_FOR_CHEATING_TEMPLATE)
-                .arguments(arguments)
-                .language("en")
-                .build();
-
-        return sendRequest(messageId, payload);
-    }
-
-    @Override
-    public CompletableFuture<AnswerCheckResponseArguments> sendAnswerFeedbackRequest(
-            String messageId, String questionText, String answerText) {
-
-        log.info("Sending feedback request [id={}]", messageId);
-
-        AnswerCheckRequestArguments arguments = new AnswerCheckRequestArguments(questionText, answerText, false);
-        AnswerCheckRequestPayload payload = AnswerCheckRequestPayload.builder()
-                .prompt(CHECK_ANSWER_WITH_FEEDBACK_TEMPLATE)
-                .arguments(arguments)
-                .language("en")
-                .build();
-
-        return sendRequest(messageId, payload);
-    }
-
-    @Override
     protected String getMessageType() {
         return MessageTypes.CHECK_ANSWER_WITH_FEEDBACK.getValue();
     }
 
+    @Override
+    protected String getSource() {
+        return MessageDestinations.MAIN_APP;
+    }
+
+    @Override
+    protected String getDestination() {
+        return MessageDestinations.AI_APP;
+    }
+
+    @Override
+    public CompletableFuture<AnswerCheckResponseArguments> subscribeToAnswerCheatingCheck(
+            String messageId, String questionText, String answerText) {
+
+        log.info("Sending cheating check request [id={}]", messageId);
+
+        AnswerCheckRequestPayload payload = preparePayload(CHECK_ANSWER_FOR_CHEATING_TEMPLATE, questionText, answerText);
+
+        return subscribeToResponse(messageId, payload);
+    }
+
+    @Override
+    public CompletableFuture<AnswerCheckResponseArguments> subscribeToAnswerFeedbackCheck(
+            String messageId, String questionText, String answerText) {
+
+        log.info("Sending feedback request [id={}]", messageId);
+
+        AnswerCheckRequestPayload payload = preparePayload(CHECK_ANSWER_WITH_FEEDBACK_TEMPLATE, questionText, answerText);
+
+        return subscribeToResponse(messageId, payload);
+    }
+
+    private static AnswerCheckRequestPayload preparePayload(String prompt, String questionText, String answerText) {
+        AnswerCheckRequestArguments arguments = new AnswerCheckRequestArguments(questionText, answerText, false);
+        return AnswerCheckRequestPayload.builder()
+                .prompt(prompt)
+                .arguments(arguments)
+                .language("en")
+                .build();
+    }
 
     public static final String CHECK_ANSWER_WITH_FEEDBACK_TEMPLATE =
             """

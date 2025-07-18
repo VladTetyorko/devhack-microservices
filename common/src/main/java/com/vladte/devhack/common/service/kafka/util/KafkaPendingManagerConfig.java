@@ -3,6 +3,7 @@ package com.vladte.devhack.common.service.kafka.util;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 import com.vladte.devhack.infra.model.arguments.response.QuestionGenerateResponseArguments;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
+import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

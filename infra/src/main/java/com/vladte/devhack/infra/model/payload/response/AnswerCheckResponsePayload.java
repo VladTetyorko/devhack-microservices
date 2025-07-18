@@ -1,7 +1,7 @@
 package com.vladte.devhack.infra.model.payload.response;
 
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
-import com.vladte.devhack.infra.model.payload.AiResponsePayload;
+import com.vladte.devhack.infra.model.payload.ResponsePayload;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -11,7 +11,7 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
-public class AnswerCheckResponsePayload extends AiResponsePayload<AnswerCheckResponseArguments> {
+public class AnswerCheckResponsePayload extends ResponsePayload<AnswerCheckResponseArguments> {
 
     public static AnswerCheckResponsePayload fromCheatingResult(Boolean isCheating) {
         return builder()

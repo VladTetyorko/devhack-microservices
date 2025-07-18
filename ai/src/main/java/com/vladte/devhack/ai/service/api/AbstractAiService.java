@@ -6,7 +6,7 @@ import com.vladte.devhack.infra.model.arguments.KafkaPayloadArguments;
 import com.vladte.devhack.infra.model.arguments.request.AnswerCheckRequestArguments;
 import com.vladte.devhack.infra.model.arguments.request.QuestionGenerateRequestArguments;
 import com.vladte.devhack.infra.model.arguments.request.VacancyParseFromTestRequestArguments;
-import com.vladte.devhack.infra.model.payload.AiRequestPayload;
+import com.vladte.devhack.infra.model.payload.RequestPayload;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -39,8 +39,6 @@ public abstract class AbstractAiService implements OpenAiService {
     protected final RestTemplate restTemplate;
     protected final WebClient webClient;
     protected final ObjectMapper objectMapper;
-
-    protected abstract String getModelName();
 
     // Abstract methods for configuration
     protected abstract String getApiKey();
@@ -242,7 +240,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     @Override
     @Async
-    public CompletableFuture<String> generateQuestionsForTagAsync(AiRequestPayload<QuestionGenerateRequestArguments> payload) {
+    public CompletableFuture<String> generateQuestionsForTagAsync(RequestPayload<QuestionGenerateRequestArguments> payload) {
         log.debug("Generating questions asynchronously for tag '{}' at {} difficulty", payload.getArguments().getTag(), payload.getArguments().getDifficulty());
         String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt);
@@ -250,7 +248,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     @Override
     @Async
-    public CompletableFuture<Boolean> checkAnswerForCheatingAsync(AiRequestPayload<AnswerCheckRequestArguments> payload) {
+    public CompletableFuture<Boolean> checkAnswerForCheatingAsync(RequestPayload<AnswerCheckRequestArguments> payload) {
         log.debug("Checking if answer contains cheating asynchronously for question: '{}'", payload.getArguments().getQuestion());
         String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
@@ -259,7 +257,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     @Override
     @Async
-    public CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(AiRequestPayload<AnswerCheckRequestArguments> payload) {
+    public CompletableFuture<Map<String, Object>> checkAnswerWithFeedbackAsync(RequestPayload<AnswerCheckRequestArguments> payload) {
         log.debug("Checking answer with feedback asynchronously for question: '{}'", payload.getArguments().getQuestion());
         String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
@@ -268,7 +266,7 @@ public abstract class AbstractAiService implements OpenAiService {
 
     @Override
     @Async
-    public CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(AiRequestPayload<VacancyParseFromTestRequestArguments> payload) {
+    public CompletableFuture<Map<String, Object>> extractVacancyModelFromDescription(RequestPayload<VacancyParseFromTestRequestArguments> payload) {
         log.debug("Extracting vacancy model from description asynchronously for vacancy description: '{}'", payload.getArguments().getText());
         String prompt = generateTextForAiRequest(payload);
         return generateTextAsync(prompt)
@@ -276,7 +274,7 @@ public abstract class AbstractAiService implements OpenAiService {
     }
 
 
-    protected <T extends KafkaPayloadArguments> String generateTextForAiRequest(AiRequestPayload<T> payload) {
+    protected <T extends KafkaPayloadArguments> String generateTextForAiRequest(RequestPayload<T> payload) {
         return formatPromptTemplate(payload.getPrompt(), payload.getArguments().getAsList());
     }
 
