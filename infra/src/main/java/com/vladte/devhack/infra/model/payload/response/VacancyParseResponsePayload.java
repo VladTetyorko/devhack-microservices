@@ -3,6 +3,7 @@ package com.vladte.devhack.infra.model.payload.response;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
 import com.vladte.devhack.infra.model.payload.ResponsePayload;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -11,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class VacancyParseResponsePayload extends ResponsePayload<VacancyParseResultArguments> {
 
     public static VacancyParseResponsePayload error(String message) {

@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @ToString(callSuper = true)
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class AnswerCheckResponseArguments extends KafkaPayloadArguments {
 
     private boolean hasCheating;

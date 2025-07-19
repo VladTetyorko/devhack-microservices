@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 @ToString(callSuper = true)
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class VacancyParseFromTestRequestArguments extends KafkaPayloadArguments {
 
     private String fieldsToParse;

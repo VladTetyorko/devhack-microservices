@@ -11,7 +11,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class VacancyParseResultArguments extends KafkaPayloadArguments {
 
     private String vacancyJson;

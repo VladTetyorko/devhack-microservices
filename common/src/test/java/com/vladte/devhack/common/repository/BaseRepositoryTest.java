@@ -2,7 +2,6 @@ package com.vladte.devhack.common.repository;
 
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
@@ -20,10 +19,9 @@ import java.nio.charset.StandardCharsets;
  */
 @DataJpaTest
 @ActiveProfiles("test")
-@Slf4j
 public abstract class BaseRepositoryTest {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @BeforeEach
     public void setUp(TestInfo testInfo) {

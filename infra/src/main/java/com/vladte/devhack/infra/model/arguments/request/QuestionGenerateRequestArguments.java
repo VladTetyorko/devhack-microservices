@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString(callSuper = true)
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class QuestionGenerateRequestArguments extends KafkaPayloadArguments {
     private String tag;
     private String language;
