@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.personalized;
 
 import com.vladte.devhack.common.controller.BaseController;
-import com.vladte.devhack.common.service.domain.BaseService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.domain.CrudService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.BasicEntity;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  * @param <ID> the entity ID type
  * @param <S>  the service type
  */
-public abstract class UserEntityController<E extends BasicEntity, ID, S extends BaseService<E, ID>> extends BaseController {
+public abstract class UserEntityController<E extends BasicEntity, ID, S extends CrudService<E, ID>> extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(UserEntityController.class);
     private static final String ROLE_MANAGER = "ROLE_MANAGER";

@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.common.dto.VacancyResponseDTO;
+import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
 import com.vladte.devhack.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;

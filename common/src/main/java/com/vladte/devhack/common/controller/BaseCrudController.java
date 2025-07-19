@@ -1,12 +1,13 @@
 package com.vladte.devhack.common.controller;
 
-import com.vladte.devhack.common.dto.BaseDTO;
-import com.vladte.devhack.common.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.service.domain.BaseService;
+import com.vladte.devhack.common.model.dto.BaseDTO;
+import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
+import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.view.BaseCrudViewService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.BasicEntity;
+import lombok.Setter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,16 +29,21 @@ import java.util.List;
  * - Interface Segregation: Uses specific interfaces for different responsibilities
  * - Dependency Inversion: Depends on abstractions (interfaces) not concrete implementations
  *
- * @param <E>  the entity type, must extend BasicEntity
- * @param <D>  the DTO type, must implement BaseDTO
+ * @param <Entity>  the entity type, must extend BasicEntity
+ * @param <Dto>  the DTO type, must implement BaseDTO
  * @param <ID> the entity ID type
- * @param <S>  the service type
- * @param <M>  the mapper type
+ * @param <Service>  the service type
+ * @param <Mapper>  the mapper type
  */
-public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDTO, ID, S extends BaseService<E, ID>, M extends EntityDTOMapper<E, D>> extends BaseController {
+public abstract class BaseCrudController<Entity extends BasicEntity, Dto extends BaseDTO, ID, Service extends CrudService<Entity, ID>, Mapper extends EntityDTOMapper<Entity, Dto>> extends BaseController {
 
-    protected final S service;
-    protected final M mapper;
+    protected final Service service;
+    protected final Mapper mapper;
+    /**
+     * -- SETTER --
+     *  Setter for baseCrudViewService, used for autowiring after construction.
+     */
+    @Setter
     protected BaseCrudViewService baseCrudViewService;
 
     /**
@@ -48,8 +54,8 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      * @param baseViewService     the base view service
      * @param baseCrudViewService the base CRUD view service
      */
-    protected BaseCrudController(S service,
-                                 M mapper,
+    protected BaseCrudController(Service service,
+                                 Mapper mapper,
                                  BaseViewService baseViewService,
                                  BaseCrudViewService baseCrudViewService) {
         super(baseViewService);
@@ -64,19 +70,10 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      * @param service the service
      * @param mapper  the entity-DTO mapper
      */
-    protected BaseCrudController(S service, M mapper) {
+    protected BaseCrudController(Service service, Mapper mapper) {
         super();
         this.service = service;
         this.mapper = mapper;
-    }
-
-    /**
-     * Setter for baseCrudViewService, used for autowiring after construction.
-     *
-     * @param baseCrudViewService the base CRUD view service
-     */
-    public void setBaseCrudViewService(BaseCrudViewService baseCrudViewService) {
-        this.baseCrudViewService = baseCrudViewService;
     }
 
     /**
@@ -127,8 +124,8 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
                        @RequestParam(defaultValue = "0") int page,
                        @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<E> entityPage = service.findAll(pageable);
-        Page<D> dtoPage = toDTOPage(entityPage);
+        Page<Entity> entityPage = service.findAll(pageable);
+        Page<Dto> dtoPage = toDTOPage(entityPage);
 
         if (baseCrudViewService != null) {
             ModelBuilder.of(model)
@@ -153,8 +150,8 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String view(@PathVariable ID id, Model model) {
-        E entity = getEntityOrThrow(service.findById(id), getEntityName() + " not found");
-        D dto = mapper.toDTO(entity);
+        Entity entity = getEntityOrThrow(service.findById(id), getEntityName() + " not found");
+        Dto dto = mapper.toDTO(entity);
 
         if (baseCrudViewService != null) {
             // Add DTO to model using ModelBuilder
@@ -206,8 +203,8 @@ public abstract class BaseCrudController<E extends BasicEntity, D extends BaseDT
      * @param entityPage the page of entities
      * @return the page of DTOs
      */
-    protected Page<D> toDTOPage(Page<E> entityPage) {
-        List<D> dtoList = mapper.toDTOList(entityPage.getContent());
+    protected Page<Dto> toDTOPage(Page<Entity> entityPage) {
+        List<Dto> dtoList = mapper.toDTOList(entityPage.getContent());
         return new PageImpl<>(dtoList, entityPage.getPageable(), entityPage.getTotalElements());
     }
 }

@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.service.domain.TagService;
+import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.QuestionFormService;
 import org.springframework.stereotype.Service;

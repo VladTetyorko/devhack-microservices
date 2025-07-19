@@ -6,7 +6,7 @@ INSERT INTO vacancies (id,
                        technologies,
                        source,
                        url,
-                       applied_at,
+                       open_at,
                        status,
                        contact_person,
                        contact_email,
@@ -20,7 +20,7 @@ VALUES (uuid_generate_v4(),
         ?, -- technologies
         ?, -- source
         ?, -- url
-        ?, -- applied_at
+        ?, -- open_at
         ?, -- status
         ?, -- contact_person
         ?, -- contact_email

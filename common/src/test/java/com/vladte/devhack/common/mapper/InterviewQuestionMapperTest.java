@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.dto.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
 import com.vladte.devhack.entities.*;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;

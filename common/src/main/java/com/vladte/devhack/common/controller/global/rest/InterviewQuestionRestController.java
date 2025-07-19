@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.dto.InterviewQuestionDTO;
-import com.vladte.devhack.common.mapper.InterviewQuestionMapper;
-import com.vladte.devhack.common.service.domain.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.TagService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
+import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
+import com.vladte.devhack.common.service.domain.global.TagService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;

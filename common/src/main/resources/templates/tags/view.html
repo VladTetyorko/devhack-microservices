@@ -9,9 +9,10 @@
             <h3 class="mb-0">Tag Details</h3>
             <div>
                 <a th:href="@{/tags/{id}/edit(id=${tag.id})}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                <a th:href="@{/tags/{id}/delete(id=${tag.id})}"
-                   class="btn btn-sm btn-outline-danger"
-                   onclick="return confirm('Are you sure you want to delete this tag?')">Delete</a>
+                <form th:action="@{/tags/{id}/delete(id=${tag.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Are you sure you want to delete this tag?')">Delete</button>
+                </form>
             </div>
         </div>
         <div class="card-body">

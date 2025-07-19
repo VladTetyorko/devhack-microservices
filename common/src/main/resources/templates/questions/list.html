@@ -3,68 +3,68 @@
       th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
 <body>
 <section>
-    <!-- Search and Filter Bar -->
-    <div class="card mb-4 fade-in">
-        <div class="card-header bg-light">
-            <h4 class="mb-0"><i class="fas fa-filter me-2"></i>Search & Filter</h4>
-        </div>
-        <div class="card-body">
-            <form th:action="@{/questions/search}" method="get" class="mb-3">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" name="query" class="form-control" placeholder="Search questions..."
-                                   th:value="${param.query}">
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <select name="difficulty" class="form-select" aria-label="Filter by difficulty"
-                                onchange="this.form.submit()">
-                            <option value="" selected>All Difficulties</option>
-                            <option value="Easy" th:selected="${param.difficulty == 'Easy'}">
-                                <i class="fas fa-circle text-success"></i> Easy
-                            </option>
-                            <option value="Medium" th:selected="${param.difficulty == 'Medium'}">
-                                <i class="fas fa-circle text-warning"></i> Medium
-                            </option>
-                            <option value="Hard" th:selected="${param.difficulty == 'Hard'}">
-                                <i class="fas fa-circle text-danger"></i> Hard
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="d-grid gap-2">
-                            <a th:href="@{/questions/new}" class="btn btn-success">
-                                <i class="fas fa-plus me-2"></i>Add New Question
-                            </a>
-                            <button type="button" class="btn btn-info mb-1" data-bs-toggle="modal"
-                                    data-bs-target="#generateQuestionsModal">
-                                <i class="fas fa-robot me-2"></i>Generate with AI
-                            </button>
-                            <a th:href="@{/questions/generate/auto}" class="btn btn-success">
-                                <i class="fas fa-magic me-2"></i>Auto-Generate Easy Questions
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+<!--    &lt;!&ndash; Search and Filter Bar &ndash;&gt;-->
+<!--    <div class="card mb-4 fade-in">-->
+<!--        <div class="card-header bg-light">-->
+<!--            <h4 class="mb-0"><i class="fas fa-filter me-2"></i>Search & Filter</h4>-->
+<!--        </div>-->
+<!--        <div class="card-body">-->
+<!--            <form th:action="@{/questions/search}" method="get" class="mb-3">-->
+<!--                <div class="row g-3">-->
+<!--                    <div class="col-md-6">-->
+<!--                        <div class="input-group">-->
+<!--                            <span class="input-group-text"><i class="fas fa-search"></i></span>-->
+<!--                            <input type="text" name="query" class="form-control" placeholder="Search questions..."-->
+<!--                                   th:value="${param.query}">-->
+<!--                            <button class="btn btn-primary" type="submit">Search</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <select name="difficulty" class="form-select" aria-label="Filter by difficulty"-->
+<!--                                onchange="this.form.submit()">-->
+<!--                            <option value="" selected>All Difficulties</option>-->
+<!--                            <option value="Easy" th:selected="${param.difficulty == 'Easy'}">-->
+<!--                                <i class="fas fa-circle text-success"></i> Easy-->
+<!--                            </option>-->
+<!--                            <option value="Medium" th:selected="${param.difficulty == 'Medium'}">-->
+<!--                                <i class="fas fa-circle text-warning"></i> Medium-->
+<!--                            </option>-->
+<!--                            <option value="Hard" th:selected="${param.difficulty == 'Hard'}">-->
+<!--                                <i class="fas fa-circle text-danger"></i> Hard-->
+<!--                            </option>-->
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-3">-->
+<!--                        <div class="d-grid gap-2">-->
+<!--                            <a th:href="@{/questions/new}" class="btn btn-success">-->
+<!--                                <i class="fas fa-plus me-2"></i>Add New Question-->
+<!--                            </a>-->
+<!--                            <button type="button" class="btn btn-info mb-1" data-bs-toggle="modal"-->
+<!--                                    data-bs-target="#generateQuestionsModal">-->
+<!--                                <i class="fas fa-robot me-2"></i>Generate with AI-->
+<!--                            </button>-->
+<!--                            <a th:href="@{/questions/generate/auto}" class="btn btn-success">-->
+<!--                                <i class="fas fa-magic me-2"></i>Auto-Generate Easy Questions-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
 
-    <!-- Tag Filter (if a tag is selected) -->
-    <div class="alert alert-info mb-4" th:if="${tag != null}">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <i class="fas fa-tag me-2"></i>
-                Showing questions tagged with: <strong th:text="${tag.name}">Tag Name</strong>
-            </div>
-            <a th:href="@{/questions}" class="btn btn-sm btn-outline-info">
-                <i class="fas fa-times me-1"></i>Clear Filter
-            </a>
-        </div>
-    </div>
+<!--    &lt;!&ndash; Tag Filter (if a tag is selected) &ndash;&gt;-->
+<!--    <div class="alert alert-info mb-4" th:if="${tag != null}">-->
+<!--        <div class="d-flex justify-content-between align-items-center">-->
+<!--            <div>-->
+<!--                <i class="fas fa-tag me-2"></i>-->
+<!--                Showing questions tagged with: <strong th:text="${tag.name}">Tag Name</strong>-->
+<!--            </div>-->
+<!--            <a th:href="@{/questions}" class="btn btn-sm btn-outline-info">-->
+<!--                <i class="fas fa-times me-1"></i>Clear Filter-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <!-- Questions List -->
     <div class="row" th:if="${not #lists.isEmpty(questions)}">
@@ -87,14 +87,14 @@
                             </h5>
                             <div>
                                     <span th:text="${question.difficulty}"
-                                          th:class="${question.difficulty == 'Easy' ? 'badge bg-success' : 
+                                          th:class="${question.difficulty == 'Easy' ? 'badge bg-success' :
                                                     (question.difficulty == 'Medium' ? 'badge bg-warning' : 'badge bg-danger')}">
                                         Difficulty
                                     </span>
                             </div>
                         </div>
                         <div class="mb-2">
-                                <span th:each="tag : ${question.tagNames}" class="badge bg-info me-1">
+                                <span th:each="tag : ${question.tags}" class="badge bg-info me-1">
                                     <a th:href="@{/questions/tag/{slug}(slug=${tag.slug})}"
                                        th:text="${tag.name}"
                                        th:attr="data-tag-name=${tag.name}"
@@ -107,11 +107,11 @@
                             <div>
                                     <span class="badge bg-light text-dark me-2">
                                         <i class="fas fa-comment text-success me-1"></i>
-                                        <span th:text="${question.answerIds.size()} + ' answers'">0 answers</span>
+                                        <span th:text="${question.answers.size()} + ' answers'">0 answers</span>
                                     </span>
                                 <span class="badge bg-light text-dark">
                                         <i class="fas fa-sticky-note text-warning me-1"></i>
-                                        <span th:text="${question.noteIds.size()} + ' notes'">0 notes</span>
+                                        <span th:text="${question.notes.size()} + ' notes'">0 notes</span>
                                     </span>
                             </div>
                             <div>

@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.dto.VacancyDTO;
-import com.vladte.devhack.common.mapper.VacancyMapper;
-import com.vladte.devhack.common.mapper.VacancyResponseMapper;
-import com.vladte.devhack.common.service.domain.VacancyResponseService;
-import com.vladte.devhack.common.service.domain.VacancyService;
+import com.vladte.devhack.common.model.dto.VacancyDTO;
+import com.vladte.devhack.common.model.mapper.VacancyMapper;
+import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
+import com.vladte.devhack.common.service.domain.global.VacancyService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Vacancy;

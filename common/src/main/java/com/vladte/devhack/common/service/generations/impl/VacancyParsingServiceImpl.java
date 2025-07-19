@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.generations.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.common.service.domain.UserService;
-import com.vladte.devhack.common.service.domain.VacancyService;
-import com.vladte.devhack.common.service.domain.impl.VacancyResponseServiceImpl;
+import com.vladte.devhack.common.service.domain.user.UserService;
+import com.vladte.devhack.common.service.domain.global.VacancyService;
+import com.vladte.devhack.common.service.domain.personalized.impl.VacancyResponseServiceImpl;
 import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
 import com.vladte.devhack.entities.User;

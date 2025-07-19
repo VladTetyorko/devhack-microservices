@@ -70,10 +70,10 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label for="appliedAt" class="form-label">Applied Date</label>
-                        <input type="date" class="form-control" id="appliedAt"
-                               th:field="*{appliedAt}"
-                               th:value="${vacancy.appliedAt != null ? #temporals.format(vacancy.appliedAt, 'yyyy-MM-dd') : ''}">
+                        <label for="openAt" class="form-label">Applied Date</label>
+                        <input type="date" class="form-control" id="openAt"
+                               th:field="*{openAt}"
+                               th:value="${vacancy.openAt != null ? #temporals.format(vacancy.openAt, 'yyyy-MM-dd') : ''}">
                     </div>
                 </div>
 

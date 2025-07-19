@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.dto.InterviewStageCategoryDTO;
-import com.vladte.devhack.common.mapper.InterviewStageCategoryMapper;
-import com.vladte.devhack.common.service.domain.InterviewStageCategoryService;
+import com.vladte.devhack.common.model.dto.InterviewStageCategoryDTO;
+import com.vladte.devhack.common.model.mapper.InterviewStageCategoryMapper;
+import com.vladte.devhack.common.service.domain.global.InterviewStageCategoryService;
 import com.vladte.devhack.entities.InterviewStageCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

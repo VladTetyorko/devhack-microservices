@@ -36,8 +36,8 @@ public class Vacancy extends BasicEntity {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "applied_at")
-    private LocalDateTime appliedAt;
+    @Column(name = "open_at")
+    private LocalDateTime openAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

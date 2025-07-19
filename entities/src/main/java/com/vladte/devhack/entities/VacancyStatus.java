@@ -10,9 +10,7 @@ import java.io.Serializable;
 @Getter
 public enum VacancyStatus implements Serializable {
     OPEN("Open"),
-    APPLIED("Applied"),
     CLOSED("Closed"),
-    FILLED("Filled"),
     EXPIRED("Expired");
 
     private final String displayName;

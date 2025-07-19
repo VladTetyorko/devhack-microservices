@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.dto.VacancyDTO;
-import com.vladte.devhack.common.mapper.VacancyMapper;
-import com.vladte.devhack.common.service.domain.VacancyService;
+import com.vladte.devhack.common.model.dto.VacancyDTO;
+import com.vladte.devhack.common.model.mapper.VacancyMapper;
+import com.vladte.devhack.common.service.domain.global.VacancyService;
 import com.vladte.devhack.entities.Vacancy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

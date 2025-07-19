@@ -28,10 +28,6 @@ public class OpenAiServiceImpl extends AbstractAiService {
         super(objectMapper);
     }
 
-    @Override
-    protected String getModelName() {
-        return MODEL_NAME;
-    }
 
     @Override
     protected String getApiKey() {

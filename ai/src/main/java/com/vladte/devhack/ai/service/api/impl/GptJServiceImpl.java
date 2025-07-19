@@ -43,11 +43,6 @@ public class GptJServiceImpl extends AbstractAiService {
 
 
     @Override
-    protected String getModelName() {
-        return MODEL_NAME;
-    }
-
-    @Override
     protected String getApiKey() {
         return apiKey;
     }

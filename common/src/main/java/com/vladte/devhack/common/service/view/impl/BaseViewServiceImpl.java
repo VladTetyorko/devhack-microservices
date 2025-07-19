@@ -29,4 +29,6 @@ public class BaseViewServiceImpl implements BaseViewService {
         String name = entityName.toLowerCase();
         return plural ? name + "s" : name;
     }
+
+
 }

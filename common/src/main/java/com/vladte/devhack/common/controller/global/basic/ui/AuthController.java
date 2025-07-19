@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.controller.global.basic.ui;
 
 import com.vladte.devhack.common.controller.BaseController;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.entities.User;
 import org.springframework.beans.factory.annotation.Qualifier;

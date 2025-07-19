@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
-import com.vladte.devhack.common.service.domain.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.NoteService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
+import com.vladte.devhack.common.service.domain.personalized.NoteService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Note;

@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.global.basic.rest;
 
-import com.vladte.devhack.common.dto.UserDTO;
-import com.vladte.devhack.common.mapper.UserMapper;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.model.dto.UserDTO;
+import com.vladte.devhack.common.model.mapper.UserMapper;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.entities.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -118,21 +118,21 @@ public class AuthRestController {
      *
      * @return a success message
      */
-    @PostMapping("/logout")
-    @Operation(summary = "Logout a user", description = "Logs out a user")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User logged out successfully",
-                    content = @Content(mediaType = "application/json"))
-    })
-    public ResponseEntity<?> logout() {
-        log.debug("REST request to logout user");
-
-        // This is a placeholder for a real logout endpoint
-        // In a real application, this would be handled by Spring Security's logout filter
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "This is a placeholder for a real logout endpoint. In a real application, this would be handled by Spring Security's logout filter.");
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/logout")
+//    @Operation(summary = "Logout a user", description = "Logs out a user")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "User logged out successfully",
+//                    content = @Content(mediaType = "application/json"))
+//    })
+//    public ResponseEntity<?> logout() {
+//        log.debug("REST request to logout user");
+//
+//        // This is a placeholder for a real logout endpoint
+//        // In a real application, this would be handled by Spring Security's logout filter
+//        Map<String, String> response = new HashMap<>();
+//        response.put("message", "This is a placeholder for a real logout endpoint. In a real application, this would be handled by Spring Security's logout filter.");
+//        return ResponseEntity.ok(response);
+//    }
 
     /**
      * Data class for login requests.

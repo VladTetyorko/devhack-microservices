@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller;
 
-import com.vladte.devhack.common.dto.BaseDTO;
-import com.vladte.devhack.common.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.service.domain.BaseService;
+import com.vladte.devhack.common.model.dto.BaseDTO;
+import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
+import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.view.BaseCrudViewService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.entities.BasicEntity;
@@ -112,7 +112,7 @@ class BaseCrudControllerTest {
     }
 
     // Test service interface
-    interface TestService extends BaseService<TestEntity, UUID> {
+    interface TestService extends CrudService<TestEntity, UUID> {
     }
 
     // Concrete implementation of BaseCrudController for testing

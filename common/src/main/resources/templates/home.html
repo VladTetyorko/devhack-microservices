@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
 <body>
 <section>
@@ -8,8 +8,8 @@
         <div class="card-body p-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h2 class="display-5 fw-bold">Welcome to DevHack!</h2>
-                    <p class="lead">Your interview preparation dashboard</p>
+                    <h2 class="display-5 fw-bold">Welcome to Your Dashboard!</h2>
+                    <p class="alert alert-info">Hello, <span sec:authentication="name">User</span>!</p>
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
                     <a th:href="@{/questions/dashboard}" class="btn btn-light btn-lg">
@@ -20,28 +20,28 @@
         </div>
     </div>
 
-    <!-- Main Sections -->
+    <!-- Dashboard Content -->
     <div class="row mb-4">
         <div class="col-md-6 mb-3">
             <div class="card h-100 hover-shadow fade-in">
-                <div class="card-body text-center p-5">
-                    <i class="fas fa-book fa-5x text-primary mb-4"></i>
-                    <h2 class="display-6 fw-bold">Study</h2>
-                    <p class="lead mb-4">Prepare for interviews with questions, answers, and notes</p>
-                    <a th:href="@{/questions/dashboard}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-arrow-right me-2"></i>Go to Study
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-question-circle fa-4x text-primary mb-3"></i>
+                    <h3>Interview Questions</h3>
+                    <p>Practice with interview questions to prepare for your next job interview.</p>
+                    <a th:href="@{/questions/dashboard}" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Go to Questions
                     </a>
                 </div>
             </div>
         </div>
         <div class="col-md-6 mb-3">
             <div class="card h-100 hover-shadow fade-in">
-                <div class="card-body text-center p-5">
-                    <i class="fas fa-briefcase fa-5x text-success mb-4"></i>
-                    <h2 class="display-6 fw-bold">Work</h2>
-                    <p class="lead mb-4">Track your job applications and interview progress</p>
-                    <a th:href="@{/vacancies/my-responses/dashboard}" class="btn btn-success btn-lg">
-                        <i class="fas fa-arrow-right me-2"></i>Go to Work
+                <div class="card-body text-center p-4">
+                    <i class="fas fa-briefcase fa-4x text-success mb-3"></i>
+                    <h3>Job Applications</h3>
+                    <p>Track your job applications and interview progress.</p>
+                    <a th:href="@{/vacancies/my-responses/dashboard}" class="btn btn-success">
+                        <i class="fas fa-arrow-right me-2"></i>Go to Applications
                     </a>
                 </div>
             </div>
@@ -102,6 +102,44 @@
             </div>
         </div>
     </div>
+
+    <div class="card mb-4 fade-in" sec:authorize="isAuthenticated()">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">
+                <i class="fas fa-user me-2"></i>
+                Your Profile
+            </h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>
+                        <strong>Name:</strong>
+                        <span sec:authentication="name">User</span>
+                    </p>
+                    <p>
+                        <strong>Role:</strong>
+                        <span th:each="role : ${#authentication.authorities}"
+                              th:text="${role.authority}"
+                              class="badge bg-secondary me-1">
+            ROLE_USER
+          </span>
+                    </p>
+                </div>
+
+                <div class="col-md-6 text-md-end" sec:authorize="isAuthenticated()">
+                    <form th:action="@{/logout}" method="post" style="display:inline;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     <!-- Recent Activity -->
     <div class="row">

@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.controller;
 
 import com.vladte.devhack.common.controller.global.basic.ui.AuthController;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.entities.User;
 import org.junit.jupiter.api.BeforeEach;

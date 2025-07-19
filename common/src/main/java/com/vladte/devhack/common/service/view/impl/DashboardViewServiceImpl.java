@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.service.domain.DashboardService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.statistics.DashboardService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.DashboardViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.User;

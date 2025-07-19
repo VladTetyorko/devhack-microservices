@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.service.domain.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.TagService;
+import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
+import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.TagQuestionService;
 import com.vladte.devhack.entities.InterviewQuestion;

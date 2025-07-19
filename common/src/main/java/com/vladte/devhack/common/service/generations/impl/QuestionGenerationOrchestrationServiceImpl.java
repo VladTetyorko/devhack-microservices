@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.generations.impl;
 
-import com.vladte.devhack.common.service.domain.TagService;
+import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
 import com.vladte.devhack.entities.InterviewQuestion;

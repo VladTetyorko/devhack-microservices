@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.dto.TagDTO;
-import com.vladte.devhack.common.mapper.TagMapper;
-import com.vladte.devhack.common.service.domain.TagService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.model.dto.TagDTO;
+import com.vladte.devhack.common.model.mapper.TagMapper;
+import com.vladte.devhack.common.service.domain.global.TagService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Tag;

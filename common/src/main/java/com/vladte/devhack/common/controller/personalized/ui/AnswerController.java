@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
-import com.vladte.devhack.common.dto.AnswerDTO;
-import com.vladte.devhack.common.mapper.AnswerMapper;
-import com.vladte.devhack.common.service.domain.AnswerService;
-import com.vladte.devhack.common.service.domain.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.model.dto.AnswerDTO;
+import com.vladte.devhack.common.model.mapper.AnswerMapper;
+import com.vladte.devhack.common.service.domain.personalized.AnswerService;
+import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.Answer;

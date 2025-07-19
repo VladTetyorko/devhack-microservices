@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.dto.TagDTO;
-import com.vladte.devhack.common.mapper.TagMapper;
-import com.vladte.devhack.common.service.domain.TagService;
+import com.vladte.devhack.common.model.dto.TagDTO;
+import com.vladte.devhack.common.model.mapper.TagMapper;
+import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;
 import io.swagger.v3.oas.annotations.Operation;

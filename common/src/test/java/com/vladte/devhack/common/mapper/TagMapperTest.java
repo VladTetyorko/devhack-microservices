@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.dto.TagDTO;
+import com.vladte.devhack.common.model.dto.TagDTO;
+import com.vladte.devhack.common.model.mapper.TagMapper;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import io.qameta.allure.Description;

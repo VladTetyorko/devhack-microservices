@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.config.security;
 
-import com.vladte.devhack.common.service.domain.UserService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

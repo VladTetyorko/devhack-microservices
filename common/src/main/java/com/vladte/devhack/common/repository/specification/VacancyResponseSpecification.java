@@ -2,7 +2,10 @@ package com.vladte.devhack.common.repository.specification;
 
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.Vacancy;
 import com.vladte.devhack.entities.VacancyResponse;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -121,19 +124,21 @@ public class VacancyResponseSpecification {
      * @return a specification for searching by query
      */
     private static Specification<VacancyResponse> searchByQuery(String query) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
+        return (vacancyResponseRoot, criteriaQuery, criteriaBuilder) -> {
             if (query == null || query.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
 
             String likePattern = "%" + query.toLowerCase() + "%";
 
-            List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("companyName")), likePattern));
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("position")), likePattern));
-            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("technologies")), likePattern));
+            Join<VacancyResponse, Vacancy> vacancyJoin = vacancyResponseRoot.join("vacancy", JoinType.LEFT);
 
-            return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+            Predicate byVacancyLocation = criteriaBuilder.like(criteriaBuilder.lower(vacancyResponseRoot.get("location")), likePattern);
+            Predicate byCompanyName = criteriaBuilder.like(criteriaBuilder.lower(vacancyJoin.get("companyName")), likePattern);
+            Predicate byPosition = criteriaBuilder.like(criteriaBuilder.lower(vacancyJoin.get("position")), likePattern);
+            Predicate byTechnologies = criteriaBuilder.like(criteriaBuilder.lower(vacancyJoin.get("technologies")), likePattern);
+
+            return criteriaBuilder.or(byTechnologies, byPosition, byCompanyName, byVacancyLocation);
         };
     }
 }

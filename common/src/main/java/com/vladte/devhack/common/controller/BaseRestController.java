@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller;
 
-import com.vladte.devhack.common.dto.BaseDTO;
-import com.vladte.devhack.common.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.service.domain.BaseService;
+import com.vladte.devhack.common.model.dto.BaseDTO;
+import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
+import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.entities.BasicEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +33,7 @@ import java.util.Optional;
  */
 @Validated
 @Slf4j
-public abstract class BaseRestController<E extends BasicEntity, D extends BaseDTO, ID, S extends BaseService<E, ID>, M extends EntityDTOMapper<E, D>> {
+public abstract class BaseRestController<E extends BasicEntity, D extends BaseDTO, ID, S extends CrudService<E, ID>, M extends EntityDTOMapper<E, D>> {
 
     protected final S service;
     protected final M mapper;

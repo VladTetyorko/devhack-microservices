@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.dto.AuditDTO;
+import com.vladte.devhack.common.model.dto.AuditDTO;
+import com.vladte.devhack.common.model.mapper.AuditMapper;
 import com.vladte.devhack.entities.Audit;
 import com.vladte.devhack.entities.User;
 import io.qameta.allure.Description;

@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.dto.InterviewQuestionDTO;
-import com.vladte.devhack.common.mapper.InterviewQuestionMapper;
-import com.vladte.devhack.common.service.domain.InterviewQuestionService;
+import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
+import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.view.*;
 import com.vladte.devhack.entities.InterviewQuestion;
@@ -266,6 +266,6 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable UUID id) {
         service.deleteById(id);
-        return "redirect:/tags";
+        return "redirect:/questions";
     }
 }

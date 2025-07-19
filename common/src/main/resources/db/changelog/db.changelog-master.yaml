@@ -21,3 +21,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/10-add-order-index-to-interview_stage_category.sql
   - include:
       file: classpath:db/changelog/changes/11-added-user-friendly-table-for-ai-usage.sql
+  - include:
+      file: classpath:db/changelog/changes/12-renamed-vacancy-field-appliedAt.sql

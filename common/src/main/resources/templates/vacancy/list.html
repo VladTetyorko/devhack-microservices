@@ -25,14 +25,8 @@
                         <option value="OPEN" th:selected="${status == 'OPEN'}">
                             <i class="fas fa-door-open text-success"></i> Open
                         </option>
-                        <option value="APPLIED" th:selected="${status == 'APPLIED'}">
-                            <i class="fas fa-paper-plane text-primary"></i> Applied
-                        </option>
                         <option value="CLOSED" th:selected="${status == 'CLOSED'}">
                             <i class="fas fa-door-closed text-secondary"></i> Closed
-                        </option>
-                        <option value="FILLED" th:selected="${status == 'FILLED'}">
-                            <i class="fas fa-user-check text-info"></i> Filled
                         </option>
                         <option value="EXPIRED" th:selected="${status == 'EXPIRED'}">
                             <i class="fas fa-calendar-times text-danger"></i> Expired
@@ -82,15 +76,13 @@
                                     vacancy.status.name() == 'OPEN' ? 'bg-success' : 
                                     (vacancy.status.name() == 'APPLIED' ? 'bg-primary' : 
                                     (vacancy.status.name() == 'CLOSED' ? 'bg-secondary' : 
-                                    (vacancy.status.name() == 'FILLED' ? 'bg-info' : 
-                                    'bg-danger')))
+                                    'bg-danger'))
                                   }">
                                 <i th:class="${
                                     vacancy.status.name() == 'OPEN' ? 'fas fa-door-open me-1' : 
                                     (vacancy.status.name() == 'APPLIED' ? 'fas fa-paper-plane me-1' : 
                                     (vacancy.status.name() == 'CLOSED' ? 'fas fa-door-closed me-1' : 
-                                    (vacancy.status.name() == 'FILLED' ? 'fas fa-user-check me-1' : 
-                                    'fas fa-calendar-times me-1')))
+=                                    'fas fa-calendar-times me-1'))
                                   }"></i>
                                 <span th:text="${vacancy.status.displayName}">Status</span>
                             </span>
