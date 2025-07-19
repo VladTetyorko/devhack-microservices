@@ -129,7 +129,7 @@
 
                 <div class="col-md-6 text-md-end" sec:authorize="isAuthenticated()">
                     <form th:action="@{/logout}" method="post" style="display:inline;">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <button type="submit" class="btn btn-outline-danger">
                             <i class="fas fa-sign-out-alt me-2"></i>Logout
                         </button>

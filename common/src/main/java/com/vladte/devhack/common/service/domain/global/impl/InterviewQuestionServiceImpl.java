@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.domain.global.impl;
 
 import com.vladte.devhack.common.repository.InterviewQuestionRepository;
+import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.Tag;
 import com.vladte.devhack.entities.User;

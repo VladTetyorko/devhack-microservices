@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.domain.personalized;
 
-import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
+import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.entities.BasicEntity;
 import com.vladte.devhack.entities.User;
 import org.slf4j.Logger;

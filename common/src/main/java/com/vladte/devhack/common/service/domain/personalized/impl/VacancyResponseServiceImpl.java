@@ -4,8 +4,8 @@ import com.vladte.devhack.common.repository.VacancyResponseRepository;
 import com.vladte.devhack.common.repository.specification.VacancyResponseSpecification;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.personalized.InterviewStageService;
-import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.personalized.PersonalizedService;
+import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.entities.InterviewStage;
 import com.vladte.devhack.entities.User;
 import com.vladte.devhack.entities.Vacancy;
@@ -29,7 +29,7 @@ public class VacancyResponseServiceImpl extends PersonalizedService<VacancyRespo
     private final InterviewStageService interviewStageService;
 
     private final static Integer INTERVIEW_STAGE_APPLIED_ORDER = 0;
-    
+
     /**
      * Constructor with repository injection.
      *

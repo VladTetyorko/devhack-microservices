@@ -2,8 +2,8 @@ package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
 import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
+import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;

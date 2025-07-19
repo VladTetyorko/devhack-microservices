@@ -30,9 +30,9 @@ import java.util.List;
  * - Dependency Inversion: Depends on abstractions (interfaces) not concrete implementations
  *
  * @param <Entity>  the entity type, must extend BasicEntity
- * @param <Dto>  the DTO type, must implement BaseDTO
- * @param <ID> the entity ID type
- * @param <Service>  the service type
+ * @param <Dto>     the DTO type, must implement BaseDTO
+ * @param <ID>      the entity ID type
+ * @param <Service> the service type
  * @param <Mapper>  the mapper type
  */
 public abstract class BaseCrudController<Entity extends BasicEntity, Dto extends BaseDTO, ID, Service extends CrudService<Entity, ID>, Mapper extends EntityDTOMapper<Entity, Dto>> extends BaseController {
@@ -41,7 +41,7 @@ public abstract class BaseCrudController<Entity extends BasicEntity, Dto extends
     protected final Mapper mapper;
     /**
      * -- SETTER --
-     *  Setter for baseCrudViewService, used for autowiring after construction.
+     * Setter for baseCrudViewService, used for autowiring after construction.
      */
     @Setter
     protected BaseCrudViewService baseCrudViewService;

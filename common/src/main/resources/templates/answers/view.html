@@ -36,7 +36,8 @@
                 <a th:href="@{/answers/{id}/edit(id=${answer.id})}" class="btn btn-sm btn-outline-primary me-1">Edit</a>
                 <form th:action="@{/answers/{id}/delete(id=${answer.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-sm btn-outline-danger"
-                            onclick="return confirm('Are you sure you want to delete this answer?')">Delete</button>
+                            onclick="return confirm('Are you sure you want to delete this answer?')">Delete
+                    </button>
                 </form>
             </div>
         </div>

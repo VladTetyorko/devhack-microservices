@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.model.mapper.dto.AnswerDTO;
 import com.vladte.devhack.common.model.mapper.AnswerMapper;
+import com.vladte.devhack.common.model.mapper.dto.AnswerDTO;
 import com.vladte.devhack.entities.Answer;
 import com.vladte.devhack.entities.InterviewQuestion;
 import com.vladte.devhack.entities.User;

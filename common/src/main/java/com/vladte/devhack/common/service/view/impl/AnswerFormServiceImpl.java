@@ -2,8 +2,8 @@ package com.vladte.devhack.common.service.view.impl;
 
 import com.vladte.devhack.common.model.dto.AnswerDTO;
 import com.vladte.devhack.common.model.mapper.AnswerMapper;
-import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
+import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;

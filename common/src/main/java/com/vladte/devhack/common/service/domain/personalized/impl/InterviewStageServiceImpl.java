@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.domain.personalized.impl;
 
 import com.vladte.devhack.common.repository.InterviewStageRepository;
+import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.personalized.InterviewStageService;
-import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.entities.InterviewStage;
 import org.springframework.stereotype.Service;
 
