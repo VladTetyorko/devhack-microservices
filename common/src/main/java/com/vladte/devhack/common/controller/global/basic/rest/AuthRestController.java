@@ -3,7 +3,7 @@ package com.vladte.devhack.common.controller.global.basic.rest;
 import com.vladte.devhack.common.model.dto.UserDTO;
 import com.vladte.devhack.common.model.mapper.UserMapper;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -72,14 +72,14 @@ public class AuthRestController {
         log.debug("REST request to register user: {}", dto);
 
         // Check if email already exists
-        if (userService.findByEmail(dto.getEmail()).isPresent()) {
+        if (userService.findByEmail(dto.getCredentials().getFirst().getEmail()).isPresent()) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Email already exists");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
 
         User user = userMapper.toEntity(dto);
-        User registeredUser = userService.reguister(user);
+        User registeredUser = userService.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toDTO(registeredUser));
     }
 
@@ -144,12 +144,12 @@ public class AuthRestController {
         @NotBlank(message = "Email is required")
         @Email(message = "Email must be valid")
         @Size(max = 100, message = "Email must be less than 100 characters")
-        @Schema(description = "User's email address", example = "user@example.com", required = true)
+        @Schema(description = "User's email address", example = "user@example.com", requiredMode = Schema.RequiredMode.AUTO)
         private String email;
 
         @NotBlank(message = "Password is required")
         @Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
-        @Schema(description = "User's password", required = true)
+        @Schema(description = "User's password", requiredMode = Schema.RequiredMode.AUTO)
         private String password;
 
     }

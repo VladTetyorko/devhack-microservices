@@ -5,10 +5,10 @@ import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
 import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,6 @@ import java.util.UUID;
 public class InterviewQuestionRestController extends BaseRestController<InterviewQuestion, InterviewQuestionDTO, UUID, InterviewQuestionService, InterviewQuestionMapper> {
 
     private final TagService tagService;
-    private final UserService userService;
     private final QuestionGenerationOrchestrationService questionGenerationService;
 
     /**
@@ -43,18 +42,15 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
      * @param questionService           the interview question service
      * @param interviewQuestionMapper   the interview question mapper
      * @param tagService                the tag service
-     * @param userService               the user service
      * @param questionGenerationService the question generation service
      */
     public InterviewQuestionRestController(
             InterviewQuestionService questionService,
             InterviewQuestionMapper interviewQuestionMapper,
             TagService tagService,
-            UserService userService,
             QuestionGenerationOrchestrationService questionGenerationService) {
         super(questionService, interviewQuestionMapper);
         this.tagService = tagService;
-        this.userService = userService;
         this.questionGenerationService = questionGenerationService;
     }
 
@@ -73,7 +69,7 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
             Pageable pageable) {
         log.debug("REST request to find questions by tag slug: {}", tagSlug);
 
-        com.vladte.devhack.entities.Tag tag = tagService.findTagBySlug(tagSlug)
+        Tag tag = tagService.findTagBySlug(tagSlug)
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with slug: " + tagSlug));
 
         Page<InterviewQuestion> page = service.findQuestionsByTag(tag, pageable);
@@ -118,7 +114,7 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
     public ResponseEntity<Map<String, Integer>> getQuestionStats(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get question statistics for user: {}", user.getName());
+        log.debug("REST request to get question statistics for user: {}", user.getProfile().getName());
 
         int totalQuestions = service.countAllQuestions();
         int userQuestions = service.countQuestionsByUser(user);
@@ -152,7 +148,7 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
         log.debug("REST request to generate questions with tag: {}, count: {}, difficulty: {}", tagName, count, difficulty);
 
         // Validate tag name
-        if (!questionGenerationService.validateTagName(tagName)) {
+        if (questionGenerationService.isTagInvalid(tagName)) {
             return ResponseEntity.badRequest().body(
                     questionGenerationService.buildApiResponse(false, "Invalid tag name: " + tagName)
             );
@@ -180,7 +176,7 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
         log.debug("REST request to auto-generate easy questions for tag: {}", tagName);
 
         // Validate tag name
-        if (!questionGenerationService.validateTagName(tagName)) {
+        if (questionGenerationService.isTagInvalid(tagName)) {
             return ResponseEntity.badRequest().body(
                     questionGenerationService.buildApiResponse(false, "Invalid tag name: " + tagName)
             );

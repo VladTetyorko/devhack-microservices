@@ -27,7 +27,7 @@ public class AnswerDTO implements BaseDTO {
 
     @NotBlank(message = "Answer text is required")
     @Size(min = 5, max = 5000, message = "Answer text must be between 5 and 5000 characters")
-    @Schema(description = "Text of the answer", example = "SOLID principles are: Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion", required = true)
+    @Schema(description = "Text of the answer", example = "SOLID principles are: Single Responsibility, Open-Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion", requiredMode = Schema.RequiredMode.AUTO)
     private String text;
 
     @Min(value = 1, message = "Confidence level must be at least 1")
@@ -56,7 +56,7 @@ public class AnswerDTO implements BaseDTO {
     @Schema(description = "Name of the user who provided the answer", accessMode = Schema.AccessMode.READ_ONLY)
     private String userName;
 
-    @Schema(description = "ID of the question being answered", required = true)
+    @Schema(description = "ID of the question being answered", requiredMode = Schema.RequiredMode.AUTO)
     private UUID questionId;
 
     @Schema(description = "Text of the question being answered", accessMode = Schema.AccessMode.READ_ONLY)

@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.service.domain.global;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.User;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,10 +1,17 @@
 package com.vladte.devhack.common.service.domain.user.impl;
 
-import com.vladte.devhack.common.repository.UserRepository;
+import com.vladte.devhack.common.repository.user.UserRepository;
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
+import com.vladte.devhack.common.service.domain.user.AuthenticationProviderService;
+import com.vladte.devhack.common.service.domain.user.ProfileService;
+import com.vladte.devhack.common.service.domain.user.UserAccessService;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,15 +23,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Implementation of the UserService interface.
+ * Implementation of the UserService, delegating specific work to
+ * AuthenticationProviderService, ProfileService, and UserAccessService.
  */
 @Service
-public class UserServiceImpl extends AuditableCrudService<User, UUID, UserRepository> implements UserService {
+public class UserServiceImpl
+        extends AuditableCrudService<User, UUID, UserRepository>
+        implements UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
     private static final String SYSTEM_ROLE = "SYSTEM";
@@ -33,144 +43,182 @@ public class UserServiceImpl extends AuditableCrudService<User, UUID, UserReposi
     private static final String SYSTEM_USER_PASSWORD = "system";
 
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationProviderService authProviderService;
+    private final ProfileService profileService;
+    private final UserAccessService userAccessService;
     private final UserService self;
 
-    /**
-     * Constructor with repository and auditUtil injection.
-     *
-     * @param repository      the user repository
-     * @param auditUtil       the audit utility
-     * @param passwordEncoder for password encoding
-     */
-
-    public UserServiceImpl(UserRepository repository, AuditService auditUtil, PasswordEncoder passwordEncoder, @Lazy UserService self) {
-        super(repository, auditUtil);
+    public UserServiceImpl(
+            UserRepository repository,
+            AuditService auditService,
+            PasswordEncoder passwordEncoder,
+            @Lazy AuthenticationProviderService authProviderService,
+            @Lazy ProfileService profileService,
+            @Lazy UserAccessService userAccessService,
+            @Lazy UserService self
+    ) {
+        super(repository, auditService);
         this.passwordEncoder = passwordEncoder;
+        this.authProviderService = authProviderService;
+        this.profileService = profileService;
+        this.userAccessService = userAccessService;
         this.self = self;
     }
 
-    /**
-     * Get the system user.
-     * If the system user doesn't exist, it will be created.
-     *
-     * @return the system user
-     */
     @Override
     @Transactional
     @Cacheable(value = "users", key = "#root.methodName")
     public User getSystemUser() {
         log.debug("Getting system user");
-
-        Optional<User> systemUser = repository.findByRole(SYSTEM_ROLE);
-
-        if (systemUser.isPresent()) {
-            log.debug("Found existing system user with ID: {}", systemUser.get().getId());
-            return systemUser.get();
+        // Check admin settings for SYSTEM role
+        List<UserAccess> admins = userAccessService.findAllByRole(SYSTEM_ROLE);
+        if (!admins.isEmpty()) {
+            return admins.get(0).getUser();
         }
-
         log.info("System user not found, creating a new one");
 
-        User newSystemUser = new User();
-        newSystemUser.setName(SYSTEM_USER_NAME);
-        newSystemUser.setEmail(SYSTEM_USER_EMAIL);
-        newSystemUser.setPassword(SYSTEM_USER_PASSWORD);
-        newSystemUser.setRole(SYSTEM_ROLE);
+        // 1) Create base user
+        User user = new User();
+        user = super.save(user, null, "Create system user");
 
-        User savedSystemUser = repository.save(newSystemUser);
-        log.info("Created new system user with ID: {}", savedSystemUser.getId());
+        // 2) Create LOCAL credentials
+        AuthenticationProvider cred = new AuthenticationProvider();
+        cred.setUser(user);
+        cred.setProvider(AuthProviderType.LOCAL);
+        cred.setEmail(SYSTEM_USER_EMAIL);
+        cred.setPasswordHash(passwordEncoder.encode(SYSTEM_USER_PASSWORD));
+        authProviderService.save(cred);
 
-        return savedSystemUser;
-    }
+        // 3) Create profile
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setName(SYSTEM_USER_NAME);
+        profileService.save(profile);
 
-    @Override
-    public User reguister(User user) {
-        log.debug("Registering user: {}", user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("USER");
+        // 4) Create admin settings
+        UserAccess access = new UserAccess();
+        access.setUser(user);
+        access.setRole(SYSTEM_ROLE);
+        userAccessService.save(access);
 
-        return super.save(user, self.getSystemUser(), "Registering user ");
-    }
-
-    /**
-     * Register a new manager user.
-     *
-     * @param user the user to register
-     * @return the registered user
-     */
-    public User registerManager(User user) {
-        log.debug("Registering manager user: {}", user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole("MANAGER");
-
-        return super.save(user, self.getSystemUser(), "Registering manager user ");
+        return user;
     }
 
     @Override
     public void updateUsersSv(User user, String fileName, String cvUrl, String contentType) {
-        user.setCvStoragePath(cvUrl);
-        user.setCvFileName(fileName);
-        user.setCvFileType(contentType);
-        save(user);
+        User loadedUser = repository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Profile profile = loadedUser.getProfile();
+        profile.setCvFileHref(cvUrl);
+        profile.setCvFileName(fileName);
+        profile.setCvFileType(contentType);
+        save(loadedUser);
     }
 
-    /**
-     * Find a user by ID and create an audit record.
-     * This method demonstrates how to use the audit functionality.
-     *
-     * @param id          the ID of the user to find
-     * @param currentUser the user performing the operation
-     * @param details     additional details about the operation
-     * @return an Optional containing the user, or empty if not found
-     */
-    public java.util.Optional<User> findByIdWithAudit(UUID id, User currentUser, String details) {
-        return findById(id, currentUser, details);
-    }
-
-    /**
-     * Delete a user by ID and create an audit record.
-     * This method demonstrates how to use the audit functionality.
-     *
-     * @param id          the ID of the user to delete
-     * @param currentUser the user performing the operation
-     * @param details     additional details about the operation
-     */
-    public void deleteByIdWithAudit(UUID id, User currentUser, String details) {
-        deleteById(id, User.class, currentUser, details);
-    }
-
-    /**
-     * Find a user by email.
-     *
-     * @param email the email to search for
-     * @return an Optional containing the user, or empty if not found
-     */
     @Override
-    public Optional<User> findByEmail(String email) {
-        log.debug("Finding user by email: {}", email);
-        return repository.findByEmail(email);
+    @Transactional
+    public User register(User user) {
+        return registerWithRole(user, "USER", "Register base user");
     }
 
-    /**
-     * Load a user by username (email in our case).
-     *
-     * @param email the email of the user to load
-     * @return a UserDetails object containing the user's details
-     * @throws UsernameNotFoundException if the user is not found
-     */
+    @Override
+    @Transactional
+    public User registerManager(User user) {
+        return registerWithRole(user, "MANAGER", "Register manager base user");
+    }
+
+    private User registerWithRole(User incoming, String role, String activityDesc) {
+        log.debug("Registering {} user: {}", role, incoming);
+
+        User saved = super.save(incoming, self.getSystemUser(), activityDesc);
+
+        createLocalCredentials(saved, incoming.getLocalAuth().get().getPasswordHash());
+        createProfile(saved);
+        grantRole(saved, role);
+
+        return saved;
+    }
+
+
+    @Override
+    @Transactional
+    public Optional<User> findByEmail(String email) {
+        return authProviderService
+                .findByProviderAndEmail(AuthProviderType.LOCAL, email)
+                .map(AuthenticationProvider::getUser);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> userOptional = repository.findByEmail(email);
-
-        User user = userOptional.orElseThrow(() ->
-                new UsernameNotFoundException("User not found with email: " + email));
-
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(
-                user.getRole() != null ? "ROLE_" + user.getRole() : "ROLE_USER");
+        AuthenticationProvider cred = findLocalAuthProvider(email);
+        User user = findUser(cred.getUser().getId());
+        UserAccess access = findUserAccess(user.getId());
+        List<SimpleGrantedAuthority> roles = mapRoles(user);
 
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.singletonList(authority)
+                cred.getEmail(),
+                cred.getPasswordHash(),
+                /* accountNonExpired */     true,
+                /* credentialsNonExpired*/  true,
+                /* accountNonLocked */      !access.getIsAccountLocked(),
+                /* enabled */               !access.getIsAccountLocked(),
+                roles
         );
+    }
+
+    private AuthenticationProvider findLocalAuthProvider(String email) {
+        return authProviderService
+                .findByProviderAndEmail(AuthProviderType.LOCAL, email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("No LOCAL credentials found for " + email));
+    }
+
+    private UserAccess findUserAccess(UUID userId) {
+        return userAccessService.findByUserId(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User access settings not found for ID " + userId)
+        );
+    }
+
+    private User findUser(UUID userId) {
+        return repository.findById(userId)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found for ID " + userId));
+    }
+
+    private List<SimpleGrantedAuthority> mapRoles(User user) {
+        return userAccessService.findByUserId(user.getId())
+                .map(access ->
+                        List.of(new SimpleGrantedAuthority("ROLE_" + access.getRole()))
+                )
+                .orElseGet(() ->
+                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                );
+    }
+
+    private void createLocalCredentials(User user, String rawPassword) {
+        var local = user.getLocalAuth()
+                .orElseThrow(() -> new IllegalStateException("LocalAuth must be present"));
+        AuthenticationProvider cred = new AuthenticationProvider();
+        cred.setUser(user);
+        cred.setProvider(AuthProviderType.LOCAL);
+        cred.setEmail(local.getEmail());
+        cred.setPasswordHash(passwordEncoder.encode(rawPassword));
+        authProviderService.save(cred);
+    }
+
+    private void createProfile(User user) {
+        var name = user.getProfile() != null
+                ? user.getProfile().getName()
+                : user.getLocalAuth().get().getEmail();
+        Profile profile = new Profile();
+        profile.setUser(user);
+        profile.setName(name);
+        profileService.save(profile);
+    }
+
+    private void grantRole(User user, String role) {
+        UserAccess access = new UserAccess();
+        access.setUser(user);
+        access.setRole(role);
+        userAccessService.save(access);
     }
 }

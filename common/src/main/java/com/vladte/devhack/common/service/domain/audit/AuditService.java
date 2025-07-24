@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.service.domain.audit;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.Audit;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.Audit;
+import com.vladte.devhack.entities.user.User;
 
 import java.util.UUID;
 

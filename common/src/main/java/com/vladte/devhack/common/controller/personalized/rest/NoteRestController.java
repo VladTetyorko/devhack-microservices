@@ -6,9 +6,9 @@ import com.vladte.devhack.common.model.mapper.NoteMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Note;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Note;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -62,7 +62,7 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
     public ResponseEntity<List<NoteDTO>> getMyNotes(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get all notes for user: {}", user.getName());
+        log.debug("REST request to get all notes for user: {}", user.getProfile().getName());
         List<Note> notes = service.findNotesByUser(user);
         return ResponseEntity.ok(mapper.toDTOList(notes));
     }

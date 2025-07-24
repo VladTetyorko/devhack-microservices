@@ -6,8 +6,8 @@ import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.view.*;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -144,7 +144,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         Map<String, Object> response = new HashMap<>();
 
         // Validate input
-        if (!questionGenerationOrchestrationService.validateTagName(tagName)) {
+        if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
             response.put("success", false);
             response.put("message", "Tag name is required");
             return response.toString();
@@ -202,7 +202,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
             @RequestParam String tagName,
             Model model) {
 
-        if (!questionGenerationOrchestrationService.validateTagName(tagName)) {
+        if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
             ModelBuilder.of(model)
                     .addAttribute("error", "Tag name is required")
                     .build();
@@ -224,7 +224,7 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
     @ResponseBody
     public Map<String, Object> apiAutoGenerateEasyQuestions(@RequestParam String tagName) {
         // Validate input
-        if (!questionGenerationOrchestrationService.validateTagName(tagName)) {
+        if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
             return questionGenerationOrchestrationService.buildApiResponse(false, "Tag name is required");
         }
 

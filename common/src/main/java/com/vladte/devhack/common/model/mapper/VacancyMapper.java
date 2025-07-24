@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.VacancyDTO;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import org.springframework.stereotype.Component;
 
 /**

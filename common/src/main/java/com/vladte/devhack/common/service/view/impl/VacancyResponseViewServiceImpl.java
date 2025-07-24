@@ -2,14 +2,14 @@ package com.vladte.devhack.common.service.view.impl;
 
 import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
-import com.vladte.devhack.common.service.domain.personalized.InterviewStageService;
+import com.vladte.devhack.common.service.domain.global.InterviewStageService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.VacancyResponseViewService;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -163,7 +163,7 @@ public class VacancyResponseViewServiceImpl implements VacancyResponseViewServic
     @Override
     public void setUserVacancyResponsesPageTitle(Model model, User user) {
         ModelBuilder.of(model)
-                .setPageTitle("Vacancy Responses for " + user.getName())
+                .setPageTitle("Vacancy Responses for " + user.getProfile().getName())
                 .build();
     }
 }

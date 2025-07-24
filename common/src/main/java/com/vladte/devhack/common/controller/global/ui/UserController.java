@@ -5,7 +5,7 @@ import com.vladte.devhack.common.model.dto.UserDTO;
 import com.vladte.devhack.common.model.mapper.UserMapper;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

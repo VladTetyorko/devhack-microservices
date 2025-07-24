@@ -42,37 +42,23 @@
                             <h5 class="mb-1">
                                 <i class="fas fa-user text-primary me-2"></i>
                                 <a th:href="@{/users/{id}(id=${user.id})}"
-                                   th:text="${user.name}"
+                                   th:text="${user.profile.name}"
                                    class="text-decoration-none">User Name</a>
                             </h5>
                             <div>
                                     <span class="badge bg-light text-dark">
                                         <i class="fas fa-envelope text-secondary me-1"></i>
-                                        <span th:text="${user.email}">user@example.com</span>
+                                        <span th:text="${user.id}">id of user</span>
                                     </span>
                             </div>
                         </div>
                         <div class="mb-2">
-                                <span th:if="${user.role != null}" class="badge bg-info">
+                                <span th:if="${user.access.role != null}" class="badge bg-info">
                                     <i class="fas fa-id-badge me-1"></i>
-                                    <span th:text="${user.role}">Role</span>
+                                    <span th:text="${user.access.role}">Role</span>
                                 </span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div>
-                                    <span class="badge bg-light text-dark me-2">
-                                        <i class="fas fa-comment text-success me-1"></i>
-                                        <span th:text="${user.answerIds.size()} + ' answers'">0 answers</span>
-                                    </span>
-                                <span class="badge bg-light text-dark me-2">
-                                        <i class="fas fa-sticky-note text-warning me-1"></i>
-                                        <span th:text="${user.noteIds.size()} + ' notes'">0 notes</span>
-                                    </span>
-                                <span class="badge bg-light text-dark">
-                                        <i class="fas fa-briefcase text-info me-1"></i>
-                                        <span th:text="${user.vacancyResponseIds != null ? user.vacancyResponseIds.size() : 0} + ' applications'">0 applications</span>
-                                    </span>
-                            </div>
                             <div>
                                 <a th:href="@{/users/{id}(id=${user.id})}"
                                    class="btn btn-sm btn-outline-info me-1">

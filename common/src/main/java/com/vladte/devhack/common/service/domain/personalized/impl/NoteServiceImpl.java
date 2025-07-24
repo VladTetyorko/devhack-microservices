@@ -1,12 +1,12 @@
 package com.vladte.devhack.common.service.domain.personalized.impl;
 
-import com.vladte.devhack.common.repository.NoteRepository;
+import com.vladte.devhack.common.repository.personalized.NoteRepository;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.domain.personalized.PersonalizedService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Note;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Note;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -3,8 +3,8 @@ package com.vladte.devhack.common.service.generations.impl;
 import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,8 +35,8 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
     }
 
     @Override
-    public boolean validateTagName(String tagName) {
-        return StringUtils.hasText(tagName);
+    public boolean isTagInvalid(String tagName) {
+        return !StringUtils.hasText(tagName);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class NoteDTO implements BaseDTO {
     private String userName;
 
     @NotNull(message = "Question ID is required")
-    @Schema(description = "ID of the question this note is related to", required = true)
+    @Schema(description = "ID of the question this note is related to", requiredMode = Schema.RequiredMode.AUTO)
     private UUID questionId;
 
     @Schema(description = "Text of the question this note is related to", accessMode = Schema.AccessMode.READ_ONLY)
@@ -39,7 +39,7 @@ public class NoteDTO implements BaseDTO {
 
     @NotBlank(message = "Note text is required")
     @Size(min = 5, max = 2000, message = "Note text must be between 5 and 2000 characters")
-    @Schema(description = "Text content of the note", example = "This question is about design patterns. Remember to mention Factory, Singleton, and Observer patterns.", required = true)
+    @Schema(description = "Text content of the note", example = "This question is about design patterns. Remember to mention Factory, Singleton, and Observer patterns.", requiredMode = Schema.RequiredMode.AUTO)
     private String noteText;
 
     @Schema(description = "Last update timestamp", accessMode = Schema.AccessMode.READ_ONLY)

@@ -2,8 +2,8 @@ package com.vladte.devhack.common.service.domain.personalized;
 
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
-import com.vladte.devhack.entities.BasicEntity;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.UserOwnedBasicEntity;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +25,7 @@ import java.util.stream.Collectors;
  * @param <ID> the entity ID type
  * @param <R>  the repository type
  */
-@Component
-public abstract class PersonalizedService<T extends BasicEntity, ID, R extends JpaRepository<T, ID>>
+public abstract class PersonalizedService<T extends UserOwnedBasicEntity, ID, R extends JpaRepository<T, ID>>
         extends AuditableCrudService<T, ID, R> {
 
     private static final Logger log = LoggerFactory.getLogger(PersonalizedService.class);
@@ -74,8 +72,8 @@ public abstract class PersonalizedService<T extends BasicEntity, ID, R extends J
         }
 
         // Users have access only to their own entities
-        User entityUser = getEntityUser(entity);
-        return entityUser != null && entityUser.getEmail().equals(authentication.getName());
+        User user = getEntityUser(entity);
+        return user != null && user.getLocalAuth().get().getEmail().equals(authentication.getName());
     }
 
     /**

@@ -4,7 +4,7 @@ import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.SearchService;
 import com.vladte.devhack.common.service.view.SearchViewService;
-import com.vladte.devhack.entities.InterviewQuestion;
+import com.vladte.devhack.entities.global.InterviewQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

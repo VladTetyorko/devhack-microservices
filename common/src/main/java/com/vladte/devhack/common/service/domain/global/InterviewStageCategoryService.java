@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.domain.global;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.InterviewStageCategory;
+import com.vladte.devhack.entities.global.InterviewStageCategory;
 
 import java.util.Optional;
 import java.util.UUID;

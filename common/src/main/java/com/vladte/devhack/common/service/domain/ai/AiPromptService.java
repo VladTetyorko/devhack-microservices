@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.domain.ai;
 
-import com.vladte.devhack.entities.AiPrompt;
+import com.vladte.devhack.entities.global.ai.AiPrompt;
 
 import java.util.List;
 import java.util.Optional;

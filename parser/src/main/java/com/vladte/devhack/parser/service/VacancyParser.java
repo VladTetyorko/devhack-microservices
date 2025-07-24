@@ -1,6 +1,6 @@
 package com.vladte.devhack.parser.service;
 
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 
 import java.util.List;
 

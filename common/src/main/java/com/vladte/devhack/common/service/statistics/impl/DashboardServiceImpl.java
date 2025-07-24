@@ -6,10 +6,10 @@ import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.statistics.DashboardService;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -244,7 +244,7 @@ public class DashboardServiceImpl implements DashboardService {
         return calculateTagProgressForQuestions(tagService.findAll(),
                 questionService.findAll(),
                 answerService.findAnswersByUser(user),
-                q -> q.getUser() != null && q.getUser().getId().equals(user.getId()));
+                q -> q.getUser() != null && q.getUser().getId().equals(user.getProfile().getId()));
     }
 
     private Map<UUID, TagProgress> calculateTagProgressForQuestions(

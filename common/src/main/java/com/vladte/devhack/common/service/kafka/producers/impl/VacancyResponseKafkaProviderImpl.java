@@ -2,7 +2,7 @@ package com.vladte.devhack.common.service.kafka.producers.impl;
 
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
 import com.vladte.devhack.common.util.JsonFieldExtractor;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;

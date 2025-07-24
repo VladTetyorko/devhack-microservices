@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.domain.global;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

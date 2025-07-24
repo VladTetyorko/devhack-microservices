@@ -2,7 +2,7 @@ package com.vladte.devhack.ai.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class ResponseExtractorUtil {
         Pattern scorePattern = Pattern.compile("Score:\\s*(\\d+(\\.\\d+)?)");
         Matcher scoreMatcher = scorePattern.matcher(response);
         if (scoreMatcher.find()) {
-            Double score = Double.parseDouble(scoreMatcher.group(1));
+            double score = Double.parseDouble(scoreMatcher.group(1));
             Double normalizedScore = Math.min(Math.max(score, 0.0), 100.0);
             log.debug("Extracted score: {} (normalized to: {})", score, normalizedScore);
             result.put("score", normalizedScore);

@@ -1,5 +1,6 @@
 package com.vladte.devhack.infra.model.arguments.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vladte.devhack.infra.model.arguments.KafkaPayloadArguments;
 import lombok.*;
 
@@ -22,10 +23,12 @@ public class AnswerCheckResponseArguments extends KafkaPayloadArguments {
     private String feedback;
 
     @Override
+    @JsonIgnore
     public List<String> getAsList() {
         return List.of(String.valueOf(hasCheating), String.valueOf(score), feedback);
     }
 
+    @JsonIgnore
     @Override
     public boolean necessaryArgumentsAreEmpty() {
         return false;

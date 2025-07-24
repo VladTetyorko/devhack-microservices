@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.domain.global.impl;
 
-import com.vladte.devhack.common.repository.VacancyRepository;
+import com.vladte.devhack.common.repository.global.VacancyRepository;
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

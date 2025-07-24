@@ -5,9 +5,9 @@ import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Note;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Note;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -81,7 +81,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         ModelBuilder.of(model)
                 .addAttribute("note", note)
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle("Note Details")
                 .build();
 
@@ -102,7 +102,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
                 .addAttribute("note", note)
                 .addAttribute("users", userService.findAll())
                 .addAttribute("questions", questionService.findAll())
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle("Create New Note");
 
         if (questionId != null) {
@@ -138,7 +138,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
                 .addAttribute("note", note)
                 .addAttribute("users", userService.findAll())
                 .addAttribute("questions", questionService.findAll())
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle("Edit Note")
                 .build();
 
@@ -156,7 +156,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is saving their own note
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
+        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
             log.warn("Access denied to save note for user with ID: {}", userId);
             throw new SecurityException("Access denied to save note for user with ID: " + userId);
         }
@@ -206,7 +206,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is viewing their own notes
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
+        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
             log.warn("Access denied to view notes for user with ID: {}", userId);
             throw new SecurityException("Access denied to view notes for user with ID: " + userId);
         }
@@ -217,8 +217,8 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         ModelBuilder.of(model)
                 .addAttribute("notes", notes)
                 .addAttribute("user", user)
-                .addAttribute("currentUser", currentUser)
-                .setPageTitle("Notes by " + user.getName())
+                .addAttribute("currentUser", currentUser.getProfile())
+                .setPageTitle("Notes by " + user.getProfile().getName())
                 .build();
 
         return "notes/list";
@@ -249,7 +249,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         ModelBuilder.of(model)
                 .addAttribute("notes", notes)
                 .addAttribute("question", question)
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle("Notes for Question: " + question.getQuestionText())
                 .build();
 

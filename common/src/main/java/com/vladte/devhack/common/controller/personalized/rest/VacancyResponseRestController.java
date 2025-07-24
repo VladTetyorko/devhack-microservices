@@ -6,10 +6,10 @@ import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.Vacancy;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,7 +71,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user,
             Pageable pageable) {
-        log.debug("REST request to get all vacancy responses for user: {}", user.getName());
+        log.debug("REST request to get all vacancy responses for user: {}", user.getProfile().getName());
         Page<VacancyResponse> page = service.getVacancyResponsesByUser(user, pageable);
         Page<VacancyResponseDTO> dtoPage = page.map(mapper::toDTO);
         return ResponseEntity.ok(dtoPage);
@@ -115,7 +115,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
             @PathVariable UUID vacancyId,
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to create vacancy response for vacancy: {} and user: {}", vacancyId, user.getName());
+        log.debug("REST request to create vacancy response for vacancy: {} and user: {}", vacancyId, user.getProfile().getName());
 
         Vacancy vacancy = vacancyService.findById(vacancyId)
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy not found with ID: " + vacancyId));
@@ -172,7 +172,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
     /**
      * Update the interview stage of a vacancy response.
      *
-     * @param id      the ID of the vacancy response
+     * @param vacancyResponseId      the ID of the vacancy response
      * @param request the request containing the new interview stage
      * @param user    the authenticated user
      * @return the updated vacancy response
@@ -182,20 +182,20 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
             description = "Updates the interview stage of the specified vacancy response")
     public ResponseEntity<VacancyResponseDTO> updateVacancyResponseStatus(
             @Parameter(description = "ID of the vacancy response")
-            @PathVariable UUID id,
+            @PathVariable(name = "id") UUID vacancyResponseId,
             @Valid @RequestBody StatusUpdateRequest request,
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
         log.debug("REST request to update status of vacancy response: {} to stage: {} by user: {}",
-                id, request.getInterviewStage(), user.getName());
+                vacancyResponseId, request.getInterviewStage(), user.getProfile().getName());
 
-        VacancyResponse vacancyResponse = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
+        VacancyResponse vacancyResponse = service.findById(vacancyResponseId)
+                .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + vacancyResponseId));
 
         // Check if the current user owns this vacancy response
         if (!vacancyResponse.getUser().getId().equals(user.getId())) {
             log.warn("User {} attempted to update vacancy response {} owned by user {}",
-                    user.getName(), id, vacancyResponse.getUser().getName());
+                    user.getProfile().getName(), vacancyResponseId, vacancyResponse.getUser().getProfile().getName());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

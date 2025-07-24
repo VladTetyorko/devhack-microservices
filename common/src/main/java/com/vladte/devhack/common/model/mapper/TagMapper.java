@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.TagDTO;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;

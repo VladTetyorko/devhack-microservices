@@ -7,9 +7,9 @@ import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 

@@ -4,7 +4,7 @@ import com.vladte.devhack.common.controller.BaseRestController;
 import com.vladte.devhack.common.model.dto.InterviewStageCategoryDTO;
 import com.vladte.devhack.common.model.mapper.InterviewStageCategoryMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewStageCategoryService;
-import com.vladte.devhack.entities.InterviewStageCategory;
+import com.vladte.devhack.entities.global.InterviewStageCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

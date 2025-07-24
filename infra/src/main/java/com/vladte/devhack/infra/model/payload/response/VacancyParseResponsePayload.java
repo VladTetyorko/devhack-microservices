@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
 public class VacancyParseResponsePayload extends ResponsePayload<VacancyParseResultArguments> {
 
     public static VacancyParseResponsePayload error(String message) {

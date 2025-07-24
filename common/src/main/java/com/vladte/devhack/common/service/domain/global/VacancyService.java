@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.domain.global;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 
 import java.util.List;
 import java.util.UUID;

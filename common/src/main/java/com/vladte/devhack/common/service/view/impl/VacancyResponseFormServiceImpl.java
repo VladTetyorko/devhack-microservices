@@ -2,16 +2,16 @@ package com.vladte.devhack.common.service.view.impl;
 
 import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
 import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.service.domain.global.InterviewStageService;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.common.service.domain.personalized.InterviewStageService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.Vacancy;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
