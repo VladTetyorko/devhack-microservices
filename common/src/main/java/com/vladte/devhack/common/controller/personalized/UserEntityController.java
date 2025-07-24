@@ -6,7 +6,7 @@ import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.BasicEntity;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,6 +30,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
 
     private static final Logger log = LoggerFactory.getLogger(UserEntityController.class);
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
+    private static final String ROLE_SYSTEM = "ROLE_SYSTEM";
 
     protected final S service;
     protected final UserService userService;
@@ -88,7 +89,8 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      */
     protected boolean isCurrentUserManager() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER));
+        log.info("Checking if current user is a manager: {}", authentication.getAuthorities());
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER)) || authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_SYSTEM));
     }
 
     /**
@@ -174,7 +176,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
         ModelBuilder.of(model)
                 .addPagination(entityPage, page, size, "items")
                 .setPageTitle(getListPageTitle())
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .build();
 
         return getListViewName();
@@ -207,7 +209,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
         // Add the entity and current user to the model
         ModelBuilder.of(model)
                 .addAttribute("item", entity)
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle(getDetailPageTitle())
                 .build();
 

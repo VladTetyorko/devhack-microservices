@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.AnswerDTO;
-import com.vladte.devhack.entities.Answer;
+import com.vladte.devhack.entities.personalized.Answer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,7 +28,7 @@ public class AnswerMapper implements EntityDTOMapper<Answer, AnswerDTO> {
 
         if (entity.getUser() != null) {
             dto.setUserId(entity.getUser().getId());
-            dto.setUserName(entity.getUser().getName());
+            dto.setUserName(entity.getUser().getProfile().getName());
         }
 
         if (entity.getQuestion() != null) {

@@ -2,7 +2,7 @@ package com.vladte.devhack.common.service.domain;
 
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.entities.BasicEntity;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

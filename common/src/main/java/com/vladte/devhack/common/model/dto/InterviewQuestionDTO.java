@@ -25,11 +25,11 @@ public class InterviewQuestionDTO implements BaseDTO {
 
     @NotBlank(message = "Question text is required")
     @Size(min = 10, max = 2000, message = "Question text must be between 10 and 2000 characters")
-    @Schema(description = "Text of the interview question", example = "What are the principles of SOLID?", required = true)
+    @Schema(description = "Text of the interview question", example = "What are the principles of SOLID?", requiredMode = Schema.RequiredMode.AUTO)
     private String questionText;
 
     @NotBlank(message = "Difficulty is required")
-    @Schema(description = "Difficulty level of the question", example = "MEDIUM", required = true)
+    @Schema(description = "Difficulty level of the question", example = "MEDIUM", requiredMode = Schema.RequiredMode.AUTO)
     private String difficulty;
 
     @Schema(description = "Source of the question", example = "Java Interview Book")

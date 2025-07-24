@@ -1,12 +1,12 @@
 package com.vladte.devhack.common.service.domain.global.impl;
 
-import com.vladte.devhack.common.repository.InterviewQuestionRepository;
+import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

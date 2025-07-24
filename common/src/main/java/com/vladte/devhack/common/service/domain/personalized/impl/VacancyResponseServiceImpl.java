@@ -1,15 +1,15 @@
 package com.vladte.devhack.common.service.domain.personalized.impl;
 
-import com.vladte.devhack.common.repository.VacancyResponseRepository;
-import com.vladte.devhack.common.repository.specification.VacancyResponseSpecification;
+import com.vladte.devhack.common.repository.personalized.VacancyResponseRepository;
+import com.vladte.devhack.common.repository.personalized.specification.VacancyResponseSpecification;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
-import com.vladte.devhack.common.service.domain.personalized.InterviewStageService;
+import com.vladte.devhack.common.service.domain.global.InterviewStageService;
 import com.vladte.devhack.common.service.domain.personalized.PersonalizedService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.Vacancy;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

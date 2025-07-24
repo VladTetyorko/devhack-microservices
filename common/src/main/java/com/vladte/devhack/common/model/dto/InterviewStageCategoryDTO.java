@@ -25,12 +25,12 @@ public class InterviewStageCategoryDTO implements BaseDTO {
 
     @NotBlank(message = "Category code is required")
     @Size(min = 2, max = 50, message = "Category code must be between 2 and 50 characters")
-    @Schema(description = "Category code", example = "TECHNICAL", required = true)
+    @Schema(description = "Category code", example = "TECHNICAL", requiredMode = Schema.RequiredMode.AUTO)
     private String code;
 
     @NotBlank(message = "Category label is required")
     @Size(min = 2, max = 100, message = "Category label must be between 2 and 100 characters")
-    @Schema(description = "Category label", example = "Technical Assessment", required = true)
+    @Schema(description = "Category label", example = "Technical Assessment", requiredMode = Schema.RequiredMode.AUTO)
     private String label;
 
     @Schema(description = "Creation timestamp", accessMode = Schema.AccessMode.READ_ONLY)

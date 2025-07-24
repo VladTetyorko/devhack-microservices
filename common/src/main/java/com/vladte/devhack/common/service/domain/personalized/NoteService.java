@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.domain.personalized;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Note;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Note;
+import com.vladte.devhack.entities.user.User;
 
 import java.util.List;
 import java.util.UUID;

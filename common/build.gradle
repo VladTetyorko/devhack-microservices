@@ -37,6 +37,10 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'io.minio:minio:8.5.7'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.4'
 
 
     // OpenAPI/Swagger documentation

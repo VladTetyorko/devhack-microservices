@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.NoteDTO;
-import com.vladte.devhack.entities.Note;
+import com.vladte.devhack.entities.personalized.Note;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,7 +23,7 @@ public class NoteMapper implements EntityDTOMapper<Note, NoteDTO> {
 
         if (entity.getUser() != null) {
             dto.setUserId(entity.getUser().getId());
-            dto.setUserName(entity.getUser().getName());
+            dto.setUserName(entity.getUser().getProfile().getName());
         }
 
         if (entity.getQuestion() != null) {

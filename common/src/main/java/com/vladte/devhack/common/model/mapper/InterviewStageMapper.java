@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.InterviewStageDTO;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.InterviewStageCategory;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.InterviewStageCategory;
 import org.springframework.stereotype.Component;
 
 /**

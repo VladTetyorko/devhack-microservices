@@ -26,12 +26,12 @@ public class InterviewStageDTO implements BaseDTO {
 
     @NotBlank(message = "Stage code is required")
     @Size(min = 2, max = 50, message = "Stage code must be between 2 and 50 characters")
-    @Schema(description = "Stage code", example = "TECHNICAL_INTERVIEW", required = true)
+    @Schema(description = "Stage code", example = "TECHNICAL_INTERVIEW", requiredMode = Schema.RequiredMode.AUTO)
     private String code;
 
     @NotBlank(message = "Stage label is required")
     @Size(min = 2, max = 100, message = "Stage label must be between 2 and 100 characters")
-    @Schema(description = "Stage label", example = "Technical Interview", required = true)
+    @Schema(description = "Stage label", example = "Technical Interview", requiredMode = Schema.RequiredMode.AUTO)
     private String label;
 
     @Schema(description = "Sort order on Kanban board", example = "4")
@@ -55,7 +55,7 @@ public class InterviewStageDTO implements BaseDTO {
     private Boolean internalOnly;
 
     @NotNull(message = "Category is required")
-    @Schema(description = "Category ID", required = true)
+    @Schema(description = "Category ID", requiredMode = Schema.RequiredMode.AUTO)
     private UUID categoryId;
 
     @Schema(description = "Category information", accessMode = Schema.AccessMode.READ_ONLY)

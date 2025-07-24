@@ -4,7 +4,7 @@ import com.vladte.devhack.common.controller.BaseRestController;
 import com.vladte.devhack.common.model.dto.VacancyDTO;
 import com.vladte.devhack.common.model.mapper.VacancyMapper;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

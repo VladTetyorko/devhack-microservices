@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.domain.personalized;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.InterviewStage;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.Vacancy;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

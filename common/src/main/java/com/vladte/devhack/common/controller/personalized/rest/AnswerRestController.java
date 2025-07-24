@@ -6,9 +6,9 @@ import com.vladte.devhack.common.model.mapper.AnswerMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +65,7 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user,
             Pageable pageable) {
-        log.debug("REST request to get all answers for user: {}", user.getName());
+        log.debug("REST request to get all answers for user: {}", user.getProfile().getName());
         Page<Answer> page = service.findAnswersByUser(user, pageable);
         Page<AnswerDTO> dtoPage = page.map(mapper::toDTO);
         return ResponseEntity.ok(dtoPage);

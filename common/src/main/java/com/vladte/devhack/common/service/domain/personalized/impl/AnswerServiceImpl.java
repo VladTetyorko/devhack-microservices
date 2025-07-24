@@ -1,13 +1,13 @@
 package com.vladte.devhack.common.service.domain.personalized.impl;
 
-import com.vladte.devhack.common.repository.AnswerRepository;
+import com.vladte.devhack.common.repository.personalized.AnswerRepository;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.personalized.PersonalizedService;
 import com.vladte.devhack.common.service.kafka.producers.AnswerKafkaProvider;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

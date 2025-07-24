@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -54,7 +54,7 @@ public class VacancyResponseMapper implements EntityDTOMapper<VacancyResponse, V
 
         if (entity.getUser() != null) {
             dto.setUserId(entity.getUser().getId());
-            dto.setUserName(entity.getUser().getName());
+            dto.setUserName(entity.getUser().getProfile().getName());
         }
 
         if (entity.getTags() != null) {

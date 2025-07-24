@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.model.dto;
 
-import com.vladte.devhack.entities.Audit.OperationType;
+import com.vladte.devhack.entities.global.Audit.OperationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

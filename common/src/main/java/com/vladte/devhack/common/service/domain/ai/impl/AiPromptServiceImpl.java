@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.service.domain.ai.impl;
 
-import com.vladte.devhack.common.repository.AiPromptRepository;
+import com.vladte.devhack.common.repository.ai.AiPromptRepository;
 import com.vladte.devhack.common.service.domain.ai.AiPromptService;
-import com.vladte.devhack.entities.AiPrompt;
+import com.vladte.devhack.entities.global.ai.AiPrompt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

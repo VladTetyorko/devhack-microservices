@@ -8,9 +8,9 @@ import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -97,7 +97,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         ModelBuilder.of(model)
                 .addPagination(answerDTOPage, page, size, "answers")
                 .setPageTitle("My Answers")
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .build();
 
         return "answers/list";
@@ -158,7 +158,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         }
 
         // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("currentUser", currentUser.getProfile());
 
         answerFormService.setEditAnswerPageTitle(model);
         return "answers/view";
@@ -195,7 +195,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         }
 
         // Add the current user to the model
-        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("currentUser", currentUser.getProfile());
 
         answerFormService.setEditAnswerPageTitle(model);
         return "answers/form";
@@ -275,7 +275,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is viewing their own answers
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
+        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
             log.warn("Access denied to view answers for user with ID: {}", userId);
             throw new SecurityException("Access denied to view answers for user with ID: " + userId);
         }
@@ -293,8 +293,8 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         ModelBuilder.of(model)
                 .addPagination(answerDTOPage, page, size, "answers")
                 .addAttribute("user", user)
-                .addAttribute("currentUser", currentUser)
-                .setPageTitle("Answers by " + user.getName())
+                .addAttribute("currentUser", currentUser.getProfile())
+                .setPageTitle("Answers by " + user.getProfile().getName())
                 .build();
 
         return "answers/list";
@@ -344,7 +344,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         ModelBuilder.of(model)
                 .addPagination(answerDTOPage, page, size, "answers")
                 .addAttribute("question", question)
-                .addAttribute("currentUser", currentUser)
+                .addAttribute("currentUser", currentUser.getProfile())
                 .setPageTitle("Answers for Question: " + question.getQuestionText())
                 .build();
 

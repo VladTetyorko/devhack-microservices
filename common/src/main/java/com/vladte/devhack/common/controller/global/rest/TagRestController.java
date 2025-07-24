@@ -4,8 +4,8 @@ import com.vladte.devhack.common.controller.BaseRestController;
 import com.vladte.devhack.common.model.dto.TagDTO;
 import com.vladte.devhack.common.model.mapper.TagMapper;
 import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag name to search for")
             @RequestParam String name) {
         log.debug("REST request to find tag by name: {}", name);
-        Optional<com.vladte.devhack.entities.Tag> tag = service.findTagByName(name);
+        Optional<Tag> tag = service.findTagByName(name);
         return tag.map(t -> ResponseEntity.ok(mapper.toDTO(t)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -69,7 +69,7 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag slug to search for")
             @RequestParam String slug) {
         log.debug("REST request to find tag by slug: {}", slug);
-        Optional<com.vladte.devhack.entities.Tag> tag = service.findTagBySlug(slug);
+        Optional<Tag> tag = service.findTagBySlug(slug);
         return tag.map(t -> ResponseEntity.ok(mapper.toDTO(t)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -85,9 +85,9 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
     public ResponseEntity<List<TagDTO>> getAllWithProgress(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get all tags with progress for user: {}", user.getName());
-        List<com.vladte.devhack.entities.Tag> tags = service.findAll();
-        List<com.vladte.devhack.entities.Tag> tagsWithProgress = service.calculateProgressForAll(tags, user);
+        log.debug("REST request to get all tags with progress for user: {}", user.getProfile().getName());
+        List<Tag> tags = service.findAll();
+        List<Tag> tagsWithProgress = service.calculateProgressForAll(tags, user);
         return ResponseEntity.ok(mapper.toDTOList(tagsWithProgress));
     }
 
@@ -102,7 +102,7 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
     public ResponseEntity<TagStats> getTagStats(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get tag statistics for user: {}", user.getName());
+        log.debug("REST request to get tag statistics for user: {}", user.getProfile().getName());
         int totalTags = service.countAllTags();
         int userTags = service.countTagsByUser(user);
 
@@ -116,4 +116,5 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
 
     private record TagStats(int totalTags, int userTags) {
     }
+
 }

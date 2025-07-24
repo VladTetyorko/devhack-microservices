@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.generations;
 
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface QuestionGenerationOrchestrationService {
      * @param tagName the name of the tag to validate
      * @return true if the tag name is valid, false otherwise
      */
-    boolean validateTagName(String tagName);
+    boolean isTagInvalid(String tagName);
 
     /**
      * Start the asynchronous generation of questions for a tag.

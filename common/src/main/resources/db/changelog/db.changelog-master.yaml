@@ -23,3 +23,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/11-added-user-friendly-table-for-ai-usage.sql
   - include:
       file: classpath:db/changelog/changes/12-renamed-vacancy-field-appliedAt.sql
+  - include:
+      file: classpath:db/changelog/changes/13-migrate-users-to-separated-approach.sql

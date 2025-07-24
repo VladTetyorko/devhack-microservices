@@ -27,7 +27,7 @@ public class TagDTO implements BaseDTO {
 
     @NotBlank(message = "Tag name is required")
     @Size(min = 2, max = 50, message = "Tag name must be between 2 and 50 characters")
-    @Schema(description = "Tag name", example = "Java", required = true)
+    @Schema(description = "Tag name", example = "Java", requiredMode = Schema.RequiredMode.AUTO)
     private String name;
 
     @Schema(description = "IDs of questions associated with this tag", accessMode = Schema.AccessMode.READ_ONLY)

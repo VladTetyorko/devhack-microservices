@@ -8,8 +8,8 @@ import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;
 import com.vladte.devhack.common.service.view.VacancyResponseViewService;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -116,7 +116,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      */
     private void prepareCommonModelAttributes(Model model) {
         User currentUser = getCurrentUser();
-        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("currentUser", currentUser.getProfile());
         model.addAttribute("vacancyResponse", new VacancyResponseDTO());
     }
 
@@ -319,7 +319,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is saving their own vacancy response
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
+        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
             log.warn("Access denied to save vacancy response for user with ID: {}", userId);
             throw new SecurityException("Access denied to save vacancy response for user with ID: " + userId);
         }
@@ -379,7 +379,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         // Send the vacancy text to Kafka for processing, including the current user
         vacancyParsingService.parseVacancyText(vacancyText, currentUser);
 
-        log.info("Vacancy text sent for processing for user: {}", currentUser.getName());
+        log.info("Vacancy text sent for processing for user: {}", currentUser.getProfile().getName());
         return "redirect:/vacancies/my-responses";
     }
 
@@ -412,7 +412,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
         User currentUser = getCurrentUser();
 
         // Check if the current user is a manager or is viewing their own vacancy responses
-        if (!isCurrentUserManager() && !currentUser.getId().equals(userId)) {
+        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
             log.warn("Access denied to view vacancy responses for user with ID: {}", userId);
             throw new SecurityException("Access denied to view vacancy responses for user with ID: " + userId);
         }

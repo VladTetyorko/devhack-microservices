@@ -8,10 +8,11 @@
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
                 <i class="fas fa-user-circle fa-2x me-3"></i>
-                <h3 class="mb-0" th:text="${user.name}">User Profile</h3>
-                <span class="badge bg-light text-dark ms-2" th:if="${user.role != null}"
-                      th:text="${user.role}">ROLE</span>
-                <span class="badge bg-success ms-2" th:if="${user.isVisibleToRecruiters}">Visible to Recruiters</span>
+                <h3 class="mb-0" th:text="${user.profile.name}">User Profile</h3>
+                <span class="badge bg-light text-dark ms-2" th:if="${user.access.role != null}"
+                      th:text="${user.access.role}">ROLE</span>
+                <span class="badge bg-success ms-2"
+                      th:if="${user.profile.isVisibleToRecruiters}">Visible to Recruiters</span>
             </div>
             <div>
                 <a th:href="@{/users/{id}/edit(id=${user.id})}" class="btn btn-sm btn-light me-1">
@@ -32,29 +33,29 @@
                         <div class="card-body">
                             <h5 class="card-title"><i class="fas fa-id-card me-2"></i>Profile Info</h5>
                             <hr>
-                            <p><strong>Name:</strong> <span th:text="${user.name}">User Name</span></p>
-                            <p><strong>Email:</strong> <span th:text="${user.email}">user@example.com</span></p>
+                            <p><strong>Name:</strong> <span th:text="${user.profile.name}">User Name</span></p>
                             <p><strong>Created:</strong> <span
                                     th:text="${#temporals.format(user.createdAt, 'dd MMM yyyy')}">01 Jan 2023</span></p>
 
                             <!-- CV Information -->
-                            <div class="mt-4" th:if="${user.cvFileName != null}">
+                            <div class="mt-4" th:if="${user.profile.cvFileName != null}">
                                 <h6><i class="fas fa-file-alt me-2"></i>CV Information</h6>
                                 <hr>
                                 <p>
                                     <strong>File:</strong>
-                                    <a th:href="${user.cvFileHref}" th:text="${user.cvFileName}" target="_blank">resume.pdf</a>
+                                    <a th:href="${user.profile.cvFileHref}" th:text="${user.profile.cvFileName}"
+                                       target="_blank">resume.pdf</a>
                                     <span class="text-muted ms-2"
-                                          th:text="'(' + ${#numbers.formatDecimal(user.cvFileSize / 1024, 0, 1)} + ' KB)'"></span>
+                                          th:text="'(' + ${#numbers.formatDecimal(user.profile.cvFileSize / 1024, 0, 1)} + ' KB)'"></span>
                                 </p>
                                 <p><strong>Uploaded:</strong> <span
-                                        th:text="${#temporals.format(user.cvUploadedAt, 'dd MMM yyyy')}">01 Jan 2023</span>
+                                        th:text="${#temporals.format(user.profile.cvUploadedAt, 'dd MMM yyyy')}">01 Jan 2023</span>
                                 </p>
-                                <p th:if="${user.aiCvScore != null}">
+                                <p th:if="${user.profile.aiCvScore != null}">
                                     <strong>CV Score:</strong>
                                     <span class="badge"
-                                          th:classappend="${user.aiCvScore >= 80 ? 'bg-success' : (user.aiCvScore >= 50 ? 'bg-warning' : 'bg-danger')}"
-                                          th:text="${user.aiCvScore} + '/100'">80/100</span>
+                                          th:classappend="${user.profile.aiCvScore >= 80 ? 'bg-success' : (user.profile.aiCvScore >= 50 ? 'bg-warning' : 'bg-danger')}"
+                                          th:text="${user.profile.aiCvScore} + '/100'">80/100</span>
                                 </p>
                             </div>
 
@@ -65,18 +66,18 @@
                                 <p>
                                     <strong>AI Usage:</strong>
                                     <span class="badge"
-                                          th:classappend="${user.aiUsageAllowed ? 'bg-success' : 'bg-secondary'}"
-                                          th:text="${user.aiUsageAllowed ? 'Allowed' : 'Not Allowed'}">Allowed</span>
+                                          th:classappend="${user.access.aiUsageAllowed ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${user.access.aiUsageAllowed ? 'Allowed' : 'Not Allowed'}">Allowed</span>
                                 </p>
                                 <p>
                                     <strong>AI Features:</strong>
                                     <span class="badge"
-                                          th:classappend="${user.aiUsageEnabled ? 'bg-success' : 'bg-secondary'}"
-                                          th:text="${user.aiUsageEnabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                                          th:classappend="${user.profile.aiUsageEnabled ? 'bg-success' : 'bg-secondary'}"
+                                          th:text="${user.profile.aiUsageEnabled ? 'Enabled' : 'Disabled'}">Enabled</span>
                                 </p>
-                                <p th:if="${user.aiPreferredLanguage != null}">
+                                <p th:if="${user.profile.aiPreferredLanguage != null}">
                                     <strong>Language:</strong>
-                                    <span th:text="${user.aiPreferredLanguage == 'en' ? 'English' : (user.aiPreferredLanguage == 'ru' ? 'Russian' : (user.aiPreferredLanguage == 'de' ? 'German' : (user.aiPreferredLanguage == 'fr' ? 'French' : user.aiPreferredLanguage)))}">English</span>
+                                    <span th:text="${user.profile.aiPreferredLanguage == 'en' ? 'English' : (user.aiPreferredLanguage == 'ru' ? 'Russian' : (user.aiPreferredLanguage == 'de' ? 'German' : (user.aiPreferredLanguage == 'fr' ? 'French' : user.aiPreferredLanguage)))}">English</span>
                                 </p>
                             </div>
                         </div>

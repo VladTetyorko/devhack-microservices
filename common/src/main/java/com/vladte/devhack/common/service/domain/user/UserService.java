@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.domain.user;
 
 import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Optional;
@@ -29,7 +29,7 @@ public interface UserService extends CrudService<User, UUID>, UserDetailsService
      */
     Optional<User> findByEmail(String email);
 
-    User reguister(User user);
+    User register(User user);
 
     /**
      * Register a new manager user.

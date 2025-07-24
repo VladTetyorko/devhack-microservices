@@ -5,7 +5,7 @@ import com.vladte.devhack.common.model.dto.UserDTO;
 import com.vladte.devhack.common.model.mapper.UserMapper;
 import com.vladte.devhack.common.service.domain.files.CvStorageService;
 import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import io.jsonwebtoken.io.IOException;
 import io.minio.errors.MinioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -97,7 +97,7 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             @Valid @RequestBody UserDTO dto) {
         log.debug("REST request to register user: {}", dto);
         User user = mapper.toEntity(dto);
-        User registeredUser = service.reguister(user);
+        User registeredUser = service.register(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(registeredUser));
     }
 
@@ -197,8 +197,8 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        String cvUrl = user.getCvStoragePath();
-        if (cvUrl == null || cvUrl.isEmpty()) {
+        String cvUrl = user.getProfile().getCvStoragePath() != null ? user.getProfile().getCvStoragePath() : "";
+        if (cvUrl.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No CV uploaded for this user");
         }
 

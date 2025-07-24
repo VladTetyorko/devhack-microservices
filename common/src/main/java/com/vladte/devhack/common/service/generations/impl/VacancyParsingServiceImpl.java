@@ -3,12 +3,11 @@ package com.vladte.devhack.common.service.generations.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
 import com.vladte.devhack.common.service.domain.personalized.impl.VacancyResponseServiceImpl;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
-import com.vladte.devhack.entities.User;
-import com.vladte.devhack.entities.Vacancy;
-import com.vladte.devhack.entities.VacancyResponse;
+import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.User;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +25,7 @@ public class VacancyParsingServiceImpl implements VacancyParsingService {
     private final ObjectMapper objectMapper;
     private final VacancyResponseKafkaProvider vacancyResponseKafkaProvider;
 
-    public VacancyParsingServiceImpl(VacancyService vacancyService, VacancyResponseServiceImpl vacancyResponseService, UserService userService, ObjectMapper objectMapper, VacancyResponseKafkaProvider vacancyResponseKafkaProvider) {
+    public VacancyParsingServiceImpl(VacancyService vacancyService, VacancyResponseServiceImpl vacancyResponseService, ObjectMapper objectMapper, VacancyResponseKafkaProvider vacancyResponseKafkaProvider) {
         this.vacancyService = vacancyService;
         this.vacancyResponseService = vacancyResponseService;
         this.objectMapper = objectMapper;

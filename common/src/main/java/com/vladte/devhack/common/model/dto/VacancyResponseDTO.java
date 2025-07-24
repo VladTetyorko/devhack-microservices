@@ -32,7 +32,7 @@ public class VacancyResponseDTO implements BaseDTO {
     private String userName;
 
     @NotNull(message = "Vacancy ID is required")
-    @Schema(description = "ID of the vacancy this response is for", required = true)
+    @Schema(description = "ID of the vacancy this response is for", requiredMode = Schema.RequiredMode.AUTO)
     private UUID vacancyId;
 
     @Schema(description = "Company name from the vacancy", accessMode = Schema.AccessMode.READ_ONLY)
@@ -63,11 +63,11 @@ public class VacancyResponseDTO implements BaseDTO {
     private String location;
 
     @NotNull(message = "Interview stage is required")
-    @Schema(description = "Current stage of the interview process", required = true)
+    @Schema(description = "Current stage of the interview process", requiredMode = Schema.RequiredMode.AUTO)
     private String interviewStageId;
 
     @NotNull(message = "Interview stage is required")
-    @Schema(description = "Current stage of the interview process", required = true, example = "APPLIED")
+    @Schema(description = "Current stage of the interview process", requiredMode = Schema.RequiredMode.AUTO, example = "APPLIED")
     private String interviewStage;
 
     @Schema(description = "Interview stage details", accessMode = Schema.AccessMode.READ_ONLY)

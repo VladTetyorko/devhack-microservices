@@ -1,6 +1,6 @@
 package com.vladte.devhack.parser.service.impl;
 
-import com.vladte.devhack.entities.Vacancy;
+import com.vladte.devhack.entities.global.Vacancy;
 import com.vladte.devhack.parser.service.VacancyParser;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;

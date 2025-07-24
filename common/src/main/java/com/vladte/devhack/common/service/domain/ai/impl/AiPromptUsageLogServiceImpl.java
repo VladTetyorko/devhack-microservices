@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.service.domain.ai.impl;
 
-import com.vladte.devhack.common.repository.AiPromptUsageLogRepository;
+import com.vladte.devhack.common.repository.ai.AiPromptUsageLogRepository;
 import com.vladte.devhack.common.service.domain.ai.AiPromptUsageLogService;
-import com.vladte.devhack.entities.AiPromptUsageLog;
+import com.vladte.devhack.entities.global.ai.AiPromptUsageLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

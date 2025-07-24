@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.domain.audit.impl;
 
-import com.vladte.devhack.common.repository.AuditRepository;
+import com.vladte.devhack.common.repository.audit.AuditRepository;
 import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
-import com.vladte.devhack.entities.Audit;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.global.Audit;
+import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -63,28 +63,28 @@ public class AuditServiceImpl implements AuditService, CrudService<Audit, UUID> 
     @Override
     public Audit auditCreate(String entityType, String entityId, User user, String details) {
         log.debug("Creating audit record for CREATE operation on entity: {}, ID: {}, user: {}",
-                entityType, entityId, user != null ? user.getName() : "null");
+                entityType, entityId, user != null ? user.getProfile().getName() : "null");
         return createAudit(Audit.OperationType.CREATE, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditRead(String entityType, String entityId, User user, String details) {
         log.debug("Creating audit record for READ operation on entity: {}, ID: {}, user: {}",
-                entityType, entityId, user != null ? user.getName() : "null");
+                entityType, entityId, user != null ? user.getProfile().getName() : "null");
         return createAudit(Audit.OperationType.READ, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditUpdate(String entityType, String entityId, User user, String details) {
         log.debug("Creating audit record for UPDATE operation on entity: {}, ID: {}, user: {}",
-                entityType, entityId, user != null ? user.getName() : "null");
+                entityType, entityId, user != null ? user.getProfile().getName() : "null");
         return createAudit(Audit.OperationType.UPDATE, entityType, entityId, user, details);
     }
 
     @Override
     public Audit auditDelete(String entityType, String entityId, User user, String details) {
         log.debug("Creating audit record for DELETE operation on entity: {}, ID: {}, user: {}",
-                entityType, entityId, user != null ? user.getName() : "null");
+                entityType, entityId, user != null ? user.getProfile().getName() : "null");
         return createAudit(Audit.OperationType.DELETE, entityType, entityId, user, details);
     }
 

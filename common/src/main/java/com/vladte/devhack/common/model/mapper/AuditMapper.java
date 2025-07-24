@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.model.mapper;
 
 import com.vladte.devhack.common.model.dto.AuditDTO;
-import com.vladte.devhack.entities.Audit;
+import com.vladte.devhack.entities.global.Audit;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,7 +27,7 @@ public class AuditMapper implements EntityDTOMapper<Audit, AuditDTO> {
 
         if (entity.getUser() != null) {
             dto.setUserId(entity.getUser().getId());
-            dto.setUserName(entity.getUser().getName());
+            dto.setUserName(entity.getUser().getProfile().getName());
         }
 
         return dto;

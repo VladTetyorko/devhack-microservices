@@ -3,7 +3,7 @@ package com.vladte.devhack.common.controller.global.basic.ui;
 import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.BaseViewService;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.entities.user.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,7 +65,7 @@ public class AuthController extends BaseController {
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
         // Check if email already exists
-        if (userService.findByEmail(user.getEmail()).isPresent()) {
+        if (userService.findByEmail(user.getLocalAuth().get().getEmail()).isPresent()) {
             bindingResult.rejectValue("email", "error.user", "Email already exists");
         }
 
@@ -76,7 +76,7 @@ public class AuthController extends BaseController {
         // Set default role is handled in the service
 
         // Register the user
-        userService.reguister(user);
+        userService.register(user);
 
         // Add success message
         redirectAttributes.addAttribute("registered", true);

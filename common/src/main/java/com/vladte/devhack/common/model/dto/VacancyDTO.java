@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.model.dto;
 
-import com.vladte.devhack.entities.VacancyStatus;
+import com.vladte.devhack.entities.enums.VacancyStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -28,12 +28,12 @@ public class VacancyDTO implements BaseDTO {
 
     @NotBlank(message = "Company name is required")
     @Size(min = 2, max = 100, message = "Company name must be between 2 and 100 characters")
-    @Schema(description = "Company name", example = "Acme Inc.", required = true)
+    @Schema(description = "Company name", example = "Acme Inc.", requiredMode = Schema.RequiredMode.AUTO)
     private String companyName;
 
     @NotBlank(message = "Position is required")
     @Size(min = 2, max = 100, message = "Position must be between 2 and 100 characters")
-    @Schema(description = "Job position", example = "Senior Java Developer", required = true)
+    @Schema(description = "Job position", example = "Senior Java Developer", requiredMode = Schema.RequiredMode.AUTO)
     private String position;
 
     @Schema(description = "Required technologies", example = "Java, Spring Boot, PostgreSQL")
@@ -49,7 +49,7 @@ public class VacancyDTO implements BaseDTO {
     private LocalDateTime openAt;
 
     @NotNull(message = "Status is required")
-    @Schema(description = "Current status of the vacancy", required = true)
+    @Schema(description = "Current status of the vacancy", requiredMode = Schema.RequiredMode.AUTO)
     private VacancyStatus status;
 
     @Schema(description = "Contact person name", example = "John Doe")
