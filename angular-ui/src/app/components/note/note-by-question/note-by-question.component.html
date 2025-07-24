@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="page-header">
+        <h2>Notes for Question: {{ questionId }}</h2>
+        <button class="btn btn-secondary btn-sm" routerLink="/notes/my-notes">
+            <i class="bi bi-arrow-left"></i> Back to My Notes
+        </button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && notes.length === 0" class="alert alert-info">
+        No notes found for this question.
+    </div>
+
+    <div class="row" *ngIf="!isLoading && notes.length > 0">
+        <div class="col-md-6 mb-4" *ngFor="let note of notes">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Question Note</h5>
+                    <span class="badge bg-light text-dark">{{ note.createdAt | date:'short' }}</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ note.content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
