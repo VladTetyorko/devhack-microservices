@@ -1,10 +1,16 @@
 package com.vladte.devhack.common.exception;
 
+import org.springframework.http.HttpStatus;
+
 /**
  * Exception thrown when an entity is not found.
  * Used to indicate that a requested resource does not exist.
+ * Now extends BaseException to integrate with the comprehensive exception handling system
+ * while maintaining backward compatibility with existing code.
  */
-public class EntityNotFoundException extends RuntimeException {
+public class EntityNotFoundException extends BaseException {
+
+    private static final String DEFAULT_ERROR_CODE = "ENTITY_NOT_FOUND";
 
     /**
      * Constructs a new exception with the specified detail message.
@@ -32,6 +38,27 @@ public class EntityNotFoundException extends RuntimeException {
      * @param id         the entity ID
      */
     public EntityNotFoundException(String entityType, Object id) {
-        super(entityType + " not found with id: " + id);
+        super(entityType + " not found with id: " + id, DEFAULT_ERROR_CODE, entityType, id);
+    }
+
+    /**
+     * Constructs a new exception with error code and parameters.
+     *
+     * @param message    the detail message
+     * @param errorCode  the error code
+     * @param parameters the parameters for message formatting
+     */
+    public EntityNotFoundException(String message, String errorCode, Object... parameters) {
+        super(message, errorCode, parameters);
+    }
+
+    @Override
+    protected String getDefaultErrorCode() {
+        return DEFAULT_ERROR_CODE;
+    }
+
+    @Override
+    public int getHttpStatusCode() {
+        return HttpStatus.NOT_FOUND.value();
     }
 }

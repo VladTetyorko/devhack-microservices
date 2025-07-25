@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Base controller with common methods for all controllers.
@@ -69,19 +68,5 @@ public abstract class BaseController {
      */
     protected <T> T getEntityOrThrow(Optional<T> optional, String errorMessage) {
         return optional.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage));
-    }
-
-    /**
-     * Process an entity if it exists, or throw a NOT_FOUND exception.
-     *
-     * @param optional     the Optional containing the entity
-     * @param consumer     the consumer to process the entity
-     * @param errorMessage the error message if the entity is not found
-     * @param <T>          the entity type
-     * @throws ResponseStatusException if the entity is not found
-     */
-    protected <T> void processEntityOrThrow(Optional<T> optional, Consumer<T> consumer, String errorMessage) {
-        T entity = getEntityOrThrow(optional, errorMessage);
-        consumer.accept(entity);
     }
 }

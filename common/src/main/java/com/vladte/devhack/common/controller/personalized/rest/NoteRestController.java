@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.personalized.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.NoteDTO;
-import com.vladte.devhack.common.model.mapper.NoteMapper;
+import com.vladte.devhack.common.model.dto.personalized.NoteDTO;
+import com.vladte.devhack.common.model.mapper.personalized.NoteMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.domain.user.UserService;

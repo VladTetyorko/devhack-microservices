@@ -1,73 +1,271 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<head>
+    <title>Generate Interview Questions</title>
+</head>
 <body>
 <section>
-    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}">
-        Error message
-    </div>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="fas fa-magic me-2"></i>Generate Interview Questions
+                        </h3>
+                        <p class="mb-0 mt-2">Create personalized interview questions using AI</p>
+                    </div>
 
-    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}">
-        Success message
-    </div>
+                    <div class="card-body">
+                        <!-- Success/Error Messages -->
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${error}">Error message</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="card-title">Generate Interview Questions with AI</h5>
-        </div>
-        <div class="card-body">
-            <form th:action="@{/questions/generate}" method="post">
-                <div class="mb-3">
-                    <label for="tagName" class="form-label">Tag Name:</label>
-                    <input type="text" class="form-control" id="tagName" name="tagName" required
-                           placeholder="Enter a technology or topic (e.g., Java, Spring, Microservices)">
-                    <div class="form-text">Enter a technology, concept, or topic to generate questions about.</div>
-                </div>
+                        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span th:text="${success}">Success message</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="count" class="form-label">Number of Questions:</label>
-                    <select class="form-select" id="count" name="count">
-                        <option value="3">3</option>
-                        <option value="5" selected>5</option>
-                        <option value="10">10</option>
-                    </select>
-                </div>
+                        <form id="generateForm" class="needs-validation" novalidate>
+                            <!-- Topic Selection -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">What topic do you want to practice?</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <input type="text" class="form-control" id="topic" name="topic"
+                                           placeholder="e.g., Java, Spring Boot, React, System Design"
+                                           required>
+                                    <div class="invalid-feedback">Please enter a topic.</div>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-lightbulb text-warning"></i>
+                                    Try: Programming languages, frameworks, concepts, or job-specific skills
+                                </div>
+                            </div>
 
-                <div class="mb-3">
-                    <label for="difficulty" class="form-label">Difficulty Level:</label>
-                    <select class="form-select" id="difficulty" name="difficulty">
-                        <option value="Easy">Easy</option>
-                        <option value="Medium" selected>Medium</option>
-                        <option value="Hard">Hard</option>
-                    </select>
-                </div>
+                            <!-- Quick Options -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Difficulty Level</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="difficulty" id="easy" value="Easy"
+                                               checked>
+                                        <label class="btn btn-outline-success" for="easy">
+                                            <i class="fas fa-seedling"></i> Easy
+                                        </label>
 
-                <div class="mb-3">
-                    <div class="form-text text-warning">
-                        <strong>Note:</strong> This will use AI to generate questions and may take a few seconds.
+                                        <input type="radio" class="btn-check" name="difficulty" id="medium"
+                                               value="Medium">
+                                        <label class="btn btn-outline-warning" for="medium">
+                                            <i class="fas fa-balance-scale"></i> Medium
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="difficulty" id="hard" value="Hard">
+                                        <label class="btn btn-outline-danger" for="hard">
+                                            <i class="fas fa-fire"></i> Hard
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Number of Questions</label>
+                                    <select class="form-select form-select-lg" name="count" id="count">
+                                        <option value="3">3 Questions (Quick)</option>
+                                        <option value="5" selected>5 Questions (Standard)</option>
+                                        <option value="10">10 Questions (Comprehensive)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Options (Collapsible) -->
+                            <div class="mb-4">
+                                <button class="btn btn-link p-0 text-decoration-none" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#advancedOptions">
+                                    <i class="fas fa-cog me-1"></i>Advanced Options
+                                    <i class="fas fa-chevron-down ms-1"></i>
+                                </button>
+
+                                <div class="collapse mt-3" id="advancedOptions">
+                                    <div class="card card-body bg-light">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Question Type</label>
+                                                <select class="form-select" name="type" id="type">
+                                                    <option value="mixed" selected>Mixed (Recommended)</option>
+                                                    <option value="theoretical">Theoretical</option>
+                                                    <option value="practical">Practical/Coding</option>
+                                                    <option value="behavioral">Behavioral</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Experience Level</label>
+                                                <select class="form-select" name="experience" id="experience">
+                                                    <option value="junior" selected>Junior (0-2 years)</option>
+                                                    <option value="mid">Mid-level (2-5 years)</option>
+                                                    <option value="senior">Senior (5+ years)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Generate Button -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                    <i class="fas fa-magic me-2"></i>Generate Questions
+                                    <span class="spinner-border spinner-border-sm d-none ms-2" id="spinner"></span>
+                                </button>
+
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>Generation typically takes 10-30 seconds
+                                    </small>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Generate Questions</button>
-                <a th:href="@{/questions}" class="btn btn-secondary">Cancel</a>
-            </form>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Existing Tags</h5>
-        </div>
-        <div class="card-body">
-            <p>You can also generate questions for existing tags:</p>
-            <div class="d-flex flex-wrap gap-2">
-                <div th:each="tag : ${tags}" class="badge bg-secondary p-2">
-                    <a th:href="@{'/questions/tag/' + ${tag.slug}}" class="text-white text-decoration-none"
-                       th:text="${tag.name}">Tag Name</a>
+                <!-- Popular Topics -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-fire text-danger me-2"></i>Popular Topics
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="Java">Java</button>
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="Spring Boot">Spring
+                                Boot
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="React">React</button>
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="System Design">System
+                                Design
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="Database">Database
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm topic-btn" data-topic="Microservices">
+                                Microservices
+                            </button>
+                            <div th:each="tag : ${tags}" class="d-inline">
+                                <button class="btn btn-outline-secondary btn-sm topic-btn"
+                                        th:data-topic="${tag.name}" th:text="${tag.name}">Tag Name
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                    <h5>Generating Your Questions</h5>
+                    <p class="text-muted mb-0">AI is crafting personalized interview questions...</p>
+                    <div class="progress mt-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                             style="width: 100%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Enhanced UX -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('generateForm');
+            const topicInput = document.getElementById('topic');
+            const generateBtn = document.getElementById('generateBtn');
+            const spinner = document.getElementById('spinner');
+            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+            // Popular topic buttons
+            document.querySelectorAll('.topic-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    topicInput.value = this.dataset.topic;
+                    topicInput.focus();
+                    // Add visual feedback
+                    this.classList.add('btn-primary');
+                    this.classList.remove('btn-outline-primary', 'btn-outline-secondary');
+                    setTimeout(() => {
+                        this.classList.remove('btn-primary');
+                        this.classList.add('btn-outline-primary');
+                    }, 1000);
+                });
+            });
+
+            // Form submission
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                // Show loading state
+                generateBtn.disabled = true;
+                spinner.classList.remove('d-none');
+                loadingModal.show();
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch('/api/v1/questions/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            topic: formData.get('topic'),
+                            difficulty: formData.get('difficulty'),
+                            count: parseInt(formData.get('count')),
+                            type: formData.get('type') || 'mixed',
+                            experience: formData.get('experience') || 'junior'
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Redirect to results page
+                        window.location.href = `/questions?generated=true&topic=${encodeURIComponent(formData.get('topic'))}`;
+                    } else {
+                        throw new Error(result.message || 'Generation failed');
+                    }
+                } catch (error) {
+                    loadingModal.hide();
+                    showError('Failed to generate questions: ' + error.message);
+                } finally {
+                    generateBtn.disabled = false;
+                    spinner.classList.add('d-none');
+                }
+            });
+
+            function showError(message) {
+                // Show user-friendly error message
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger alert-dismissible fade show';
+                alert.innerHTML = `
+                    <i class="fas fa-exclamation-triangle me-2"></i>${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                form.insertBefore(alert, form.firstChild);
+            }
+        });
+    </script>
 </section>
 </body>
 </html>

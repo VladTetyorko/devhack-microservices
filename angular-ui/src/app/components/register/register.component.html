@@ -1,0 +1,180 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-user-plus me-2"></i>Create Account
+          </h4>
+        </div>
+        <div class="card-body p-4">
+          <!-- Success Alert -->
+          <div *ngIf="success" class="alert alert-success" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ success }}
+          </div>
+
+          <!-- Error Alert -->
+          <div *ngIf="error" class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ error }}
+          </div>
+
+          <!-- Registration Form -->
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="firstName" class="form-label">First Name *</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="firstName" 
+                      formControlName="firstName"
+                      [class.is-invalid]="submitted && f['firstName'].errors"
+                      placeholder="Enter your first name">
+                  </div>
+                  <div *ngIf="submitted && f['firstName'].errors" class="invalid-feedback">
+                    <div *ngIf="f['firstName'].errors?.['required']">First name is required</div>
+                    <div *ngIf="f['firstName'].errors?.['minlength']">First name must be at least 2 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="lastName" class="form-label">Last Name *</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input 
+                      type="text" 
+                      class="form-control" 
+                      id="lastName" 
+                      formControlName="lastName"
+                      [class.is-invalid]="submitted && f['lastName'].errors"
+                      placeholder="Enter your last name">
+                  </div>
+                  <div *ngIf="submitted && f['lastName'].errors" class="invalid-feedback">
+                    <div *ngIf="f['lastName'].errors?.['required']">Last name is required</div>
+                    <div *ngIf="f['lastName'].errors?.['minlength']">Last name must be at least 2 characters</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email Address *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  id="email" 
+                  formControlName="email"
+                  [class.is-invalid]="submitted && f['email'].errors"
+                  placeholder="Enter your email address">
+              </div>
+              <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <div *ngIf="f['email'].errors?.['required']">Email is required</div>
+                <div *ngIf="f['email'].errors?.['email']">Please enter a valid email address</div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="phoneNumber" class="form-label">Phone Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  id="phoneNumber" 
+                  formControlName="phoneNumber"
+                  placeholder="Enter your phone number (optional)">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Password *</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input 
+                      type="password" 
+                      class="form-control" 
+                      id="password" 
+                      formControlName="password"
+                      [class.is-invalid]="submitted && f['password'].errors"
+                      placeholder="Enter your password">
+                  </div>
+                  <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                    <div *ngIf="f['password'].errors?.['required']">Password is required</div>
+                    <div *ngIf="f['password'].errors?.['minlength']">Password must be at least 6 characters</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                    <input 
+                      type="password" 
+                      class="form-control" 
+                      id="confirmPassword" 
+                      formControlName="confirmPassword"
+                      [class.is-invalid]="submitted && f['confirmPassword'].errors"
+                      placeholder="Confirm your password">
+                  </div>
+                  <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback">
+                    <div *ngIf="f['confirmPassword'].errors?.['required']">Password confirmation is required</div>
+                    <div *ngIf="f['confirmPassword'].errors?.['passwordMismatch']">Passwords do not match</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input 
+                  class="form-check-input" 
+                  type="checkbox" 
+                  id="acceptTerms" 
+                  formControlName="acceptTerms"
+                  [class.is-invalid]="submitted && f['acceptTerms'].errors">
+                <label class="form-check-label" for="acceptTerms">
+                  I accept the <a href="#" class="text-primary">Terms and Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a> *
+                </label>
+                <div *ngIf="submitted && f['acceptTerms'].errors" class="invalid-feedback">
+                  <div *ngIf="f['acceptTerms'].errors?.['required']">You must accept the terms and conditions</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary btn-lg"
+                [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                <i *ngIf="!loading" class="fas fa-user-plus me-2"></i>
+                {{ loading ? 'Creating Account...' : 'Create Account' }}
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer bg-light">
+          <div class="text-center">
+            <p class="mb-0">
+              Already have an account? 
+              <button type="button" class="btn btn-link p-0 text-primary" (click)="goToLogin()">
+                Sign In
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

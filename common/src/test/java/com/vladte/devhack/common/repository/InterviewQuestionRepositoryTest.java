@@ -1,8 +1,14 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
+import com.vladte.devhack.common.repository.global.TagRepository;
+import com.vladte.devhack.common.repository.user.UserRepository;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -43,9 +49,21 @@ class InterviewQuestionRepositoryTest extends BaseRepositoryTest {
     void setup() {
         // Create and save a test user
         testUser = new User();
-        testUser.setName("testuser");
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("password");
+
+        // Create profile
+        Profile profile = new Profile();
+        profile.setName("testuser");
+        profile.setUser(testUser);
+        testUser.setProfile(profile);
+
+        // Create authentication provider
+        AuthenticationProvider authProvider = new AuthenticationProvider();
+        authProvider.setProvider(AuthProviderType.LOCAL);
+        authProvider.setEmail("test@example.com");
+        authProvider.setPasswordHash("password");
+        authProvider.setUser(testUser);
+        testUser.setAuthProviders(List.of(authProvider));
+
         userRepository.save(testUser);
 
         // Create and save a test tag

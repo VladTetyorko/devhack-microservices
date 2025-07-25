@@ -4,16 +4,16 @@
 <body>
 <section>
     <!-- Welcome Banner -->
-    <div class="card bg-primary text-white mb-4">
+    <div class="card bg-gradient-primary text-white mb-4">
         <div class="card-body p-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h2 class="display-5 fw-bold">Study Dashboard</h2>
-                    <p class="lead">Track your interview preparation progress</p>
+                    <h2 class="display-6 fw-bold mb-2">Welcome back!</h2>
+                    <p class="lead mb-0">Ready to practice some interview questions?</p>
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a th:href="@{/questions}" class="btn btn-light btn-lg">
-                        <i class="fas fa-list me-2"></i>View Questions
+                    <a th:href="@{/questions/generate}" class="btn btn-light btn-lg">
+                        <i class="fas fa-plus me-2"></i>Generate Questions
                     </a>
                 </div>
             </div>
@@ -89,6 +89,44 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a th:href="@{/questions/generate}" class="btn btn-outline-primary w-100 p-3 h-100">
+                                <i class="fas fa-magic fa-2x d-block mb-2"></i>
+                                <strong>Generate New Questions</strong>
+                                <small class="d-block text-muted">Create AI-powered questions</small>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a th:href="@{/questions}" class="btn btn-outline-success w-100 p-3 h-100">
+                                <i class="fas fa-list fa-2x d-block mb-2"></i>
+                                <strong>Browse Questions</strong>
+                                <small class="d-block text-muted">Explore existing questions</small>
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a th:href="@{/questions/search}" class="btn btn-outline-info w-100 p-3 h-100">
+                                <i class="fas fa-search fa-2x d-block mb-2"></i>
+                                <strong>Search Questions</strong>
+                                <small class="d-block text-muted">Find specific topics</small>
+                            </a>
                         </div>
                     </div>
                 </div>

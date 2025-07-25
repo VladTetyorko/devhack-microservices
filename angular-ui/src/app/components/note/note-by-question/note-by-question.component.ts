@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NoteService} from '../../../services/note.service';
-import {NoteDTO} from '../../../models/note.model';
+import {NoteDTO} from '../../../models/personalized/note.model';
 
 @Component({
     selector: 'app-note-by-question',

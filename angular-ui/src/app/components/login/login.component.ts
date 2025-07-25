@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { finalize } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
+import {LoginRequest} from '../../models/basic/auth.model';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,8 @@ export class LoginComponent implements OnInit {
 
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
+      rememberMe: [false]
     });
 
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -52,19 +54,27 @@ export class LoginComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.authService.login({
+    const loginRequest: LoginRequest = {
       email: this.f['email'].value,
-      password: this.f['password'].value
-    })
+      password: this.f['password'].value,
+      rememberMe: this.f['rememberMe'].value
+    };
+
+    this.authService.login(loginRequest)
     .pipe(
       finalize(() => this.loading = false)
     )
     .subscribe({
-      next: () => {
-        this.router.navigate([this.returnUrl]);
+      next: (response) => {
+        if (response.success) {
+          this.router.navigate([this.returnUrl]);
+        } else {
+          this.error = response.message || 'Login failed. Please check your credentials and try again.';
+        }
       },
       error: error => {
-        this.error = error.error?.message || 'Login failed. Please check your credentials and try again.';
+        console.error('Login error:', error);
+        this.error = error.error?.message || error.message || 'Login failed. Please check your credentials and try again.';
       }
     });
   }

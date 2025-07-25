@@ -1,36 +1,58 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-// User components
-import {UserListComponent} from './components/user/user-list/user-list.component';
-import {UserDetailComponent} from './components/user/user-detail/user-detail.component';
-import {UserRegisterComponent} from './components/user/user-register/user-register.component';
-
-// Note components
-import {NoteListComponent} from './components/note/note-list/note-list.component';
-import {NoteByQuestionComponent} from './components/note/note-by-question/note-by-question.component';
-
-// VacancyResponse components
-import {
-  VacancyResponseListComponent
-} from './components/vacancy-response/vacancy-response-list/vacancy-response-list.component';
-import {
-  VacancyResponseDetailComponent
-} from './components/vacancy-response/vacancy-response-detail/vacancy-response-detail.component';
+// Guards
+import {AuthGuard} from './guards/auth.guard';
 
 const routes: Routes = [
-    // User routes
-    {path: 'users', component: UserListComponent},
-    {path: 'users/register', component: UserRegisterComponent},
-    {path: 'users/:id', component: UserDetailComponent},
+    // Auth routes (public)
+    {
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
+    {
+        path: 'login',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
+    {
+        path: 'register',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
 
-    // Note routes
-    {path: 'notes/my-notes', component: NoteListComponent},
-    {path: 'notes/question/:questionId', component: NoteByQuestionComponent},
+    // User routes (protected)
+    {
+        path: 'users',
+        loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
+        canActivate: [AuthGuard]
+    },
 
-    // Vacancy Response routes
-    {path: 'vacancies/my-responses', component: VacancyResponseListComponent},
-    {path: 'vacancies/my-responses/:id', component: VacancyResponseDetailComponent},
+    // Note routes (protected)
+    {
+        path: 'notes',
+        loadChildren: () => import('./modules/note/note.module').then(m => m.NoteModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Tag routes (protected)
+    {
+        path: 'tags',
+        loadChildren: () => import('./modules/tag/tag.module').then(m => m.TagModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Interview Question routes (protected)
+    {
+        path: 'interview-questions',
+        loadChildren: () => import('./modules/interview-question/interview-question.module').then(m => m.InterviewQuestionModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Vacancy Response routes (protected)
+    {
+        path: 'vacancies',
+        loadChildren: () => import('./modules/vacancy-response/vacancy-response.module').then(m => m.VacancyResponseModule),
+        canActivate: [AuthGuard]
+    },
 
     // Default routes
     {path: '', redirectTo: '/users', pathMatch: 'full'},

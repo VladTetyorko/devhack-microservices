@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"profile", "userAccess", "authProviders", "answers", "notes", "vacancyResponses"})
 @Entity
 @Table(name = "users")
 @Data

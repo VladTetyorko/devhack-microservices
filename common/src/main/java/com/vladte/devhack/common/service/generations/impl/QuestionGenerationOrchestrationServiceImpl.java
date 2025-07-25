@@ -13,18 +13,15 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-/**
- * Implementation of the QuestionGenerationOrchestrationService interface.
- * This class orchestrates the generation of questions and related operations.
- */
 @Service
-public class QuestionGenerationOrchestrationServiceImpl implements QuestionGenerationOrchestrationService {
+public class QuestionGenerationOrchestrationServiceImpl
+        implements QuestionGenerationOrchestrationService {
 
-    private static final Logger log = LoggerFactory.getLogger(QuestionGenerationOrchestrationServiceImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(QuestionGenerationOrchestrationServiceImpl.class);
 
     private final TagService tagService;
     private final QuestionGenerationService questionGenerationService;
-
 
     public QuestionGenerationOrchestrationServiceImpl(
             TagService tagService,
@@ -40,38 +37,17 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
     }
 
     @Override
-    public CompletableFuture<List<InterviewQuestion>> startQuestionGeneration(String tagName, int count, String difficulty) {
-        log.info("Starting asynchronous generation of {} {} difficulty questions for tag: {}",
-                count, difficulty, tagName);
-
-        return questionGenerationService.generateAndSaveQuestions(tagName, count, difficulty)
-                .thenApply(questions -> {
-                    log.info("Successfully generated {} questions for tag: {}", questions.size(), tagName);
-                    return questions;
-                })
-                .exceptionally(ex -> {
-                    // Log the error but don't block the user
-                    log.error("Error generating questions: {}", ex.getMessage(), ex);
-                    return null;
-                });
+    public CompletableFuture<List<InterviewQuestion>> startQuestionGeneration(
+            String tagName, int count, String difficulty
+    ) {
+        return dispatchGeneration(tagName, count, difficulty);
     }
 
     @Override
-    public CompletableFuture<List<InterviewQuestion>> startEasyQuestionGeneration(String tagName) {
-        log.info("Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
-
-        // Create a single future for the tag to optimize processing
-        CompletableFuture<List<InterviewQuestion>> future = startQuestionGeneration(tagName, 3, "easy");
-
-        // Apply optimizations for this specific tag
-        return future.thenApply(questions -> {
-            log.info("Successfully generated {} easy questions for tag: {}",
-                    questions != null ? questions.size() : 0, tagName);
-            return questions;
-        }).exceptionally(ex -> {
-            log.error("Error generating easy questions for tag {}: {}", tagName, ex.getMessage(), ex);
-            return null;
-        });
+    public CompletableFuture<List<InterviewQuestion>> startEasyQuestionGeneration(
+            String tagName
+    ) {
+        return dispatchGeneration(tagName, 3, "easy");
     }
 
     @Override
@@ -80,20 +56,23 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
     }
 
     @Override
-    public String buildGenerationSuccessMessage(int count, String difficulty, String tagName) {
-        return String.format("Started generating %d %s difficulty questions for tag '%s'. They will appear shortly.",
-                count, difficulty, tagName);
+    public String buildGenerationSuccessMessage(
+            int count, String difficulty, String tagName
+    ) {
+        return String.format(
+                "Started generating %d %s difficulty questions for tag '%s'. They will appear shortly.",
+                count, difficulty, tagName
+        );
     }
 
     @Override
     public String buildEasyGenerationSuccessMessage(String tagName) {
-        return String.format("Started auto-generating 3 easy questions for tag '%s'. They will appear shortly.",
-                tagName);
+        return buildGenerationSuccessMessage(3, "easy", tagName);
     }
 
     @Override
     public Map<String, Object> buildApiResponse(boolean success, String message) {
-        Map<String, Object> response = new HashMap<>();
+        var response = new HashMap<String, Object>();
         response.put("success", success);
         if (success) {
             response.put("message", message);
@@ -105,42 +84,55 @@ public class QuestionGenerationOrchestrationServiceImpl implements QuestionGener
 
     @Override
     public void startEasyQuestionGenerationForMultipleTags(List<UUID> tagIds) {
-        log.info("Starting asynchronous generation of easy questions for multiple tags: {}", tagIds);
-
-        // Use CompletableFuture.runAsync to make this method truly async and independent
-        CompletableFuture.runAsync(() -> {
-            List<CompletableFuture<List<InterviewQuestion>>> futures = new ArrayList<>();
-
-            for (UUID tagId : tagIds) {
-                tagService.findById(tagId).ifPresent(tag -> {
-                    String tagName = tag.getName();
-                    futures.add(startQuestionGeneration(tagName, 3, "easy"));
+        CompletableFuture
+                .allOf(
+                        tagIds.stream()
+                                .map(tagService::findById)
+                                .filter(Optional::isPresent)
+                                .map(Optional::get)
+                                .map(Tag::getName)
+                                .map(name -> dispatchGeneration(name, 3, "easy"))
+                                .toArray(CompletableFuture[]::new)
+                )
+                .thenAccept(v -> log.info(
+                        "Completed multi‑tag easy generation for {} tags",
+                        tagIds.size()
+                ))
+                .exceptionally(ex -> {
+                    log.error("Error generating easy questions for tags {}: {}",
+                            tagIds, ex.getMessage(), ex);
+                    return null;
                 });
-            }
-
-            // Wait for all futures to complete, but don't return anything
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                    .thenAccept(v -> {
-                        int totalQuestions = 0;
-                        for (CompletableFuture<List<InterviewQuestion>> future : futures) {
-                            List<InterviewQuestion> questions = future.join();
-                            if (questions != null) {
-                                totalQuestions += questions.size();
-                            }
-                        }
-                        log.info("Successfully generated a total of {} questions for {} tags",
-                                totalQuestions, tagIds.size());
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Error generating questions for multiple tags: {}", ex.getMessage(), ex);
-                        return null;
-                    });
-        });
     }
 
     @Override
     public String buildMultiTagEasyGenerationSuccessMessage(int tagCount) {
-        return String.format("Started auto-generating easy questions for %d tags. They will appear shortly.",
-                tagCount);
+        return String.format(
+                "Started auto‑generating easy questions for %d tags. They will appear shortly.",
+                tagCount
+        );
+    }
+
+    /**
+     * Private helper to centralize the common “send to AI → save → log → error‑handle” flow.
+     */
+    private CompletableFuture<List<InterviewQuestion>> dispatchGeneration(
+            String tagName, int count, String difficulty
+    ) {
+        log.info("Invoking AI to generate {} {} questions for tag '{}'",
+                count, difficulty, tagName);
+
+        return questionGenerationService
+                .generateAndSaveQuestions(tagName, count, difficulty)
+                .thenApply(questions -> {
+                    log.info("AI returned {} questions for tag '{}'",
+                            questions.size(), tagName);
+                    return questions;
+                })
+                .exceptionally(ex -> {
+                    log.error("Generation failed for tag '{}': {}", tagName, ex.getMessage(), ex);
+                    // return empty list so caller isn’t blocked by exception
+                    return Collections.emptyList();
+                });
     }
 }

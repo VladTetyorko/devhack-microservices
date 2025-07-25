@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {UserDTO} from '../models/user.model';
+import {UserDTO} from '../models/user/user.model';
+import {Page, PageRequest} from '../models/basic/page.model';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,24 @@ export class UserService {
 
     getAll(): Observable<UserDTO[]> {
         return this.http.get<UserDTO[]>(this.baseUrl);
+    }
+
+    getAllPaged(pageRequest: PageRequest): Observable<Page<UserDTO>> {
+        let params = new HttpParams();
+
+        if (pageRequest.page !== undefined) {
+            params = params.set('page', pageRequest.page.toString());
+        }
+        if (pageRequest.size !== undefined) {
+            params = params.set('size', pageRequest.size.toString());
+        }
+        if (pageRequest.sort && pageRequest.sort.length > 0) {
+            pageRequest.sort.forEach((sortParam: string) => {
+                params = params.append('sort', sortParam);
+            });
+        }
+
+        return this.http.get<Page<UserDTO>>(`${this.baseUrl}/page`, {params});
     }
 
     getById(id: string): Observable<UserDTO> {

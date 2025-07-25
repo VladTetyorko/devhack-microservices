@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../../services/user.service';
-import {UserDTO} from '../../../models/user.model';
+import {UserDTO} from '../../../models/user/user.model';
 
 @Component({
     selector: 'app-user-register',
@@ -32,7 +32,18 @@ export class UserRegisterComponent implements OnInit {
     register(): void {
         if (this.registerForm.valid) {
             this.isSubmitting = true;
-            const userData: UserDTO = this.registerForm.value;
+            const userData: UserDTO = {
+                profile: {
+                    name: this.registerForm.value.name
+                },
+                credentials: [{
+                    provider: 'LOCAL',
+                    email: this.registerForm.value.email
+                }],
+                access: {
+                    role: this.isManagerRegistration ? 'MANAGER' : 'USER'
+                }
+            };
 
             const registerObservable = this.isManagerRegistration ?
                 this.userService.registerManager(userData) :

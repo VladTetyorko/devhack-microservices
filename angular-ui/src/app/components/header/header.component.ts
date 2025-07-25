@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { Subscription } from 'rxjs';
-import { AuthState } from '../../models/auth.model';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
+import {Subscription} from 'rxjs';
+import {AuthState, UserDTO} from '../../models/basic/auth.model';
 
 @Component({
   selector: 'app-header',
@@ -11,7 +11,7 @@ import { AuthState } from '../../models/auth.model';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   isAuthenticated = false;
-  currentUser: any = null;
+  currentUser: UserDTO | null = null;
   private authSubscription: Subscription | null = null;
 
   constructor(

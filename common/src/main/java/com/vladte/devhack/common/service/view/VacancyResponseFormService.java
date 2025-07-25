@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
+import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
 import org.springframework.ui.Model;
 
 import java.util.UUID;

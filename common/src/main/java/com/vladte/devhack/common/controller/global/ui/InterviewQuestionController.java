@@ -1,11 +1,14 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
-import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
+import com.vladte.devhack.common.model.dto.global.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.mapper.global.InterviewQuestionMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
-import com.vladte.devhack.common.service.view.*;
+import com.vladte.devhack.common.service.view.DashboardViewService;
+import com.vladte.devhack.common.service.view.QuestionFormService;
+import com.vladte.devhack.common.service.view.SearchViewService;
+import com.vladte.devhack.common.service.view.TagQuestionService;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import com.vladte.devhack.entities.global.Tag;
 import org.slf4j.Logger;
@@ -15,9 +18,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+/**
+ * Simplified UI controller for managing InterviewQuestion views.
+ * Focuses only on rendering pages and handling form submissions that redirect to views.
+ * Follows the Single Responsibility Principle by handling only UI concerns.
+ */
 @Controller
 @RequestMapping("/questions")
 public class InterviewQuestionController extends BaseCrudController<InterviewQuestion, InterviewQuestionDTO, UUID, InterviewQuestionService, InterviewQuestionMapper> {
@@ -134,51 +145,40 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         return "questions/list";
     }
 
-    @PostMapping("/generate/api")
-    @ResponseBody
-    public String generateQuestionsApi(
-            @RequestParam String tagName,
+    @PostMapping("/generate")
+    public String generateQuestions(
+            @RequestParam String topic,
             @RequestParam(defaultValue = "5") int count,
-            @RequestParam(defaultValue = "Medium") String difficulty) {
-
-        Map<String, Object> response = new HashMap<>();
+            @RequestParam(defaultValue = "Medium") String difficulty,
+            RedirectAttributes redirectAttributes) {
 
         // Validate input
-        if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
-            response.put("success", false);
-            response.put("message", "Tag name is required");
-            return response.toString();
+        if (questionGenerationOrchestrationService.isTagInvalid(topic)) {
+            redirectAttributes.addFlashAttribute("error", "Topic name is required");
+            return "redirect:/questions/generate";
         }
 
         // Start the asynchronous generation process without blocking
-        questionGenerationOrchestrationService.startQuestionGeneration(tagName, count, difficulty);
+        questionGenerationOrchestrationService.startQuestionGeneration(topic, count, difficulty);
 
         // Success message
-        String successMessage = questionGenerationOrchestrationService.buildGenerationSuccessMessage(count, difficulty, tagName);
+        String successMessage = questionGenerationOrchestrationService.buildGenerationSuccessMessage(count, difficulty, topic);
+        redirectAttributes.addFlashAttribute("success", successMessage);
 
         // Find the tag to redirect to its questions page
-        String redirectUrl = "/questions";
-        Optional<Tag> tag = questionGenerationOrchestrationService.findTagByName(tagName);
+        Optional<Tag> tag = questionGenerationOrchestrationService.findTagByName(topic);
         if (tag.isPresent()) {
-            redirectUrl = "/questions/tag/" + tag.get().getSlug();
+            return "redirect:/questions/tag/" + tag.get().getSlug();
         }
 
-        response.put("success", true);
-        response.put("message", successMessage);
-        response.put("redirectUrl", redirectUrl);
-        return "redirect:/questions?showGenerateModal=true";
-    }
-
-    @GetMapping("/generate/ai")
-    public String showAiGenerateQuestionsForm(Model model) {
-        // Redirect to the questions list page where the modal will be shown
-        return "redirect:/questions?showGenerateModal=true";
+        return "redirect:/questions";
     }
 
     @GetMapping("/generate")
     public String showGenerateQuestionsForm(Model model) {
-        // Redirect to the questions list page where the modal will be shown
-        return "redirect:/questions?showGenerateModal=true";
+        questionFormService.prepareGenerateQuestionsForm(model);
+        model.addAttribute("pageTitle", "Generate Interview Questions");
+        return "questions/generate";
     }
 
     @GetMapping("/generate/auto")
@@ -191,62 +191,38 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
     @GetMapping("/generate/multi")
     public String showMultiTagAutoGenerateQuestionsForm(Model model) {
         questionFormService.prepareAutoGenerateQuestionsForm(model);
-        ModelBuilder.of(model)
-                .setPageTitle("Auto-Generate Easy Questions for Multiple Tags with AI")
-                .build();
+        model.addAttribute("pageTitle", "Auto-Generate Easy Questions for Multiple Tags with AI");
         return "questions/auto-generate-multi";
     }
 
     @PostMapping("/generate/auto")
     public String autoGenerateEasyQuestions(
             @RequestParam String tagName,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
-            ModelBuilder.of(model)
-                    .addAttribute("error", "Tag name is required")
-                    .build();
-            return "redirect:/questions";
+            redirectAttributes.addFlashAttribute("error", "Tag name is required");
+            return "redirect:/questions/generate/auto";
         }
 
         questionGenerationOrchestrationService.startEasyQuestionGeneration(tagName);
 
-        ModelBuilder.of(model)
-                .addAttribute("success", questionGenerationOrchestrationService.buildEasyGenerationSuccessMessage(tagName))
-                .build();
+        String successMessage = questionGenerationOrchestrationService.buildEasyGenerationSuccessMessage(tagName);
+        redirectAttributes.addFlashAttribute("success", successMessage);
 
         // Find the tag to redirect to its questions page
         Optional<Tag> tag = questionGenerationOrchestrationService.findTagByName(tagName);
         return tag.map(value -> "redirect:/questions/tag/" + value.getSlug()).orElse("redirect:/questions");
     }
 
-    @PostMapping("/generate/api/auto")
-    @ResponseBody
-    public Map<String, Object> apiAutoGenerateEasyQuestions(@RequestParam String tagName) {
-        // Validate input
-        if (questionGenerationOrchestrationService.isTagInvalid(tagName)) {
-            return questionGenerationOrchestrationService.buildApiResponse(false, "Tag name is required");
-        }
-
-        log.info("API: Starting asynchronous generation of 3 easy questions for tag: {}", tagName);
-
-        // Start the asynchronous generation process without blocking
-        questionGenerationOrchestrationService.startEasyQuestionGeneration(tagName);
-
-        return questionGenerationOrchestrationService.buildApiResponse(true,
-                String.format("Started auto-generating 3 easy questions for tag '%s'", tagName));
-    }
-
     @PostMapping("/generate/multi")
     public String autoGenerateEasyQuestionsForMultipleTags(
             @RequestParam(value = "tagIds", required = false) List<UUID> tagIds,
-            Model model) {
+            RedirectAttributes redirectAttributes) {
 
         // Validate input
         if (tagIds == null || tagIds.isEmpty()) {
-            ModelBuilder.of(model)
-                    .addAttribute("error", "At least one tag must be selected")
-                    .build();
+            redirectAttributes.addFlashAttribute("error", "At least one tag must be selected");
             return "redirect:/questions/generate/multi";
         }
 
@@ -256,9 +232,8 @@ public class InterviewQuestionController extends BaseCrudController<InterviewQue
         questionGenerationOrchestrationService.startEasyQuestionGenerationForMultipleTags(tagIds);
 
         // Add message that generation has started
-        ModelBuilder.of(model)
-                .addAttribute("success", questionGenerationOrchestrationService.buildMultiTagEasyGenerationSuccessMessage(tagIds.size()))
-                .build();
+        String successMessage = questionGenerationOrchestrationService.buildMultiTagEasyGenerationSuccessMessage(tagIds.size());
+        redirectAttributes.addFlashAttribute("success", successMessage);
 
         return "redirect:/questions";
     }

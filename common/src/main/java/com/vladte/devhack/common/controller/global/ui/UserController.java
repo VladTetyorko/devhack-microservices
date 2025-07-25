@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.model.dto.UserDTO;
-import com.vladte.devhack.common.model.mapper.UserMapper;
+import com.vladte.devhack.common.model.dto.user.UserDTO;
+import com.vladte.devhack.common.model.mapper.user.UserMapper;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.entities.user.User;

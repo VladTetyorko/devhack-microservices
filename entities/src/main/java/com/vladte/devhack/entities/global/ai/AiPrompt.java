@@ -1,24 +1,18 @@
 package com.vladte.devhack.entities.global.ai;
 
+import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.*;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ai_prompts")
-public class AiPrompt {
-    @Id
-    @GeneratedValue
-    private UUID id;
+public class AiPrompt extends BasicEntity {
 
     @Column(nullable = false, unique = true, length = 100)
     private String code;
@@ -35,25 +29,15 @@ public class AiPrompt {
     @Column(nullable = false)
     private Boolean active;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private AiPromptCategory category;
 
-    @PrePersist
+    @Override
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        super.onCreate();
         if (this.active == null) this.active = true;
         if (this.language == null) this.language = "en";
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
 }

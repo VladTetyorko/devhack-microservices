@@ -8,6 +8,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.ByteArrayInputStream;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
  * Provides common functionality and configurations for testing repositories.
  */
 @DataJpaTest
+@EnableJpaAuditing
 @ActiveProfiles("test")
 public abstract class BaseRepositoryTest {
 

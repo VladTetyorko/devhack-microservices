@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
-import com.vladte.devhack.common.model.dto.AnswerDTO;
-import com.vladte.devhack.common.model.mapper.AnswerMapper;
+import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
+import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.AnswerService;
 import com.vladte.devhack.common.service.domain.user.UserService;
@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -135,16 +136,6 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
     public String view(@PathVariable UUID id, Model model) {
         log.debug("Viewing answer with ID: {} with access control", id);
 
-        // Get the answer from the service
-        Answer answer = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
-
-        // Check if the current user has access to the answer
-        if (dontHaveAccessToEntity(answer)) {
-            log.warn("Access denied to answer with ID: {}", id);
-            throw new SecurityException("Access denied to answer with ID: " + id);
-        }
-
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
@@ -172,19 +163,10 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * @param model the model to add attributes to
      * @return the name of the view to render
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
     @GetMapping("/{id}/edit")
     public String editAnswerForm(@PathVariable UUID id, Model model) {
         log.debug("Editing answer with ID: {} with access control", id);
-
-        // Get the answer from the service
-        Answer answer = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
-
-        // Check if the current user has access to the answer
-        if (dontHaveAccessToEntity(answer)) {
-            log.warn("Access denied to edit answer with ID: {}", id);
-            throw new SecurityException("Access denied to edit answer with ID: " + id);
-        }
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
@@ -230,19 +212,10 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * @param id the ID of the answer to delete
      * @return a redirect to the answer list
      */
+    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or super.isEntityOwner(#id)")
     @PostMapping("/{id}/delete")
     public String deleteAnswer(@PathVariable UUID id) {
         log.debug("Deleting answer with ID: {} with access control", id);
-
-        // Get the answer from the service
-        Answer answer = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
-
-        // Check if the current user has access to the answer
-        if (dontHaveAccessToEntity(answer)) {
-            log.warn("Access denied to delete answer with ID: {}", id);
-            throw new SecurityException("Access denied to delete answer with ID: " + id);
-        }
 
         // Delete the answer
         service.deleteById(id);
@@ -271,14 +244,8 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         // Get the user from the service
         User user = getEntityOrThrow(userService.findById(userId), "User not found");
 
-        // Get the current authenticated user
+        // Get the current authenticated user for model attributes
         User currentUser = getCurrentUser();
-
-        // Check if the current user is a manager or is viewing their own answers
-        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
-            log.warn("Access denied to view answers for user with ID: {}", userId);
-            throw new SecurityException("Access denied to view answers for user with ID: " + userId);
-        }
 
         // Create pageable object
         Pageable pageable = PageRequest.of(page, size);
@@ -323,13 +290,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
         // Get the current authenticated user
         User currentUser = getCurrentUser();
 
-        // Check if the current user is a manager or has access to the question
-        // For simplicity, we'll allow access if the user is a manager or if the question is public
-        // In a real application, you might want to check if the user has access to the question based on other criteria
-        if (!isCurrentUserManager()) {
-            log.warn("Access denied to view answers for question with ID: {}", questionId);
-            throw new SecurityException("Access denied to view answers for question with ID: " + questionId);
-        }
+        checkUserEntityAccess(question.getUser().getId());
 
         // Create pageable object
         Pageable pageable = PageRequest.of(page, size);
@@ -362,16 +323,6 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
     @GetMapping("/{id}/check")
     public String checkAnswerWithAi(@PathVariable UUID id, Model model) {
         log.debug("Initiating async check of answer with AI for answer with ID: {} with access control", id);
-
-        // Get the answer from the service
-        Answer answer = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
-
-        // Check if the current user has access to the answer
-        if (dontHaveAccessToEntity(answer)) {
-            log.warn("Access denied to check answer with AI for answer with ID: {}", id);
-            throw new SecurityException("Access denied to check answer with AI for answer with ID: " + id);
-        }
 
         // Get the answer DTO for display
         AnswerDTO answerDTO = answerFormService.prepareEditAnswerForm(id, model);

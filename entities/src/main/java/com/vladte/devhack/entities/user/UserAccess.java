@@ -1,4 +1,3 @@
-// AdminSettings.java
 package com.vladte.devhack.entities.user;
 
 import com.vladte.devhack.entities.BasicEntity;

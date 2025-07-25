@@ -1,7 +1,13 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.entities.Audit;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.repository.audit.AuditRepository;
+import com.vladte.devhack.common.repository.user.UserRepository;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.global.Audit;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -11,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,9 +41,27 @@ class AuditRepositoryTest extends BaseRepositoryTest {
     void setup() {
         // Create and save a test user
         testUser = new User();
-        testUser.setName("testuser");
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("password");
+
+        // Create profile
+        Profile profile = new Profile();
+        profile.setName("testuser");
+        profile.setUser(testUser);
+        testUser.setProfile(profile);
+
+        // Create authentication provider
+        AuthenticationProvider authProvider = new AuthenticationProvider();
+        authProvider.setProvider(AuthProviderType.LOCAL);
+        authProvider.setEmail("test@example.com");
+        authProvider.setPasswordHash("password");
+        authProvider.setUser(testUser);
+        testUser.setAuthProviders(List.of(authProvider));
+
+        // Create user access with default role
+        UserAccess userAccess = new UserAccess();
+        userAccess.setRole("USER");
+        userAccess.setUser(testUser);
+        testUser.setUserAccess(userAccess);
+
         userRepository.save(testUser);
 
         // Clear any existing audit records

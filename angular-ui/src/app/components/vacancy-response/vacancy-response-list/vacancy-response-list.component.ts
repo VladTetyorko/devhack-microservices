@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {VacancyResponseService} from '../../../services/vacancy-response.service';
-import {VacancyResponseDTO} from '../../../models/vacancy-response.model';
+import {VacancyResponseDTO} from '../../../models/personalized/vacancy-response.model';
 
 @Component({
     selector: 'app-vacancy-response-list',

@@ -1,55 +1,516 @@
-<div class="container">
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <h2>Users</h2>
-        <button class="btn btn-primary" (click)="createNew()">
-            <i class="bi bi-plus-circle me-1"></i> Register New User
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-people-fill me-2 text-primary"></i>
+                User Management
+            </h2>
+            <p class="text-muted mb-0">Manage system users and their permissions</p>
+        </div>
+        <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add New User
         </button>
     </div>
 
-    <div *ngIf="isLoading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <!-- Search and Filter Section -->
+    <div class="card shadow-sm mb-4" *ngIf="!isLoading">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Search by name or email..."
+                                [(ngModel)]="searchTerm"
+                                (input)="onSearch()"
+                        >
+                        <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                (click)="clearSearch()"
+                                *ngIf="searchTerm"
+                        >
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" [(ngModel)]="selectedRole" (change)="onRoleFilter()">
+                        <option value="">All Roles</option>
+                        <option value="USER">Users</option>
+                        <option value="MANAGER">Managers</option>
+                        <option value="ADMIN">Administrators</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-2">Total:</span>
+                        <span class="badge bg-primary fs-6">{{ userPage?.totalElements || 0 }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div *ngIf="error" class="alert alert-danger">
-        {{ error }}
-        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    <!-- Skeleton Loading State -->
+    <div *ngIf="isLoading" class="card">
+        <div class="card-body">
+            <!-- Table View Skeleton -->
+            <div *ngIf="viewMode === 'table'" class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="border-0">
+                            <i class="bi bi-person me-1"></i> User
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-envelope me-1"></i> Contact
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-shield me-1"></i> Role
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-lock me-1"></i> Status
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-robot me-1"></i> AI Access
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-file-earmark-text me-1"></i> CV
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-calendar me-1"></i> Joined
+                        </th>
+                        <th class="border-0 text-center">
+                            <i class="bi bi-gear me-1"></i> Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of skeletonItems">
+                        <td class="align-middle">
+                            <div class="d-flex align-items-center">
+                                <div class="skeleton skeleton-avatar me-3"></div>
+                                <div class="flex-grow-1">
+                                    <div class="skeleton skeleton-text medium mb-2"></div>
+                                    <div class="skeleton skeleton-text short"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text long mb-2"></div>
+                            <div class="skeleton skeleton-text medium"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-badge"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex flex-column gap-1">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex flex-column gap-1">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex flex-column gap-1">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text medium mb-2"></div>
+                            <div class="skeleton skeleton-text short"></div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Card View Skeleton -->
+            <div *ngIf="viewMode === 'cards'" class="row g-4">
+                <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let item of skeletonItems">
+                    <div class="card user-card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="skeleton skeleton-avatar-large mx-auto mb-3"></div>
+                            <div class="skeleton skeleton-text medium mx-auto mb-2" style="width: 80%;"></div>
+                            <div class="skeleton skeleton-text short mx-auto mb-3" style="width: 60%;"></div>
+                            <div class="skeleton skeleton-badge mx-auto mb-3"></div>
+                            <div class="d-flex justify-content-center gap-1">
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light text-center">
+                            <div class="skeleton skeleton-text short mx-auto"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div *ngIf="!isLoading && users.length === 0" class="alert alert-info">
-        No users found.
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
     </div>
 
-    <div *ngIf="!isLoading && users.length > 0" class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Roles</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let user of users" (click)="viewDetail(user.id!)" style="cursor: pointer;">
-                <td>{{ user.name }}</td>
-                <td>{{ user.email }}</td>
-                <td>
-            <span *ngFor="let role of user.roles; let last = last" class="badge bg-secondary me-1">
-              {{ role }}{{ !last ? '' : '' }}
-            </span>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-info me-1" (click)="viewDetail(user.id!); $event.stopPropagation()">
-                        <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-danger" (click)="deleteUser(user.id!, $event)">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
     </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filteredUsers.length === 0 && !searchTerm && !selectedRole" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-people display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Users Found</h4>
+        <p class="text-muted mb-4">Get started by adding your first user to the system.</p>
+        <button class="btn btn-primary btn-lg" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add First User
+        </button>
+    </div>
+
+    <!-- No Search Results -->
+    <div *ngIf="!isLoading && filteredUsers.length === 0 && (searchTerm || selectedRole)" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-search display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Results Found</h4>
+        <p class="text-muted mb-4">Try adjusting your search criteria or filters.</p>
+        <button class="btn btn-outline-primary" (click)="clearSearch(); clearRoleFilter()">
+            <i class="bi bi-arrow-clockwise me-2"></i> Clear Filters
+        </button>
+    </div>
+
+    <!-- Users Table -->
+    <div *ngIf="!isLoading && filteredUsers.length > 0" class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>
+                    Users ({{ userPage?.numberOfElements || 0 }} of {{ userPage?.totalElements || 0 }})
+                </h5>
+                <div class="btn-group btn-group-sm" role="group">
+                    <input type="radio" class="btn-check" name="viewMode" id="tableView" [(ngModel)]="viewMode"
+                           value="table">
+                    <label class="btn btn-outline-primary" for="tableView">
+                        <i class="bi bi-table"></i> Table
+                    </label>
+                    <input type="radio" class="btn-check" name="viewMode" id="cardView" [(ngModel)]="viewMode"
+                           value="cards">
+                    <label class="btn btn-outline-primary" for="cardView">
+                        <i class="bi bi-grid-3x3-gap"></i> Cards
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table View -->
+        <div *ngIf="viewMode === 'table'" class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="border-0">
+                        <i class="bi bi-person me-1"></i> User
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-envelope me-1"></i> Contact
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-shield me-1"></i> Role
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-lock me-1"></i> Status
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-robot me-1"></i> AI Access
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-file-earmark-text me-1"></i> CV
+                    </th>
+                    <th class="border-0 text-center">
+                        <i class="bi bi-gear me-1"></i> Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let user of filteredUsers; trackBy: trackByUserId"
+                    class="user-row"
+                    (click)="viewDetail(user.id!)"
+                    style="cursor: pointer;">
+                    <td class="align-middle">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-circle me-3" [ngClass]="{'bg-warning': !user.profile}">
+                                {{ getInitials(user.profile?.name) }}
+                            </div>
+                            <div>
+                                <div class="fw-semibold">
+                                    {{ user.profile?.name || 'Unknown User' }}
+                                    <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                       *ngIf="!user.profile"
+                                       title="Profile data missing"></i>
+                                </div>
+                                <small class="text-muted">ID: {{ user.id?.substring(0, 8) }}...</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div>
+                            <div class="fw-medium">
+                                {{ user.credentials?.[0]?.email || 'No email' }}
+                                <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                   *ngIf="!user.credentials || user.credentials.length === 0"
+                                   title="Credentials data missing"></i>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"
+                                   [ngClass]="{'text-warning': !user.credentials || user.credentials.length === 0}"></i>
+                                {{ user.credentials?.[0]?.provider || 'Unknown' }} Auth
+                            </small>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                            <span *ngIf="user.access?.role"
+                                  [ngClass]="getRoleBadgeClass(user.access?.role || '')"
+                                  class="badge">
+                                <i class="bi bi-person-badge me-1"></i>
+                                {{ user.access?.role }}
+                            </span>
+                        <span *ngIf="!user.access?.role" class="badge bg-light text-dark">
+                                <i class="bi bi-question-circle me-1"></i>
+                                No Role
+                                <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                   *ngIf="!user.access"
+                                   title="Access data missing"></i>
+                            </span>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex flex-column gap-1">
+                                <span *ngIf="user.access?.accountLocked !== undefined"
+                                      [ngClass]="user.access?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
+                                      class="badge">
+                                    <i class="bi" [ngClass]="user.access?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                    {{ user.access?.accountLocked ? 'Locked' : 'Active' }}
+                                </span>
+                            <span *ngIf="user.profile?.isVisibleToRecruiters !== undefined"
+                                  [ngClass]="user.profile?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
+                                  class="badge small">
+                                    <i class="bi"
+                                       [ngClass]="user.profile?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                {{ user.profile?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                </span>
+                            <span *ngIf="!user.access" class="badge bg-light text-dark">
+                                    <i class="bi bi-question-circle me-1"></i>
+                                    Unknown
+                                </span>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex flex-column gap-1">
+                                <span *ngIf="user.access?.aiUsageAllowed !== undefined"
+                                      [ngClass]="user.access?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
+                                      class="badge">
+                                    <i class="bi"
+                                       [ngClass]="user.access?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                    {{ user.access?.aiUsageAllowed ? 'Allowed' : 'Denied' }}
+                                </span>
+                            <span *ngIf="user.profile?.aiUsageEnabled !== undefined"
+                                  [ngClass]="user.profile?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
+                                  class="badge small">
+                                    <i class="bi"
+                                       [ngClass]="user.profile?.aiUsageEnabled ? 'bi-robot' : 'bi-robot'"></i>
+                                {{ user.profile?.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
+                                </span>
+                            <span *ngIf="!user.access && !user.profile" class="badge bg-light text-dark">
+                                    <i class="bi bi-question-circle me-1"></i>
+                                    Unknown
+                                </span>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex flex-column gap-1">
+                                <span *ngIf="user.profile?.cvFileName"
+                                      [ngClass]="user.profile?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
+                                      class="badge">
+                                    <i class="bi"
+                                       [ngClass]="user.profile?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                    {{ user.profile?.cvParsedSuccessfully ? 'Parsed' : 'Failed' }}
+                                </span>
+                            <span *ngIf="user.profile?.aiCvScore !== undefined && user.profile?.aiCvScore !== null"
+                                  [ngClass]="'badge ' + (user.profile?.aiCvScore! >= 80 ? 'bg-success' : user.profile?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
+                                  class="badge small">
+                                    <i class="bi bi-star-fill"></i>
+                                {{ user.profile?.aiCvScore }}/100
+                                </span>
+                            <span *ngIf="!user.profile?.cvFileName" class="badge bg-light text-dark">
+                                    <i class="bi bi-file-earmark-x me-1"></i>
+                                    No CV
+                                </span>
+                        </div>
+                    </td>
+                    <td class="align-middle text-center">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-outline-info"
+                                    (click)="viewDetail(user.id!); $event.stopPropagation()"
+                                    title="View Details">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-outline-primary"
+                                    (click)="editUser(user.id!); $event.stopPropagation()"
+                                    title="Edit User">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger"
+                                    (click)="deleteUser(user.id!, $event)"
+                                    title="Delete User">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Card View -->
+        <div *ngIf="viewMode === 'cards'" class="card-body">
+            <div class="row g-4">
+                <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let user of filteredUsers; trackBy: trackByUserId">
+                    <div class="card user-card h-100 shadow-sm" (click)="viewDetail(user.id!)">
+                        <div class="card-body text-center">
+                            <div class="avatar-circle-large mx-auto mb-3" [ngClass]="{'bg-warning': !user.profile}">
+                                {{ getInitials(user.profile?.name) }}
+                            </div>
+                            <h6 class="card-title mb-1">
+                                {{ user.profile?.name || 'Unknown User' }}
+                                <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                   *ngIf="!user.profile"
+                                   title="Profile data missing"></i>
+                            </h6>
+                            <p class="card-text text-muted small mb-2">
+                                {{ user.credentials?.[0]?.email || 'No email' }}
+                                <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                   *ngIf="!user.credentials || user.credentials.length === 0"
+                                   title="Credentials data missing"></i>
+                            </p>
+                            <span [ngClass]="getRoleBadgeClass(user.access?.role || '')" class="badge mb-2">
+                                {{ user.access?.role || 'No Role' }}
+                                <i class="bi bi-exclamation-triangle text-warning ms-1"
+                                   *ngIf="!user.access"
+                                   title="Access data missing"></i>
+                            </span>
+
+                            <!-- Additional Status Information -->
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-center gap-1 mb-1">
+                                    <span *ngIf="user.access?.accountLocked !== undefined"
+                                          [ngClass]="user.access?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
+                                          class="badge small">
+                                        <i class="bi"
+                                           [ngClass]="user.access?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                        {{ user.access?.accountLocked ? 'Locked' : 'Active' }}
+                                    </span>
+                                    <span *ngIf="user.profile?.isVisibleToRecruiters !== undefined"
+                                          [ngClass]="user.profile?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
+                                          class="badge small">
+                                        <i class="bi"
+                                           [ngClass]="user.profile?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                        {{ user.profile?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-center gap-1 mb-1">
+                                    <span *ngIf="user.access?.aiUsageAllowed !== undefined"
+                                          [ngClass]="user.access?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
+                                          class="badge small">
+                                        <i class="bi"
+                                           [ngClass]="user.access?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                        AI {{ user.access?.aiUsageAllowed ? 'OK' : 'No' }}
+                                    </span>
+                                    <span *ngIf="user.profile?.aiUsageEnabled !== undefined"
+                                          [ngClass]="user.profile?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
+                                          class="badge small">
+                                        <i class="bi bi-robot"></i>
+                                        {{ user.profile?.aiUsageEnabled ? 'On' : 'Off' }}
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-center gap-1 mb-2">
+                                    <span *ngIf="user.profile?.cvFileName"
+                                          [ngClass]="user.profile?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
+                                          class="badge small">
+                                        <i class="bi"
+                                           [ngClass]="user.profile?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                        CV {{ user.profile?.cvParsedSuccessfully ? 'OK' : 'Error' }}
+                                    </span>
+                                    <span *ngIf="user.profile?.aiCvScore !== undefined && user.profile?.aiCvScore !== null"
+                                          [ngClass]="'badge ' + (user.profile?.aiCvScore! >= 80 ? 'bg-success' : user.profile?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
+                                          class="badge small">
+                                        <i class="bi bi-star-fill"></i>
+                                        {{ user.profile?.aiCvScore }}/100
+                                    </span>
+                                    <span *ngIf="!user.profile?.cvFileName" class="badge bg-light text-dark small">
+                                        <i class="bi bi-file-earmark-x"></i>
+                                        No CV
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-1">
+                                <button class="btn btn-sm btn-outline-info"
+                                        (click)="viewDetail(user.id!); $event.stopPropagation()"
+                                        title="View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                        (click)="editUser(user.id!); $event.stopPropagation()"
+                                        title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        (click)="deleteUser(user.id!, $event)"
+                                        title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light text-center">
+                            <small class="text-muted">
+                                Joined {{ user.createdAt | date:'MMM y' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+            *ngIf="!isLoading && userPage && userPage.totalElements > 0"
+            [page]="userPage"
+            (pageChange)="onPageChange($event)"
+            (sizeChange)="onPageSizeChange($event)">
+    </app-pagination>
 </div>

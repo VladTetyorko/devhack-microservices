@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {VacancyResponseDTO} from '../models/vacancy-response.model';
+import {VacancyResponseDTO} from '../models/personalized/vacancy-response.model';
 
 @Injectable({
     providedIn: 'root'
