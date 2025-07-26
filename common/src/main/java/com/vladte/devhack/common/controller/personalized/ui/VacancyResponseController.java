@@ -122,28 +122,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     }
 
     /**
-     * Prepares the model for displaying a vacancy response modal dialog.
-     * This handles both new and edit scenarios.
-     *
-     * @param model  the model to add attributes to
-     * @param editId the ID of the vacancy response to edit, or null for a new vacancy response
-     */
-    private void prepareVacancyResponseModal(Model model, UUID editId) {
-        if (editId != null) {
-            // If editId is provided, prepare the model for editing an existing vacancy response
-            VacancyResponseDTO vacancyResponseDTO = vacancyResponseFormService.prepareEditVacancyResponseForm(editId, model);
-            if (vacancyResponseDTO == null) {
-                throw new IllegalArgumentException("Vacancy response not found");
-            }
-            vacancyResponseFormService.setEditVacancyResponsePageTitle(model);
-        } else {
-            // Otherwise, prepare the model for creating a new vacancy response
-            vacancyResponseFormService.prepareNewVacancyResponseForm(model);
-            vacancyResponseFormService.setNewVacancyResponsePageTitle(model);
-        }
-    }
-
-    /**
      * Display the work dashboard with application tracking information.
      *
      * @param page  the page number for the "Top Companies" section
@@ -244,9 +222,6 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     public String view(@PathVariable UUID id, Model model) {
         log.debug("Viewing vacancy response with ID: {} with access control", id);
 
-        // Get the vacancy response from the service
-        VacancyResponse vacancyResponse = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + id));
 
         // Prepare common model attributes
         prepareCommonModelAttributes(model);
@@ -296,7 +271,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @param userId             the ID of the user to associate with the vacancy response
      * @return a redirect to the vacancy response list
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping
     public String saveVacancyResponse(@ModelAttribute VacancyResponseDTO vacancyResponseDTO, @RequestParam UUID userId, @RequestParam UUID interviewStageId) {
         log.debug("Saving vacancy response with access control");
@@ -317,7 +292,7 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
      * @param id the ID of the vacancy response to delete
      * @return a redirect to the vacancy response list
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping("/{id}/delete")
     public String deleteVacancyResponse(@PathVariable UUID id) {
         log.debug("Deleting vacancy response with ID: {} with access control", id);
@@ -354,13 +329,13 @@ public class VacancyResponseController extends UserEntityController<VacancyRespo
     /**
      * Display a list of vacancy responses for a specific user.
      *
-     * @param userId           the ID of the user to find vacancy responses for
-     * @param page             the page number
-     * @param size             the page size
-     * @param model            the model to add attributes to
+     * @param userId the ID of the user to find vacancy responses for
+     * @param page   the page number
+     * @param size   the page size
+     * @param model  the model to add attributes to
      * @return the name of the view to render
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyRole('USER','MANAGER', 'SYSTEM')")
     @GetMapping("/user/{userId}")
     public String getVacancyResponsesByUser(
             @PathVariable UUID userId,

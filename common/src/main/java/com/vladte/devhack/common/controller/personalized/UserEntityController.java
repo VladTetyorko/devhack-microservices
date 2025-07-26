@@ -196,7 +196,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      * @param model the model
      * @return the view name
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/{id}")
     public String view(@PathVariable ID id, Model model) {
         log.debug("Viewing entity with ID: {} with access control", id);

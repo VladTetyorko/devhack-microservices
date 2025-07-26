@@ -163,7 +163,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * @param model the model to add attributes to
      * @return the name of the view to render
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/{id}/edit")
     public String editAnswerForm(@PathVariable UUID id, Model model) {
         log.debug("Editing answer with ID: {} with access control", id);
@@ -212,7 +212,7 @@ public class AnswerController extends UserEntityController<Answer, UUID, AnswerS
      * @param id the ID of the answer to delete
      * @return a redirect to the answer list
      */
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or super.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping("/{id}/delete")
     public String deleteAnswer(@PathVariable UUID id) {
         log.debug("Deleting answer with ID: {} with access control", id);

@@ -63,7 +63,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "Note";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @Override
     public String view(@PathVariable UUID id, Model model) {
         log.debug("Viewing note with ID: {} with access control", id);
@@ -113,7 +113,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/form";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/{id}/edit")
     public String editNoteForm(@PathVariable UUID id, Model model) {
         log.debug("Editing note with ID: {} with access control", id);
@@ -136,7 +136,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/form";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping
     public String saveNote(
             @ModelAttribute Note note,
@@ -156,7 +156,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "redirect:/notes";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isEntityOwner(#id)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping("/{id}/delete")
     public String deleteNote(@PathVariable UUID id) {
         log.debug("Deleting note with ID: {} with access control", id);
@@ -168,7 +168,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "redirect:/notes";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM') or this.isCurrentUser(#userId)")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/user/{userId}")
     public String getNotesByUser(@PathVariable UUID userId, Model model) {
         log.debug("Getting notes for user with ID: {} with access control", userId);
@@ -193,7 +193,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/list";
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'SYSTEM')")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/question/{questionId}")
     public String getNotesByQuestion(@PathVariable UUID questionId, Model model) {
         log.debug("Getting notes for question with ID: {} with access control", questionId);

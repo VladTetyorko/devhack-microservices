@@ -142,7 +142,7 @@ public class SecurityConfig {
                 // Enable form login for Thymeleaf UI
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
