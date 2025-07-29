@@ -1,4 +1,4 @@
-import { InterviewStageDTO } from './interview-stage.model';
+import {InterviewStageDTO} from './interview-stage.model';
 
 export interface InterviewStageCategoryDTO {
   id?: string;
@@ -6,7 +6,6 @@ export interface InterviewStageCategoryDTO {
   label: string;
   description?: string;
   createdAt?: string;
-  updatedAt?: string;
   stageCount?: number;
 }
 

@@ -33,11 +33,11 @@
                 <td>{{ response.vacancyId }}</td>
                 <td>
             <span [ngClass]="{
-              'badge bg-success': response.status === 'ACCEPTED',
-              'badge bg-danger': response.status === 'REJECTED',
-              'badge bg-warning text-dark': response.status === 'PENDING'
+              'badge bg-success': response.interviewStage === 'ACCEPTED',
+              'badge bg-danger': response.interviewStage === 'REJECTED',
+              'badge bg-warning text-dark': response.interviewStage === 'PENDING'
             }">
-              {{ response.status }}
+              {{ response.interviewStage }}
             </span>
                 </td>
                 <td>{{ response.createdAt | date:'medium' }}</td>

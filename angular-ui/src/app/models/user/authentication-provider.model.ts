@@ -1,5 +1,6 @@
-export interface AuthenticationProviderDTO {
-  id?: string;
+import {BasisDtoEntityModel} from "../basis-dto-entity.model";
+
+export interface AuthenticationProviderDTO extends BasisDtoEntityModel {
   provider: string;
   providerUserId?: string;
   email?: string;

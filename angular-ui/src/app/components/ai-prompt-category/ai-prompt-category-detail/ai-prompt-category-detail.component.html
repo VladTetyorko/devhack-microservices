@@ -1,0 +1,105 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>AI Prompt Category Details</h2>
+        <button class="btn btn-secondary" (click)="goBack()">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && category" class="card">
+        <div class="card-header">
+            <h5 class="mb-0">{{ category.name }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Code:</label>
+                        <p class="form-control-plaintext">{{ category.code }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Name:</label>
+                        <p class="form-control-plaintext">{{ category.name }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description:</label>
+                        <p class="form-control-plaintext">{{ category.description || 'No description provided' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Prompt Count:</label>
+                        <p class="form-control-plaintext">
+                            <span class="badge bg-info">
+                                {{ category.promptCount || (category.prompts?.length || 0) }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Created At:</label>
+                        <p class="form-control-plaintext">{{ category.createdAt | date:'medium' }}</p>
+                    </div>
+                    <div class="mb-3" *ngIf="category.updatedAt">
+                        <label class="form-label fw-bold">Updated At:</label>
+                        <p class="form-control-plaintext">{{ category.updatedAt | date:'medium' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompts List -->
+            <div *ngIf="category.prompts && category.prompts.length > 0" class="mt-4">
+                <h6 class="fw-bold">Associated Prompts:</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Code</th>
+                            <th>Description</th>
+                            <th>Language</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let prompt of category.prompts">
+                            <td><strong>{{ prompt.code }}</strong></td>
+                            <td>{{ prompt.description || 'No description' }}</td>
+                            <td>{{ prompt.language || 'N/A' }}</td>
+                            <td>
+                                <span [ngClass]="{
+                                  'badge bg-success': prompt.active,
+                                  'badge bg-secondary': !prompt.active
+                                }">
+                                  {{ prompt.active ? 'Active' : 'Inactive' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-info" (click)="viewPrompt(prompt.id!)">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="!category.prompts || category.prompts.length === 0" class="mt-4">
+                <div class="alert alert-info">
+                    No prompts associated with this category.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

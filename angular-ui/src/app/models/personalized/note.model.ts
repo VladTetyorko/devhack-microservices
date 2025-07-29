@@ -1,12 +1,7 @@
-export interface Note {
-    id?: string;
-    content: string;
-    linkedQuestionId?: string;
-    userId?: string;
-    createdAt?: string;
-    updatedAt?: string;
-}
+import {UserOwnedEntity} from "../user-owned-entity.model";
 
-export interface NoteDTO extends Note {
-    // Any additional properties specific to the DTO
+export interface NoteDTO extends UserOwnedEntity {
+    questionId: string;
+    questionText: string;
+    noteText?: string;
 }

@@ -1,23 +1,19 @@
-export interface InterviewQuestionDTO {
-  id?: string;
+import {UserOwnedEntity} from "../user-owned-entity.model";
+import {BasisDtoEntityModel} from "../basis-dto-entity.model";
+
+export interface InterviewQuestionDTO extends UserOwnedEntity {
   questionText: string;
   difficulty: string;
   source?: string;
   expectedAnswer?: string;
   hints?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  userId?: string;
-  userName?: string;
   tagNames?: string[];
   tags?: TagDTO[];
 }
 
-export interface TagDTO {
-  id?: string;
+export interface TagDTO extends BasisDtoEntityModel {
   name: string;
   description?: string;
-  createdAt?: string;
 }
 
 export interface QuestionSearchRequest {

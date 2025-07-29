@@ -1,9 +1,8 @@
-export interface TagDTO {
-  id?: string;
+import {BasisDtoEntityModel} from "../basis-dto-entity.model";
+
+export interface TagDTO extends BasisDtoEntityModel {
   name: string;
   description?: string;
-  createdAt?: string;
-  updatedAt?: string;
   questionCount?: number;
   questionIds?: string[];
   answeredQuestions?: number;
@@ -28,10 +27,8 @@ export interface TagPageResponse {
   last: boolean;
 }
 
-export interface TagWithQuestionCount {
-  id: string;
+export interface TagWithQuestionCount extends BasisDtoEntityModel {
   name: string;
   description?: string;
   questionCount: number;
-  createdAt: string;
 }

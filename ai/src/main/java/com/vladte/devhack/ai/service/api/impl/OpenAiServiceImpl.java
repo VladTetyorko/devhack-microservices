@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 @Service("openApiService")
 public class OpenAiServiceImpl extends AbstractAiService {
 
-    private static final String MODEL_NAME = "gpt-4";
-
     @Value("${openai.api.key}")
     private String apiKey;
 
@@ -31,7 +29,11 @@ public class OpenAiServiceImpl extends AbstractAiService {
 
     @Override
     protected String getApiKey() {
-        return apiKey;
+        String key = System.getenv("OPENAI_API_KEY");
+        if (key == null) {
+            throw new IllegalStateException("OPENAI_API_KEY not set in environment");
+        }
+        return key;
     }
 
     @Override

@@ -1,0 +1,97 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>AI Prompt Usage Log Details</h2>
+        <div>
+            <button class="btn btn-secondary me-2" (click)="goBack()">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </button>
+            <button class="btn btn-danger" (click)="deleteLog()" *ngIf="log">
+                <i class="bi bi-trash"></i> Delete Log
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && log" class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Usage Log: {{ log.promptCode || 'Unknown Prompt' }}</h5>
+            <button class="btn btn-sm btn-outline-primary" (click)="viewPrompt()" *ngIf="log.promptId">
+                <i class="bi bi-eye"></i> View Prompt
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Prompt Code:</label>
+                        <p class="form-control-plaintext">{{ log.promptCode || 'Unknown' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">User:</label>
+                        <p class="form-control-plaintext">{{ log.userName || 'Unknown User' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Created At:</label>
+                        <p class="form-control-plaintext">{{ log.createdAt | date:'medium' }}</p>
+                    </div>
+                    <div class="mb-3" *ngIf="log.updatedAt">
+                        <label class="form-label fw-bold">Updated At:</label>
+                        <p class="form-control-plaintext">{{ log.updatedAt | date:'medium' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Prompt ID:</label>
+                        <p class="form-control-plaintext">
+                            <code>{{ log.promptId }}</code>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">User ID:</label>
+                        <p class="form-control-plaintext">
+                            <code>{{ log.userId || 'Unknown' }}</code>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Log ID:</label>
+                        <p class="form-control-plaintext">
+                            <code>{{ log.id }}</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Input:</label>
+                        <div class="input-container">
+                            <pre class="input-text">{{ log.input || 'No input provided' }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Result:</label>
+                        <div class="result-container">
+                            <pre class="result-text">{{ log.result || 'No result available' }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
-export interface ProfileDTO {
-  id?: string;
+import {BasisDtoEntityModel} from "../basis-dto-entity.model";
+
+export interface ProfileDTO extends BasisDtoEntityModel {
   name: string;
   cvFileHref?: string;
   cvFileName?: string;

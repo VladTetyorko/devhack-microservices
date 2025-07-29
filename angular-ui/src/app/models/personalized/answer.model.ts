@@ -1,15 +1,12 @@
-export interface AnswerDTO {
-  id?: string;
+import {UserOwnedEntity} from "../user-owned-entity.model";
+
+export interface AnswerDTO extends UserOwnedEntity {
   text: string;
   confidenceLevel?: number;
   aiScore?: number;
   aiFeedback?: string;
   isCorrect?: boolean;
   isCheating?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  userId?: string;
-  userName?: string;
   questionId?: string;
   questionText?: string;
 }

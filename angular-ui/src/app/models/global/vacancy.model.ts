@@ -1,25 +1,19 @@
 export interface VacancyDTO {
   id?: string;
-  title: string;
   companyName: string;
-  description?: string;
-  requirements?: string;
-  location?: string;
-  salaryMin?: number;
-  salaryMax?: number;
-  currency?: string;
-  employmentType?: string;
-  experienceLevel?: string;
+    position: string;
   technologies?: string;
-  benefits?: string;
+    source?: string;
+    url?: string;
+    openAt?: string;
+    status: string;
+    contactPerson?: string;
   contactEmail?: string;
-  contactPhone?: string;
-  applicationDeadline?: string;
-  isActive?: boolean;
+    deadline?: string;
+    remoteAllowed?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  userId?: string;
-  userName?: string;
+    responseCount?: number;
 }
 
 export interface VacancySearchRequest {

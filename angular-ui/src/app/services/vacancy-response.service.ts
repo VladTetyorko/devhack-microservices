@@ -7,7 +7,7 @@ import {VacancyResponseDTO} from '../models/personalized/vacancy-response.model'
     providedIn: 'root'
 })
 export class VacancyResponseService {
-    private baseUrl = '/api/vacancies/my-responses';
+    private baseUrl = '/api/vacancy-responses';
 
     constructor(private http: HttpClient) {
     }

@@ -64,7 +64,7 @@ export class NoteListComponent implements OnInit {
         if (this.searchTerm.trim()) {
             const searchLower = this.searchTerm.toLowerCase().trim();
             filtered = filtered.filter(note =>
-                note.content?.toLowerCase().includes(searchLower)
+                note.noteText?.toLowerCase().includes(searchLower)
             );
         }
 
@@ -92,8 +92,8 @@ export class NoteListComponent implements OnInit {
         this.editingNote = note;
         this.showCreateForm = true;
         this.noteForm = {
-            content: note.content || '',
-            linkedQuestionId: note.linkedQuestionId || ''
+            content: note.noteText || '',
+            linkedQuestionId: note.questionId || ''
         };
     }
 
@@ -104,8 +104,9 @@ export class NoteListComponent implements OnInit {
         }
 
         const noteData: NoteDTO = {
-            content: this.noteForm.content.trim(),
-            linkedQuestionId: this.noteForm.linkedQuestionId || undefined
+            noteText: this.noteForm.content.trim(),
+            questionId: this.noteForm.linkedQuestionId,
+            questionText: this.editingNote?.questionText || '',
         };
 
         if (this.editingNote) {

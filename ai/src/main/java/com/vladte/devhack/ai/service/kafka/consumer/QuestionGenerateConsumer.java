@@ -23,9 +23,9 @@ public class QuestionGenerateConsumer extends KafkaAiRequestConsumer<QuestionGen
     private final OpenAiService openAiService;
 
     public QuestionGenerateConsumer(@Qualifier("QuestionKafkaProvider") KafkaResponsePublisher<QuestionGenerateResponsePayload> responsePublisher,
-                                    @Qualifier("gptJService") OpenAiService openAiService, ObjectMapper objectMapper) {
+                                    OpenAiService aiService, ObjectMapper objectMapper) {
         super(responsePublisher, objectMapper, QuestionGenerateRequestPayload.class);
-        this.openAiService = openAiService;
+        this.openAiService = aiService;
     }
 
     @KafkaListener(
