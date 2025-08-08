@@ -15,6 +15,12 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - postgres-backup-data:/var/lib/postgresql/backup
     networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -29,6 +35,12 @@ services:
     ports:
       - "2181:2181"
     networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -45,6 +57,12 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
 
   # ── Optional extras (enable with profile "extras") ────────────
   gptj:
@@ -60,6 +78,12 @@ services:
       MODELS_PATH: /models
       DEBUG: "true"
     networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
     healthcheck:
       test: [ "CMD", "curl", "-fsS", "http://localhost:8080/v1/models" ]
       interval: 10s
@@ -79,6 +103,12 @@ services:
     volumes:
       - minio_data:/data
     networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
 
 networks:
   app-network:
