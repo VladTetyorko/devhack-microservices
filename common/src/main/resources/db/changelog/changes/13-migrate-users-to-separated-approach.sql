@@ -51,17 +51,64 @@ CREATE TABLE user_profiles
     updated_at                TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE user_auth_providers
+CREATE TABLE IF NOT EXISTS user_auth_providers
 (
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id       UUID        NOT NULL REFERENCES users (id),
-    provider      VARCHAR(20) NOT NULL,
-    email         VARCHAR(255),
-    password_hash VARCHAR(255),
-    created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    UNIQUE (user_id, provider)
-);
+    id
+    UUID
+    PRIMARY
+    KEY
+    DEFAULT
+    gen_random_uuid
+(
+),
+    user_id UUID NOT NULL REFERENCES users
+(
+    id
+) ON DELETE CASCADE,
+
+    provider VARCHAR
+(
+    20
+) NOT NULL, -- AuthProviderType (ENUM in Java)
+    provider_user_id VARCHAR
+(
+    100
+), -- SOCIAL: provider's user id
+    email VARCHAR
+(
+    100
+), -- LOCAL only
+    password_hash VARCHAR
+(
+    200
+), -- LOCAL only
+    access_token VARCHAR
+(
+    500
+), -- SOCIAL only
+    refresh_token VARCHAR
+(
+    500
+), -- SOCIAL only
+    token_expiry TIMESTAMP
+  WITHOUT TIME ZONE, -- SOCIAL only
+
+    created_at TIMESTAMP
+  WITHOUT TIME ZONE NOT NULL DEFAULT now
+(
+),
+    updated_at TIMESTAMP
+  WITHOUT TIME ZONE NOT NULL DEFAULT now
+(
+),
+
+    -- one record per (user, provider)
+    CONSTRAINT uq_authprov_user_provider UNIQUE
+(
+    user_id,
+    provider
+)
+    );
 
 CREATE TABLE user_access
 (
@@ -78,7 +125,7 @@ CREATE TABLE user_access
 
 -- 3.1 Core users
 INSERT INTO users (id, created_at, updated_at)
-SELECT old_users.id    AS id,
+SELECT old_users.id      AS id,
        old_users.created_at,
        CURRENT_TIMESTAMP AS updated_at
 FROM old_users;
@@ -91,7 +138,7 @@ INSERT INTO user_profiles (user_id, name,
                            ai_skills_summary, ai_suggested_improvements,
                            is_visible_to_recruiters,
                            created_at, updated_at)
-SELECT old_users.id       AS user_id,
+SELECT old_users.id         AS user_id,
        old_users.name,
        old_users.cv_file_href,
        old_users.cv_file_name,
@@ -111,20 +158,24 @@ SELECT old_users.id       AS user_id,
 FROM old_users;
 
 -- 3.3 LOCAL credentials
-INSERT INTO user_auth_providers (user_id, provider, email, password_hash,
-                                 created_at, updated_at)
-SELECT old_users.id       AS user_id,
-       'LOCAL'              AS provider,
-       old_users.email,
-       old_users.password   AS password_hash,
-       old_users.created_at AS created_at,
-       CURRENT_TIMESTAMP    AS updated_at
-FROM old_users;
+INSERT INTO user_auth_providers (user_id, provider, email, password_hash, created_at, updated_at)
+SELECT u.id,
+       'LOCAL',
+       u.email,
+       u.password,
+       COALESCE(u.created_at, now()),
+       now()
+FROM old_users u
+WHERE NOT EXISTS (SELECT 1
+                  FROM authentication_providers ap
+                  WHERE ap.user_id = u.id
+                    AND ap.provider = 'LOCAL');
+
 
 -- 3.4 Admin settings
 INSERT INTO user_access (user_id, role, ai_usage_allowed, account_locked,
                          created_at, updated_at)
-SELECT old_users.id       AS user_id,
+SELECT old_users.id         AS user_id,
        old_users.role,
        old_users.ai_usage_allowed,
        FALSE                AS account_locked,
