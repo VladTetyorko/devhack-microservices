@@ -43,11 +43,14 @@
                         {{ category.promptCount || (category.prompts?.length || 0) }}
                     </span>
                 </td>
-                <td>{{ category.createdAt | date:'medium' }}</td>
+                <td>{{ category.createdAt | localDateTime:'medium' }}</td>
                 <td>
-                    <button class="btn btn-sm btn-info" (click)="viewDetail(category.id!); $event.stopPropagation()">
-                        <i class="bi bi-eye"></i> View
-                    </button>
+                    <app-action-buttons
+                            [entityId]="category.id!"
+                            [showEdit]="false"
+                            [showDelete]="false"
+                            (view)="viewDetail($event.toString())">
+                    </app-action-buttons>
                 </td>
             </tr>
             </tbody>

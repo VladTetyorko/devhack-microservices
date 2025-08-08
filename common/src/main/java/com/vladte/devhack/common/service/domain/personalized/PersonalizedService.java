@@ -1,5 +1,6 @@
 package com.vladte.devhack.common.service.domain.personalized;
 
+import com.vladte.devhack.common.config.SystemConstraints;
 import com.vladte.devhack.common.service.domain.AuditableCrudService;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
 import com.vladte.devhack.entities.UserOwnedBasicEntity;
@@ -29,7 +30,6 @@ public abstract class PersonalizedService<T extends UserOwnedBasicEntity, ID, R 
         extends AuditableCrudService<T, ID, R> {
 
     private static final Logger log = LoggerFactory.getLogger(PersonalizedService.class);
-    private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
     /**
      * Constructor with repository and auditService injection.
@@ -67,13 +67,13 @@ public abstract class PersonalizedService<T extends UserOwnedBasicEntity, ID, R 
         }
 
         // Managers have access to all entities
-        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER))) {
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority(SystemConstraints.ROLE_MANAGER))) {
             return true;
         }
 
         // Users have access only to their own entities
         User user = getEntityUser(entity);
-        return user != null && user.getLocalAuth().get().getEmail().equals(authentication.getName());
+        return user != null && user.equals(authentication.getPrincipal());
     }
 
     /**
@@ -99,9 +99,9 @@ public abstract class PersonalizedService<T extends UserOwnedBasicEntity, ID, R 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null) {
             log.warn("Authentication is null when checking if current user is manager. This may be due to an async call.");
-            return false; // Default to non-manager for security
+            return false;
         }
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER));
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(SystemConstraints.ROLE_MANAGER));
     }
 
     /**

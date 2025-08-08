@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { InterviewStageCategoryService } from '../../../services/interview-stage-category.service';
-import { InterviewStageCategoryDTO } from '../../../models/interview-stage-category.model';
-import { Page, PageRequest } from '../../../models/page.model';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {InterviewStageCategoryService} from '../../../services/global/interview-stage-category.service';
+import {InterviewStageCategoryDTO} from '../../../models/global/interview-stage-category.model';
+import {Page, PageRequest} from '../../../models/basic/page.model';
 
 @Component({
   selector: 'app-interview-stage-category-list',
@@ -78,11 +78,11 @@ export class InterviewStageCategoryListComponent implements OnInit {
     this.applyFilters();
   }
 
-  viewDetail(id: string): void {
+    viewDetail(id: string | number): void {
     this.router.navigate(['/interview-stage-categories', id]);
   }
 
-  editCategory(id: string): void {
+    editCategory(id: string | number): void {
     this.router.navigate(['/interview-stage-categories', id, 'edit']);
   }
 
@@ -90,14 +90,14 @@ export class InterviewStageCategoryListComponent implements OnInit {
     this.router.navigate(['/interview-stage-categories/create']);
   }
 
-  deleteCategory(id: string, event: Event): void {
-    event.stopPropagation();
+    deleteCategory(deleteEvent: { id: string | number, event: MouseEvent }): void {
+        deleteEvent.event.stopPropagation();
 
-    const category = this.allCategories.find(c => c.id === id);
+        const category = this.allCategories.find(c => c.id === deleteEvent.id);
     const categoryName = category?.label || 'this category';
 
     if (confirm(`Are you sure you want to delete ${categoryName}? This action cannot be undone.`)) {
-      this.categoryService.delete(id).subscribe({
+        this.categoryService.delete(deleteEvent.id.toString()).subscribe({
         next: () => {
           this.successMessage = `Interview stage category ${categoryName} has been successfully deleted.`;
           this.loadCategories();

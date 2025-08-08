@@ -40,27 +40,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let log of logs" (click)="viewDetail(log.id!)" style="cursor: pointer;">
+            <tr *ngFor="let log of logs" (click)="viewDetail(log.id!)" class="clickable-row">
                 <td><strong>{{ log.promptCode || 'Unknown' }}</strong></td>
                 <td>{{ log.userName || 'Unknown User' }}</td>
                 <td>
-                    <div class="text-truncate" style="max-width: 200px;" [title]="log.input || 'No input'">
+                    <div class="text-truncate text-truncate-200" [title]="log.input || 'No input'">
                         {{ log.input || 'No input' }}
                     </div>
                 </td>
                 <td>
-                    <div class="text-truncate" style="max-width: 200px;" [title]="log.result || 'No result'">
+                    <div class="text-truncate text-truncate-200" [title]="log.result || 'No result'">
                         {{ log.result || 'No result' }}
                     </div>
                 </td>
-                <td>{{ log.createdAt | date:'medium' }}</td>
+                <td>{{ log.createdAt | localDateTime:'medium' }}</td>
                 <td>
-                    <button class="btn btn-sm btn-info me-1" (click)="viewDetail(log.id!); $event.stopPropagation()">
-                        <i class="bi bi-eye"></i> View
-                    </button>
-                    <button class="btn btn-sm btn-danger" (click)="deleteLog(log.id!, $event)">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
+                    <app-action-buttons
+                            [entityId]="log.id!"
+                            [showEdit]="false"
+                            (view)="viewDetail($event.toString())"
+                            (delete)="deleteLog($event.id.toString(), $event.event)">
+                    </app-action-buttons>
                 </td>
             </tr>
             </tbody>

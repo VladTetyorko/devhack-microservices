@@ -2,10 +2,7 @@ package com.vladte.devhack.entities.user;
 
 import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"user"})
 public class UserAccess extends BasicEntity {
 
     @Column(nullable = false)

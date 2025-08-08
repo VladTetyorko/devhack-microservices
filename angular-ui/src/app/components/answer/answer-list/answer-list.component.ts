@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AnswerService } from '../../../services/answer.service';
-import { AnswerDTO } from '../../../models/personalized/answer.model';
-import { Page, PageRequest } from '../../../models/page.model';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {AnswerService} from '../../../services/personalized/answer.service';
+import {AnswerDTO} from '../../../models/personalized/answer.model';
+import {Page, PageRequest} from '../../../models/basic/page.model';
 
 @Component({
   selector: 'app-answer-list',
@@ -45,8 +45,18 @@ export class AnswerListComponent implements OnInit {
     this.answerService.getAllPaged(this.currentPageRequest).subscribe({
       next: (page) => {
         console.log('[DEBUG_LOG] Loaded answers page:', page);
-        this.answerPage = page;
-        this.allAnswers = page.content || [];
+          // Transform date formats in the page content
+          const transformedContent = (page.content || []).map(answer => ({
+              ...answer,
+              createdAt: this.convertDateFormat(answer.createdAt),
+              updatedAt: this.convertDateFormat(answer.updatedAt)
+          }));
+
+          this.answerPage = {
+              ...page,
+              content: transformedContent
+          };
+          this.allAnswers = transformedContent;
         this.isLoading = false;
 
         console.log('[DEBUG_LOG] Total answers in page:', page.content.length);
@@ -62,7 +72,28 @@ export class AnswerListComponent implements OnInit {
     });
   }
 
-  onSearch(): void {
+    private convertDateFormat(dateString?: string): string | undefined {
+        if (!dateString) return dateString;
+
+        // Check if the date is in comma-separated format (e.g., "2025,7,7,15,36,51,426621000")
+        if (dateString.includes(',')) {
+            try {
+                const parts = dateString.split(',').map(part => parseInt(part, 10));
+                if (parts.length >= 6) {
+                    // parts: [year, month, day, hour, minute, second, nanoseconds]
+                    // Note: month is 1-based in the input, but Date constructor expects 0-based
+                    const date = new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+                    return date.toISOString();
+                }
+            } catch (error) {
+                console.warn('Failed to parse date:', dateString, error);
+            }
+        }
+
+        return dateString;
+    }
+
+    onSearch(): void {
     this.applyFilters();
   }
 
@@ -78,11 +109,11 @@ export class AnswerListComponent implements OnInit {
     this.applyFilters();
   }
 
-  viewDetail(id: string): void {
+    viewDetail(id: string | number): void {
     this.router.navigate(['/answers', id]);
   }
 
-  editAnswer(id: string): void {
+    editAnswer(id: string | number): void {
     this.router.navigate(['/answers', id, 'edit']);
   }
 
@@ -90,14 +121,14 @@ export class AnswerListComponent implements OnInit {
     this.router.navigate(['/answers/create']);
   }
 
-  deleteAnswer(id: string, event: Event): void {
-    event.stopPropagation();
+    deleteAnswer(deleteEvent: { id: string | number, event: MouseEvent }): void {
+        deleteEvent.event.stopPropagation();
 
-    const answer = this.allAnswers.find(a => a.id === id);
+        const answer = this.allAnswers.find(a => a.id === deleteEvent.id);
     const answerText = answer?.text?.substring(0, 50) + '...' || 'this answer';
 
     if (confirm(`Are you sure you want to delete "${answerText}"? This action cannot be undone.`)) {
-      this.answerService.delete(id).subscribe({
+        this.answerService.delete(deleteEvent.id.toString()).subscribe({
         next: () => {
           this.successMessage = `Answer has been successfully deleted.`;
           this.loadAnswers();

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
+import {AuthService} from '../../services/basic/auth.service';
 import {LoginRequest} from '../../models/basic/auth.model';
 import {finalize} from 'rxjs';
 
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   ) {
     // Redirect to home if already logged in
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/']);
+        this.router.navigate(['/home']);
     }
 
     this.loginForm = this.formBuilder.group({
@@ -65,14 +65,14 @@ export class LoginComponent implements OnInit {
       finalize(() => this.loading = false)
     )
     .subscribe({
-      next: (response) => {
+        next: (response: any) => {
         if (response.success) {
           this.router.navigate([this.returnUrl]);
         } else {
           this.error = response.message || 'Login failed. Please check your credentials and try again.';
         }
       },
-      error: error => {
+        error: (error: any) => {
         console.error('Login error:', error);
         this.error = error.error?.message || error.message || 'Login failed. Please check your credentials and try again.';
       }

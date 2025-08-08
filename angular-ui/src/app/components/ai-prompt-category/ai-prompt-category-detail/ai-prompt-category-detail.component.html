@@ -48,11 +48,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Created At:</label>
-                        <p class="form-control-plaintext">{{ category.createdAt | date:'medium' }}</p>
+                        <p class="form-control-plaintext">{{ category.createdAt | localDateTime:'medium' }}</p>
                     </div>
                     <div class="mb-3" *ngIf="category.updatedAt">
                         <label class="form-label fw-bold">Updated At:</label>
-                        <p class="form-control-plaintext">{{ category.updatedAt | date:'medium' }}</p>
+                        <p class="form-control-plaintext">{{ category.updatedAt | localDateTime:'medium' }}</p>
                     </div>
                 </div>
             </div>

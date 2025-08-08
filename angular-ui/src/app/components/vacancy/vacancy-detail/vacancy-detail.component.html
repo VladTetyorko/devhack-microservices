@@ -1,0 +1,118 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>Vacancy Details</h2>
+        <div>
+            <button class="btn btn-outline-secondary me-2" (click)="goBack()">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </button>
+            <button class="btn btn-primary" (click)="navigateToMyResponses()">
+                <i class="bi bi-reply me-2"></i>My Responses
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && vacancy" class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">{{ vacancy.position }}</h3>
+                    <h5 class="text-muted mb-0">{{ vacancy.companyName }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="bi bi-calendar me-2"></i>Posted:</strong>
+                            <span class="ms-2">{{ vacancy.createdAt | localDateTime:'medium' }}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="bi bi-flag me-2"></i>Status:</strong>
+                            <span class="ms-2 badge bg-primary">{{ vacancy.status }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6" *ngIf="vacancy.source">
+                            <strong><i class="bi bi-link me-2"></i>Source:</strong>
+                            <span class="ms-2">{{ vacancy.source }}</span>
+                        </div>
+                        <div class="col-md-6" *ngIf="vacancy.remoteAllowed !== null">
+                            <strong><i class="bi bi-house me-2"></i>Remote Work:</strong>
+                            <span class="ms-2">
+                                <span class="badge" [ngClass]="vacancy.remoteAllowed ? 'bg-success' : 'bg-secondary'">
+                                    {{ vacancy.remoteAllowed ? 'Allowed' : 'Not Allowed' }}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4" *ngIf="vacancy.technologies">
+                        <h5><i class="bi bi-code-slash me-2"></i>Technologies</h5>
+                        <div class="technologies-content">
+                            {{ vacancy.technologies }}
+                        </div>
+                    </div>
+
+
+                    <div class="mb-4" *ngIf="vacancy.url">
+                        <h5><i class="bi bi-link me-2"></i>Original Posting</h5>
+                        <div class="url-content">
+                            <a [href]="vacancy.url" target="_blank" class="btn btn-outline-info">
+                                <i class="bi bi-box-arrow-up-right me-2"></i>View Original
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="vacancy.deadline">
+                        <div class="col-md-6">
+                            <strong><i class="bi bi-calendar-event me-2"></i>Application Deadline:</strong>
+                            <span class="ms-2">{{ vacancy.deadline | localDateTime:'medium' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-success btn-lg w-100 mb-3" (click)="applyToVacancy()">
+                        <i class="bi bi-send me-2"></i>Apply Now
+                    </button>
+                    <button class="btn btn-outline-primary w-100" (click)="navigateToMyResponses()">
+                        <i class="bi bi-eye me-2"></i>View My Applications
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mt-3" *ngIf="vacancy.contactEmail || vacancy.contactPerson">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="vacancy.contactPerson" class="mb-2">
+                        <strong><i class="bi bi-person me-2"></i>Contact Person:</strong>
+                        <span class="ms-2">{{ vacancy.contactPerson }}</span>
+                    </div>
+                    <div *ngIf="vacancy.contactEmail">
+                        <strong><i class="bi bi-envelope me-2"></i>Email:</strong>
+                        <a [href]="'mailto:' + vacancy.contactEmail" class="ms-2">{{ vacancy.contactEmail }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

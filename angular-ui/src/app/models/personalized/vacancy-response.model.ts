@@ -2,7 +2,7 @@ import {UserOwnedEntity} from "../user-owned-entity.model";
 import {InterviewStageDTO} from "../global/interview-stage.model";
 
 export interface VacancyResponseDTO extends UserOwnedEntity {
-    vacancyId?: string;
+    vacancyId: string;
 
     companyName?: string;
     position?: string;
@@ -14,8 +14,6 @@ export interface VacancyResponseDTO extends UserOwnedEntity {
 
     salary?: string;
     location?: string;
-
-    status?: string;
 
     interviewStageId: string;
     interviewStage: string;

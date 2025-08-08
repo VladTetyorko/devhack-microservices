@@ -61,7 +61,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let audit of audits" (click)="viewDetail(audit.id!)" style="cursor: pointer;">
+            <tr *ngFor="let audit of audits" (click)="viewDetail(audit.id!)" class="clickable-row">
                 <td>
                     <span [ngClass]="getOperationTypeClass(audit.operationType)">
                         {{ audit.operationType }}
@@ -73,16 +73,19 @@
                     <span *ngIf="!audit.entityId" class="text-muted">N/A</span>
                 </td>
                 <td>{{ audit.userName || 'System' }}</td>
-                <td>{{ audit.timestamp | date:'medium' }}</td>
+                <td>{{ audit.timestamp | localDateTime:'medium' }}</td>
                 <td>
-                    <div class="text-truncate" style="max-width: 200px;" [title]="audit.details || 'No details'">
+                    <div class="text-truncate text-truncate-200" [title]="audit.details || 'No details'">
                         {{ audit.details || 'No details' }}
                     </div>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-info" (click)="viewDetail(audit.id!); $event.stopPropagation()">
-                        <i class="bi bi-eye"></i> View
-                    </button>
+                    <app-action-buttons
+                            [entityId]="audit.id!"
+                            [showEdit]="false"
+                            [showDelete]="false"
+                            (view)="viewDetail($event.toString())">
+                    </app-action-buttons>
                 </td>
             </tr>
             </tbody>

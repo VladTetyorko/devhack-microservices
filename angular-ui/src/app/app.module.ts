@@ -9,15 +9,18 @@ import {AppComponent} from './app.component';
 import {AuthModule} from './modules/auth/auth.module';
 import {UserModule} from './modules/user/user.module';
 import {NoteModule} from './modules/note/note.module';
+import {VacancyModule} from './modules/vacancy/vacancy.module';
 import {VacancyResponseModule} from './modules/vacancy-response/vacancy-response.module';
 import {SharedModule} from './modules/shared/shared.module';
 
 // Interceptors
 import {AuthInterceptor} from './interceptors/auth.interceptor';
+import {HomeComponent} from "./home/home.component";
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
@@ -28,6 +31,7 @@ import {AuthInterceptor} from './interceptors/auth.interceptor';
         AuthModule,
         UserModule,
         NoteModule,
+        VacancyModule,
         VacancyResponseModule,
         SharedModule
     ],

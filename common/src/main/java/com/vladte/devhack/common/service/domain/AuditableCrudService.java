@@ -171,4 +171,8 @@ public abstract class AuditableCrudService<T extends BasicEntity, ID, R extends 
             log.debug("Audit service is null, skipping audit record creation");
         }
     }
+
+    public void notify(T payload) {
+        messagingTemplate.convertAndSend(topic, payload);
+    }
 }

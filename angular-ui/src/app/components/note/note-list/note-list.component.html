@@ -23,7 +23,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Note</h5>
-                    <span class="badge bg-secondary">{{ note.createdAt | date:'short' }}</span>
+                    <span class="badge bg-secondary">{{ note.createdAt | localDateTime:'short' }}</span>
                 </div>
                 <div class="card-body">
                     <p class="card-text">{{ note.questionText }}</p>

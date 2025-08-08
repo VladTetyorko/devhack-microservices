@@ -3,18 +3,18 @@
 }
 
 .tag-row:hover {
-  background-color: rgba(0, 123, 255, 0.05);
+    background-color: var(--list-group-hover-bg);
 }
 
 .tag-badge {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+    color: var(--text-white);
   font-size: 1.1rem;
 }
 
@@ -23,7 +23,7 @@
 }
 
 .progress {
-  background-color: #e9ecef;
+    background-color: var(--border-color);
 }
 
 .progress-bar {
@@ -32,7 +32,7 @@
 
 /* Skeleton loading styles */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, var(--skeleton-bg-start) 25%, var(--skeleton-bg-middle) 50%, var(--skeleton-bg-end) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: 4px;
@@ -97,29 +97,29 @@
 
 /* Progress bar colors */
 .bg-success {
-  background-color: #28a745 !important;
+    background-color: var(--color-success) !important;
 }
 
 .bg-warning {
-  background-color: #ffc107 !important;
+    background-color: var(--color-warning) !important;
 }
 
 .bg-info {
-  background-color: #17a2b8 !important;
+    background-color: var(--color-info) !important;
 }
 
 .bg-danger {
-  background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
 }
 
 /* Card styling */
 .card {
   border: none;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
 }
 
 .card-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* Alert styling */

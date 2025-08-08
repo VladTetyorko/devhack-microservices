@@ -244,28 +244,17 @@
                     </td>
                     <td class="align-middle">
                         <div>
-                            <div class="fw-medium">{{ question.createdAt | date:'MMM d, y' }}</div>
-                            <small class="text-muted">{{ question.createdAt | date:'h:mm a' }}</small>
+                            <div class="fw-medium">{{ question.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ question.createdAt | localDateTime:'h:mm a' }}</small>
                         </div>
                     </td>
                     <td class="align-middle text-center">
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-outline-info"
-                                    (click)="viewDetail(question.id!); $event.stopPropagation()"
-                                    title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-primary"
-                                    (click)="editQuestion(question.id!); $event.stopPropagation()"
-                                    title="Edit Question">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger"
-                                    (click)="deleteQuestion(question.id!, $event)"
-                                    title="Delete Question">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="question.id!"
+                                (view)="viewDetail($event.toString())"
+                                (edit)="editQuestion($event.toString())"
+                                (delete)="deleteQuestion($event.id.toString(), $event.event)">
+                        </app-action-buttons>
                     </td>
                 </tr>
                 </tbody>

@@ -2,6 +2,7 @@ package com.vladte.devhack.common.config.security;
 
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.security.JwtTokenProvider;
+import com.vladte.devhack.entities.user.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,11 +44,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
 
                 // Load user details
+                //todo remake init to be better
                 UserDetails userDetails = userService.loadUserByUsername(username);
+                User user = userService.findByEmail(username).get();
+                user.getProfile();
 
                 // Create authentication token
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 // Set authentication in security context

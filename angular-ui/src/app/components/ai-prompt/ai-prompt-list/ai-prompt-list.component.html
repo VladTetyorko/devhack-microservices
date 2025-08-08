@@ -45,7 +45,7 @@
                       {{ prompt.active ? 'Active' : 'Inactive' }}
                     </span>
                 </td>
-                <td>{{ prompt.createdAt | date:'medium' }}</td>
+                <td>{{ prompt.createdAt | localDateTime:'medium' }}</td>
                 <td>
                     <button class="btn btn-sm btn-info me-1" (click)="viewDetail(prompt.id!); $event.stopPropagation()">
                         <i class="bi bi-eye"></i> View

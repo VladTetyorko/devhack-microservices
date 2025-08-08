@@ -3,10 +3,8 @@ package com.vladte.devhack.entities.user;
 import com.vladte.devhack.entities.BasicEntity;
 import com.vladte.devhack.entities.enums.AuthProviderType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
@@ -21,6 +19,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"user"})
 public class AuthenticationProvider extends BasicEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

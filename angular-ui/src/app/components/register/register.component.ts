@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { RegisterRequest } from '../../models/basic/auth.model';
-import { finalize } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {AuthService} from '../../services/basic/auth.service';
+import {RegisterRequest} from '../../models/basic/auth.model';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -86,14 +86,14 @@ export class RegisterComponent implements OnInit {
       finalize(() => this.loading = false)
     )
     .subscribe({
-      next: (response) => {
+        next: (response: any) => {
         this.success = response.message || 'Registration successful! You can now login.';
         // Redirect to login page after successful registration
         setTimeout(() => {
           this.router.navigate(['/login'], { queryParams: { registered: 'true' } });
         }, 2000);
       },
-      error: error => {
+        error: (error: any) => {
         console.error('Registration error:', error);
         this.error = error.error?.message || error.message || 'Registration failed. Please try again.';
       }

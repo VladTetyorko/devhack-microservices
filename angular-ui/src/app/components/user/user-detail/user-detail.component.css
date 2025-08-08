@@ -9,11 +9,11 @@
 .page-header {
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e9ecef;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .page-header h2 {
-  color: #495057;
+    color: var(--text-secondary);
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-size: 2.25rem;
@@ -23,7 +23,7 @@
 .card {
   border: none;
   border-radius: 1rem;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
   transition: all 0.3s ease-in-out;
   animation: fadeIn 0.4s ease-out;
   margin-bottom: 1.5rem;
@@ -32,13 +32,13 @@
 
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0.5rem 1.5rem var(--shadow-hover);
 }
 
 .card-header {
   font-weight: 600;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-light);
   background: linear-gradient(135deg, var(--header-color-start), var(--header-color-end));
   position: relative;
   overflow: hidden;
@@ -89,20 +89,20 @@
 
 .card-body {
   padding: 2rem;
-  background: #fff;
+    background: var(--bg-card);
 }
 
 /* Form Enhancements */
 .form-label {
   font-weight: 600;
-  color: #495057;
+    color: var(--text-secondary);
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
 }
 
 .form-control {
   border-radius: 0.5rem;
-  border: 2px solid #e9ecef;
+    border: 2px solid var(--border-color);
   padding: 0.75rem 1rem;
   transition: all 0.2s ease-in-out;
   font-size: 1rem;

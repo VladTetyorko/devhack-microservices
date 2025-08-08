@@ -1,0 +1,20 @@
+<div class="d-flex gap-1">
+    <button *ngIf="showView"
+            class="btn btn-sm btn-outline-info"
+            (click)="onView()"
+            title="View">
+        <i class="bi bi-eye"></i>
+    </button>
+    <button *ngIf="showEdit"
+            class="btn btn-sm btn-outline-primary"
+            (click)="onEdit()"
+            title="Edit">
+        <i class="bi bi-pencil"></i>
+    </button>
+    <button *ngIf="showDelete"
+            class="btn btn-sm btn-outline-danger"
+            (click)="onDelete($event)"
+            title="Delete">
+        <i class="bi bi-trash"></i>
+    </button>
+</div>

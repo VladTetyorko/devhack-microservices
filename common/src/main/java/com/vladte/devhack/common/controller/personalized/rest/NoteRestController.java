@@ -62,7 +62,7 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
     public ResponseEntity<List<NoteDTO>> getMyNotes(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get all notes for user: {}", user.getProfile().getName());
+        log.info("REST request to get all notes for user: {}", user.getProfile().getName());
         List<Note> notes = service.findNotesByUser(user);
         return ResponseEntity.ok(mapper.toDTOList(notes));
     }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AiPromptCategoryService} from '../../../services/ai-prompt-category.service';
+import {AiPromptCategoryService} from '../../../services/global/ai/ai-prompt-category.service';
 import {AiPromptCategoryModel} from '../../../models/global/ai/ai-prompt-category.model';
 
 @Component({

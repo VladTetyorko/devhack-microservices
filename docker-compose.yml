@@ -1,11 +1,9 @@
 version: '3.8'
 
 services:
-  # Application Services
-
-  # Infrastructure Services
+  # ── Core infra ────────────────────────────────────────────────
   postgres:
-    image: postgres
+    image: postgres:16
     container_name: postgres_interview
     ports:
       - "5434:5432"
@@ -16,8 +14,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-backup-data:/var/lib/postgresql/backup
-    networks:
-      - app-network
+    networks: [ app-network ]
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -31,8 +28,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
-    networks:
-      - app-network
+    networks: [ app-network ]
 
   kafka:
     image: confluentinc/cp-kafka:7.4.0
@@ -48,10 +44,11 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    networks:
-      - app-network
+    networks: [ app-network ]
 
+  # ── Optional extras (enable with profile "extras") ────────────
   gptj:
+    profiles: [ "local" ]
     image: localai/localai:latest
     container_name: localai_gptj
     ports:
@@ -59,27 +56,29 @@ services:
     volumes:
       - ./models:/models
     environment:
-      - OPENAI_API_KEY=your-key
-      - MODELS_PATH=/models
-      - DEBUG=true
-    networks:
-      - app-network
+      OPENAI_API_KEY: your-key
+      MODELS_PATH: /models
+      DEBUG: "true"
+    networks: [ app-network ]
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/v1/models" ]
+      test: [ "CMD", "curl", "-fsS", "http://localhost:8080/v1/models" ]
       interval: 10s
       retries: 5
+
   minio:
+    profiles: [ "local" ]
     image: minio/minio:latest
     container_name: minio
     ports:
-      - "9000:9000"   # API порт
-      - "9001:9001"   # Web UI порт
+      - "9000:9000"   # API
+      - "9001:9001"   # Web UI
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    networks: [ app-network ]
 
 networks:
   app-network:

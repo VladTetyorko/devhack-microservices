@@ -144,7 +144,10 @@ public class UserServiceImpl
     public Optional<User> findByEmail(String email) {
         return authProviderService
                 .findByProviderAndEmail(AuthProviderType.LOCAL, email)
-                .map(AuthenticationProvider::getUser);
+                .map(AuthenticationProvider::getUser)
+                .map(user ->
+                        repository.findWithProfileById(user.getId()).get()
+                );
     }
 
     @Override

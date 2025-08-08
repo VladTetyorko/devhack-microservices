@@ -1,7 +1,6 @@
-<app-navbar></app-navbar>
-
+<user-app-navbar *ngIf="!(isAdmin$ | async)"></user-app-navbar>
+<admin-app-navbar *ngIf="isAdmin$ | async"></admin-app-navbar>
 <div class="container app-container">
-    <app-header></app-header>
 
     <main class="container mt-4">
       <router-outlet></router-outlet>

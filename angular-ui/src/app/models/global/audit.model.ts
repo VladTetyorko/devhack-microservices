@@ -13,6 +13,6 @@ export interface AuditModel extends BasisDtoEntityModel {
     entityId?: string;
     userId?: string;
     userName?: string;
-    timestamp: Date;
+    timestamp: string;
     details?: string;
 }

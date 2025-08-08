@@ -245,28 +245,17 @@
                     </td>
                     <td class="align-middle">
                         <div>
-                            <div class="fw-medium">{{ stage.createdAt | date:'MMM d, y' }}</div>
-                            <small class="text-muted">{{ stage.createdAt | date:'h:mm a' }}</small>
+                            <div class="fw-medium">{{ stage.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ stage.createdAt | localDateTime:'h:mm a' }}</small>
                         </div>
                     </td>
                     <td class="align-middle text-center">
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-outline-info"
-                                    (click)="viewDetail(stage.id!); $event.stopPropagation()"
-                                    title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-primary"
-                                    (click)="editStage(stage.id!); $event.stopPropagation()"
-                                    title="Edit Stage">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger"
-                                    (click)="deleteStage(stage.id!, $event)"
-                                    title="Delete Stage">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="stage.id!"
+                                (view)="viewDetail($event)"
+                                (edit)="editStage($event)"
+                                (delete)="deleteStage($event)">
+                        </app-action-buttons>
                     </td>
                 </tr>
                 </tbody>

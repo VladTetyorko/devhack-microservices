@@ -198,28 +198,17 @@
                     </td>
                     <td class="align-middle">
                         <div>
-                            <div class="fw-medium">{{ category.createdAt | date:'MMM d, y' }}</div>
-                            <small class="text-muted">{{ category.createdAt | date:'h:mm a' }}</small>
+                            <div class="fw-medium">{{ category.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ category.createdAt | localDateTime:'h:mm a' }}</small>
                         </div>
                     </td>
                     <td class="align-middle text-center">
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-outline-info"
-                                    (click)="viewDetail(category.id!); $event.stopPropagation()"
-                                    title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-primary"
-                                    (click)="editCategory(category.id!); $event.stopPropagation()"
-                                    title="Edit Category">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger"
-                                    (click)="deleteCategory(category.id!, $event)"
-                                    title="Delete Category">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="category.id!"
+                                (view)="viewDetail($event)"
+                                (edit)="editCategory($event)"
+                                (delete)="deleteCategory($event)">
+                        </app-action-buttons>
                     </td>
                 </tr>
                 </tbody>

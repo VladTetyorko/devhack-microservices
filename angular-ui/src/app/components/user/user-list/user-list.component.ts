@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {UserService} from '../../../services/user.service';
+import {UserService} from '../../../services/user/user.service';
 import {UserDTO} from '../../../models/user/user.model';
 import {Page, PageRequest} from '../../../models/basic/page.model';
 

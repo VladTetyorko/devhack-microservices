@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {AuditService} from '../../../services/audit.service';
+import {AuditService} from '../../../services/global/audit.service';
 import {AuditModel, OperationType} from '../../../models/global/audit.model';
 
 @Component({

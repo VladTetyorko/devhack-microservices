@@ -1,0 +1,695 @@
+/* Custom styles for DevHack application - Minimalist Design */
+
+/* ── Bootstrap Icons Import ─────────────────────────────────────── */
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* ── CSS Variables for Theme System ─────────────────────────────── */
+:root {
+  /* Light Theme Colors (Default) */
+  --color-primary: #3498db;
+  --color-primary-hover: #2980b9;
+  --color-success: #2ecc71;
+  --color-success-hover: #27ae60;
+  --color-info: #3498db;
+  --color-info-hover: #2980b9;
+  --color-warning: #f39c12;
+  --color-warning-hover: #e67e22;
+  --color-danger: #e74c3c;
+  --color-danger-hover: #c0392b;
+  --color-secondary: #95a5a6;
+
+  /* Background Colors */
+  --bg-body: #f9f9f9;
+  --bg-card: #ffffff;
+  --bg-card-header: #ffffff;
+  --bg-footer: #f1f1f1;
+  --bg-light: #f8f9fa;
+  --bg-navbar: #3498db;
+
+  /* Text Colors */
+  --text-primary: #333333;
+  --text-secondary: #6c757d;
+  --text-muted: #6c757d;
+  --text-white: #ffffff;
+
+  /* Border Colors */
+  --border-color: #e0e0e0;
+  --border-light: #f0f0f0;
+  --border-navbar: #eaeaea;
+
+  /* Shadow Colors */
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.15);
+
+  /* Form Colors */
+  --form-focus-border: #3498db;
+  --form-focus-shadow: rgba(52, 152, 219, 0.15);
+  --input-group-bg: #f8f9fa;
+
+  /* Dropdown Colors */
+  --dropdown-bg: #ffffff;
+  --dropdown-hover-bg: #f8f9fa;
+
+  /* List Group Colors */
+  --list-group-hover-bg: #f8f9fa;
+
+  /* Skeleton Loading Colors */
+  --skeleton-bg-start: #f0f0f0;
+  --skeleton-bg-middle: #e0e0e0;
+  --skeleton-bg-end: #f0f0f0;
+}
+
+/* Dark Theme Colors */
+.dark-theme {
+  --color-primary: #4fa8e0;
+  --color-primary-hover: #3498db;
+  --color-success: #52d681;
+  --color-success-hover: #2ecc71;
+  --color-info: #4fa8e0;
+  --color-info-hover: #3498db;
+  --color-warning: #f5b041;
+  --color-warning-hover: #f39c12;
+  --color-danger: #ec7063;
+  --color-danger-hover: #e74c3c;
+  --color-secondary: #aab7b8;
+
+  /* Background Colors */
+  --bg-body: #1a1a1a;
+  --bg-card: #2c2c2c;
+  --bg-card-header: #2c2c2c;
+  --bg-footer: #1f1f1f;
+  --bg-light: #2c2c2c;
+  --bg-navbar: #2c2c2c;
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #888888;
+  --text-white: #ffffff;
+
+  /* Border Colors */
+  --border-color: #404040;
+  --border-light: #353535;
+  --border-navbar: #404040;
+
+  /* Shadow Colors */
+  --shadow-light: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --shadow-hover: rgba(0, 0, 0, 0.5);
+
+  /* Form Colors */
+  --form-focus-border: #4fa8e0;
+  --form-focus-shadow: rgba(79, 168, 224, 0.25);
+  --input-group-bg: #404040;
+
+  /* Dropdown Colors */
+  --dropdown-bg: #2c2c2c;
+  --dropdown-hover-bg: #404040;
+
+  /* List Group Colors */
+  --list-group-hover-bg: #404040;
+
+  /* Skeleton Loading Colors */
+  --skeleton-bg-start: #404040;
+  --skeleton-bg-middle: #353535;
+  --skeleton-bg-end: #404040;
+}
+
+/* General styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-body);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Make footer stick to bottom */
+.footer {
+  margin-top: auto;
+  background-color: var(--bg-footer) !important;
+  border-top: 1px solid var(--border-navbar);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom card styling - Minimalist approach */
+.card {
+  box-shadow: 0 1px 3px var(--shadow-light);
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: var(--bg-card-header);
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 1.25rem;
+  font-weight: 500;
+  border-radius: 8px 8px 0 0 !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hover shadow effect for cards */
+.hover-shadow:hover {
+  box-shadow: 0 3px 10px var(--shadow-light);
+  transform: translateY(-3px);
+}
+
+/* Progress bar styling */
+.progress {
+  background-color: var(--border-light);
+  border-radius: 50px;
+  overflow: hidden;
+  height: 0.6rem;
+  margin: 0.5rem 0;
+  transition: background-color 0.3s ease;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+  border-radius: 50px;
+}
+
+/* Tag styling */
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.8em;
+  border-radius: 50px;
+  letter-spacing: 0.02em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.badge.bg-info {
+  background-color: var(--color-info) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--color-success) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--color-warning) !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--color-danger) !important;
+}
+
+.badge.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.badge.bg-light {
+  background-color: var(--bg-light) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* Button styling - Minimalist approach */
+.btn {
+  border-radius: 50px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.btn:focus:not(:active)::after {
+  animation: ripple 0.8s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+.btn:hover {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.btn-success {
+  background-color: var(--color-success);
+}
+
+.btn-success:hover {
+  background-color: var(--color-success-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+}
+
+.btn-info {
+  background-color: var(--color-info);
+  color: var(--text-white);
+}
+
+.btn-info:hover {
+  background-color: var(--color-info-hover);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.btn-warning {
+  background-color: var(--color-warning);
+}
+
+.btn-warning:hover {
+  background-color: var(--color-warning-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);
+}
+
+.btn-danger {
+  background-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  background-color: var(--color-danger-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2);
+}
+
+/* Outline buttons */
+.btn-outline-primary {
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  background-color: transparent;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--color-primary);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.btn-outline-success {
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+  background-color: transparent;
+}
+
+.btn-outline-success:hover {
+  background-color: var(--color-success);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+}
+
+.btn-outline-info {
+  color: var(--color-info);
+  border: 1px solid var(--color-info);
+  background-color: transparent;
+}
+
+.btn-outline-info:hover {
+  background-color: var(--color-info);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+}
+
+.btn-outline-warning {
+  color: var(--color-warning);
+  border: 1px solid var(--color-warning);
+  background-color: transparent;
+}
+
+.btn-outline-warning:hover {
+  background-color: var(--color-warning);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(243, 156, 18, 0.2);
+}
+
+.btn-outline-danger {
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  background-color: transparent;
+}
+
+.btn-outline-danger:hover {
+  background-color: var(--color-danger);
+  color: var(--text-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2);
+}
+
+/* Form styling */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1rem;
+  transition: all 0.3s ease;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--form-focus-border);
+  box-shadow: 0 0 0 0.2rem var(--form-focus-shadow);
+}
+
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+  background-color: var(--input-group-bg);
+  border: 1px solid var(--border-color);
+  border-right: none;
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* List group item hover effect */
+.list-group-item {
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+.list-group-item-action:hover {
+  background-color: var(--list-group-hover-bg);
+  transform: translateX(5px);
+}
+
+/* Navbar customization */
+.navbar-dark.bg-primary {
+  background-color: var(--bg-navbar) !important;
+  box-shadow: 0 1px 3px var(--shadow-medium);
+  animation: fadeInDown 0.5s ease-out;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.navbar-dark.bg-dark {
+  background-color: var(--bg-navbar) !important;
+  box-shadow: 0 1px 3px var(--shadow-medium);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.9);
+  transition: all 0.3s ease;
+  padding: 0.7rem 1rem;
+  font-weight: 500;
+  position: relative;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.navbar-dark .navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: white;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover::after {
+  width: 70%;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 3px 10px var(--shadow-medium);
+  border-radius: 8px;
+  padding: 0.5rem;
+  animation: fadeIn 0.3s ease-out;
+  background-color: var(--dropdown-bg);
+  transition: background-color 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dropdown-item {
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  background-color: var(--dropdown-hover-bg);
+  transform: translateX(5px);
+  color: var(--text-primary);
+}
+
+/* Dashboard card styling */
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Icon styling */
+.fa-3x {
+  transition: all 0.3s ease;
+}
+
+a:hover .fa-3x {
+  transform: scale(1.1);
+  color: var(--color-primary);
+}
+
+/* Animations */
+/* Fade-in animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Scroll-triggered animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ripple effect for buttons */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  width: 100px;
+  height: 100px;
+  margin-top: -50px;
+  margin-left: -50px;
+  animation: ripple-effect 0.6s linear;
+  transform: scale(0);
+  opacity: 1;
+  pointer-events: none;
+}
+
+@keyframes ripple-effect {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(1.5);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .btn {
+    padding: 0.4rem 1rem;
+  }
+}
+
+/* Theme toggle icon animation */
+#theme-toggle-icon {
+  transition: transform 0.5s ease;
+  color: var(--text-primary);
+}
+
+#theme-toggle-icon.fa-sun {
+  transform: rotate(180deg);
+}
+
+#theme-toggle-icon.fa-moon {
+  transform: rotate(0deg);
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  background-color: transparent;
+  border: none;
+  color: var(--text-white);
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

@@ -1,12 +1,14 @@
-.card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* vacancy-response-detail.component.css */
+
+/* make the list scroll if it gets too tall */
+.list-group {
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
 }
 
-.badge {
-    font-size: 0.85em;
-    padding: 0.35em 0.65em;
-}
-
-.bg-light {
-    background-color: #f8f9fa;
+/* highlight the active item */
+.list-group-item.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--text-white);
 }

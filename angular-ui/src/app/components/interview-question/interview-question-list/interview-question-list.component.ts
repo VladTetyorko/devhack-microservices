@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { InterviewQuestionService } from '../../../services/interview-question.service';
-import { InterviewQuestionDTO, TagDTO } from '../../../models/global/interview-question.model';
-import { Page, PageRequest } from '../../../models/basic/page.model';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {InterviewQuestionService} from '../../../services/global/interview-question.service';
+import {InterviewQuestionDTO, TagDTO} from '../../../models/global/interview-question.model';
+import {Page, PageRequest} from '../../../models/basic/page.model';
 
 @Component({
   selector: 'app-interview-question-list',

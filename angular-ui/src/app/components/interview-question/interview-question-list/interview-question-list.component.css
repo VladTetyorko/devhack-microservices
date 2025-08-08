@@ -3,12 +3,12 @@
 }
 
 .question-row:hover {
-  background-color: rgba(0, 123, 255, 0.05);
+    background-color: var(--list-group-hover-bg);
 }
 
 /* Skeleton loading styles */
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, var(--skeleton-bg-start) 25%, var(--skeleton-bg-middle) 50%, var(--skeleton-bg-end) 75%);
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: 4px;
@@ -67,29 +67,29 @@
 
 /* Difficulty badge colors */
 .bg-success {
-  background-color: #28a745 !important;
+    background-color: var(--color-success) !important;
 }
 
 .bg-warning {
-  background-color: #ffc107 !important;
+    background-color: var(--color-warning) !important;
 }
 
 .bg-danger {
-  background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
 }
 
 .bg-secondary {
-  background-color: #6c757d !important;
+    background-color: var(--color-secondary) !important;
 }
 
 /* Card styling */
 .card {
   border: none;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
 }
 
 .card-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: 1px solid var(--border-light);
 }
 
 /* Alert styling */
@@ -106,7 +106,7 @@
 
 /* Tag badges styling */
 .badge.bg-light {
-  border: 1px solid #dee2e6;
+    border: 1px solid var(--border-color);
 }
 
 /* Question text styling */

@@ -125,8 +125,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
      * @param id the ID of the answer to check
      * @return the updated answer
      */
-    @PostMapping("/{id}/check")
-    @Operation(summary = "Check an answer using AI",
+    @PostMapping("/{id}/evaluate")
+    @Operation(summary = "Evaluate an answer using AI",
             description = "Initiates an AI check for the specified answer and returns a status")
     public ResponseEntity<String> checkAnswerWithAi(
             @Parameter(description = "ID of the answer to check")
@@ -136,7 +136,6 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
         service.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
-        // Initiate the AI check asynchronously
         service.checkAnswerWithAiAsync(id);
 
         return ResponseEntity.ok("AI check initiated. The answer will be evaluated in the background.");

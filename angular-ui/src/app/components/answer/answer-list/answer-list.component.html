@@ -114,25 +114,20 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <p class="card-text">{{ truncateText(answer.text, 200) }}</p>
-                    
+
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
                             <i class="bi bi-calendar me-1"></i>
-                            {{ answer.createdAt | date:'MMM d, y h:mm a' }}
+                            {{ answer.createdAt | localDateTime:'MMM d, y h:mm a' }}
                         </small>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-outline-info" (click)="viewDetail(answer.id!); $event.stopPropagation()" title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-primary" (click)="editAnswer(answer.id!); $event.stopPropagation()" title="Edit Answer">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger" (click)="deleteAnswer(answer.id!, $event)" title="Delete Answer">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="answer.id!"
+                                (view)="viewDetail($event)"
+                                (edit)="editAnswer($event)"
+                                (delete)="deleteAnswer($event)">
+                        </app-action-buttons>
                     </div>
                 </div>
             </div>

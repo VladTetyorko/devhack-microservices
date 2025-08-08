@@ -42,11 +42,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Created At:</label>
-                        <p class="form-control-plaintext">{{ log.createdAt | date:'medium' }}</p>
+                        <p class="form-control-plaintext">{{ log.createdAt | localDateTime:'medium' }}</p>
                     </div>
                     <div class="mb-3" *ngIf="log.updatedAt">
                         <label class="form-label fw-bold">Updated At:</label>
-                        <p class="form-control-plaintext">{{ log.updatedAt | date:'medium' }}</p>
+                        <p class="form-control-plaintext">{{ log.updatedAt | localDateTime:'medium' }}</p>
                     </div>
                 </div>
                 <div class="col-md-6">

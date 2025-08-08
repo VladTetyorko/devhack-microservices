@@ -210,28 +210,17 @@
                     </td>
                     <td class="align-middle">
                         <div>
-                            <div class="fw-medium">{{ tag.createdAt | date:'MMM d, y' }}</div>
-                            <small class="text-muted">{{ tag.createdAt | date:'h:mm a' }}</small>
+                            <div class="fw-medium">{{ tag.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ tag.createdAt | localDateTime:'h:mm a' }}</small>
                         </div>
                     </td>
                     <td class="align-middle text-center">
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button class="btn btn-outline-info"
-                                    (click)="viewDetail(tag.id!); $event.stopPropagation()"
-                                    title="View Details">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-outline-primary"
-                                    (click)="editTag(tag.id!); $event.stopPropagation()"
-                                    title="Edit Tag">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-outline-danger"
-                                    (click)="deleteTag(tag.id!, $event)"
-                                    title="Delete Tag">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="tag.id!"
+                                (view)="viewDetail($event.toString())"
+                                (edit)="editTag($event.toString())"
+                                (delete)="deleteTag($event.id.toString(), $event.event)">
+                        </app-action-buttons>
                     </td>
                 </tr>
                 </tbody>

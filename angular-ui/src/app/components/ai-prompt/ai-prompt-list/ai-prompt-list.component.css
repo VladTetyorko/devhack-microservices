@@ -1,12 +1,12 @@
 .page-header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .table th {
     font-weight: 600;
-    color: #495057;
+    color: var(--text-secondary);
 }
 
 .table td {
@@ -27,5 +27,5 @@
 }
 
 tr:hover {
-    background-color: #f8f9fa;
+    background-color: var(--list-group-hover-bg);
 }

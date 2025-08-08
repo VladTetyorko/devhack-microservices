@@ -1,0 +1,216 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>Answer Details</h2>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary" (click)="goBack()">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </button>
+            <button type="button" class="btn btn-primary" (click)="editAnswer()" *ngIf="answer">
+                <i class="bi bi-pencil me-2"></i>Edit
+            </button>
+            <button type="button" class="btn btn-success" (click)="evaluateWithAI()" *ngIf="answer">
+                <i class="bi bi-robot me-2"></i>Evaluate with AI
+            </button>
+            <button type="button" class="btn btn-danger" (click)="deleteAnswer()" *ngIf="answer">
+                <i class="bi bi-trash me-2"></i>Delete
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>{{ success }}
+        <button type="button" class="btn-close" (click)="success = ''"></button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+        <button type="button" class="btn-close" (click)="error = ''"></button>
+    </div>
+
+    <!-- Skeleton Loading State -->
+    <div *ngIf="isLoading" class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-chat-square-text me-2"></i>Answer Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Answer ID</label>
+                                <div class="skeleton skeleton-text medium"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Created At</label>
+                                <div class="skeleton skeleton-text long"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Answer Text</label>
+                        <div class="skeleton skeleton-text" style="height: 120px; border-radius: 0.5rem;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Score</label>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Confidence</label>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Updated At</label>
+                                <div class="skeleton skeleton-text medium"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answer Details Content -->
+    <div *ngIf="!isLoading && answer" class="row">
+        <!-- Answer Information Card -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-chat-square-text me-2"></i>Answer Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Answer ID</label>
+                                <p class="form-control-plaintext">{{ answer.id || 'N/A' }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Created At</label>
+                                <p class="form-control-plaintext">{{ formatDate(answer.createdAt) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Answer Text</label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="mb-0 pre-wrap">{{ answer.text || 'No answer text available' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Score</label>
+                                <div>
+                  <span *ngIf="answer.aiScore" class="badge fs-6" [ngClass]="getScoreBadgeClass(answer.aiScore)">
+                    {{ answer.aiScore }}%
+                  </span>
+                                    <span *ngIf="!answer.aiScore" class="badge bg-secondary fs-6">Not scored</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Confidence</label>
+                                <div>
+                  <span *ngIf="answer.confidenceLevel" class="badge fs-6"
+                        [ngClass]="getConfidenceBadgeClass(answer.confidenceLevel)">
+                    {{ answer.confidenceLevel }}%
+                  </span>
+                                    <span *ngIf="!answer.confidenceLevel"
+                                          class="badge bg-secondary fs-6">No confidence</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Updated At</label>
+                                <p class="form-control-plaintext">{{ formatDate(answer.updatedAt) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Information Card -->
+        <div class="col-12 mb-4" *ngIf="answer.questionText">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-question-circle me-2"></i>Related Question
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Question Text</label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="mb-0 pre-wrap">{{ answer.questionText }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="answer.questionId">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Question ID</label>
+                                <p class="form-control-plaintext">{{ answer.questionId }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Feedback Card -->
+        <div class="col-12 mb-4" *ngIf="answer.aiFeedback">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-robot me-2"></i>AI Feedback
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Feedback</label>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <p class="mb-0 pre-wrap">{{ answer.aiFeedback }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!isLoading && !answer && !error" class="text-center py-5">
+        <i class="bi bi-chat-square-text display-1 text-muted"></i>
+        <h3 class="mt-3 text-muted">Answer Not Found</h3>
+        <p class="text-muted">The requested answer could not be found.</p>
+        <button type="button" class="btn btn-primary" (click)="goBack()">
+            <i class="bi bi-arrow-left me-2"></i>Back to List
+        </button>
+    </div>
+</div>

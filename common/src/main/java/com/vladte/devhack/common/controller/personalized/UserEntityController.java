@@ -1,5 +1,6 @@
 package com.vladte.devhack.common.controller.personalized;
 
+import com.vladte.devhack.common.config.SystemConstraints;
 import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.domain.user.UserService;
@@ -33,7 +34,6 @@ import java.util.UUID;
 public abstract class UserEntityController<E extends BasicEntity, ID, S extends CrudService<E, ID>> extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(UserEntityController.class);
-    private static final String ROLE_MANAGER = "ROLE_MANAGER";
     private static final String ROLE_SYSTEM = "ROLE_SYSTEM";
 
     protected final S service;
@@ -94,7 +94,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
     private boolean isCurrentUserManager() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Checking if current user is a manager: {}", authentication.getAuthorities());
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER)) || authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_SYSTEM));
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(SystemConstraints.ROLE_MANAGER)) || authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_SYSTEM));
     }
 
 

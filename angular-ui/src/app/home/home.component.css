@@ -1,0 +1,144 @@
+/* home.component.css */
+
+/* ── Layout & Container ───────────────────────────────────────── */
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ── Card Styling ──────────────────────────────────────────────── */
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  background-clip: border-box;
+}
+
+.card.h-100 {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ensure the card body grows and button sticks to bottom */
+.card.h-100 .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* subtle box-shadow on all cards */
+.hover-shadow {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Typography & Iconography ─────────────────────────────────── */
+.display-1 {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+.lead {
+  font-size: 1.25rem;
+  font-weight: 300;
+}
+
+/* Icon color utility classes */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.text-success {
+  color: var(--color-success) !important;
+}
+
+.text-info {
+  color: var(--color-info) !important;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.btn {
+  border-radius: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-success:hover {
+  background-color: var(--color-success-hover);
+}
+
+/* ── Fade-In Animation ───────────────────────────────────────── */
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── About Section ───────────────────────────────────────────── */
+.bg-light {
+  background-color: var(--bg-light) !important;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+/* ── Responsive Tweaks ───────────────────────────────────────── */
+@media (max-width: 767.98px) {
+  .display-1 {
+    font-size: 3rem;
+  }
+
+  .lead {
+    font-size: 1.125rem;
+  }
+
+  .card-body {
+    padding: 2rem !important;
+  }
+}
+
+/* ── Utility Spacing ──────────────────────────────────────────── */
+.mt-5 {
+  margin-top: 3rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mb-5 {
+  margin-bottom: 3rem !important;
+}
+
+.p-5 {
+  padding: 3rem !important;
+}
+
+.p-4 {
+  padding: 1.5rem !important;
+}
+
+.gx-4 {
+  --bs-gutter-x: 1.5rem;
+}
+
+.gy-4 {
+  --bs-gutter-y: 1.5rem;
+}

@@ -3,27 +3,27 @@
 }
 
 .page-link {
-  color: #6c757d;
-  border-color: #dee2e6;
+    color: var(--text-secondary);
+    border-color: var(--border-color);
   transition: all 0.2s ease-in-out;
 }
 
 .page-link:hover {
-  color: #495057;
-  background-color: #e9ecef;
-  border-color: #dee2e6;
+    color: var(--text-primary);
+    background-color: var(--list-group-hover-bg);
+    border-color: var(--border-color);
 }
 
 .page-item.active .page-link {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: white;
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--text-white);
 }
 
 .page-item.disabled .page-link {
-  color: #6c757d;
-  background-color: #fff;
-  border-color: #dee2e6;
+    color: var(--text-muted);
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
   cursor: not-allowed;
 }
 

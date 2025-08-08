@@ -1,12 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
-import { NoteListComponent } from '../../components/note/note-list/note-list.component';
-import { NoteByQuestionComponent } from '../../components/note/note-by-question/note-by-question.component';
+import {NoteListComponent} from '../../components/note/note-list/note-list.component';
+import {NoteByQuestionComponent} from '../../components/note/note-by-question/note-by-question.component';
 
-import { NoteRoutingModule } from './note-routing.module';
+import {NoteRoutingModule} from './note-routing.module';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { NoteRoutingModule } from './note-routing.module';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    NoteRoutingModule
+      NoteRoutingModule,
+      SharedModule
   ],
   exports: [
     NoteListComponent,

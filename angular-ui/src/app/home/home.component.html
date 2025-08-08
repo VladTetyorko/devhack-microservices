@@ -1,15 +1,68 @@
-<div class="jumbotron p-5 rounded bg-light">
-  <h1 class="display-4">Welcome to DevHack</h1>
-  <p class="lead">This is a simple application showing authentication with Angular and REST API.</p>
-  <hr class="my-4">
+<div class="container mt-5">
 
-  <div *ngIf="isAuthenticated; else notLoggedIn">
-    <p>You are currently logged in.</p>
-    <p>Start exploring the application features!</p>
-  </div>
+    <!-- 1) Greeting -->
+    <div *ngIf="isAuthenticated; else guestGreeting" class="mb-4">
+        <h3 class="fw-bold">
+            Welcome back, {{ currentUser?.profile?.name || 'User' }}!
+        </h3>
+    </div>
+    <ng-template #guestGreeting>
+        <h3 class="fw-bold">Welcome, Guest!</h3>
+    </ng-template>
 
-  <ng-template #notLoggedIn>
-    <p>You are not logged in. Please log in to access all features.</p>
-    <a class="btn btn-primary btn-lg" routerLink="/login" role="button">Login Now</a>
-  </ng-template>
+    <!-- 2) Short intro before cards -->
+    <p class="lead mb-5">
+        DevHack is your all-in-one tool for interview practice and job tracking.
+    </p>
+
+    <!-- 3) Card links row -->
+    <div class="row gx-4 gy-4 mb-5">
+        <!-- Learning -->
+        <div class="col-md-6">
+            <a routerLink="/interview-questions" class="text-decoration-none">
+                <div class="card h-100 hover-shadow fade-in">
+                    <div class="card-body text-center d-flex flex-column p-5">
+                        <i class="bi bi-question-circle display-1 mb-4 text-primary"></i>
+                        <h3 class="mb-3">Learning</h3>
+                        <p class="flex-grow-1">
+                            Practice common interview questions and save your notes.
+                        </p>
+                        <button class="btn btn-primary mt-auto">
+                            Go to Questions&nbsp;<i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Job Search -->
+        <div class="col-md-6">
+            <a routerLink="/vacancies" class="text-decoration-none">
+                <div class="card h-100 hover-shadow fade-in">
+                    <div class="card-body text-center d-flex flex-column p-5">
+                        <i class="bi bi-briefcase-fill display-1 mb-4 text-success"></i>
+                        <h3 class="mb-3">Job Search</h3>
+                        <p class="flex-grow-1">
+                            Browse open positions and track your applications.
+                        </p>
+                        <button class="btn btn-success mt-auto">
+                            View Vacancies&nbsp;<i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 4) About Section -->
+    <div class="card bg-light p-4 rounded fade-in">
+        <h4 class="mb-3">
+            <i class="bi bi-info-circle me-2"></i>About DevHack
+        </h4>
+        <p>
+            DevHack helps you sharpen your interview skills, organize your notes,
+            and manage job applications—all from one dashboard.
+            Use “Learning” to practice, or “Job Search” to explore opportunities.
+        </p>
+    </div>
 </div>

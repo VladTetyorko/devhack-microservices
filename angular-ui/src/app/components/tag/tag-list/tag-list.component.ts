@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { TagService } from '../../../services/tag.service';
-import { TagDTO } from '../../../models/global/tag.model';
-import { Page, PageRequest } from '../../../models/basic/page.model';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {TagService} from '../../../services/global/tag.service';
+import {TagDTO} from '../../../models/global/tag.model';
+import {Page, PageRequest} from '../../../models/basic/page.model';
 
 @Component({
   selector: 'app-tag-list',

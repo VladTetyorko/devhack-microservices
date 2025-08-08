@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { InterviewStageService } from '../../../services/interview-stage.service';
-import { InterviewStageDTO } from '../../../models/interview-stage.model';
-import { Page, PageRequest } from '../../../models/page.model';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {InterviewStageService} from '../../../services/global/interview-stage.service';
+import {InterviewStageDTO} from '../../../models/global/interview-stage.model';
+import {Page, PageRequest} from '../../../models/basic/page.model';
 
 @Component({
   selector: 'app-interview-stage-list',
@@ -98,11 +98,11 @@ export class InterviewStageListComponent implements OnInit {
     this.applyFilters();
   }
 
-  viewDetail(id: string): void {
+    viewDetail(id: string | number): void {
     this.router.navigate(['/interview-stages', id]);
   }
 
-  editStage(id: string): void {
+    editStage(id: string | number): void {
     this.router.navigate(['/interview-stages', id, 'edit']);
   }
 
@@ -110,14 +110,14 @@ export class InterviewStageListComponent implements OnInit {
     this.router.navigate(['/interview-stages/create']);
   }
 
-  deleteStage(id: string, event: Event): void {
-    event.stopPropagation();
+    deleteStage(deleteEvent: { id: string | number, event: MouseEvent }): void {
+        deleteEvent.event.stopPropagation();
 
-    const stage = this.allStages.find(s => s.id === id);
+        const stage = this.allStages.find(s => s.id === deleteEvent.id);
     const stageName = stage?.label || 'this stage';
 
     if (confirm(`Are you sure you want to delete ${stageName}? This action cannot be undone.`)) {
-      this.stageService.delete(id).subscribe({
+        this.stageService.delete(deleteEvent.id.toString()).subscribe({
         next: () => {
           this.successMessage = `Interview stage ${stageName} has been successfully deleted.`;
           this.loadStages();

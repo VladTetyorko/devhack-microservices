@@ -205,7 +205,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Created At</label>
-                                    <div class="form-control-plaintext">{{ user.createdAt | date:'medium' || 'N/A' }}</div>
+                                    <div class="form-control-plaintext">{{ user.createdAt | localDateTime:'medium' || 'N/A' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -339,7 +339,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Uploaded At</label>
-                                        <div class="form-control-plaintext">{{ user.profile.cvUploadedAt | date:'medium' || 'N/A' }}</div>
+                                        <div class="form-control-plaintext">{{ user.profile.cvUploadedAt | localDateTime:'medium' || 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">

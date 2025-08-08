@@ -5,16 +5,16 @@
 
 .answer-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 0.5rem 1rem var(--shadow-hover) !important;
 }
 
 .card {
   border: none;
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
 }
 
 .card-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* Alert styling */
@@ -31,27 +31,27 @@
 
 /* Badge colors */
 .bg-success {
-  background-color: #28a745 !important;
+    background-color: var(--color-success) !important;
 }
 
 .bg-warning {
-  background-color: #ffc107 !important;
+    background-color: var(--color-warning) !important;
 }
 
 .bg-danger {
-  background-color: #dc3545 !important;
+    background-color: var(--color-danger) !important;
 }
 
 .bg-info {
-  background-color: #17a2b8 !important;
+    background-color: var(--color-info) !important;
 }
 
 .bg-secondary {
-  background-color: #6c757d !important;
+    background-color: var(--color-secondary) !important;
 }
 
 .bg-primary {
-  background-color: #007bff !important;
+    background-color: var(--color-primary) !important;
 }
 
 /* Responsive adjustments */

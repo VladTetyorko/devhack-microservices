@@ -1,0 +1,33 @@
+.page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card {
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid var(--border-color);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow-medium);
+}
+
+.card-title {
+    color: #495057;
+    font-weight: 600;
+}
+
+.card-subtitle {
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    transform: none;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}

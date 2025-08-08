@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AiPromptUsageLogService} from '../../../services/ai-prompt-usage-log.service';
+import {AiPromptUsageLogService} from '../../../services/global/ai/ai-prompt-usage-log.service';
 import {AiPromptUsageLogModel} from '../../../models/global/ai/ai-prompt-usage-log.model';
 
 @Component({
