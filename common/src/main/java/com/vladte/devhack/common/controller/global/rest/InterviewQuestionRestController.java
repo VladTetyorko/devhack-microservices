@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.InterviewQuestionDTO;
-import com.vladte.devhack.common.model.mapper.InterviewQuestionMapper;
+import com.vladte.devhack.common.model.dto.global.InterviewQuestionDTO;
+import com.vladte.devhack.common.model.mapper.global.InterviewQuestionMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
@@ -11,6 +11,8 @@ import com.vladte.devhack.entities.global.Tag;
 import com.vladte.devhack.entities.user.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +26,13 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * REST controller for managing InterviewQuestion entities.
- * Provides RESTful API endpoints for CRUD operations on interview questions.
+ * Clean REST controller for managing InterviewQuestion entities.
+ * Provides comprehensive RESTful API endpoints for all question operations.
+ * Follows the Single Responsibility Principle by handling only API concerns.
  */
 @RestController
 @RequestMapping("/api/questions")
-@io.swagger.v3.oas.annotations.tags.Tag(name = "Interview Question", description = "Interview question management API")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Questions", description = "Question management API")
 @Slf4j
 public class InterviewQuestionRestController extends BaseRestController<InterviewQuestion, InterviewQuestionDTO, UUID, InterviewQuestionService, InterviewQuestionMapper> {
 
@@ -129,47 +132,59 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
     }
 
     /**
-     * Generate questions using AI.
+     * Generate questions using AI with custom parameters.
      *
-     * @param tagName    the tag name
-     * @param count      the number of questions to generate
-     * @param difficulty the difficulty level
-     * @return a success message
+     * @param request the generation request containing all parameters
+     * @return a success response with generation details
      */
     @PostMapping("/generate")
     @Operation(summary = "Generate questions using AI", description = "Initiates asynchronous generation of questions using AI based on the specified parameters")
     public ResponseEntity<Map<String, Object>> generateQuestions(
-            @Parameter(description = "Tag name")
-            @RequestParam String tagName,
-            @Parameter(description = "Number of questions to generate")
-            @RequestParam(defaultValue = "5") int count,
-            @Parameter(description = "Difficulty level")
-            @RequestParam(defaultValue = "MEDIUM") String difficulty) {
-        log.debug("REST request to generate questions with tag: {}, count: {}, difficulty: {}", tagName, count, difficulty);
+            @RequestBody @Parameter(description = "Generation request parameters") GenerateQuestionsRequest request) {
+        log.debug("REST request to generate questions with request: {}", request);
 
-        // Validate tag name
-        if (questionGenerationService.isTagInvalid(tagName)) {
+        // Validate request
+        if (questionGenerationService.isTagInvalid(request.getTopic())) {
             return ResponseEntity.badRequest().body(
-                    questionGenerationService.buildApiResponse(false, "Invalid tag name: " + tagName)
+                    questionGenerationService.buildApiResponse(false, "Invalid topic: " + request.getTopic())
+            );
+        }
+
+        if (request.getCount() < 1 || request.getCount() > 20) {
+            return ResponseEntity.badRequest().body(
+                    questionGenerationService.buildApiResponse(false, "Question count must be between 1 and 20")
             );
         }
 
         // Start asynchronous generation
-        questionGenerationService.startQuestionGeneration(tagName, count, difficulty);
+        questionGenerationService.startQuestionGeneration(
+                request.getTopic(),
+                request.getCount(),
+                request.getDifficulty()
+        );
 
-        // Return success message
-        String message = questionGenerationService.buildGenerationSuccessMessage(count, difficulty, tagName);
-        return ResponseEntity.ok(questionGenerationService.buildApiResponse(true, message));
+        // Return success response
+        String message = questionGenerationService.buildGenerationSuccessMessage(
+                request.getCount(),
+                request.getDifficulty(),
+                request.getTopic()
+        );
+
+        Map<String, Object> response = questionGenerationService.buildApiResponse(true, message);
+        response.put("estimatedTime", "30 seconds");
+        response.put("topic", request.getTopic());
+
+        return ResponseEntity.ok(response);
     }
 
     /**
-     * Auto-generate easy questions for a tag.
+     * Auto-generate easy questions for a specific topic.
      *
-     * @param tagName the tag name
-     * @return a success message
+     * @param tagName the tag name to generate questions for
+     * @return a success response
      */
-    @PostMapping("/auto-generate")
-    @Operation(summary = "Auto-generate easy questions for a tag", description = "Initiates asynchronous generation of easy questions for the specified tag")
+    @PostMapping("/generate/auto")
+    @Operation(summary = "Auto-generate easy questions", description = "Generates 3 easy questions for the specified topic")
     public ResponseEntity<Map<String, Object>> autoGenerateEasyQuestions(
             @Parameter(description = "Tag name")
             @RequestParam String tagName) {
@@ -191,21 +206,28 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
     }
 
     /**
-     * Auto-generate easy questions for multiple tags.
+     * Auto-generate easy questions for multiple topics.
      *
-     * @param tagIds the tag IDs
-     * @return a success message
+     * @param tagIds the list of tag IDs to generate questions for
+     * @return a success response
      */
-    @PostMapping("/auto-generate-multi")
-    @Operation(summary = "Auto-generate easy questions for multiple tags", description = "Initiates asynchronous generation of easy questions for the specified tags")
+    @PostMapping("/generate/multi")
+    @Operation(summary = "Auto-generate easy questions for multiple topics", description = "Generates easy questions for multiple specified topics")
     public ResponseEntity<Map<String, Object>> autoGenerateEasyQuestionsForMultipleTags(
-            @Parameter(description = "Tag IDs")
-            @RequestParam List<UUID> tagIds) {
-        log.debug("REST request to auto-generate easy questions for tags: {}", tagIds);
+            @Parameter(description = "List of tag IDs")
+            @RequestParam("tagIds") List<UUID> tagIds) {
+        log.debug("REST request to auto-generate easy questions for {} tags", tagIds.size());
 
+        // Validate input
         if (tagIds == null || tagIds.isEmpty()) {
             return ResponseEntity.badRequest().body(
-                    questionGenerationService.buildApiResponse(false, "No tag IDs provided")
+                    questionGenerationService.buildApiResponse(false, "At least one tag must be selected")
+            );
+        }
+
+        if (tagIds.size() > 10) {
+            return ResponseEntity.badRequest().body(
+                    questionGenerationService.buildApiResponse(false, "Maximum 10 tags allowed per request")
             );
         }
 
@@ -215,5 +237,42 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
         // Return success message
         String message = questionGenerationService.buildMultiTagEasyGenerationSuccessMessage(tagIds.size());
         return ResponseEntity.ok(questionGenerationService.buildApiResponse(true, message));
+    }
+
+    /**
+     * Data class for question generation requests.
+     */
+    @Setter
+    @Getter
+    public static class GenerateQuestionsRequest {
+        // Getters and setters
+        private String topic;
+        private int count = 5;
+        private String difficulty = "Medium";
+        private String type = "mixed";
+        private String experience = "junior";
+
+        // Constructors
+        public GenerateQuestionsRequest() {
+        }
+
+        public GenerateQuestionsRequest(String topic, int count, String difficulty, String type, String experience) {
+            this.topic = topic;
+            this.count = count;
+            this.difficulty = difficulty;
+            this.type = type;
+            this.experience = experience;
+        }
+
+        @Override
+        public String toString() {
+            return "GenerateQuestionsRequest{" +
+                    "topic='" + topic + '\'' +
+                    ", count=" + count +
+                    ", difficulty='" + difficulty + '\'' +
+                    ", type='" + type + '\'' +
+                    ", experience='" + experience + '\'' +
+                    '}';
+        }
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
                 DataSourceAutoConfiguration.class
         }
 )
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @EnableKafka
 public class AiApplication {
 

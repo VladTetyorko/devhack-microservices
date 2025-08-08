@@ -25,3 +25,7 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/12-renamed-vacancy-field-appliedAt.sql
   - include:
       file: classpath:db/changelog/changes/13-migrate-users-to-separated-approach.sql
+  - include:
+      file: classpath:db/changelog/changes/14-add-basic-entity-fields-to-ai-tables.sql
+  - include:
+      file: classpath:db/changelog/changes/15-add-updated-at-to-missing-tables.sql

@@ -1,0 +1,92 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>AI Prompt Details</h2>
+        <button class="btn btn-secondary" (click)="goBack()">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && prompt" class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ prompt.code }}</h5>
+            <div>
+                <span [ngClass]="{
+                  'badge bg-success': prompt.active,
+                  'badge bg-secondary': !prompt.active
+                }" class="me-2">
+                  {{ prompt.active ? 'Active' : 'Inactive' }}
+                </span>
+                <button class="btn btn-sm"
+                        [ngClass]="prompt.active ? 'btn-warning' : 'btn-success'"
+                        (click)="toggleActive()">
+                    <i class="bi" [ngClass]="prompt.active ? 'bi-pause' : 'bi-play'"></i>
+                    {{ prompt.active ? 'Deactivate' : 'Activate' }}
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Code:</label>
+                        <p class="form-control-plaintext">{{ prompt.code }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description:</label>
+                        <p class="form-control-plaintext">{{ prompt.description || 'No description provided' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Language:</label>
+                        <p class="form-control-plaintext">{{ prompt.language || 'Not specified' }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Category:</label>
+                        <p class="form-control-plaintext">{{ prompt.categoryName || 'Unknown' }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Status:</label>
+                        <p class="form-control-plaintext">
+                            <span [ngClass]="{
+                              'badge bg-success': prompt.active,
+                              'badge bg-secondary': !prompt.active
+                            }">
+                              {{ prompt.active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Created At:</label>
+                        <p class="form-control-plaintext">{{ prompt.createdAt | localDateTime:'medium' }}</p>
+                    </div>
+                    <div class="mb-3" *ngIf="prompt.updatedAt">
+                        <label class="form-label fw-bold">Updated At:</label>
+                        <p class="form-control-plaintext">{{ prompt.updatedAt | localDateTime:'medium' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Prompt Text:</label>
+                        <div class="prompt-text-container">
+                            <pre class="prompt-text">{{ prompt.prompt }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

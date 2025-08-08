@@ -1,0 +1,84 @@
+/* Interview Question Detail Component Styles */
+
+/* Text Formatting */
+.pre-wrap {
+    white-space: pre-wrap;
+}
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    font-weight: 600;
+}
+
+.form-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.form-control-plaintext {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    padding: 0.375rem 0;
+    margin-bottom: 0;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.btn-group .btn {
+    border-radius: 0.375rem;
+    margin-left: 0.25rem;
+}
+
+.btn-group .btn:first-child {
+    margin-left: 0;
+}
+
+.card.bg-light {
+    background-color: var(--bg-light) !important;
+    border: 1px solid var(--border-color);
+}
+
+.card.bg-light .card-body {
+    padding: 1rem;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-group .btn {
+        margin-left: 0;
+        margin-bottom: 0.25rem;
+        border-radius: 0.375rem !important;
+    }
+
+    .btn-group .btn:last-child {
+        margin-bottom: 0;
+    }
+}

@@ -1,9 +1,13 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.model.dto.AuditDTO;
-import com.vladte.devhack.common.model.mapper.AuditMapper;
-import com.vladte.devhack.entities.Audit;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.model.dto.global.AuditDTO;
+import com.vladte.devhack.common.model.mapper.global.AuditMapper;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.global.Audit;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -34,9 +38,8 @@ class AuditMapperTest {
         auditMapper = new AuditMapper();
 
         // Create test user
-        user = new User();
+        user = createTestUser("Test User", "test@example.com");
         user.setId(USER_ID);
-        user.setName("Test User");
 
         // Create test audit entity
         audit = new Audit();
@@ -207,5 +210,34 @@ class AuditMapperTest {
         assertEquals(2, result.size());
         assertEquals(AUDIT_ID, result.get(0).getId());
         assertEquals(AUDIT_ID, result.get(1).getId());
+    }
+
+    /**
+     * Helper method to create a test user with proper entity structure.
+     */
+    private User createTestUser(String name, String email) {
+        User user = new User();
+
+        // Create Profile
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        // Create AuthenticationProvider for LOCAL authentication
+        AuthenticationProvider localAuth = new AuthenticationProvider();
+        localAuth.setProvider(AuthProviderType.LOCAL);
+        localAuth.setEmail(email);
+        localAuth.setPasswordHash("password"); // This would normally be encoded
+        localAuth.setUser(user);
+        user.setAuthProviders(List.of(localAuth));
+
+        // Create UserAccess
+        UserAccess userAccess = new UserAccess();
+        userAccess.setRole("USER");
+        userAccess.setUser(user);
+        user.setUserAccess(userAccess);
+
+        return user;
     }
 }

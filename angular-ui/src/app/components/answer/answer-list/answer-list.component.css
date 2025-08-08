@@ -1,0 +1,74 @@
+.answer-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.answer-card:hover {
+  transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem var(--shadow-hover) !important;
+}
+
+.card {
+  border: none;
+    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Alert styling */
+.alert {
+  border: none;
+  border-radius: 0.5rem;
+}
+
+/* Empty state styling */
+.display-1 {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+/* Badge colors */
+.bg-success {
+    background-color: var(--color-success) !important;
+}
+
+.bg-warning {
+    background-color: var(--color-warning) !important;
+}
+
+.bg-danger {
+    background-color: var(--color-danger) !important;
+}
+
+.bg-info {
+    background-color: var(--color-info) !important;
+}
+
+.bg-secondary {
+    background-color: var(--color-secondary) !important;
+}
+
+.bg-primary {
+    background-color: var(--color-primary) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem;
+  }
+  
+  .page-header .btn {
+    align-self: center;
+  }
+}
+
+/* Custom button group styling */
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}

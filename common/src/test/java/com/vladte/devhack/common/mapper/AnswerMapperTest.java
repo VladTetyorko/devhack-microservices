@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.model.mapper.AnswerMapper;
-import com.vladte.devhack.common.model.dto.AnswerDTO;
-import com.vladte.devhack.entities.Answer;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
+import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -39,7 +39,6 @@ class AnswerMapperTest {
         // Create test user
         user = new User();
         user.setId(USER_ID);
-        user.setName("Test User");
 
         // Create test question
         question = new InterviewQuestion();

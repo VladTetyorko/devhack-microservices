@@ -1,0 +1,106 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" routerLink="/">DevHack</a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                (click)="isMenuCollapsed = !isMenuCollapsed"
+                aria-controls="mainNav"
+                [attr.aria-expanded]="!isMenuCollapsed"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed" id="mainNav">
+            <ul class="navbar-nav me-auto ">
+
+                <!-- Learning -->
+                <li class="nav-item dropdown">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Learning
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" routerLink="/tags">Tags</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" routerLink="/interview-questions">
+                                Interview Questions
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" routerLink="/answers">My Answers</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" routerLink="/notes">My Notes</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Job Searching -->
+                <li class="nav-item dropdown ">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Job Searching
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" routerLink="/vacancies">Vacancies</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" routerLink="/vacancy-responses">
+                                My Vacancy Responses
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- theme toggle and user profile / logout -->
+            <ul class="navbar-nav align-items-center">
+                <!-- Theme Toggle Button -->
+                <li class="nav-item ">
+                    <button
+                            class="theme-toggle nav-link btn"
+                            (click)="toggleTheme()"
+                            [title]="getThemeTooltip()"
+                            aria-label="Toggle theme">
+                        <i [class]="'bi ' + getThemeIcon()" id="theme-toggle-icon"></i>
+                    </button>
+                </li>
+
+                <!-- User Profile Dropdown -->
+                <li class="nav-item dropdown" *ngIf="isAuthenticated">
+                    <a
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        {{ currentUser?.profile?.name }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" routerLink="/profile">Profile</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider"/>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" (click)="logout()">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

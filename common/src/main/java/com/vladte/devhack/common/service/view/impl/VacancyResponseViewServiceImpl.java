@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
-import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
+import com.vladte.devhack.common.model.mapper.personalized.VacancyResponseMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewStageService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.domain.user.UserService;

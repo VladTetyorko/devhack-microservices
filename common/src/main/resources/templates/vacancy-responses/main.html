@@ -235,47 +235,35 @@
                         <p class="text-muted">No applications available yet.</p>
                     </div>
 
-                    <!-- Pagination for Top Companies -->
                     <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 0}">
                         <nav aria-label="Page navigation">
                             <ul class="pagination pagination-sm">
                                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/vacancies/my-responses/dashboard(page=0, size=${size})}"
-                                       aria-label="First">
-                                        <span aria-hidden="true">&laquo;&laquo;</span>
-                                    </a>
+                                       th:href="@{/vacancies/my-responses/dashboard(page=0, size=${size})}">&laquo;&laquo;</a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/vacancies/my-responses/dashboard(page=${currentPage - 1}, size=${size})}"
-                                       aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
+                                       th:href="@{/vacancies/my-responses/dashboard(page=${currentPage - 1}, size=${size})}">&laquo;</a>
                                 </li>
                                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                                     th:classappend="${currentPage == i} ? 'active'">
                                     <a class="page-link"
                                        th:href="@{/vacancies/my-responses/dashboard(page=${i}, size=${size})}"
-                                       th:text="${i + 1}"></a>
+                                       th:text="${i + 1}">1</a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/vacancies/my-responses/dashboard(page=${currentPage + 1}, size=${size})}"
-                                       aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
+                                       th:href="@{/vacancies/my-responses/dashboard(page=${currentPage + 1}, size=${size})}">&raquo;</a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
                                     <a class="page-link"
-                                       th:href="@{/vacancies/my-responses/dashboard(page=${totalPages - 1}, size=${size})}"
-                                       aria-label="Last">
-                                        <span aria-hidden="true">&raquo;&raquo;</span>
-                                    </a>
+                                       th:href="@{/vacancies/my-responses/dashboard(page=${totalPages - 1}, size=${size})}">&raquo;&raquo;</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+
 
                     <div class="text-center mt-4">
                         <a th:href="@{/vacancies/my-responses}" class="btn btn-outline-success">

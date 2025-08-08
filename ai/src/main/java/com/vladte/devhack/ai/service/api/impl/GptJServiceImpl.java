@@ -5,7 +5,6 @@ import com.vladte.devhack.ai.service.api.AbstractAiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,12 +17,9 @@ import java.util.Map;
 /**
  * Implementation of the OpenAiService interface for interacting with the GPT-J API via LocalAI.
  */
-@Profile("local")
 @Service("gptJService")
 public class GptJServiceImpl extends AbstractAiService {
     private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
-
-    private static final String MODEL_NAME = "gptJ";
 
     public GptJServiceImpl(ObjectMapper objectMapper) {
         super(objectMapper);

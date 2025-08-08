@@ -1,40 +1,119 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-// User components
-import {UserListComponent} from './components/user/user-list/user-list.component';
-import {UserDetailComponent} from './components/user/user-detail/user-detail.component';
-import {UserRegisterComponent} from './components/user/user-register/user-register.component';
-
-// Note components
-import {NoteListComponent} from './components/note/note-list/note-list.component';
-import {NoteByQuestionComponent} from './components/note/note-by-question/note-by-question.component';
-
-// VacancyResponse components
-import {
-  VacancyResponseListComponent
-} from './components/vacancy-response/vacancy-response-list/vacancy-response-list.component';
-import {
-  VacancyResponseDetailComponent
-} from './components/vacancy-response/vacancy-response-detail/vacancy-response-detail.component';
+// Guards
+import {AuthGuard} from './guards/auth.guard';
+import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [
-    // User routes
-    {path: 'users', component: UserListComponent},
-    {path: 'users/register', component: UserRegisterComponent},
-    {path: 'users/:id', component: UserDetailComponent},
+    // Auth routes (public)
+    {
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
+    {
+        path: 'login',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
+    {
+        path: 'register',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
+    },
 
-    // Note routes
-    {path: 'notes/my-notes', component: NoteListComponent},
-    {path: 'notes/question/:questionId', component: NoteByQuestionComponent},
+    // User routes (protected)
+    {
+        path: 'users',
+        loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
+        canActivate: [AuthGuard]
+    },
 
-    // Vacancy Response routes
-    {path: 'vacancies/my-responses', component: VacancyResponseListComponent},
-    {path: 'vacancies/my-responses/:id', component: VacancyResponseDetailComponent},
+    // Note routes (protected)
+    {
+        path: 'notes',
+        loadChildren: () => import('./modules/note/note.module').then(m => m.NoteModule),
+        canActivate: [AuthGuard]
+    },
 
-    // Default routes
-    {path: '', redirectTo: '/users', pathMatch: 'full'},
-    {path: '**', redirectTo: '/users'}
+    // Tag routes (protected)
+    {
+        path: 'tags',
+        loadChildren: () => import('./modules/tag/tag.module').then(m => m.TagModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Interview Question routes (protected)
+    {
+        path: 'interview-questions',
+        loadChildren: () => import('./modules/interview-question/interview-question.module').then(m => m.InterviewQuestionModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Answer routes (protected)
+    {
+        path: 'answers',
+        loadChildren: () => import('./modules/answer/answer.module').then(m => m.AnswerModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Interview Stage routes (protected)
+    {
+        path: 'interview-stages',
+        loadChildren: () => import('./modules/interview-stage/interview-stage.module').then(m => m.InterviewStageModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Interview Stage Category routes (protected)
+    {
+        path: 'interview-stage-categories',
+        loadChildren: () => import('./modules/interview-stage-category/interview-stage-category.module').then(m => m.InterviewStageCategoryModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Vacancy routes (protected)
+    {
+        path: 'vacancies',
+        loadChildren: () => import('./modules/vacancy/vacancy.module').then(m => m.VacancyModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Vacancy Response routes (protected)
+    {
+        path: 'vacancy-responses',
+        loadChildren: () => import('./modules/vacancy-response/vacancy-response.module').then(m => m.VacancyResponseModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Audit routes (protected)
+    {
+        path: 'audit',
+        loadChildren: () => import('./modules/audit/audit.module').then(m => m.AuditModule),
+        canActivate: [AuthGuard]
+    },
+
+    // AI Prompt routes (protected)
+    {
+        path: 'ai-prompts',
+        loadChildren: () => import('./modules/ai-prompt/ai-prompt.module').then(m => m.AiPromptModule),
+        canActivate: [AuthGuard]
+    },
+
+    // AI Prompt Category routes (protected)
+    {
+        path: 'ai-prompt-categories',
+        loadChildren: () => import('./modules/ai-prompt-category/ai-prompt-category.module').then(m => m.AiPromptCategoryModule),
+        canActivate: [AuthGuard]
+    },
+
+    // AI Prompt Usage Log routes (protected)
+    {
+        path: 'ai-prompt-usage-logs',
+        loadChildren: () => import('./modules/ai-prompt-usage-log/ai-prompt-usage-log.module').then(m => m.AiPromptUsageLogModule),
+        canActivate: [AuthGuard]
+    },
+
+    {path: 'home', component: HomeComponent},
+    {path: '', redirectTo: '/home', pathMatch: 'full'},
+    {path: '**', redirectTo: '/home'}
 ];
 
 @NgModule({

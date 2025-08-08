@@ -25,10 +25,10 @@ public class VacancyParsingConsumer extends KafkaAiRequestConsumer<VacancyParseR
     private final OpenAiService openAiService;
 
     public VacancyParsingConsumer(@Qualifier("VacancyKafkaProvider") KafkaResponsePublisher<VacancyParseResponsePayload> responsePublisher,
-                                  @Qualifier("gptJService") OpenAiService openAiService,
+                                  OpenAiService aiService,
                                   ObjectMapper objectMapper) {
         super(responsePublisher, objectMapper, VacancyParseRequestPayload.class);
-        this.openAiService = openAiService;
+        this.openAiService = aiService;
     }
 
     @KafkaListener(

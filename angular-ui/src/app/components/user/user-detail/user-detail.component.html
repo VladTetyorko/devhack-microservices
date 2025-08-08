@@ -3,9 +3,174 @@
         <h2>User Details</h2>
     </div>
 
-    <div *ngIf="isLoading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <!-- Skeleton Loading State -->
+    <div *ngIf="isLoading" class="row">
+        <!-- UserDTO Section Skeleton -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-circle me-2"></i>User Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">User ID</label>
+                                <div class="skeleton skeleton-text medium"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Created At</label>
+                                <div class="skeleton skeleton-text long"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Name</label>
+                                <div class="skeleton skeleton-text long"
+                                     style="height: 38px; border-radius: 0.5rem;"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Email</label>
+                                <div class="skeleton skeleton-text long"
+                                     style="height: 38px; border-radius: 0.5rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Authentication Providers</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="skeleton skeleton-badge"></div>
+                            <div class="skeleton skeleton-badge"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section Skeleton -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-badge me-2"></i>Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Profile ID</label>
+                                <div class="skeleton skeleton-text medium"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Visible to Recruiters</label>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CV Information Skeleton -->
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-file-earmark-text me-2"></i>CV Information
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">CV File Name</label>
+                                    <div class="skeleton skeleton-text long"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">File Type</label>
+                                    <div class="skeleton skeleton-text short"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">File Size</label>
+                                    <div class="skeleton skeleton-text medium"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Information Skeleton -->
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-robot me-2"></i>AI Settings & Analysis
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">AI Usage Enabled</label>
+                                    <div class="skeleton skeleton-badge"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Preferred Language</label>
+                                    <div class="skeleton skeleton-text medium"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">CV Score</label>
+                                    <div class="skeleton skeleton-badge"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Skills Summary</label>
+                            <div class="skeleton skeleton-text long" style="height: 80px; border-radius: 0.5rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Section Skeleton -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-shield-lock me-2"></i>Access & Permissions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Access ID</label>
+                                <div class="skeleton skeleton-text medium"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Role</label>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Account Status</label>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -19,74 +184,310 @@
         <button type="button" class="btn-close float-end" (click)="success = ''"></button>
     </div>
 
-    <div class="card" *ngIf="!isLoading && user">
-        <div class="card-header bg-primary text-white">
-            <h5 class="card-title mb-0">Edit User</h5>
+    <div *ngIf="!isLoading && user" class="row">
+        <!-- UserDTO Section -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-circle me-2"></i>User Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="userForm" (ngSubmit)="saveUser()">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">User ID</label>
+                                    <div class="form-control-plaintext">{{ user.id || 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Created At</label>
+                                    <div class="form-control-plaintext">{{ user.createdAt | localDateTime:'medium' || 'N/A' }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label fw-bold">Name</label>
+                                    <input
+                                            type="text"
+                                            id="name"
+                                            formControlName="name"
+                                            class="form-control"
+                                            [ngClass]="{'is-invalid': userForm.get('name')?.invalid && userForm.get('name')?.touched}"
+                                    />
+                                    <div class="invalid-feedback" *ngIf="userForm.get('name')?.errors?.['required']">
+                                        Name is required
+                                    </div>
+                                    <div class="invalid-feedback" *ngIf="userForm.get('name')?.errors?.['minlength']">
+                                        Name must be at least 2 characters
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label fw-bold">Email</label>
+                                    <input
+                                            type="email"
+                                            id="email"
+                                            formControlName="email"
+                                            class="form-control"
+                                            [ngClass]="{'is-invalid': userForm.get('email')?.invalid && userForm.get('email')?.touched}"
+                                    />
+                                    <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['required']">
+                                        Email is required
+                                    </div>
+                                    <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['email']">
+                                        Please enter a valid email address
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" *ngIf="user.credentials && user.credentials.length > 0">
+                            <label class="form-label fw-bold">Authentication Providers</label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span *ngFor="let credential of user.credentials" class="badge bg-info">
+                                    <i class="bi bi-shield-check me-1"></i>
+                                    {{ credential.provider || 'Unknown' }} - {{ credential.email || 'No email' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" (click)="goBack()">
+                                <i class="bi bi-arrow-left me-1"></i> Back
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-danger me-2" (click)="deleteUser()">
+                                    <i class="bi bi-trash me-1"></i> Delete
+                                </button>
+                                <button type="submit" class="btn btn-success" [disabled]="userForm.invalid">
+                                    <i class="bi bi-save me-1"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form [formGroup]="userForm" (ngSubmit)="saveUser()">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
-                    <input
-                            type="text"
-                            id="name"
-                            formControlName="name"
-                            class="form-control"
-                            [ngClass]="{'is-invalid': userForm.get('name')?.invalid && userForm.get('name')?.touched}"
-                    />
-                    <div class="invalid-feedback" *ngIf="userForm.get('name')?.errors?.['required']">
-                        Name is required
-                    </div>
-                    <div class="invalid-feedback" *ngIf="userForm.get('name')?.errors?.['minlength']">
-                        Name must be at least 2 characters
-                    </div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input
-                            type="email"
-                            id="email"
-                            formControlName="email"
-                            class="form-control"
-                            [ngClass]="{'is-invalid': userForm.get('email')?.invalid && userForm.get('email')?.touched}"
-                    />
-                    <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['required']">
-                        Email is required
-                    </div>
-                    <div class="invalid-feedback" *ngIf="userForm.get('email')?.errors?.['email']">
-                        Please enter a valid email address
-                    </div>
+        <!-- Profile Section -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-badge me-2"></i>Profile Information
+                    </h5>
                 </div>
+                <div class="card-body">
+                    <div *ngIf="user.profile; else noProfile">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Profile ID</label>
+                                    <div class="form-control-plaintext">{{ user.profile.id || 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Visible to Recruiters</label>
+                                    <div class="form-control-plaintext">
+                                        <span [ngClass]="user.profile.isVisibleToRecruiters ? 'badge bg-success' : 'badge bg-secondary'">
+                                            <i class="bi"
+                                               [ngClass]="user.profile.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                            {{ user.profile.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="mb-3" *ngIf="user.roles && user.roles.length > 0">
-                    <label class="form-label">Roles</label>
-                    <div>
-            <span *ngFor="let role of user.roles" class="badge bg-secondary me-1">
-              {{ role }}
-            </span>
-                    </div>
-                </div>
+                        <!-- CV Information -->
+                        <div class="mb-4" *ngIf="user.profile.cvFileName">
+                            <h6 class="text-muted mb-3">
+                                <i class="bi bi-file-earmark-text me-2"></i>CV Information
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">CV File Name</label>
+                                        <div class="form-control-plaintext">{{ user.profile.cvFileName }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">File Type</label>
+                                        <div class="form-control-plaintext">{{ user.profile.cvFileType || 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">File Size</label>
+                                        <div class="form-control-plaintext">
+                                            {{ user.profile.cvFileSize ? (user.profile.cvFileSize / 1024 / 1024 | number:'1.2-2') + ' MB' : 'N/A' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Uploaded At</label>
+                                        <div class="form-control-plaintext">{{ user.profile.cvUploadedAt | localDateTime:'medium' || 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Parsing Status</label>
+                                        <div class="form-control-plaintext">
+                                            <span [ngClass]="user.profile.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'">
+                                                <i class="bi"
+                                                   [ngClass]="user.profile.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                                {{ user.profile.cvParsedSuccessfully ? 'Successfully Parsed' : 'Parsing Failed' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3" *ngIf="user.profile.cvFileHref">
+                                <label class="form-label fw-bold">CV File</label>
+                                <div class="form-control-plaintext">
+                                    <a [href]="user.profile.cvFileHref" target="_blank"
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-download me-1"></i>Download CV
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="d-flex justify-content-between">
-                    <button type="button" class="btn btn-secondary" (click)="goBack()">
-                        <i class="bi bi-arrow-left me-1"></i> Back
-                    </button>
-                    <div>
-                        <button type="button" class="btn btn-danger me-2" (click)="deleteUser()">
-                            <i class="bi bi-trash me-1"></i> Delete
-                        </button>
-                        <button type="submit" class="btn btn-success" [disabled]="userForm.invalid">
-                            <i class="bi bi-save me-1"></i> Save
-                        </button>
+                        <!-- AI Information -->
+                        <div class="mb-4">
+                            <h6 class="text-muted mb-3">
+                                <i class="bi bi-robot me-2"></i>AI Settings & Analysis
+                            </h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">AI Usage Enabled</label>
+                                        <div class="form-control-plaintext">
+                                            <span [ngClass]="user.profile.aiUsageEnabled ? 'badge bg-success' : 'badge bg-secondary'">
+                                                <i class="bi"
+                                                   [ngClass]="user.profile.aiUsageEnabled ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                                {{ user.profile.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Preferred Language</label>
+                                        <div class="form-control-plaintext">{{ user.profile.aiPreferredLanguage || 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">CV Score</label>
+                                        <div class="form-control-plaintext">
+                                            <span *ngIf="user.profile.aiCvScore !== null && user.profile.aiCvScore !== undefined"
+                                                  [ngClass]="'badge ' + (user.profile.aiCvScore >= 80 ? 'bg-success' : user.profile.aiCvScore >= 60 ? 'bg-warning' : 'bg-danger')">
+                                                {{ user.profile.aiCvScore }}/100
+                                            </span>
+                                            <span *ngIf="user.profile.aiCvScore === null || user.profile.aiCvScore === undefined"
+                                                  class="text-muted">N/A</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3" *ngIf="user.profile.aiSkillsSummary">
+                                <label class="form-label fw-bold">Skills Summary</label>
+                                <div class="form-control-plaintext bg-light p-3 rounded">{{ user.profile.aiSkillsSummary }}</div>
+                            </div>
+                            <div class="mb-3" *ngIf="user.profile.aiSuggestedImprovements">
+                                <label class="form-label fw-bold">Suggested Improvements</label>
+                                <div class="form-control-plaintext bg-light p-3 rounded">{{ user.profile.aiSuggestedImprovements }}</div>
+                            </div>
+                        </div>
                     </div>
+                    <ng-template #noProfile>
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-person-x display-4"></i>
+                            <p class="mt-2">No profile information available</p>
+                        </div>
+                    </ng-template>
                 </div>
-            </form>
+            </div>
         </div>
 
-        <div class="card-footer text-muted" *ngIf="user.createdAt">
-            <small>Created: {{ user.createdAt | date:'medium' }}</small>
-            <small *ngIf="user.updatedAt" class="ms-3">Last updated: {{ user.updatedAt | date:'medium' }}</small>
+        <!-- Access Section -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-shield-lock me-2"></i>Access & Permissions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div *ngIf="user.access; else noAccess">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Access ID</label>
+                                    <div class="form-control-plaintext">{{ user.access.id || 'N/A' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Role</label>
+                                    <div class="form-control-plaintext">
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-person-badge me-1"></i>
+                                            {{ user.access.role }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Account Status</label>
+                                    <div class="form-control-plaintext">
+                                        <span [ngClass]="user.access.accountLocked ? 'badge bg-danger' : 'badge bg-success'">
+                                            <i class="bi"
+                                               [ngClass]="user.access.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                            {{ user.access.accountLocked ? 'Locked' : 'Active' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">AI Usage Allowed</label>
+                                    <div class="form-control-plaintext">
+                                        <span [ngClass]="user.access.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'">
+                                            <i class="bi"
+                                               [ngClass]="user.access.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                            {{ user.access.aiUsageAllowed ? 'Allowed' : 'Not Allowed' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #noAccess>
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-shield-x display-4"></i>
+                            <p class="mt-2">No access information available</p>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
         </div>
     </div>
 </div>

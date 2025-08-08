@@ -4,8 +4,6 @@ import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
-
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "interview_stage_category",
@@ -24,12 +22,4 @@ public class InterviewStageCategory extends BasicEntity {
 
     @Column(name = "order_index")
     private Integer orderIndex;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @PreUpdate
-    public void onUpdate() {
-        updatedAt = Instant.now();
-    }
 }

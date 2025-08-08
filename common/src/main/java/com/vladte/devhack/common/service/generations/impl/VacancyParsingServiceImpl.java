@@ -2,7 +2,7 @@ package com.vladte.devhack.common.service.generations.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.common.service.domain.personalized.impl.VacancyResponseServiceImpl;
+import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
 import com.vladte.devhack.entities.global.Vacancy;
@@ -21,11 +21,11 @@ import java.util.concurrent.CompletableFuture;
 public class VacancyParsingServiceImpl implements VacancyParsingService {
 
     private final VacancyService vacancyService;
-    private final VacancyResponseServiceImpl vacancyResponseService;
+    private final VacancyResponseService vacancyResponseService;
     private final ObjectMapper objectMapper;
     private final VacancyResponseKafkaProvider vacancyResponseKafkaProvider;
 
-    public VacancyParsingServiceImpl(VacancyService vacancyService, VacancyResponseServiceImpl vacancyResponseService, ObjectMapper objectMapper, VacancyResponseKafkaProvider vacancyResponseKafkaProvider) {
+    public VacancyParsingServiceImpl(VacancyService vacancyService, VacancyResponseService vacancyResponseService, ObjectMapper objectMapper, VacancyResponseKafkaProvider vacancyResponseKafkaProvider) {
         this.vacancyService = vacancyService;
         this.vacancyResponseService = vacancyResponseService;
         this.objectMapper = objectMapper;

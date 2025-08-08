@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -119,6 +120,7 @@ public abstract class BaseCrudController<Entity extends BasicEntity, Dto extends
      * @param size  the page size
      * @return the view name
      */
+    @PreAuthorize("hasAnyRole('USER','MANAGER', 'SYSTEM')")
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model model,
                        @RequestParam(defaultValue = "0") int page,
@@ -148,6 +150,7 @@ public abstract class BaseCrudController<Entity extends BasicEntity, Dto extends
      * @param model the model
      * @return the view name
      */
+    @PreAuthorize("hasAnyRole('USER','MANAGER', 'SYSTEM')")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String view(@PathVariable ID id, Model model) {
         Entity entity = getEntityOrThrow(service.findById(id), getEntityName() + " not found");

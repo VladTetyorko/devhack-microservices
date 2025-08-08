@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.TagDTO;
-import com.vladte.devhack.common.model.mapper.TagMapper;
+import com.vladte.devhack.common.model.dto.global.TagDTO;
+import com.vladte.devhack.common.model.mapper.global.TagMapper;
 import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.entities.global.Tag;
 import com.vladte.devhack.entities.user.User;

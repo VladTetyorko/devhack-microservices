@@ -1,8 +1,15 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Note;
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
+import com.vladte.devhack.common.repository.personalized.NoteRepository;
+import com.vladte.devhack.common.repository.user.UserRepository;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Note;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -42,10 +49,7 @@ class NoteRepositoryTest extends BaseRepositoryTest {
     @BeforeEach
     void setup() {
         // Create and save a test user
-        testUser = new User();
-        testUser.setName("testuser");
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("password");
+        testUser = createTestUser("testuser", "test@example.com");
         userRepository.save(testUser);
 
         // Create and save a test question
@@ -187,10 +191,7 @@ class NoteRepositoryTest extends BaseRepositoryTest {
         noteRepository.save(note2);
 
         // Create another user and question
-        User anotherUser = new User();
-        anotherUser.setName("anotheruser");
-        anotherUser.setEmail("another@example.com");
-        anotherUser.setPassword("password");
+        User anotherUser = createTestUser("anotheruser", "another@example.com");
         userRepository.save(anotherUser);
 
         InterviewQuestion anotherQuestion = new InterviewQuestion();
@@ -295,5 +296,34 @@ class NoteRepositoryTest extends BaseRepositoryTest {
         note.setUser(testUser);
         note.setQuestion(testQuestion);
         return note;
+    }
+
+    /**
+     * Helper method to create a test user with proper entity structure.
+     */
+    private User createTestUser(String name, String email) {
+        User user = new User();
+
+        // Create Profile
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        // Create AuthenticationProvider for LOCAL authentication
+        AuthenticationProvider localAuth = new AuthenticationProvider();
+        localAuth.setProvider(AuthProviderType.LOCAL);
+        localAuth.setEmail(email);
+        localAuth.setPasswordHash("password"); // This would normally be encoded
+        localAuth.setUser(user);
+        user.setAuthProviders(List.of(localAuth));
+
+        // Create UserAccess
+        UserAccess userAccess = new UserAccess();
+        userAccess.setRole("USER");
+        userAccess.setUser(user);
+        user.setUserAccess(userAccess);
+
+        return user;
     }
 }

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
+<head>
+    <title>Interview Questions</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="display-6 fw-bold mb-2" th:text="${pageTitle}">Interview Questions</h2>
+                        <p class="text-muted mb-0">Practice and improve your interview skills</p>
+                    </div>
+                    <div>
+                        <a href="/questions/generate" class="btn btn-primary btn-lg me-2">
+                            <i class="fas fa-magic me-2"></i>Generate Questions
+                        </a>
+                        <a href="/questions/dashboard" class="btn btn-outline-info">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}">Success message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="get" action="/questions/search" class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Search Questions</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" class="form-control" name="query"
+                                           th:value="${param.query}" placeholder="Search by content or topic...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Difficulty</label>
+                                <select class="form-select" name="difficulty">
+                                    <option value="">All Difficulties</option>
+                                    <option value="Easy" th:selected="${param.difficulty == 'Easy'}">Easy</option>
+                                    <option value="Medium" th:selected="${param.difficulty == 'Medium'}">Medium</option>
+                                    <option value="Hard" th:selected="${param.difficulty == 'Hard'}">Hard</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Topic</label>
+                                <select class="form-select" name="tagId">
+                                    <option value="">All Topics</option>
+                                    <option th:each="tag : ${tags}"
+                                            th:value="${tag.id}"
+                                            th:text="${tag.name}"
+                                            th:selected="${param.tagId == tag.id.toString()}">Topic
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-outline-primary">
+                                        <i class="fas fa-filter me-1"></i>Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>Questions
+                            <span class="badge bg-primary ms-2" th:text="${questions.totalElements}">0</span>
+                        </h5>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="viewMode" id="listView" checked>
+                            <label class="btn btn-outline-secondary" for="listView">
+                                <i class="fas fa-list"></i>
+                            </label>
+                            <input type="radio" class="btn-check" name="viewMode" id="cardView">
+                            <label class="btn btn-outline-secondary" for="cardView">
+                                <i class="fas fa-th"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${questions.totalElements == 0}" class="text-center p-5">
+                            <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No questions found</h4>
+                            <p class="text-muted mb-4">Start by generating some questions or adjust your search
+                                criteria.</p>
+                            <a href="/questions/generate" class="btn btn-primary">
+                                <i class="fas fa-magic me-2"></i>Generate Your First Questions
+                            </a>
+                        </div>
+
+                        <div th:unless="${questions.totalElements == 0}" id="questionsList">
+                            <div class="list-group list-group-flush" id="listViewContainer">
+                                <div th:each="question : ${questions.content}"
+                                     class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-2">
+                                                <a th:href="@{'/questions/' + ${question.id}}"
+                                                   class="text-decoration-none"
+                                                   th:text="${question.questionText}">Question text</a>
+                                            </h6>
+                                            <div class="d-flex align-items-center gap-3 mb-2">
+                                                <span class="badge"
+                                                      th:classappend="${question.difficulty == 'Easy'} ? 'bg-success' : (${question.difficulty == 'Medium'} ? 'bg-warning' : 'bg-danger')"
+                                                      th:text="${question.difficulty}">Difficulty</span>
+                                                <span th:if="${question.tag}" class="badge bg-secondary"
+                                                      th:text="${question.tag.name}">Tag</span>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <span th:text="${#temporals.format(question.createdAt, 'MMM dd, yyyy')}">Date</span>
+                                                </small>
+                                            </div>
+                                            <p class="mb-1 text-muted"
+                                               th:text="${#strings.abbreviate(question.questionText, 150)}">
+                                                Question preview...
+                                            </p>
+                                        </div>
+                                        <div class="btn-group btn-group-sm ms-3" role="group">
+                                            <a th:href="@{'/questions/' + ${question.id}}"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm"
+                                                    data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item"
+                                                       th:href="@{'/questions/' + ${question.id}}">
+                                                    <i class="fas fa-eye me-2"></i>View Details</a></li>
+                                                <li><a class="dropdown-item" href="#">
+                                                    <i class="fas fa-bookmark me-2"></i>Save for Later</a></li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li><a class="dropdown-item text-danger" href="#">
+                                                    <i class="fas fa-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card View (Hidden by default) -->
+                            <div class="row g-3 p-3 d-none" id="cardViewContainer">
+                                <div th:each="question : ${questions.content}" class="col-md-6 col-lg-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <span class="badge"
+                                                      th:classappend="${question.difficulty == 'Easy'} ? 'bg-success' : (${question.difficulty == 'Medium'} ? 'bg-warning' : 'bg-danger')"
+                                                      th:text="${question.difficulty}">Difficulty</span>
+                                                <span th:if="${question.tag}" class="badge bg-secondary"
+                                                      th:text="${question.tag.name}">Tag</span>
+                                            </div>
+                                            <h6 class="card-title">
+                                                <a th:href="@{'/questions/' + ${question.id}}"
+                                                   class="text-decoration-none"
+                                                   th:text="${#strings.abbreviate(question.questionText, 80)}">Question</a>
+                                            </h6>
+                                            <p class="card-text text-muted small"
+                                               th:text="${#strings.abbreviate(question.questionText, 120)}">
+                                                Question preview...
+                                            </p>
+                                        </div>
+                                        <div class="card-footer bg-transparent">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    <span th:text="${#temporals.format(question.createdAt, 'MMM dd')}">Date</span>
+                                                </small>
+                                                <a th:href="@{'/questions/' + ${question.id}}"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${questions.totalPages > 1}" class="card-footer">
+                        <nav aria-label="Questions pagination">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item" th:classappend="${questions.first} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${#httpServletRequest.requestURI}(page=${questions.number - 1}, size=${questions.size})}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+
+                                <li th:each="pageNum : ${#numbers.sequence(0, questions.totalPages - 1)}"
+                                    class="page-item"
+                                    th:classappend="${pageNum == questions.number} ? 'active'">
+                                    <a class="page-link"
+                                       th:href="@{${#httpServletRequest.requestURI}(page=${pageNum}, size=${questions.size})}"
+                                       th:text="${pageNum + 1}">1</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${questions.last} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{${#httpServletRequest.requestURI}(page=${questions.number + 1}, size=${questions.size})}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Enhanced UX -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // View mode toggle
+            const listViewBtn = document.getElementById('listView');
+            const cardViewBtn = document.getElementById('cardView');
+            const listContainer = document.getElementById('listViewContainer');
+            const cardContainer = document.getElementById('cardViewContainer');
+
+            listViewBtn.addEventListener('change', function () {
+                if (this.checked) {
+                    listContainer.classList.remove('d-none');
+                    cardContainer.classList.add('d-none');
+                }
+            });
+
+            cardViewBtn.addEventListener('change', function () {
+                if (this.checked) {
+                    listContainer.classList.add('d-none');
+                    cardContainer.classList.remove('d-none');
+                }
+            });
+
+            // Auto-dismiss alerts after 5 seconds
+            setTimeout(function () {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+    </script>
+</section>
+</body>
+</html>

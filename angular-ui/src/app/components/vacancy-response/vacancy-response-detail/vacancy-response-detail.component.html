@@ -1,44 +1,136 @@
-<div class="container">
-    <div class="page-header">
-        <h2>Vacancy Response Details</h2>
-    </div>
+<div class="container mt-4">
+    <div class="row">
 
-    <div *ngIf="isLoading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
+        <!-- LEFT: Master list -->
+        <aside class="col-lg-4 mb-4">
+            <h5>Your Applications</h5>
+            <div class="list-group">
+                <a *ngFor="let item of responses"
+                   [routerLink]="['/vacancy-responses', item.id]"
+                   class="list-group-item list-group-item-action"
+                   [class.active]="item.id === responseId">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ item.companyName || 'Unknown Co.' }}</strong><br>
+                            <small class="text-muted">{{ item.position || '—' }}</small>
+                        </div>
+                        <span class="badge rounded-pill" [ngClass]="getStatusClass(item.interviewStage)">
+              {{ item.interviewStage }}
+            </span>
+                    </div>
+                </a>
+            </div>
+        </aside>
 
-    <div *ngIf="error" class="alert alert-danger">
-        {{ error }}
-        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
-    </div>
-
-    <div class="card" *ngIf="!isLoading && response">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Response for Vacancy: {{ response.vacancyId }}</h5>
-            <span class="badge" [ngClass]="getStatusClass(response.status || '')">
-        {{ response.status }}
+        <!-- RIGHT: Detail card -->
+        <section class="col-lg-8">
+            <!-- (Paste your existing detail-card code here) -->
+            <div *ngIf="isLoading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+            <div class="card shadow-lg border-0" *ngIf="!isLoading && response">
+                <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+                    <div>
+                        <h5 class="mb-0">{{ response.companyName || 'Unknown Company' }}</h5>
+                        <small class="text-light">{{ response.position || 'Unknown Position' }}</small>
+                    </div>
+                    <span class="badge" [ngClass]="{
+        'bg-success': response.interviewStage === 'ACCEPTED',
+        'bg-danger': response.interviewStage === 'REJECTED',
+        'bg-warning text-dark': response.interviewStage === 'PENDING',
+        'bg-info text-dark': response.interviewStage === 'APPLIED'
+      }">
+        {{ response.interviewStage }}
       </span>
-        </div>
-        <div class="card-body">
-            <div class="mb-4">
-                <h6 class="text-muted mb-2">Your Response:</h6>
-                <div class="p-3 bg-light rounded">
-                    <p class="mb-0">{{ response.responseText }}</p>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-4">
+
+                        <!-- Left column -->
+                        <div class="col-md-6">
+                            <!-- Technologies -->
+                            <div>
+                                <h6 class="text-muted mb-1">Technologies:</h6>
+                                <p>{{ response.technologies ?? 'Not specified' }}</p>
+                            </div>
+
+                            <!-- Salary -->
+                            <div>
+                                <h6 class="text-muted mb-1">Salary:</h6>
+                                <p>{{ response.salary ?? 'Not specified' }}</p>
+                            </div>
+
+                            <!-- Location -->
+                            <div>
+                                <h6 class="text-muted mb-1">Location:</h6>
+                                <p>{{ response.location ?? 'Not specified' }}</p>
+                            </div>
+
+                            <!-- Vacancy Link -->
+                            <div class="mt-3">
+                                <h6 class="text-muted mb-1">Vacancy Link:</h6>
+                                <ng-container *ngIf="response.vacancyId; else noVacancy">
+                                    <button (click)="goToVacancy(response.vacancyId)"
+                                            class="btn btn-outline-primary btn-sm">
+                                        View Vacancy
+                                    </button>
+                                </ng-container>
+                                <ng-template #noVacancy>
+                                    <p class="text-muted">No link available</p>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                        <!-- Right column -->
+                        <div class="col-md-6">
+                            <!-- Pros -->
+                            <div>
+                                <h6 class="text-muted mb-1">Pros:</h6>
+                                <div class="p-3 bg-light rounded border-start border-success border-4">
+                                    <p class="mb-0">{{ response.pros ?? 'No pros noted' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Cons -->
+                            <div class="mt-3">
+                                <h6 class="text-muted mb-1">Cons:</h6>
+                                <div class="p-3 bg-light rounded border-start border-danger border-4">
+                                    <p class="mb-0">{{ response.cons ?? 'No cons noted' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mt-4">
+                        <h6 class="text-muted mb-1">Notes:</h6>
+                        <div class="p-3 bg-light rounded border-start border-primary border-4">
+                            <p class="mb-0">{{ response.notes ?? 'No additional notes' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Back button -->
+                    <div class="text-end mt-4">
+                        <button class="btn btn-outline-secondary" (click)="goBack()">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="card-footer bg-white text-muted small">
+                    <div class="d-flex justify-content-between">
+                        <div>Applied on: {{ response.createdAt | localDateTime:'medium' }}</div>
+                        <div>Last updated: {{ response.updatedAt | localDateTime:'medium' }}</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between mt-4">
-                <button class="btn btn-secondary" (click)="goBack()">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </button>
-            </div>
-        </div>
-        <div class="card-footer text-muted" *ngIf="response.createdAt">
-            <small>Applied on: {{ response.createdAt | date:'medium' }}</small>
-            <small *ngIf="response.updatedAt" class="ms-3">Last
-                updated: {{ response.updatedAt | date:'medium' }}</small>
-        </div>
+        </section>
+
     </div>
 </div>

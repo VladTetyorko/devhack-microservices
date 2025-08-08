@@ -1,0 +1,226 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-collection me-2 text-primary"></i>
+                Interview Stage Categories
+            </h2>
+            <p class="text-muted mb-0">Manage interview stage categories and organization</p>
+        </div>
+        <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add New Category
+        </button>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow-sm mb-4" *ngIf="!isLoading">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Search by category name, code, or description..."
+                                [(ngModel)]="searchTerm"
+                                (input)="onSearch()"
+                        >
+                        <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                (click)="clearSearch()"
+                                *ngIf="searchTerm"
+                        >
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-2">Total:</span>
+                        <span class="badge bg-primary fs-6">{{ categoryPage?.totalElements || 0 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skeleton Loading State -->
+    <div *ngIf="isLoading" class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="border-0">
+                            <i class="bi bi-collection me-1"></i> Category
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-file-text me-1"></i> Description
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-list-ol me-1"></i> Stages
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-calendar me-1"></i> Created
+                        </th>
+                        <th class="border-0 text-center">
+                            <i class="bi bi-gear me-1"></i> Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of skeletonItems">
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text medium mb-2"></div>
+                            <div class="skeleton skeleton-text short"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text long"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text short"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text medium"></div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filteredCategories.length === 0 && !searchTerm" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-collection display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Stage Categories Found</h4>
+        <p class="text-muted mb-4">Get started by adding your first interview stage category.</p>
+        <button class="btn btn-primary btn-lg" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add First Category
+        </button>
+    </div>
+
+    <!-- No Search Results -->
+    <div *ngIf="!isLoading && filteredCategories.length === 0 && searchTerm" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-search display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Results Found</h4>
+        <p class="text-muted mb-4">Try adjusting your search criteria.</p>
+        <button class="btn btn-outline-primary" (click)="clearSearch()">
+            <i class="bi bi-arrow-clockwise me-2"></i> Clear Search
+        </button>
+    </div>
+
+    <!-- Categories Table -->
+    <div *ngIf="!isLoading && filteredCategories.length > 0" class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>
+                    Stage Categories ({{ categoryPage?.numberOfElements || 0 }} of {{ categoryPage?.totalElements || 0 }})
+                </h5>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="border-0">
+                        <i class="bi bi-collection me-1"></i> Category
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-file-text me-1"></i> Description
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-list-ol me-1"></i> Stages
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-calendar me-1"></i> Created
+                    </th>
+                    <th class="border-0 text-center">
+                        <i class="bi bi-gear me-1"></i> Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let category of filteredCategories; trackBy: trackByCategoryId"
+                    class="category-row"
+                    (click)="viewDetail(category.id!)"
+                    style="cursor: pointer;">
+                    <td class="align-middle">
+                        <div class="d-flex align-items-center">
+                            <div class="category-badge me-3">
+                                <i class="bi bi-collection"></i>
+                            </div>
+                            <div>
+                                <div class="fw-semibold">{{ category.label || 'Unknown Category' }}</div>
+                                <small class="text-muted">Code: {{ category.code || 'N/A' }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div class="description-text">
+                            {{ category.description || 'No description available' }}
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <span class="badge bg-info">{{ category.stageCount || 0 }} stages</span>
+                    </td>
+                    <td class="align-middle">
+                        <div>
+                            <div class="fw-medium">{{ category.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ category.createdAt | localDateTime:'h:mm a' }}</small>
+                        </div>
+                    </td>
+                    <td class="align-middle text-center">
+                        <app-action-buttons
+                                [entityId]="category.id!"
+                                (view)="viewDetail($event)"
+                                (edit)="editCategory($event)"
+                                (delete)="deleteCategory($event)">
+                        </app-action-buttons>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+            *ngIf="!isLoading && categoryPage && categoryPage.totalElements > 0"
+            [page]="categoryPage"
+            (pageChange)="onPageChange($event)"
+            (sizeChange)="onPageSizeChange($event)">
+    </app-pagination>
+</div>

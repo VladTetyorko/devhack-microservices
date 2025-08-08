@@ -1,0 +1,272 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-question-circle-fill me-2 text-primary"></i>
+                Interview Questions
+            </h2>
+            <p class="text-muted mb-0">Manage interview questions and practice materials</p>
+        </div>
+        <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add New Question
+        </button>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow-sm mb-4" *ngIf="!isLoading">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Search by question text or source..."
+                                [(ngModel)]="searchTerm"
+                                (input)="onSearch()"
+                        >
+                        <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                (click)="clearSearch()"
+                                *ngIf="searchTerm"
+                        >
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" [(ngModel)]="selectedDifficulty" (change)="onDifficultyFilter()">
+                        <option value="">All Difficulties</option>
+                        <option value="EASY">Easy</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HARD">Hard</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input
+                            type="text"
+                            class="form-control"
+                            placeholder="Filter by tag..."
+                            [(ngModel)]="selectedTag"
+                            (input)="onTagFilter()"
+                    >
+                </div>
+                <div class="col-md-2">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-2">Total:</span>
+                        <span class="badge bg-primary fs-6">{{ questionPage?.totalElements || 0 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skeleton Loading State -->
+    <div *ngIf="isLoading" class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th class="border-0">
+                            <i class="bi bi-question-circle me-1"></i> Question
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-speedometer me-1"></i> Difficulty
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-tags me-1"></i> Tags
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-person me-1"></i> Author
+                        </th>
+                        <th class="border-0">
+                            <i class="bi bi-calendar me-1"></i> Created
+                        </th>
+                        <th class="border-0 text-center">
+                            <i class="bi bi-gear me-1"></i> Actions
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let item of skeletonItems">
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text long mb-2"></div>
+                            <div class="skeleton skeleton-text medium"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-badge"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex gap-1">
+                                <div class="skeleton skeleton-badge"></div>
+                                <div class="skeleton skeleton-badge"></div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text medium"></div>
+                        </td>
+                        <td class="align-middle">
+                            <div class="skeleton skeleton-text medium"></div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <div class="d-flex justify-content-center gap-1">
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                                <div class="skeleton" style="width: 32px; height: 32px; border-radius: 0.375rem;"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filteredQuestions.length === 0 && !searchTerm && !selectedDifficulty && !selectedTag" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-question-circle display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Questions Found</h4>
+        <p class="text-muted mb-4">Get started by adding your first interview question.</p>
+        <button class="btn btn-primary btn-lg" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add First Question
+        </button>
+    </div>
+
+    <!-- No Search Results -->
+    <div *ngIf="!isLoading && filteredQuestions.length === 0 && (searchTerm || selectedDifficulty || selectedTag)" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-search display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted mb-3">No Results Found</h4>
+        <p class="text-muted mb-4">Try adjusting your search criteria or filters.</p>
+        <button class="btn btn-outline-primary" (click)="clearSearch(); clearDifficultyFilter(); clearTagFilter()">
+            <i class="bi bi-arrow-clockwise me-2"></i> Clear Filters
+        </button>
+    </div>
+
+    <!-- Questions Table -->
+    <div *ngIf="!isLoading && filteredQuestions.length > 0" class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-table me-2"></i>
+                    Questions ({{ questionPage?.numberOfElements || 0 }} of {{ questionPage?.totalElements || 0 }})
+                </h5>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th class="border-0">
+                        <i class="bi bi-question-circle me-1"></i> Question
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-speedometer me-1"></i> Difficulty
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-tags me-1"></i> Tags
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-person me-1"></i> Author
+                    </th>
+                    <th class="border-0">
+                        <i class="bi bi-calendar me-1"></i> Created
+                    </th>
+                    <th class="border-0 text-center">
+                        <i class="bi bi-gear me-1"></i> Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let question of filteredQuestions; trackBy: trackByQuestionId"
+                    class="question-row"
+                    (click)="viewDetail(question.id!)"
+                    style="cursor: pointer;">
+                    <td class="align-middle">
+                        <div>
+                            <div class="fw-semibold">{{ truncateText(question.questionText || 'No question text', 80) }}</div>
+                            <small class="text-muted" *ngIf="question.source">
+                                <i class="bi bi-book me-1"></i>{{ question.source }}
+                            </small>
+                            <small class="text-muted d-block">ID: {{ question.id?.substring(0, 8) }}...</small>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <span [ngClass]="getDifficultyBadgeClass(question.difficulty || '')" class="badge">
+                            <i class="bi bi-speedometer me-1"></i>
+                            {{ question.difficulty || 'Unknown' }}
+                        </span>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex flex-wrap gap-1">
+                            <span *ngFor="let tag of question.tags?.slice(0, 3)" class="badge bg-light text-dark">
+                                <i class="bi bi-tag-fill me-1"></i>{{ tag.name }}
+                            </span>
+                            <span *ngIf="(question.tags?.length || 0) > 3" class="badge bg-secondary">
+                                +{{ (question.tags?.length || 0) - 3 }} more
+                            </span>
+                            <span *ngIf="!question.tags || question.tags.length === 0" class="text-muted small">
+                                No tags
+                            </span>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div>
+                            <div class="fw-medium">{{ question.userName || 'Unknown' }}</div>
+                            <small class="text-muted" *ngIf="question.userId">
+                                ID: {{ question.userId.substring(0, 8) }}...
+                            </small>
+                        </div>
+                    </td>
+                    <td class="align-middle">
+                        <div>
+                            <div class="fw-medium">{{ question.createdAt | localDateTime:'MMM d, y' }}</div>
+                            <small class="text-muted">{{ question.createdAt | localDateTime:'h:mm a' }}</small>
+                        </div>
+                    </td>
+                    <td class="align-middle text-center">
+                        <app-action-buttons
+                                [entityId]="question.id!"
+                                (view)="viewDetail($event.toString())"
+                                (edit)="editQuestion($event.toString())"
+                                (delete)="deleteQuestion($event.id.toString(), $event.event)">
+                        </app-action-buttons>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-pagination
+            *ngIf="!isLoading && questionPage && questionPage.totalElements > 0"
+            [page]="questionPage"
+            (pageChange)="onPageChange($event)"
+            (sizeChange)="onPageSizeChange($event)">
+    </app-pagination>
+</div>

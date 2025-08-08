@@ -10,6 +10,7 @@ import com.vladte.devhack.entities.personalized.Note;
 import com.vladte.devhack.entities.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +63,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "Note";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @Override
     public String view(@PathVariable UUID id, Model model) {
         log.debug("Viewing note with ID: {} with access control", id);
@@ -69,12 +71,6 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         // Get the note from the service
         Note note = service.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
-
-        // Check if the current user has access to the note
-        if (dontHaveAccessToEntity(note)) {
-            log.warn("Access denied to note with ID: {}", id);
-            throw new SecurityException("Access denied to note with ID: " + id);
-        }
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
@@ -117,6 +113,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/form";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/{id}/edit")
     public String editNoteForm(@PathVariable UUID id, Model model) {
         log.debug("Editing note with ID: {} with access control", id);
@@ -124,12 +121,6 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         // Get the note from the service
         Note note = service.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
-
-        // Check if the current user has access to the note
-        if (dontHaveAccessToEntity(note)) {
-            log.warn("Access denied to edit note with ID: {}", id);
-            throw new SecurityException("Access denied to edit note with ID: " + id);
-        }
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
@@ -145,21 +136,13 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/form";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping
     public String saveNote(
             @ModelAttribute Note note,
             @RequestParam UUID userId,
             @RequestParam UUID questionId) {
         log.debug("Saving note with access control");
-
-        // Get the current authenticated user
-        User currentUser = getCurrentUser();
-
-        // Check if the current user is a manager or is saving their own note
-        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
-            log.warn("Access denied to save note for user with ID: {}", userId);
-            throw new SecurityException("Access denied to save note for user with ID: " + userId);
-        }
 
         User user = getEntityOrThrow(userService.findById(userId), "User not found");
         InterviewQuestion question = getEntityOrThrow(questionService.findById(questionId), "Question not found");
@@ -173,19 +156,10 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "redirect:/notes";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @PostMapping("/{id}/delete")
     public String deleteNote(@PathVariable UUID id) {
         log.debug("Deleting note with ID: {} with access control", id);
-
-        // Get the note from the service
-        Note note = service.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Note not found with ID: " + id));
-
-        // Check if the current user has access to the note
-        if (dontHaveAccessToEntity(note)) {
-            log.warn("Access denied to delete note with ID: {}", id);
-            throw new SecurityException("Access denied to delete note with ID: " + id);
-        }
 
         // Delete the note
         service.deleteById(id);
@@ -194,6 +168,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "redirect:/notes";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/user/{userId}")
     public String getNotesByUser(@PathVariable UUID userId, Model model) {
         log.debug("Getting notes for user with ID: {} with access control", userId);
@@ -202,14 +177,8 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        // Get the current authenticated user
+        // Get the current authenticated user for model attributes
         User currentUser = getCurrentUser();
-
-        // Check if the current user is a manager or is viewing their own notes
-        if (!isCurrentUserManager() || !currentUser.getId().equals(userId)) {
-            log.warn("Access denied to view notes for user with ID: {}", userId);
-            throw new SecurityException("Access denied to view notes for user with ID: " + userId);
-        }
 
         // Get notes for the user
         List<Note> notes = service.findNotesByUser(user);
@@ -224,6 +193,7 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
         return "notes/list";
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/question/{questionId}")
     public String getNotesByQuestion(@PathVariable UUID questionId, Model model) {
         log.debug("Getting notes for question with ID: {} with access control", questionId);
@@ -234,14 +204,6 @@ public class NoteController extends UserEntityController<Note, UUID, NoteService
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();
-
-        // Check if the current user is a manager or has access to the question
-        // For simplicity, we'll allow access if the user is a manager
-        // In a real application, you might want to check if the user has access to the question based on other criteria
-        if (!isCurrentUserManager()) {
-            log.warn("Access denied to view notes for question with ID: {}", questionId);
-            throw new SecurityException("Access denied to view notes for question with ID: " + questionId);
-        }
 
         // Get notes for the question
         List<Note> notes = service.findNotesByLinkedQuestion(question);

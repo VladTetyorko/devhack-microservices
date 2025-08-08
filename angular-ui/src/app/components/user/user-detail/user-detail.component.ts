@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {UserService} from '../../../services/user.service';
-import {UserDTO} from '../../../models/user.model';
+import {UserService} from '../../../services/user/user.service';
+import {UserDTO} from '../../../models/user/user.model';
+import {AuthenticationProviderDTO} from '../../../models/user/authentication-provider.model';
 
 @Component({
     selector: 'app-user-detail',
@@ -43,8 +44,8 @@ export class UserDetailComponent implements OnInit {
             next: (userData) => {
                 this.user = userData;
                 this.userForm.patchValue({
-                    name: userData.name,
-                    email: userData.email
+                    name: userData.profile?.name || '',
+                    email: userData.credentials?.[0]?.email || ''
                 });
                 this.isLoading = false;
             },
@@ -59,8 +60,13 @@ export class UserDetailComponent implements OnInit {
         if (this.userForm.valid) {
             const updatedUser: UserDTO = {
                 ...this.user,
-                name: this.userForm.value.name,
-                email: this.userForm.value.email
+                profile: {
+                    ...this.user?.profile,
+                    name: this.userForm.value.name
+                },
+                credentials: this.user?.credentials?.map((cred: AuthenticationProviderDTO, index: number) =>
+                    index === 0 ? {...cred, email: this.userForm.value.email} : cred
+                ) || []
             };
 
             this.userService.update(this.userId, updatedUser).subscribe({

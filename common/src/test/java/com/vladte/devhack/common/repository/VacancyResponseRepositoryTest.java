@@ -1,7 +1,20 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.common.repository.specification.VacancyResponseSpecification;
-import com.vladte.devhack.entities.*;
+import com.vladte.devhack.common.repository.global.InterviewStageCategoryRepository;
+import com.vladte.devhack.common.repository.global.InterviewStageRepository;
+import com.vladte.devhack.common.repository.global.TagRepository;
+import com.vladte.devhack.common.repository.personalized.VacancyResponseRepository;
+import com.vladte.devhack.common.repository.personalized.specification.VacancyResponseSpecification;
+import com.vladte.devhack.common.repository.user.UserRepository;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.entities.global.InterviewStageCategory;
+import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.entities.personalized.VacancyResponse;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -50,10 +63,7 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
     @BeforeEach
     void setup() {
         // Create and save a test user
-        testUser = new User();
-        testUser.setName("testuser");
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("password");
+        testUser = createTestUser("testuser", "test@example.com");
         userRepository.save(testUser);
 
         // Create and save a test tag
@@ -193,10 +203,7 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         vacancyResponseRepository.save(response2);
 
         // Create another user and response
-        User anotherUser = new User();
-        anotherUser.setName("anotheruser");
-        anotherUser.setEmail("another@example.com");
-        anotherUser.setPassword("password");
+        User anotherUser = createTestUser("anotheruser", "another@example.com");
         userRepository.save(anotherUser);
 
         VacancyResponse response3 = createTestVacancyResponse("Amazon", "Developer");
@@ -374,5 +381,34 @@ class VacancyResponseRepositoryTest extends BaseRepositoryTest {
         response.setUser(testUser);
         response.setInterviewStage(appliedStage);
         return response;
+    }
+
+    /**
+     * Helper method to create a test user with proper entity structure.
+     */
+    private User createTestUser(String name, String email) {
+        User user = new User();
+
+        // Create Profile
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        // Create AuthenticationProvider for LOCAL authentication
+        AuthenticationProvider localAuth = new AuthenticationProvider();
+        localAuth.setProvider(AuthProviderType.LOCAL);
+        localAuth.setEmail(email);
+        localAuth.setPasswordHash("password"); // This would normally be encoded
+        localAuth.setUser(user);
+        user.setAuthProviders(List.of(localAuth));
+
+        // Create UserAccess
+        UserAccess userAccess = new UserAccess();
+        userAccess.setRole("USER");
+        userAccess.setUser(user);
+        user.setUserAccess(userAccess);
+
+        return user;
     }
 }

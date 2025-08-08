@@ -5,7 +5,6 @@ import com.vladte.devhack.entities.personalized.VacancyResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -67,11 +66,4 @@ public class InterviewStage extends BasicEntity {
     @OneToMany(mappedBy = "interviewStage", cascade = CascadeType.ALL, orphanRemoval = true)
     List<VacancyResponse> responses;
 
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @PreUpdate
-    public void onUpdate() {
-        updatedAt = Instant.now();
-    }
 }

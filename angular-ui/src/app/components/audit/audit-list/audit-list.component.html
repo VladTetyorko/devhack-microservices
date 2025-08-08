@@ -1,0 +1,94 @@
+<div class="container">
+    <div class="page-header">
+        <h2>Audit Records</h2>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="operationType" class="form-label">Operation Type:</label>
+                    <select id="operationType" class="form-select" [(ngModel)]="selectedOperationType"
+                            (change)="filterByOperationType()">
+                        <option [ngValue]="null">All Operations</option>
+                        <option *ngFor="let type of operationTypes" [ngValue]="type">{{ type }}</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="entityType" class="form-label">Entity Type:</label>
+                    <input id="entityType" type="text" class="form-control" [(ngModel)]="selectedEntityType"
+                           placeholder="Enter entity type" (keyup.enter)="filterByEntityType()">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-primary me-2" (click)="filterByEntityType()">
+                        <i class="bi bi-search"></i> Filter
+                    </button>
+                    <button class="btn btn-outline-secondary" (click)="clearFilters()">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && audits.length === 0" class="alert alert-info">
+        No audit records found.
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading && audits.length > 0">
+        <table class="table table-striped table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Operation</th>
+                <th>Entity Type</th>
+                <th>Entity ID</th>
+                <th>User</th>
+                <th>Timestamp</th>
+                <th>Details</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let audit of audits" (click)="viewDetail(audit.id!)" class="clickable-row">
+                <td>
+                    <span [ngClass]="getOperationTypeClass(audit.operationType)">
+                        {{ audit.operationType }}
+                    </span>
+                </td>
+                <td><strong>{{ audit.entityType }}</strong></td>
+                <td>
+                    <code *ngIf="audit.entityId">{{ audit.entityId }}</code>
+                    <span *ngIf="!audit.entityId" class="text-muted">N/A</span>
+                </td>
+                <td>{{ audit.userName || 'System' }}</td>
+                <td>{{ audit.timestamp | localDateTime:'medium' }}</td>
+                <td>
+                    <div class="text-truncate text-truncate-200" [title]="audit.details || 'No details'">
+                        {{ audit.details || 'No details' }}
+                    </div>
+                </td>
+                <td>
+                    <app-action-buttons
+                            [entityId]="audit.id!"
+                            [showEdit]="false"
+                            [showDelete]="false"
+                            (view)="viewDetail($event.toString())">
+                    </app-action-buttons>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

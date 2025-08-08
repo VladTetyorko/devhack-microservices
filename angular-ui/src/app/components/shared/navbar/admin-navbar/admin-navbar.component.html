@@ -1,0 +1,101 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" routerLink="/">DevHack Admin</a>
+        <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" [class.show]="!isMenuCollapsed">
+            <ul class="navbar-nav me-auto">
+                <!-- Global Entities -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="globalDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-globe me-1"></i> Global
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="globalDropdown">
+                        <li><a class="dropdown-item" routerLink="/users" routerLinkActive="active">
+                            <i class="bi bi-people me-2"></i> Users
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/tags" routerLinkActive="active">
+                            <i class="bi bi-tags me-2"></i> Tags
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/interview-questions" routerLinkActive="active">
+                            <i class="bi bi-question-circle me-2"></i> Interview Questions
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/vacancies" routerLinkActive="active">
+                            <i class="bi bi-briefcase me-2"></i> Vacancies
+                        </a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" routerLink="/interview-stages" routerLinkActive="active">
+                            <i class="bi bi-ladder me-2"></i> Interview Stages
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/interview-stage-categories" routerLinkActive="active">
+                            <i class="bi bi-collection me-2"></i> Stage Categories
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- Personalized Entities -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="personalizedDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person me-1"></i> My Data
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="personalizedDropdown">
+                        <li><a class="dropdown-item" routerLink="/answers" routerLinkActive="active">
+                            <i class="bi bi-chat-square-text me-2"></i> My Answers
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/notes" routerLinkActive="active">
+                            <i class="bi bi-journal-text me-2"></i> My Notes
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/vacancy-responses" routerLinkActive="active">
+                            <i class="bi bi-reply me-2"></i> My Vacancy Responses
+                        </a></li>
+                    </ul>
+                </li>
+
+                <!-- AI & System -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="systemDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-robot me-1"></i> AI & System
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="systemDropdown">
+                        <li><a class="dropdown-item" routerLink="/ai-prompts" routerLinkActive="active">
+                            <i class="bi bi-chat-dots me-2"></i> AI Prompts
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/ai-prompt-categories" routerLinkActive="active">
+                            <i class="bi bi-folder me-2"></i> Prompt Categories
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/ai-prompt-usage-logs" routerLinkActive="active">
+                            <i class="bi bi-graph-up me-2"></i> Usage Logs
+                        </a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" routerLink="/audit" routerLinkActive="active">
+                            <i class="bi bi-shield-check me-2"></i> Audit Logs
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- admin profile / logout -->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown" *ngIf="isAuthenticated">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">{{ currentUser?.profile?.name }} (Admin)</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" routerLink="/admin/profile">Profile</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

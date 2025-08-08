@@ -26,10 +26,10 @@ public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AnswerCheckRe
     private final OpenAiService openAiService;
 
     public AnswerFeedbackConsumer(@Qualifier("AnswerKafkaProvider") KafkaResponsePublisher<AnswerCheckResponsePayload> responsePublisher,
-                                  @Qualifier("gptJService") OpenAiService openAiService,
+                                  OpenAiService aiService,
                                   ObjectMapper objectMapper) {
         super(responsePublisher, objectMapper, AnswerCheckRequestPayload.class);
-        this.openAiService = openAiService;
+        this.openAiService = aiService;
     }
 
     @KafkaListener(topics = Topics.ANSWER_FEEDBACK_REQUEST, groupId = "${spring.kafka.consumer.group-id}", concurrency = "2")

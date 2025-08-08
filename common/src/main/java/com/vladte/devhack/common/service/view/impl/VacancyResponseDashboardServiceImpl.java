@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.model.dto.VacancyResponseDTO;
-import com.vladte.devhack.common.model.mapper.VacancyResponseMapper;
+import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
+import com.vladte.devhack.common.model.mapper.personalized.VacancyResponseMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewStageCategoryService;
 import com.vladte.devhack.common.service.domain.global.InterviewStageService;
 import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
@@ -12,7 +12,6 @@ import com.vladte.devhack.entities.global.InterviewStageCategory;
 import com.vladte.devhack.entities.personalized.VacancyResponse;
 import com.vladte.devhack.entities.user.User;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,16 +45,13 @@ public class VacancyResponseDashboardServiceImpl implements VacancyResponseDashb
 
     @Override
     public void prepareDashboardModel(int page, int size, Model model) {
-        // Create pageable object for the vacancy responses
-        Pageable pageable = PageRequest.of(page, size);
 
         // Get all vacancy responses with pagination for the "Top Companies" section
-        Page<VacancyResponse> vacancyResponsePage = vacancyResponseService.findAll(pageable);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<VacancyResponse> entityPage = vacancyResponseService.findAll(pageable);
 
-        // Convert entities to DTOs
-        List<VacancyResponseDTO> vacancyResponseDTOs = vacancyResponsePage.getContent().stream()
-                .map(vacancyResponseMapper::toDTO)
-                .collect(Collectors.toList());
+        // 2) convert to Page<DTO> in one line:
+        Page<VacancyResponseDTO> dtoPage = entityPage.map(vacancyResponseMapper::toDTO);
 
         // Get all vacancy responses for statistics (no pagination needed for statistics)
         List<VacancyResponse> allVacancyResponses = vacancyResponseService.findAll();
@@ -93,11 +89,11 @@ public class VacancyResponseDashboardServiceImpl implements VacancyResponseDashb
         // Build the model using ModelBuilder
         ModelBuilder.of(model)
                 // Add pagination data
-                .addAttribute("vacancyResponses", vacancyResponsePage.getContent())
-                .addAttribute("currentPage", page)
-                .addAttribute("totalPages", vacancyResponsePage.getTotalPages())
-                .addAttribute("totalItems", vacancyResponsePage.getTotalElements())
-                .addAttribute("size", size)
+                .addAttribute("vacancyResponses", dtoPage.getContent())
+                .addAttribute("currentPage", dtoPage.getNumber())
+                .addAttribute("totalPages", dtoPage.getTotalPages())
+                .addAttribute("totalItems", dtoPage.getTotalElements())
+                .addAttribute("size", dtoPage.getSize())
 
                 // Add vacancy count
                 .addAttribute("vacancyCount", allVacancyResponses.size())
@@ -118,9 +114,6 @@ public class VacancyResponseDashboardServiceImpl implements VacancyResponseDashb
                 .addAttribute("offerPercentage", offerPercentage)
                 .addAttribute("rejectedPercentage", rejectedPercentage)
                 .build();
-
-        // Create a Page object with the DTOs
-        new PageImpl<>(vacancyResponseDTOs, pageable, vacancyResponsePage.getTotalElements());
     }
 
     @Override

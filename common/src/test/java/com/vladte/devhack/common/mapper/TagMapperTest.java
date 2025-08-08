@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.mapper;
 
-import com.vladte.devhack.common.model.dto.TagDTO;
-import com.vladte.devhack.common.model.mapper.TagMapper;
-import com.vladte.devhack.entities.InterviewQuestion;
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.common.model.dto.global.TagDTO;
+import com.vladte.devhack.common.model.mapper.global.TagMapper;
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.global.Tag;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;

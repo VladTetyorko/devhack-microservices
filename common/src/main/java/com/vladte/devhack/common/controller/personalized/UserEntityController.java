@@ -1,5 +1,6 @@
 package com.vladte.devhack.common.controller.personalized;
 
+import com.vladte.devhack.common.config.SystemConstraints;
 import com.vladte.devhack.common.controller.BaseController;
 import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.domain.user.UserService;
@@ -12,11 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * Base controller for operations on user-owned entities.
@@ -29,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 public abstract class UserEntityController<E extends BasicEntity, ID, S extends CrudService<E, ID>> extends BaseController {
 
     private static final Logger log = LoggerFactory.getLogger(UserEntityController.class);
-    private static final String ROLE_MANAGER = "ROLE_MANAGER";
     private static final String ROLE_SYSTEM = "ROLE_SYSTEM";
 
     protected final S service;
@@ -87,29 +91,31 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      *
      * @return true if the current user is a manager, false otherwise
      */
-    protected boolean isCurrentUserManager() {
+    private boolean isCurrentUserManager() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("Checking if current user is a manager: {}", authentication.getAuthorities());
-        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_MANAGER)) || authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_SYSTEM));
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(SystemConstraints.ROLE_MANAGER)) || authentication.getAuthorities().contains(new SimpleGrantedAuthority(ROLE_SYSTEM));
     }
 
+
     /**
-     * Check if the current user has access to the entity.
+     * Check if the current user has access to entities owned by the specified user.
+     * Throws AccessDeniedException if access is denied.
      *
-     * @param entity the entity to check
-     * @return true if the current user has access to the entity, false otherwise
+     * @param userId the ID of the user who owns the entities
+     * @throws AccessDeniedException if the current user doesn't have permission to access entities for the specified user
      */
-    protected boolean dontHaveAccessToEntity(E entity) {
-        // Managers have access to all entities
-        if (isCurrentUserManager()) {
-            return false;
-        }
-
-        // Users have access only to their own entities
-        User entityUser = getEntityUser(entity);
+    protected void checkUserEntityAccess(UUID userId) {
         User currentUser = getCurrentUser();
+        boolean isManager = isCurrentUserManager();
+        boolean isOwner = currentUser.getId().equals(userId);
 
-        return entityUser == null || !entityUser.getId().equals(currentUser.getId());
+        if (!isManager && !isOwner) {
+            log.warn("Access denied to view entities for user with ID: {}", userId);
+            throw new AccessDeniedException(
+                    "You don't have permission to view entities for user " + userId
+            );
+        }
     }
 
     /**
@@ -155,6 +161,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      * @param model the model
      * @return the view name
      */
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @RequestMapping(method = RequestMethod.GET)
     public String list(
             @RequestParam(defaultValue = "0") int page,
@@ -189,6 +196,7 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
      * @param model the model
      * @return the view name
      */
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'SYSTEM')")
     @GetMapping("/{id}")
     public String view(@PathVariable ID id, Model model) {
         log.debug("Viewing entity with ID: {} with access control", id);
@@ -196,12 +204,6 @@ public abstract class UserEntityController<E extends BasicEntity, ID, S extends 
         // Get the entity from the service
         E entity = service.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(getEntityName() + " not found with ID: " + id));
-
-        // Check if the current user has access to the entity
-        if (dontHaveAccessToEntity(entity)) {
-            log.warn("Access denied to {} with ID: {}", getEntityName(), id);
-            throw new SecurityException("Access denied to " + getEntityName() + " with ID: " + id);
-        }
 
         // Get the current authenticated user
         User currentUser = getCurrentUser();

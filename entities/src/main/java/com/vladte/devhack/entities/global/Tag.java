@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "name", callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString(exclude = {"questions"})
 public class Tag extends BasicEntity {
 

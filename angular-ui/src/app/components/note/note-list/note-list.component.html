@@ -23,13 +23,13 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Note</h5>
-                    <span class="badge bg-secondary">{{ note.createdAt | date:'short' }}</span>
+                    <span class="badge bg-secondary">{{ note.createdAt | localDateTime:'short' }}</span>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ note.content }}</p>
-                    <div *ngIf="note.linkedQuestionId" class="mt-3">
+                    <p class="card-text">{{ note.questionText }}</p>
+                    <div *ngIf="note.questionId" class="mt-3">
                         <strong>Linked Question:</strong>
-                        <a [routerLink]="['/notes/question', note.linkedQuestionId]"
+                        <a [routerLink]="['/notes/question', note.questionId]"
                            class="ms-2 badge bg-info text-decoration-none">
                             View Question Notes
                         </a>

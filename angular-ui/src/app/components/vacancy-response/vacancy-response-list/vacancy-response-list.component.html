@@ -22,7 +22,8 @@
         <table class="table table-striped table-hover">
             <thead class="table-light">
             <tr>
-                <th>Vacancy</th>
+                <th>Company & Position</th>
+                <th>Technologies</th>
                 <th>Status</th>
                 <th>Response Date</th>
                 <th>Actions</th>
@@ -30,17 +31,23 @@
             </thead>
             <tbody>
             <tr *ngFor="let response of responses" (click)="viewDetail(response.id!)" style="cursor: pointer;">
-                <td>{{ response.vacancyId }}</td>
+                <td>
+                    <div class="fw-bold">{{ response.companyName || 'Unknown Company' }}</div>
+                    <div class="text-muted">{{ response.position || 'Unknown Position' }}</div>
+                </td>
+                <td>
+                    <small class="text-muted">{{ response.technologies || 'Not specified' }}</small>
+                </td>
                 <td>
             <span [ngClass]="{
-              'badge bg-success': response.status === 'ACCEPTED',
-              'badge bg-danger': response.status === 'REJECTED',
-              'badge bg-warning text-dark': response.status === 'PENDING'
+              'badge bg-success': response.interviewStage === 'ACCEPTED',
+              'badge bg-danger': response.interviewStage === 'REJECTED',
+              'badge bg-warning text-dark': response.interviewStage === 'PENDING'
             }">
-              {{ response.status }}
+              {{ response.interviewStage }}
             </span>
                 </td>
-                <td>{{ response.createdAt | date:'medium' }}</td>
+                <td>{{ response.createdAt | localDateTime:'medium' }}</td>
                 <td>
                     <button class="btn btn-sm btn-info" (click)="viewDetail(response.id!); $event.stopPropagation()">
                         <i class="bi bi-eye"></i> View

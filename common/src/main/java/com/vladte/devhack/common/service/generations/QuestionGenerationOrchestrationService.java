@@ -54,24 +54,6 @@ public interface QuestionGenerationOrchestrationService {
     Optional<Tag> findTagByName(String tagName);
 
     /**
-     * Build a success message for question generation.
-     *
-     * @param count      the number of questions being generated
-     * @param difficulty the difficulty level of the questions
-     * @param tagName    the name of the tag
-     * @return a success message string
-     */
-    String buildGenerationSuccessMessage(int count, String difficulty, String tagName);
-
-    /**
-     * Build a success message for easy question generation.
-     *
-     * @param tagName the name of the tag
-     * @return a success message string
-     */
-    String buildEasyGenerationSuccessMessage(String tagName);
-
-    /**
      * Build a response map for API question generation.
      *
      * @param success whether the operation was successful
@@ -88,6 +70,25 @@ public interface QuestionGenerationOrchestrationService {
      */
     @Async
     void startEasyQuestionGenerationForMultipleTags(List<UUID> tagIds);
+
+
+    /**
+     * Build a success message for question generation.
+     *
+     * @param count      the number of questions being generated
+     * @param difficulty the difficulty level of the questions
+     * @param tagName    the name of the tag
+     * @return a success message string
+     */
+    String buildGenerationSuccessMessage(int count, String difficulty, String tagName);
+
+    /**
+     * Build a success message for easy question generation.
+     *
+     * @param tagName the name of the tag
+     * @return a success message string
+     */
+    String buildEasyGenerationSuccessMessage(String tagName);
 
     /**
      * Build a success message for multi-tag easy question generation.

@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.controller.personalized.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.NoteDTO;
-import com.vladte.devhack.common.model.mapper.NoteMapper;
+import com.vladte.devhack.common.model.dto.personalized.NoteDTO;
+import com.vladte.devhack.common.model.mapper.personalized.NoteMapper;
 import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.domain.user.UserService;
@@ -62,7 +62,7 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
     public ResponseEntity<List<NoteDTO>> getMyNotes(
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
-        log.debug("REST request to get all notes for user: {}", user.getProfile().getName());
+        log.info("REST request to get all notes for user: {}", user.getProfile().getName());
         List<Note> notes = service.findNotesByUser(user);
         return ResponseEntity.ok(mapper.toDTOList(notes));
     }

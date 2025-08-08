@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="page-header">
+        <h2>AI Prompts</h2>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <div *ngIf="!isLoading && prompts.length === 0" class="alert alert-info">
+        No AI prompts found.
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading && prompts.length > 0">
+        <table class="table table-striped table-hover">
+            <thead class="table-light">
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+                <th>Language</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let prompt of prompts" (click)="viewDetail(prompt.id!)" style="cursor: pointer;">
+                <td><strong>{{ prompt.code }}</strong></td>
+                <td>{{ prompt.description || 'No description' }}</td>
+                <td>{{ prompt.language || 'N/A' }}</td>
+                <td>{{ prompt.categoryName || 'Unknown' }}</td>
+                <td>
+                    <span [ngClass]="{
+                      'badge bg-success': prompt.active,
+                      'badge bg-secondary': !prompt.active
+                    }">
+                      {{ prompt.active ? 'Active' : 'Inactive' }}
+                    </span>
+                </td>
+                <td>{{ prompt.createdAt | localDateTime:'medium' }}</td>
+                <td>
+                    <button class="btn btn-sm btn-info me-1" (click)="viewDetail(prompt.id!); $event.stopPropagation()">
+                        <i class="bi bi-eye"></i> View
+                    </button>
+                    <button class="btn btn-sm"
+                            [ngClass]="prompt.active ? 'btn-warning' : 'btn-success'"
+                            (click)="toggleActive(prompt); $event.stopPropagation()">
+                        <i class="bi" [ngClass]="prompt.active ? 'bi-pause' : 'bi-play'"></i>
+                        {{ prompt.active ? 'Deactivate' : 'Activate' }}
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

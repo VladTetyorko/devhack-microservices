@@ -60,7 +60,10 @@ public abstract class AbstractAiService implements OpenAiService {
     protected HttpEntity<Map<String, Object>> createApiRequest(String prompt) {
         log.debug("Creating API request for model: {}", getModel());
         HttpHeaders headers = createRequestHeaders();
+        log.debug("→ Authorization header = {}", headers.getFirst(HttpHeaders.AUTHORIZATION));
         Map<String, Object> requestBody = createRequestBody(prompt);
+        log.debug("→ Request Body = {}", requestBody);
+
         return new HttpEntity<>(requestBody, headers);
     }
 

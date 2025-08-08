@@ -17,6 +17,6 @@
 }
 
 .form-control:focus {
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem var(--form-focus-shadow);
+  border-color: var(--form-focus-border);
 }

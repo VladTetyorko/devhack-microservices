@@ -1,6 +1,11 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.entities.User;
+import com.vladte.devhack.common.repository.user.UserRepository;
+import com.vladte.devhack.entities.enums.AuthProviderType;
+import com.vladte.devhack.entities.user.AuthenticationProvider;
+import com.vladte.devhack.entities.user.Profile;
+import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.entities.user.UserAccess;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -9,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,8 +49,8 @@ class UserRepositoryTest extends BaseRepositoryTest {
         // Assert
         assertNotNull(savedUser.getId());
         assertNotNull(savedUser.getCreatedAt());
-        assertEquals("testuser", savedUser.getName());
-        assertEquals("test@example.com", savedUser.getEmail());
+        assertEquals("testuser", savedUser.getProfile().getName());
+        assertEquals("test@example.com", savedUser.getLocalAuth().get().getEmail());
     }
 
     @Test
@@ -63,8 +69,8 @@ class UserRepositoryTest extends BaseRepositoryTest {
         // Assert
         assertTrue(foundUser.isPresent());
         assertEquals(userId, foundUser.get().getId());
-        assertEquals("testuser", foundUser.get().getName());
-        assertEquals("test@example.com", foundUser.get().getEmail());
+        assertEquals("testuser", foundUser.get().getProfile().getName());
+        assertEquals("test@example.com", foundUser.get().getLocalAuth().get().getEmail());
     }
 
     @Test
@@ -77,32 +83,32 @@ class UserRepositoryTest extends BaseRepositoryTest {
         userRepository.save(user);
 
         // Act
-        Optional<User> foundUser = userRepository.findByEmail("test@example.com");
+        Optional<User> foundUser = userRepository.findByAuthProvidersEmail("test@example.com");
 
         // Assert
         assertTrue(foundUser.isPresent());
-        assertEquals("testuser", foundUser.get().getName());
-        assertEquals("test@example.com", foundUser.get().getEmail());
+        assertEquals("testuser", foundUser.get().getProfile().getName());
+        assertEquals("test@example.com", foundUser.get().getLocalAuth().get().getEmail());
     }
 
     @Test
-    @DisplayName("Should find a user by role")
-    @Description("Test that a user can be retrieved by its role")
+    @DisplayName("Should find a user with profile by ID")
+    @Description("Test that a user with profile can be retrieved by its ID")
     @Severity(SeverityLevel.CRITICAL)
-    void testFindUserByRole() {
+    void testFindUserWithProfileById() {
         // Arrange
         User user = createTestUser("adminuser", "admin@example.com");
-        user.setRole("ADMIN");
-        userRepository.save(user);
+        user.getUserAccess().setRole("ADMIN");
+        User savedUser = userRepository.save(user);
 
         // Act
-        Optional<User> foundUser = userRepository.findByRole("ADMIN");
+        Optional<User> foundUser = userRepository.findWithProfileById(savedUser.getId());
 
         // Assert
         assertTrue(foundUser.isPresent());
-        assertEquals("adminuser", foundUser.get().getName());
-        assertEquals("admin@example.com", foundUser.get().getEmail());
-        assertEquals("ADMIN", foundUser.get().getRole());
+        assertEquals("adminuser", foundUser.get().getProfile().getName());
+        assertEquals("admin@example.com", foundUser.get().getLocalAuth().get().getEmail());
+        assertEquals("ADMIN", foundUser.get().getUserAccess().getRole());
     }
 
     @Test
@@ -116,16 +122,16 @@ class UserRepositoryTest extends BaseRepositoryTest {
         UUID userId = savedUser.getId();
 
         // Act
-        savedUser.setName("updateduser");
-        savedUser.setEmail("updated@example.com");
-        savedUser.setRole("EDITOR");
+        savedUser.getProfile().setName("updateduser");
+        savedUser.getLocalAuth().get().setEmail("updated@example.com");
+        savedUser.getUserAccess().setRole("EDITOR");
         User updatedUser = userRepository.save(savedUser);
 
         // Assert
         assertEquals(userId, updatedUser.getId());
-        assertEquals("updateduser", updatedUser.getName());
-        assertEquals("updated@example.com", updatedUser.getEmail());
-        assertEquals("EDITOR", updatedUser.getRole());
+        assertEquals("updateduser", updatedUser.getProfile().getName());
+        assertEquals("updated@example.com", updatedUser.getLocalAuth().get().getEmail());
+        assertEquals("EDITOR", updatedUser.getUserAccess().getRole());
     }
 
     @Test
@@ -187,9 +193,27 @@ class UserRepositoryTest extends BaseRepositoryTest {
      */
     private User createTestUser(String name, String email) {
         User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword("password"); // Required field
+
+        // Create profile
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setUser(user);
+        user.setProfile(profile);
+
+        // Create authentication provider
+        AuthenticationProvider authProvider = new AuthenticationProvider();
+        authProvider.setProvider(AuthProviderType.LOCAL);
+        authProvider.setEmail(email);
+        authProvider.setPasswordHash("password");
+        authProvider.setUser(user);
+        user.setAuthProviders(List.of(authProvider));
+
+        // Create user access with default role
+        UserAccess userAccess = new UserAccess();
+        userAccess.setRole("USER");
+        userAccess.setUser(user);
+        user.setUserAccess(userAccess);
+
         return user;
     }
 }

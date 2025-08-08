@@ -1,6 +1,7 @@
 package com.vladte.devhack.common.repository;
 
-import com.vladte.devhack.entities.Tag;
+import com.vladte.devhack.common.repository.global.TagRepository;
+import com.vladte.devhack.entities.global.Tag;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -47,6 +48,7 @@ class TagRepositoryTest extends BaseRepositoryTest {
         // Assert
         assertNotNull(savedTag.getId());
         assertNotNull(savedTag.getCreatedAt());
+        assertNotNull(savedTag.getUpdatedAt());
         assertEquals("Java", savedTag.getName());
     }
 
