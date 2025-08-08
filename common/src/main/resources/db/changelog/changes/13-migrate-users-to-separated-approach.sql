@@ -133,7 +133,7 @@ SELECT old_users.id       AS user_id,
 FROM old_users;
 
 -- 4) Drop the legacy table
-DROP TABLE old_users;
+DROP TABLE old_users CASCADE;
 
 RAISE
 NOTICE 'User split migration applied successfully.';
