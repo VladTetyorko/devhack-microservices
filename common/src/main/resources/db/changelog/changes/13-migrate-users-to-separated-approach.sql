@@ -167,7 +167,7 @@ SELECT u.id,
        now()
 FROM old_users u
 WHERE NOT EXISTS (SELECT 1
-                  FROM authentication_providers ap
+                  FROM user_auth_providers ap
                   WHERE ap.user_id = u.id
                     AND ap.provider = 'LOCAL');
 
