@@ -78,7 +78,7 @@ CREATE TABLE user_access
 
 -- 3.1 Core users
 INSERT INTO users (id, created_at, updated_at)
-SELECT old_users.uuid    AS id,
+SELECT old_users.id    AS id,
        old_users.created_at,
        CURRENT_TIMESTAMP AS updated_at
 FROM old_users;
@@ -91,7 +91,7 @@ INSERT INTO user_profiles (user_id, name,
                            ai_skills_summary, ai_suggested_improvements,
                            is_visible_to_recruiters,
                            created_at, updated_at)
-SELECT old_users.uuid       AS user_id,
+SELECT old_users.id       AS user_id,
        old_users.name,
        old_users.cv_file_href,
        old_users.cv_file_name,
@@ -113,7 +113,7 @@ FROM old_users;
 -- 3.3 LOCAL credentials
 INSERT INTO user_auth_providers (user_id, provider, email, password_hash,
                                  created_at, updated_at)
-SELECT old_users.uuid       AS user_id,
+SELECT old_users.id       AS user_id,
        'LOCAL'              AS provider,
        old_users.email,
        old_users.password   AS password_hash,
@@ -124,7 +124,7 @@ FROM old_users;
 -- 3.4 Admin settings
 INSERT INTO user_access (user_id, role, ai_usage_allowed, account_locked,
                          created_at, updated_at)
-SELECT old_users.uuid       AS user_id,
+SELECT old_users.id       AS user_id,
        old_users.role,
        old_users.ai_usage_allowed,
        FALSE                AS account_locked,
