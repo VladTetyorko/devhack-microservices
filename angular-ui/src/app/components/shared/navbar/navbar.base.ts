@@ -13,7 +13,7 @@ export class NavbarBase implements OnInit, OnDestroy {
     private authSubscription: Subscription | null = null;
 
     constructor(
-        private authService: AuthService,
+        protected authService: AuthService,
         private router: Router
     ) {
     }

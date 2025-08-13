@@ -16,8 +16,11 @@
                         <li><a class="dropdown-item" routerLink="/users" routerLinkActive="active">
                             <i class="bi bi-people me-2"></i> Users
                         </a></li>
-                        <li><a class="dropdown-item" routerLink="/tags" routerLinkActive="active">
-                            <i class="bi bi-tags me-2"></i> Tags
+                        <li><a class="dropdown-item" routerLink="/categories" routerLinkActive="active">
+                            <i class="bi bi-collection me-2"></i> Categories
+                        </a></li>
+                        <li><a class="dropdown-item" routerLink="/topics" routerLinkActive="active">
+                            <i class="bi bi-tags me-2"></i> Topics
                         </a></li>
                         <li><a class="dropdown-item" routerLink="/interview-questions" routerLinkActive="active">
                             <i class="bi bi-question-circle me-2"></i> Interview Questions
@@ -86,7 +89,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item dropdown" *ngIf="isAuthenticated">
                     <a class="nav-link dropdown-toggle" href="#" role="button"
-                       data-bs-toggle="dropdown">{{ currentUser?.profile?.name }} (Admin)</a>
+                       data-bs-toggle="dropdown">{{ currentUserProfile?.name || 'Admin' }} (Admin)</a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" routerLink="/admin/profile">Profile</a></li>
                         <li>

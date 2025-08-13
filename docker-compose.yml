@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # ── Core infra ────────────────────────────────────────────────
   postgres:
-    image: postgres:16
+    image: postgres:17
     container_name: postgres_interview
     ports:
       - "5434:5432"
@@ -23,6 +23,26 @@ services:
           memory: 256M
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_interview
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks: [ app-network ]
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -117,4 +137,5 @@ networks:
 volumes:
   postgres-data:
   postgres-backup-data:
+  redis-data:
   minio_data:

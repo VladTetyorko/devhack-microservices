@@ -8,7 +8,9 @@ export interface InterviewQuestionDTO extends UserOwnedEntity {
   expectedAnswer?: string;
   hints?: string;
   tagNames?: string[];
-  tags?: TagDTO[];
+    tagIds?: string[];
+    answerIds?: string[];
+    noteIds?: string[];
 }
 
 export interface TagDTO extends BasisDtoEntityModel {

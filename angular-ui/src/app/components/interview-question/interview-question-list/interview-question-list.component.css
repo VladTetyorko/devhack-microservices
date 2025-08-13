@@ -120,3 +120,100 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* Cards view specific styling */
+.question-card {
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease-in-out;
+    height: 100%;
+}
+
+.question-card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-color: #0d6efd;
+}
+
+.question-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.question-card .card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
+}
+
+.question-card .card-footer {
+    background-color: transparent;
+    border-top: none;
+    padding: 0.5rem 1rem 1rem;
+}
+
+.question-card .card-text {
+    line-height: 1.5;
+    color: #212529;
+    margin-bottom: 0;
+}
+
+.question-card .card-title {
+    color: #0d6efd;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Cards grid responsive behavior */
+@media (max-width: 576px) {
+    .question-card .card-body {
+        min-height: auto;
+        padding: 0.75rem;
+    }
+
+    .question-card .card-header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .question-card .card-footer {
+        padding: 0.5rem 0.75rem 0.75rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .question-card .card-body {
+        min-height: 220px;
+    }
+}
+
+@media (min-width: 992px) {
+    .question-card .card-body {
+        min-height: 240px;
+    }
+}
+
+/* Enhanced badge styling for cards */
+.question-card .badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.question-card .badge.bg-light {
+    background-color: #f8f9fa !important;
+    color: #6c757d !important;
+    border: 1px solid #dee2e6;
+}
+
+/* Card action buttons styling */
+.question-card app-action-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+/* Smooth transitions for all interactive elements */
+.question-card .badge,
+.question-card .card-header,
+.question-card .card-body,
+.question-card .card-footer {
+    transition: all 0.2s ease-in-out;
+}

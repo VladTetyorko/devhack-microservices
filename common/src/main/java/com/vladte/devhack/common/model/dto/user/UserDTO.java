@@ -23,12 +23,12 @@ public class UserDTO implements BaseDTO {
     @Schema(description = "Account creation timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
 
-    @Schema(description = "Authentication providers (LOCAL & SOCIAL)", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<AuthenticationProviderDTO> credentials = new ArrayList<>();
+    @Schema(description = "IDs of authentication providers (LOCAL & SOCIAL)", accessMode = Schema.AccessMode.READ_ONLY)
+    private List<UUID> credentialIds = new ArrayList<>();
 
-    @Schema(description = "User profile data", accessMode = Schema.AccessMode.READ_WRITE)
-    private ProfileDTO profile;
+    @Schema(description = "ID of user profile data", accessMode = Schema.AccessMode.READ_WRITE)
+    private UUID profileId;
 
-    @Schema(description = "Admin settings and role", accessMode = Schema.AccessMode.READ_WRITE)
-    private UserAccessDTO access;
+    @Schema(description = "ID of admin settings and role", accessMode = Schema.AccessMode.READ_WRITE)
+    private UUID accessId;
 }

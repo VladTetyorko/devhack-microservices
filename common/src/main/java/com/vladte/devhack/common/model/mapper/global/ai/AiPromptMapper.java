@@ -23,6 +23,8 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
         dto.setPrompt(entity.getPrompt());
         dto.setLanguage(entity.getLanguage());
         dto.setActive(entity.getActive());
+        dto.setAmountOfArguments(entity.getAmountOfArguments());
+        dto.setArgsDescription(entity.getArgsDescription());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
 
@@ -46,6 +48,8 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
         entity.setPrompt(dto.getPrompt());
         entity.setLanguage(dto.getLanguage());
         entity.setActive(dto.getActive());
+        entity.setAmountOfArguments(dto.getAmountOfArguments());
+        entity.setArgsDescription(dto.getArgsDescription());
 
         // Note: Category needs to be set by the service layer
         // as it requires fetching the related entity from the database
@@ -63,6 +67,8 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
         entity.setPrompt(dto.getPrompt());
         entity.setLanguage(dto.getLanguage());
         entity.setActive(dto.getActive());
+        entity.setAmountOfArguments(dto.getAmountOfArguments());
+        entity.setArgsDescription(dto.getArgsDescription());
 
         // Note: Category needs to be updated by the service layer
         // as it requires fetching the related entity from the database

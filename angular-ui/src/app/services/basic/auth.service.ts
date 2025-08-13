@@ -11,6 +11,7 @@ import {
   RegisterResponse,
   UserDTO
 } from '../../models/basic/auth.model';
+import {UserAccessDTO} from '../../models/user/user-access.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,9 @@ export class AuthService {
 
   private readonly API_BASE = '/api/auth';
 
-  constructor(private http: HttpClient) {
+  constructor(
+      private http: HttpClient
+  ) {
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -137,11 +140,42 @@ export class AuthService {
     // Check if we have both user and valid token
     const isAuthenticated = !!(user && token && !this.isTokenExpired(token));
 
+    // Load user access data asynchronously to get roles
+    if (isAuthenticated && user?.accessId) {
+      this.loadUserAccessAndUpdateRoles(user.accessId);
+    }
+
     return {
       isAuthenticated,
       user: isAuthenticated ? user : null,
-      roles: isAuthenticated && user?.access?.role ? [user.access.role] : []
+      roles: [] // Roles will be loaded asynchronously
     };
+  }
+
+  /**
+   * Load user access data by ID and update the auth state with roles
+   */
+  private loadUserAccessAndUpdateRoles(accessId: string): void {
+    this.http.get<UserAccessDTO>(`/api/user-access/${accessId}`).subscribe({
+      next: (userAccess) => {
+        const currentState = this.authStateSubject.value;
+        const roles = userAccess.role ? [userAccess.role] : [];
+
+        // Update auth state with loaded roles
+        this.setAuthState({
+          ...currentState,
+          roles: roles
+        });
+
+        // Set role for UI navigation
+        (roles.includes("ROLE_SYSTEM") || roles.includes("ROLE_MANAGER")) ?
+            this.setRole('ADMIN') : this.setRole('USER');
+      },
+      error: (err) => {
+        console.error('Error loading user access data:', err);
+        // Keep empty roles on error
+      }
+    });
   }
 
   private isTokenExpired(token: string): boolean {

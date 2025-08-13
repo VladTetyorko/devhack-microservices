@@ -29,3 +29,7 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/14-add-basic-entity-fields-to-ai-tables.sql
   - include:
       file: classpath:db/changelog/changes/15-add-updated-at-to-missing-tables.sql
+  - include:
+      file: classpath:db/changelog/changes/16-add-arguments-fields-to-ai-prompts.sql
+  - include:
+      file: classpath:db/changelog/changes/17-add-ltree-support-to-tags.sql

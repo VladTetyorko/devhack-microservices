@@ -1,8 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {UserService} from '../../../services/user/user.service';
+import {AuthenticationProviderService} from '../../../services/user/authentication-provider.service';
+import {ProfileService} from '../../../services/user/profile.service';
+import {UserAccessService} from '../../../services/user/user-access.service';
 import {UserDTO} from '../../../models/user/user.model';
+import {AuthenticationProviderDTO} from '../../../models/user/authentication-provider.model';
+import {ProfileDTO} from '../../../models/user/profile.model';
+import {UserAccessDTO} from '../../../models/user/user-access.model';
 import {Page, PageRequest} from '../../../models/basic/page.model';
+import {forkJoin, of} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-user-list',
@@ -15,6 +23,11 @@ export class UserListComponent implements OnInit {
     isLoading = true;
     error = '';
     successMessage = '';
+
+    // Related entities loaded by IDs
+    userCredentials: Map<string, AuthenticationProviderDTO[]> = new Map();
+    userProfiles: Map<string, ProfileDTO> = new Map();
+    userAccess: Map<string, UserAccessDTO> = new Map();
 
     // Search and filter properties
     searchTerm = '';
@@ -33,6 +46,9 @@ export class UserListComponent implements OnInit {
 
     constructor(
         private userService: UserService,
+        private authProviderService: AuthenticationProviderService,
+        private profileService: ProfileService,
+        private userAccessService: UserAccessService,
         private router: Router
     ) {
     }
@@ -47,27 +63,27 @@ export class UserListComponent implements OnInit {
         this.userService.getAllPaged(this.currentPageRequest).subscribe({
             next: (page) => {
                 console.log('[DEBUG_LOG] Loaded users page:', page);
-
-                // Debug: Check for incomplete user data
-                const incompleteUsers = page.content.filter((user: UserDTO) =>
-                    !user.profile || !user.access || !user.credentials || user.credentials.length === 0
-                );
-
-                if (incompleteUsers.length > 0) {
-                    console.warn('[DEBUG_LOG] Found users with incomplete data:', incompleteUsers);
-                }
-
                 this.userPage = page;
                 this.allUsers = page.content || [];
-                this.isLoading = false;
 
-                console.log('[DEBUG_LOG] Total users in page:', page.content.length);
-                console.log('[DEBUG_LOG] Total users overall:', page.totalElements);
-                console.log('[DEBUG_LOG] Current page:', page.number + 1);
-                console.log('[DEBUG_LOG] Total pages:', page.totalPages);
-                console.log('[DEBUG_LOG] Users with profiles:', page.content.filter((u: UserDTO) => u.profile).length);
-                console.log('[DEBUG_LOG] Users with access:', page.content.filter((u: UserDTO) => u.access).length);
-                console.log('[DEBUG_LOG] Users with credentials:', page.content.filter((u: UserDTO) => u.credentials && u.credentials.length > 0).length);
+                // Load related entities for all users
+                this.loadRelatedEntities(page.content).subscribe({
+                    next: () => {
+                        this.isLoading = false;
+                        console.log('[DEBUG_LOG] Total users in page:', page.content.length);
+                        console.log('[DEBUG_LOG] Total users overall:', page.totalElements);
+                        console.log('[DEBUG_LOG] Current page:', page.number + 1);
+                        console.log('[DEBUG_LOG] Total pages:', page.totalPages);
+                        console.log('[DEBUG_LOG] Loaded credentials for users:', this.userCredentials.size);
+                        console.log('[DEBUG_LOG] Loaded profiles for users:', this.userProfiles.size);
+                        console.log('[DEBUG_LOG] Loaded access for users:', this.userAccess.size);
+                    },
+                    error: (err) => {
+                        console.error('[DEBUG_LOG] Error loading related entities:', err);
+                        this.isLoading = false;
+                        // Don't show error for related entities, just log it
+                    }
+                });
             },
             error: (err) => {
                 console.error('[DEBUG_LOG] Error loading users:', err);
@@ -75,6 +91,57 @@ export class UserListComponent implements OnInit {
                 this.isLoading = false;
             }
         });
+    }
+
+    private loadRelatedEntities(users: UserDTO[]) {
+        // Clear existing data
+        this.userCredentials.clear();
+        this.userProfiles.clear();
+        this.userAccess.clear();
+
+        const requests = [];
+
+        // Load credentials for all users
+        for (const user of users) {
+            if (user.credentialIds && user.credentialIds.length > 0) {
+                const credentialsRequest = this.authProviderService.getByIds(user.credentialIds).pipe(
+                    tap(credentials => this.userCredentials.set(user.id!, credentials))
+                );
+                requests.push(credentialsRequest);
+            }
+
+            // Load profile
+            if (user.profileId) {
+                const profileRequest = this.profileService.getById(user.profileId).pipe(
+                    tap(profile => this.userProfiles.set(user.id!, profile))
+                );
+                requests.push(profileRequest);
+            }
+
+            // Load access
+            if (user.accessId) {
+                const accessRequest = this.userAccessService.getById(user.accessId).pipe(
+                    tap(access => this.userAccess.set(user.id!, access))
+                );
+                requests.push(accessRequest);
+            }
+        }
+
+        // Return observable that completes when all requests are done
+        return requests.length > 0 ? forkJoin(requests) : of([]);
+    }
+
+    // Helper methods to access loaded entities
+    getUserCredentials(userId: string): AuthenticationProviderDTO[] {
+        return this.userCredentials.get(userId) || [];
+    }
+
+    getUserProfile(userId: string): ProfileDTO | null {
+        return this.userProfiles.get(userId) || null;
+    }
+
+    getUserAccess(userId: string): UserAccessDTO | null {
+        return this.userAccess.get(userId) || null;
     }
 
     onSearch(): void {
@@ -118,7 +185,8 @@ export class UserListComponent implements OnInit {
         event.stopPropagation();
 
         const user = this.allUsers.find(u => u.id === id);
-        const userName = user?.profile?.name || 'this user';
+        const profile = this.getUserProfile(id);
+        const userName = profile?.name || 'this user';
 
         if (confirm(`Are you sure you want to delete ${userName}? This action cannot be undone.`)) {
             this.userService.delete(id).subscribe({
@@ -156,15 +224,20 @@ export class UserListComponent implements OnInit {
         // Apply search filter
         if (this.searchTerm.trim()) {
             const searchLower = this.searchTerm.toLowerCase().trim();
-            filtered = filtered.filter(user =>
-                (user.profile?.name?.toLowerCase().includes(searchLower)) ||
-                (user.credentials?.[0]?.email?.toLowerCase().includes(searchLower))
-            );
+            filtered = filtered.filter(user => {
+                const profile = this.getUserProfile(user.id!);
+                const credentials = this.getUserCredentials(user.id!);
+                return (profile?.name?.toLowerCase().includes(searchLower)) ||
+                    (credentials[0]?.email?.toLowerCase().includes(searchLower));
+            });
         }
 
         // Apply role filter
         if (this.selectedRole) {
-            filtered = filtered.filter(user => user.access?.role === this.selectedRole);
+            filtered = filtered.filter(user => {
+                const access = this.getUserAccess(user.id!);
+                return access?.role === this.selectedRole;
+            });
         }
 
         return filtered;

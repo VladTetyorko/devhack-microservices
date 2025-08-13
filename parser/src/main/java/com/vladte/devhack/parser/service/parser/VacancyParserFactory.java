@@ -1,5 +1,6 @@
-package com.vladte.devhack.parser.service;
+package com.vladte.devhack.parser.service.parser;
 
+import com.vladte.devhack.parser.service.VacancyParser;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

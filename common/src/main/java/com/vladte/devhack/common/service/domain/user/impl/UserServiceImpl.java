@@ -14,6 +14,7 @@ import com.vladte.devhack.entities.user.User;
 import com.vladte.devhack.entities.user.UserAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -67,13 +68,15 @@ public class UserServiceImpl
 
     @Override
     @Transactional
-    @Cacheable(value = "users", key = "#root.methodName")
+    @CacheEvict(value = "systemUser", key = "'systemUser'", cacheManager = "longTermCacheManager", beforeInvocation = true)
+    @Cacheable(value = "systemUser", key = "'systemUser'", cacheManager = "longTermCacheManager")
     public User getSystemUser() {
         log.debug("Getting system user");
         // Check admin settings for SYSTEM role
         List<UserAccess> admins = userAccessService.findAllByRole(SYSTEM_ROLE);
         if (!admins.isEmpty()) {
-            return admins.get(0).getUser();
+            User admin = admins.get(0).getUser();
+            return repository.loadWithRelatedDetails(admin.getId()).get();
         }
         log.info("System user not found, creating a new one");
 
@@ -105,6 +108,7 @@ public class UserServiceImpl
     }
 
     @Override
+    @CacheEvict(value = {"userByEmail", "userDetails"}, allEntries = true, cacheManager = "mediumTermCacheManager")
     public void updateUsersSv(User user, String fileName, String cvUrl, String contentType) {
         User loadedUser = repository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Profile profile = loadedUser.getProfile();
@@ -116,12 +120,14 @@ public class UserServiceImpl
 
     @Override
     @Transactional
+    @CacheEvict(value = {"userByEmail", "userDetails"}, allEntries = true, cacheManager = "mediumTermCacheManager")
     public User register(User user) {
         return registerWithRole(user, "USER", "Register base user");
     }
 
     @Override
     @Transactional
+    @CacheEvict(value = {"userByEmail", "userDetails"}, allEntries = true, cacheManager = "mediumTermCacheManager")
     public User registerManager(User user) {
         return registerWithRole(user, "MANAGER", "Register manager base user");
     }
@@ -146,7 +152,7 @@ public class UserServiceImpl
                 .findByProviderAndEmail(AuthProviderType.LOCAL, email)
                 .map(AuthenticationProvider::getUser)
                 .map(user ->
-                        repository.findWithProfileById(user.getId()).get()
+                        repository.loadWithRelatedDetails(user.getId()).get()
                 );
     }
 

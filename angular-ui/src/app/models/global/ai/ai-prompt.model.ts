@@ -6,6 +6,8 @@ export interface AiPromptModel extends BasisDtoEntityModel {
     prompt: string;
     language?: string;
     active?: boolean;
+    amountOfArguments?: number;
+    argsDescription?: string;
     categoryId: string;
     categoryName?: string;
 }

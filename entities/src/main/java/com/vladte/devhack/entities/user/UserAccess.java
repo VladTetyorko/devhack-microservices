@@ -4,10 +4,10 @@ import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "user_access")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"user"})

@@ -3,7 +3,7 @@
     <!-- 1) Greeting -->
     <div *ngIf="isAuthenticated; else guestGreeting" class="mb-4">
         <h3 class="fw-bold">
-            Welcome back, {{ currentUser?.profile?.name || 'User' }}!
+            Welcome back, {{ currentUserProfile?.name || 'User' }}!
         </h3>
     </div>
     <ng-template #guestGreeting>

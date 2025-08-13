@@ -1,5 +1,8 @@
 package com.vladte.devhack.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.vladte.devhack.entities.BasicEntity;
 import com.vladte.devhack.entities.enums.AuthProviderType;
 import com.vladte.devhack.entities.personalized.Answer;
@@ -12,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EqualsAndHashCode(callSuper = true, exclude = {"profile", "userAccess", "authProviders", "answers", "notes", "vacancyResponses"})
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"profile", "userAccess", "authProviders", "answers", "notes", "vacancyResponses"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User extends BasicEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -39,15 +43,11 @@ public class User extends BasicEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VacancyResponse> vacancyResponses = new ArrayList<>();
 
+    @JsonIgnore
     public Optional<AuthenticationProvider> getLocalAuth() {
         return authProviders.stream()
                 .filter(a -> a.getProvider() == AuthProviderType.LOCAL)
                 .findFirst();
     }
 
-    public Optional<AuthenticationProvider> findByProvider(AuthProviderType type) {
-        return authProviders.stream()
-                .filter(a -> a.getProvider() == type)
-                .findFirst();
-    }
 }

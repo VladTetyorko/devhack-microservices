@@ -4,14 +4,14 @@ import com.vladte.devhack.entities.UserOwnedBasicEntity;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "notes")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Note extends UserOwnedBasicEntity {

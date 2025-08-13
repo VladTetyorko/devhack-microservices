@@ -1,0 +1,180 @@
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Question Generation Statistics
+                    </h4>
+                    <button
+                            class="btn btn-light btn-sm"
+                            (click)="refreshStats()"
+                            [disabled]="loading"
+                            title="Refresh Statistics">
+                        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Loading State -->
+                    <div *ngIf="loading" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading statistics...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ error }}
+                        <button class="btn btn-sm btn-outline-danger ms-2" (click)="refreshStats()">
+                            Try Again
+                        </button>
+                    </div>
+
+                    <!-- Statistics Content -->
+                    <div *ngIf="stats && !loading && !error">
+                        <!-- Key Metrics Cards -->
+                        <div class="row mb-4">
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-info text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-question-circle fa-3x mb-3"></i>
+                                        <h3 class="card-title">{{ stats.totalQuestions }}</h3>
+                                        <p class="card-text">Total Questions</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-warning text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-user-edit fa-3x mb-3"></i>
+                                        <h3 class="card-title">{{ stats.userQuestions }}</h3>
+                                        <p class="card-text">Your Questions</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-success text-white h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                                        <h3 class="card-title">{{ stats.answeredQuestions }}</h3>
+                                        <p class="card-text">Answered Questions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Section -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-tasks me-2"></i>
+                                            Your Progress
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Completion Rate</span>
+                                            <span class="fw-bold">{{ getCompletionPercentage() }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 20px;">
+                                            <div
+                                                    class="progress-bar progress-bar-striped progress-bar-animated"
+                                                    [class]="getProgressBarClass()"
+                                                    role="progressbar"
+                                                    [style.width.%]="getCompletionPercentage()"
+                                                    [attr.aria-valuenow]="getCompletionPercentage()"
+                                                    aria-valuemin="0"
+                                                    aria-valuemax="100">
+                                                {{ getCompletionPercentage() }}%
+                                            </div>
+                                        </div>
+                                        <small class="text-muted mt-2 d-block">
+                                            You have answered {{ stats.answeredQuestions }} out
+                                            of {{ stats.userQuestions }} questions
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart Section -->
+                        <div class="row mb-4" *ngIf="chartData">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-chart-pie me-2"></i>
+                                            Statistics Overview
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container" style="position: relative; height: 400px;">
+                                            <!-- Chart placeholder - you can integrate Chart.js or ng2-charts here -->
+                                            <div class="d-flex justify-content-center align-items-center h-100 bg-light rounded">
+                                                <div class="text-center">
+                                                    <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                                                    <p class="text-muted">Chart visualization would go here</p>
+                                                    <small class="text-muted">
+                                                        Total: {{ stats.totalQuestions }} |
+                                                        Yours: {{ stats.userQuestions }} |
+                                                        Answered: {{ stats.answeredQuestions }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-bolt me-2"></i>
+                                            Quick Actions
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <a routerLink="../generate" class="btn btn-primary">
+                                                <i class="fas fa-plus me-2"></i>
+                                                Generate New Questions
+                                            </a>
+                                            <a routerLink="../" class="btn btn-outline-secondary">
+                                                <i class="fas fa-list me-2"></i>
+                                                View All Questions
+                                            </a>
+                                            <button class="btn btn-outline-info" (click)="refreshStats()">
+                                                <i class="fas fa-sync-alt me-2"></i>
+                                                Refresh Stats
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div *ngIf="!stats && !loading && !error" class="text-center py-5">
+                        <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No statistics available</h5>
+                        <p class="text-muted">Start generating questions to see your statistics here.</p>
+                        <a routerLink="../generate" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Generate Your First Questions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-collection-fill me-2 text-primary"></i>
+                Category Management
+            </h2>
+            <p class="text-muted mb-0">Manage interview question categories</p>
+        </div>
+        <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
+            <i class="bi bi-plus-circle me-2"></i> Add New Category
+        </button>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Search by category name..."
+                                [(ngModel)]="searchTerm"
+                        >
+                        <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                (click)="clearSearch()"
+                                *ngIf="searchTerm"
+                        >
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <span class="text-muted me-2">Total Categories:</span>
+                        <span class="badge bg-info fs-6">{{ filteredCategories.length }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading categories...</p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div *ngIf="!isLoading" class="row g-4">
+        <div class="col-lg-4 col-md-6" *ngFor="let category of filteredCategories">
+            <div class="card h-100 shadow-sm category-card">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-folder-fill me-2 text-primary"></i>
+                            {{ category.name }}
+                        </h5>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" (click)="viewDetail(category.id!)">
+                                        <i class="bi bi-eye me-2"></i> View Details
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" (click)="editCategory(category.id!)">
+                                        <i class="bi bi-pencil me-2"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" (click)="viewTopics(category.id!)">
+                                        <i class="bi bi-tags me-2"></i> View Topics
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a class="dropdown-item text-danger" (click)="deleteCategory(category.id!, $event)">
+                                        <i class="bi bi-trash me-2"></i> Delete
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p class="card-text text-muted flex-grow-1" *ngIf="category.description">
+                        {{ category.description }}
+                    </p>
+                    <p class="card-text text-muted flex-grow-1" *ngIf="!category.description">
+                        <em>No description available</em>
+                    </p>
+
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-tags me-1"></i>
+                                {{ category.questionCount || 0 }} questions
+                            </small>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" (click)="viewDetail(category.id!)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" (click)="editCategory(category.id!)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-outline-info" (click)="viewTopics(category.id!)">
+                                    <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && filteredCategories.length === 0" class="text-center py-5">
+        <div class="mb-4">
+            <i class="bi bi-collection display-1 text-muted"></i>
+        </div>
+        <h4 class="text-muted">No Categories Found</h4>
+        <p class="text-muted mb-4">
+            <span *ngIf="searchTerm">No categories match your search criteria.</span>
+            <span *ngIf="!searchTerm">Get started by creating your first category.</span>
+        </p>
+        <button class="btn btn-primary" (click)="createNew()" *ngIf="!searchTerm">
+            <i class="bi bi-plus-circle me-2"></i> Create First Category
+        </button>
+        <button class="btn btn-outline-secondary" (click)="clearSearch()" *ngIf="searchTerm">
+            <i class="bi bi-arrow-left me-2"></i> Clear Search
+        </button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+</div>

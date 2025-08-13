@@ -1,0 +1,276 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-plus-circle-fill me-2 text-primary"></i>
+                Create New Interview Question
+            </h2>
+            <p class="text-muted mb-0">Add a new interview question to your collection</p>
+        </div>
+        <button class="btn btn-outline-secondary" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i> Back to Questions
+        </button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Create Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-question-circle-fill me-2"></i>
+                        Question Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" novalidate>
+                        <!-- Question Text Field -->
+                        <div class="mb-4">
+                            <label for="questionText" class="form-label required">
+                                <i class="bi bi-chat-quote me-1"></i>
+                                Question Text
+                            </label>
+                            <textarea
+                                    id="questionText"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('questionText')"
+                                    formControlName="questionText"
+                                    rows="4"
+                                    placeholder="Enter the interview question..."
+                                    maxlength="1000"
+                            ></textarea>
+                            <div class="invalid-feedback" *ngIf="hasFieldError('questionText')">
+                                {{ getFieldError('questionText') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Write a clear and concise interview question.
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Difficulty Field -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="difficulty" class="form-label required">
+                                        <i class="bi bi-speedometer2 me-1"></i>
+                                        Difficulty Level
+                                    </label>
+                                    <select
+                                            id="difficulty"
+                                            class="form-select"
+                                            [class.is-invalid]="hasFieldError('difficulty')"
+                                            formControlName="difficulty"
+                                    >
+                                        <option *ngFor="let level of difficultyLevels" [value]="level.value">
+                                            {{ level.label }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('difficulty')">
+                                        {{ getFieldError('difficulty') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Source Field -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="source" class="form-label">
+                                        <i class="bi bi-link-45deg me-1"></i>
+                                        Source
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="source"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('source')"
+                                            formControlName="source"
+                                            placeholder="e.g., LeetCode, Company Interview, Book"
+                                            maxlength="255"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('source')">
+                                        {{ getFieldError('source') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expected Answer Field -->
+                        <div class="mb-4">
+                            <label for="expectedAnswer" class="form-label">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Expected Answer
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <textarea
+                                    id="expectedAnswer"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('expectedAnswer')"
+                                    formControlName="expectedAnswer"
+                                    rows="6"
+                                    placeholder="Provide the expected answer or key points to cover..."
+                                    maxlength="2000"
+                            ></textarea>
+                            <div class="invalid-feedback" *ngIf="hasFieldError('expectedAnswer')">
+                                {{ getFieldError('expectedAnswer') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Optional detailed answer or key points that should be covered.
+                            </div>
+                        </div>
+
+                        <!-- Hints Field -->
+                        <div class="mb-4">
+                            <label for="hints" class="form-label">
+                                <i class="bi bi-lightbulb me-1"></i>
+                                Hints
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <textarea
+                                    id="hints"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('hints')"
+                                    formControlName="hints"
+                                    rows="3"
+                                    placeholder="Provide hints to help answer the question..."
+                                    maxlength="500"
+                            ></textarea>
+                            <div class="invalid-feedback" *ngIf="hasFieldError('hints')">
+                                {{ getFieldError('hints') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Optional hints or clues to guide the answer.
+                            </div>
+                        </div>
+
+                        <!-- Tags Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-tags me-1"></i>
+                                Tags
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <div class="tags-container">
+                                <div *ngIf="availableTags.length === 0" class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Loading tags...
+                                </div>
+                                <div *ngIf="availableTags.length > 0" class="tag-selection">
+                                    <div
+                                            *ngFor="let tag of availableTags"
+                                            class="tag-item"
+                                            [class.selected]="isTagSelected(tag.name)"
+                                            (click)="onTagToggle(tag.name)"
+                                    >
+                                        <i class="bi" [class.bi-check-square]="isTagSelected(tag.name)"
+                                           [class.bi-square]="!isTagSelected(tag.name)"></i>
+                                        {{ tag.name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Select relevant tags to categorize this question.
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-2">
+                                <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        [disabled]="isSubmitting || questionForm.invalid"
+                                >
+                                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"
+                                          role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </span>
+                                    <i *ngIf="!isSubmitting" class="bi bi-check-lg me-2"></i>
+                                    {{ isSubmitting ? 'Creating...' : 'Create Question' }}
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        (click)="resetForm()"
+                                        [disabled]="isSubmitting"
+                                >
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    Reset
+                                </button>
+                            </div>
+
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    (click)="cancel()"
+                                    [disabled]="isSubmitting"
+                            >
+                                <i class="bi bi-x-lg me-2"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Tips for Creating Questions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Good Examples
+                            </h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-dot"></i> "Explain the difference between var, let, and const in
+                                    JavaScript"
+                                </li>
+                                <li><i class="bi bi-dot"></i> "How would you implement a binary search algorithm?"</li>
+                                <li><i class="bi bi-dot"></i> "What are the SOLID principles in software design?"</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Best Practices
+                            </h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-dot"></i> Be specific and clear in your question</li>
+                                <li><i class="bi bi-dot"></i> Choose appropriate difficulty level</li>
+                                <li><i class="bi bi-dot"></i> Add relevant tags for better organization</li>
+                                <li><i class="bi bi-dot"></i> Include expected answer for reference</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

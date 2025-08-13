@@ -1,4 +1,4 @@
-package com.vladte.devhack.parser.service.impl;
+package com.vladte.devhack.parser.service.impl.parser;
 
 import com.vladte.devhack.entities.global.Vacancy;
 import com.vladte.devhack.parser.service.VacancyParser;
@@ -14,28 +14,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service for parsing job vacancies from DOU website.
+ * Service for parsing job vacancies from Djinny website.
  */
 @Service
 @Slf4j
-public class DouParserService implements VacancyParser {
+public class DjinnyParserService implements VacancyParser {
 
-    private static final String SOURCE = "DOU";
+    private static final String SOURCE = "Djinny";
 
     /**
-     * Parse HTML content from DOU website to extract job vacancies.
+     * Parse HTML content from Djinny website to extract job vacancies.
      *
      * @param htmlContent The HTML content to parse
      * @return A list of extracted vacancies
      */
     @Override
     public List<Vacancy> parse(String htmlContent) {
-        log.info("Parsing HTML content from DOU");
+        log.info("Parsing HTML content from Djinny");
         List<Vacancy> vacancies = new ArrayList<>();
 
         try {
             Document document = Jsoup.parse(htmlContent);
-            Elements jobElements = document.select(".vacancy");
+            Elements jobElements = document.select(".job-list-item");
 
             for (Element jobElement : jobElements) {
                 try {
@@ -45,38 +45,33 @@ public class DouParserService implements VacancyParser {
                     vacancy.setSource(SOURCE);
 
                     // Extract company name
-                    Element companyElement = jobElement.selectFirst(".company");
+                    Element companyElement = jobElement.selectFirst(".company-name");
                     if (companyElement != null) {
                         vacancy.setCompanyName(companyElement.text().trim());
                     }
 
                     // Extract position
-                    Element positionElement = jobElement.selectFirst(".title");
+                    Element positionElement = jobElement.selectFirst(".job-title");
                     if (positionElement != null) {
                         vacancy.setPosition(positionElement.text().trim());
                     }
 
                     // Extract technologies
-                    Element techElement = jobElement.selectFirst(".tags");
+                    Element techElement = jobElement.selectFirst(".job-tags");
                     if (techElement != null) {
                         vacancy.setTechnologies(techElement.text().trim());
                     }
 
                     // Extract URL
-                    Element linkElement = jobElement.selectFirst("a.vt");
+                    Element linkElement = jobElement.selectFirst("a.job-link");
                     if (linkElement != null) {
-                        vacancy.setUrl(linkElement.attr("href"));
+                        String relativeUrl = linkElement.attr("href");
+                        vacancy.setUrl("https://djinny.co" + relativeUrl);
                     }
 
                     // Extract remote status if available
-                    Element remoteElement = jobElement.selectFirst(".remote");
+                    Element remoteElement = jobElement.selectFirst(".remote-tag");
                     vacancy.setRemoteAllowed(remoteElement != null);
-
-                    // Extract contact person if available
-                    Element contactElement = jobElement.selectFirst(".recruiter");
-                    if (contactElement != null) {
-                        vacancy.setContactPerson(contactElement.text().trim());
-                    }
 
                     // Set created timestamp
                     vacancy.setCreatedAt(LocalDateTime.now());
@@ -88,10 +83,10 @@ public class DouParserService implements VacancyParser {
                 }
             }
         } catch (Exception e) {
-            log.error("Error parsing DOU HTML: {}", e.getMessage());
+            log.error("Error parsing Djinny HTML: {}", e.getMessage());
         }
 
-        log.info("Extracted {} vacancies from DOU", vacancies.size());
+        log.info("Extracted {} vacancies from Djinny", vacancies.size());
         return vacancies;
     }
 }

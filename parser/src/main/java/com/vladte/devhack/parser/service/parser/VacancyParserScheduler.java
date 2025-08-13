@@ -1,4 +1,4 @@
-package com.vladte.devhack.parser.service;
+package com.vladte.devhack.parser.service.parser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public class VacancyParserScheduler {
 
-    private final VacancyService vacancyService;
+    private final VacancyParserService vacancyService;
     private final RestTemplate restTemplate;
 
     @Value("${vacancy.parser.enabled:true}")

@@ -3,6 +3,7 @@ package com.vladte.devhack.common.service.domain.global.impl;
 import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
 import com.vladte.devhack.common.service.BaseServiceTest;
 import com.vladte.devhack.common.service.domain.audit.AuditService;
+import com.vladte.devhack.common.service.websocket.QuestionWebSocketService;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import com.vladte.devhack.entities.global.Tag;
 import com.vladte.devhack.entities.user.User;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.UUID;
@@ -38,11 +40,14 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
     @Mock
     private AuditService auditService;
 
+    @Mock
+    private QuestionWebSocketService webSocketService;
+
     private InterviewQuestionServiceImpl questionService;
 
     @BeforeEach
     void setUp() {
-        questionService = new InterviewQuestionServiceImpl(repository, auditService);
+        questionService = new InterviewQuestionServiceImpl(repository, auditService, webSocketService);
     }
 
     @Test
@@ -109,7 +114,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         List<InterviewQuestion> questions = List.of(question1, question2);
         Page<InterviewQuestion> expectedPage = new PageImpl<>(questions);
 
-        when(repository.searchQuestions(query, difficulty, tagId, pageable)).thenReturn(expectedPage);
+        when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
         // When
         Page<InterviewQuestion> result = questionService.searchQuestions(query, difficulty, tagId, pageable);
@@ -118,7 +123,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         assertNotNull(result);
         assertEquals(2, result.getContent().size());
         assertEquals(expectedPage, result);
-        verify(repository).searchQuestions(query, difficulty, tagId, pageable);
+        verify(repository).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
@@ -131,7 +136,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         InterviewQuestion question = createTestQuestion("General question", "Easy");
         Page<InterviewQuestion> expectedPage = new PageImpl<>(List.of(question));
 
-        when(repository.searchQuestions(null, null, null, pageable)).thenReturn(expectedPage);
+        when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
         // When
         Page<InterviewQuestion> result = questionService.searchQuestions(null, null, null, pageable);
@@ -140,7 +145,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
         assertEquals(expectedPage, result);
-        verify(repository).searchQuestions(null, null, null, pageable);
+        verify(repository).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
@@ -260,7 +265,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<InterviewQuestion> emptyPage = new PageImpl<>(List.of());
 
-        when(repository.searchQuestions(query, difficulty, tagId, pageable)).thenReturn(emptyPage);
+        when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(emptyPage);
 
         // When
         Page<InterviewQuestion> result = questionService.searchQuestions(query, difficulty, tagId, pageable);
@@ -269,7 +274,7 @@ class InterviewQuestionServiceImplTest extends BaseServiceTest {
         assertNotNull(result);
         assertTrue(result.getContent().isEmpty());
         assertEquals(0, result.getTotalElements());
-        verify(repository).searchQuestions(query, difficulty, tagId, pageable);
+        verify(repository).findAll(any(Specification.class), any(Pageable.class));
     }
 
     /**

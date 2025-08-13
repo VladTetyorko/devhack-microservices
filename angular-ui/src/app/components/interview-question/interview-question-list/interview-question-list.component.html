@@ -8,16 +8,101 @@
             </h2>
             <p class="text-muted mb-0">Manage interview questions and practice materials</p>
         </div>
-        <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
-            <i class="bi bi-plus-circle me-2"></i> Add New Question
-        </button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-info btn-lg shadow-sm" (click)="viewStatistics()" title="View Statistics Dashboard">
+                <i class="bi bi-bar-chart-fill me-2"></i> Statistics
+            </button>
+            <button class="btn btn-success btn-lg shadow-sm" (click)="generateQuestions()"
+                    title="Generate Questions with AI">
+                <i class="bi bi-magic me-2"></i> Generate Questions
+            </button>
+            <button class="btn btn-primary btn-lg shadow-sm" (click)="createNew()">
+                <i class="bi bi-plus-circle me-2"></i> Add New Question
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="row mb-4" *ngIf="questionStats && !isLoadingStats">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">Total Questions</h6>
+                            <h3 class="mb-0">{{ questionStats.totalQuestions }}</h3>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-question-circle-fill fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">My Questions</h6>
+                            <h3 class="mb-0">{{ questionStats.userQuestions }}</h3>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-person-fill fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="card-title mb-0">Answered</h6>
+                            <h3 class="mb-0">{{ questionStats.answeredQuestions }}</h3>
+                        </div>
+                        <div class="ms-3">
+                            <i class="bi bi-check-circle-fill fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Search and Filter Section -->
-    <div class="card shadow-sm mb-4" *ngIf="!isLoading">
+    <div class="card shadow-sm mb-4" *ngIf="!isLoadingList || questionPage">
+        <!-- This section stays visible after initial load, even during table filtering -->
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-funnel me-2"></i>
+                    Search & Filters
+                </h6>
+                <div class="d-flex gap-2">
+                    <button
+                            class="btn btn-sm btn-outline-primary"
+                            (click)="toggleAdvancedSearch()"
+                            [class.active]="showAdvancedSearch">
+                        <i class="bi bi-gear me-1"></i>
+                        Advanced
+                    </button>
+                    <button
+                            class="btn btn-sm btn-outline-secondary"
+                            (click)="clearAllFilters()"
+                            *ngIf="hasActiveFilters">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
-            <div class="row g-3">
+            <!-- Basic Search Row -->
+            <div class="row g-3 mb-3">
                 <div class="col-md-4">
+                    <label class="form-label">Search Query</label>
                     <div class="input-group">
                         <span class="input-group-text bg-light">
                             <i class="bi bi-search"></i>
@@ -25,41 +110,124 @@
                         <input
                                 type="text"
                                 class="form-control"
-                                placeholder="Search by question text or source..."
+                                placeholder="Search by question text, source..."
                                 [(ngModel)]="searchTerm"
                                 (input)="onSearch()"
+                                [disabled]="isLoadingSearch"
                         >
                         <button
                                 class="btn btn-outline-secondary"
                                 type="button"
                                 (click)="clearSearch()"
-                                *ngIf="searchTerm"
+                                *ngIf="searchTerm && !isLoadingSearch"
                         >
                             <i class="bi bi-x-lg"></i>
                         </button>
+                        <div class="input-group-text" *ngIf="isLoadingSearch">
+                            <div class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Searching...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
+                    <label class="form-label">Difficulty</label>
                     <select class="form-select" [(ngModel)]="selectedDifficulty" (change)="onDifficultyFilter()">
                         <option value="">All Difficulties</option>
-                        <option value="EASY">Easy</option>
-                        <option value="MEDIUM">Medium</option>
-                        <option value="HARD">Hard</option>
+                        <option *ngFor="let level of difficultyLevels" [value]="level.value">
+                            {{ level.label }}
+                        </option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input
-                            type="text"
-                            class="form-control"
-                            placeholder="Filter by tag..."
-                            [(ngModel)]="selectedTag"
-                            (input)="onTagFilter()"
-                    >
+                    <label class="form-label">Tag</label>
+                    <select class="form-select" [(ngModel)]="selectedTagId" (change)="onTagFilter()">
+                        <option value="">All Tags</option>
+                        <option *ngFor="let tag of availableTags" [value]="tag.id">
+                            {{ tag.name }}
+                        </option>
+                    </select>
                 </div>
                 <div class="col-md-2">
-                    <div class="d-flex align-items-center">
-                        <span class="text-muted me-2">Total:</span>
+                    <label class="form-label">Results</label>
+                    <div class="d-flex align-items-center h-100">
                         <span class="badge bg-primary fs-6">{{ questionPage?.totalElements || 0 }}</span>
+                        <span class="text-muted ms-2">found</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Filters Display -->
+            <div class="row" *ngIf="hasActiveFilters">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <small class="text-muted">Active filters:</small>
+                        <span class="badge bg-secondary" *ngIf="searchTerm.trim()">
+                            Query: "{{ searchTerm }}"
+                            <button type="button" class="btn-close btn-close-white ms-1"
+                                    (click)="clearSearch()"></button>
+                        </span>
+                        <span class="badge bg-secondary" *ngIf="selectedDifficulty">
+                            Difficulty: {{ selectedDifficulty }}
+                            <button type="button" class="btn-close btn-close-white ms-1"
+                                    (click)="clearDifficultyFilter()"></button>
+                        </span>
+                        <span class="badge bg-secondary" *ngIf="selectedTagId">
+                            Tag: {{ selectedTagName }}
+                            <button type="button" class="btn-close btn-close-white ms-1"
+                                    (click)="clearTagFilter()"></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Search Options -->
+            <div class="row mt-3" *ngIf="showAdvancedSearch">
+                <div class="col-12">
+                    <div class="border-top pt-3">
+                        <h6 class="text-muted mb-3">
+                            <i class="bi bi-gear me-1"></i>
+                            Advanced Options
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Sort By</label>
+                                <select class="form-select" [(ngModel)]="currentPageRequest.sort"
+                                        (change)="applyFilters()">
+                                    <option [ngValue]="['createdAt,desc']">Newest First</option>
+                                    <option [ngValue]="['createdAt,asc']">Oldest First</option>
+                                    <option [ngValue]="['questionText,asc']">Question A-Z</option>
+                                    <option [ngValue]="['questionText,desc']">Question Z-A</option>
+                                    <option [ngValue]="['difficulty,asc']">Difficulty: Easy First</option>
+                                    <option [ngValue]="['difficulty,desc']">Difficulty: Hard First</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Page Size</label>
+                                <select class="form-select" [(ngModel)]="currentPageRequest.size"
+                                        (change)="onPageSizeChange(currentPageRequest.size || 10)">
+                                    <option [value]="5">5 per page</option>
+                                    <option [value]="10">10 per page</option>
+                                    <option [value]="20">20 per page</option>
+                                    <option [value]="50">50 per page</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">View Mode</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="viewMode" id="tableView"
+                                           [(ngModel)]="viewMode" value="table">
+                                    <label class="btn btn-outline-primary" for="tableView">
+                                        <i class="bi bi-table me-1"></i> Table
+                                    </label>
+                                    <input type="radio" class="btn-check" name="viewMode" id="cardView"
+                                           [(ngModel)]="viewMode" value="cards">
+                                    <label class="btn btn-outline-primary" for="cardView">
+                                        <i class="bi bi-grid me-1"></i> Cards
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -67,7 +235,7 @@
     </div>
 
     <!-- Skeleton Loading State -->
-    <div *ngIf="isLoading" class="card">
+    <div *ngIf="isLoadingList && !questionPage" class="card">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -143,7 +311,7 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading && filteredQuestions.length === 0 && !searchTerm && !selectedDifficulty && !selectedTag" class="text-center py-5">
+    <div *ngIf="!isLoadingList && questions.length === 0 && !hasActiveFilters" class="text-center py-5">
         <div class="mb-4">
             <i class="bi bi-question-circle display-1 text-muted"></i>
         </div>
@@ -155,19 +323,25 @@
     </div>
 
     <!-- No Search Results -->
-    <div *ngIf="!isLoading && filteredQuestions.length === 0 && (searchTerm || selectedDifficulty || selectedTag)" class="text-center py-5">
+    <div *ngIf="!isLoadingList && questions.length === 0 && hasActiveFilters" class="text-center py-5">
         <div class="mb-4">
             <i class="bi bi-search display-1 text-muted"></i>
         </div>
         <h4 class="text-muted mb-3">No Results Found</h4>
         <p class="text-muted mb-4">Try adjusting your search criteria or filters.</p>
-        <button class="btn btn-outline-primary" (click)="clearSearch(); clearDifficultyFilter(); clearTagFilter()">
-            <i class="bi bi-arrow-clockwise me-2"></i> Clear Filters
-        </button>
+        <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-outline-primary" (click)="clearAllFilters()">
+                <i class="bi bi-arrow-clockwise me-2"></i> Clear All Filters
+            </button>
+            <button class="btn btn-primary" (click)="createNew()">
+                <i class="bi bi-plus-circle me-2"></i> Add New Question
+            </button>
+        </div>
     </div>
 
-    <!-- Questions Table -->
-    <div *ngIf="!isLoading && filteredQuestions.length > 0" class="card shadow-sm">
+    <!-- Questions Table View -->
+    <div *ngIf="((!isLoadingList && questions.length > 0) || isLoadingTable) && viewMode === 'table'"
+         class="card shadow-sm">
         <div class="card-header bg-light">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
@@ -202,69 +376,192 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let question of filteredQuestions; trackBy: trackByQuestionId"
-                    class="question-row"
-                    (click)="viewDetail(question.id!)"
-                    style="cursor: pointer;">
-                    <td class="align-middle">
-                        <div>
-                            <div class="fw-semibold">{{ truncateText(question.questionText || 'No question text', 80) }}</div>
-                            <small class="text-muted" *ngIf="question.source">
-                                <i class="bi bi-book me-1"></i>{{ question.source }}
-                            </small>
-                            <small class="text-muted d-block">ID: {{ question.id?.substring(0, 8) }}...</small>
+                <!-- Loading spinner for table content during filtering -->
+                <tr *ngIf="isLoadingTable">
+                    <td colspan="6" class="text-center py-5">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="spinner-border text-primary me-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span class="text-muted">Updating results...</span>
                         </div>
-                    </td>
-                    <td class="align-middle">
-                        <span [ngClass]="getDifficultyBadgeClass(question.difficulty || '')" class="badge">
-                            <i class="bi bi-speedometer me-1"></i>
-                            {{ question.difficulty || 'Unknown' }}
-                        </span>
-                    </td>
-                    <td class="align-middle">
-                        <div class="d-flex flex-wrap gap-1">
-                            <span *ngFor="let tag of question.tags?.slice(0, 3)" class="badge bg-light text-dark">
-                                <i class="bi bi-tag-fill me-1"></i>{{ tag.name }}
-                            </span>
-                            <span *ngIf="(question.tags?.length || 0) > 3" class="badge bg-secondary">
-                                +{{ (question.tags?.length || 0) - 3 }} more
-                            </span>
-                            <span *ngIf="!question.tags || question.tags.length === 0" class="text-muted small">
-                                No tags
-                            </span>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <div>
-                            <div class="fw-medium">{{ question.userName || 'Unknown' }}</div>
-                            <small class="text-muted" *ngIf="question.userId">
-                                ID: {{ question.userId.substring(0, 8) }}...
-                            </small>
-                        </div>
-                    </td>
-                    <td class="align-middle">
-                        <div>
-                            <div class="fw-medium">{{ question.createdAt | localDateTime:'MMM d, y' }}</div>
-                            <small class="text-muted">{{ question.createdAt | localDateTime:'h:mm a' }}</small>
-                        </div>
-                    </td>
-                    <td class="align-middle text-center">
-                        <app-action-buttons
-                                [entityId]="question.id!"
-                                (view)="viewDetail($event.toString())"
-                                (edit)="editQuestion($event.toString())"
-                                (delete)="deleteQuestion($event.id.toString(), $event.event)">
-                        </app-action-buttons>
                     </td>
                 </tr>
+                <!-- Table content -->
+                <ng-container *ngIf="!isLoadingTable">
+                    <tr *ngFor="let question of questions; trackBy: trackByQuestionId"
+                        class="question-row"
+                        (click)="viewDetail(question.id!)"
+                        style="cursor: pointer;">
+                        <td class="align-middle">
+                            <div>
+                                <div class="fw-semibold">{{ truncateText(question.questionText || 'No question text', 80) }}</div>
+                                <small class="text-muted" *ngIf="question.source">
+                                    <i class="bi bi-book me-1"></i>{{ question.source }}
+                                </small>
+                                <small class="text-muted d-block">ID: {{ question.id?.substring(0, 8) }}...</small>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <span [ngClass]="getDifficultyBadgeClass(question.difficulty || '')" class="badge">
+                                <i class="bi bi-speedometer me-1"></i>
+                                {{ question.difficulty || 'Unknown' }}
+                            </span>
+                        </td>
+                        <td class="align-middle">
+                            <div class="d-flex flex-wrap gap-1">
+                                <span *ngIf="question.tagIds && question.tagIds.length > 0"
+                                      class="badge bg-light text-dark">
+                                    <i class="bi bi-tag-fill me-1"></i>{{ question.tagIds.length }} tag(s)
+                                </span>
+                                <span *ngIf="!question.tagIds || question.tagIds.length === 0" class="text-muted small">
+                                    No tags
+                                </span>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div>
+                                <div class="fw-medium">{{ question.userName || 'Unknown' }}</div>
+                                <small class="text-muted" *ngIf="question.userId">
+                                    ID: {{ question.userId.substring(0, 8) }}...
+                                </small>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div>
+                                <div class="fw-medium">{{ question.createdAt | localDateTime:'MMM d, y' }}</div>
+                                <small class="text-muted">{{ question.createdAt | localDateTime:'h:mm a' }}</small>
+                            </div>
+                        </td>
+                        <td class="align-middle text-center">
+                            <app-action-buttons
+                                    [entityId]="question.id!"
+                                    (view)="viewDetail($event.toString())"
+                                    (edit)="editQuestion($event.toString())"
+                                    (delete)="deleteQuestion($event.id.toString(), $event.event)">
+                            </app-action-buttons>
+                        </td>
+                    </tr>
+                </ng-container>
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- Questions Cards View -->
+    <div *ngIf="((!isLoadingList && questions.length > 0) || isLoadingTable) && viewMode === 'cards'" class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">
+                <i class="bi bi-grid me-2"></i>
+                Questions ({{ questionPage?.numberOfElements || 0 }} of {{ questionPage?.totalElements || 0 }})
+            </h5>
+        </div>
+
+        <!-- Loading spinner for cards content during filtering -->
+        <div *ngIf="isLoadingTable" class="text-center py-5">
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="spinner-border text-primary me-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="text-muted">Updating results...</span>
+            </div>
+        </div>
+
+        <!-- Cards content -->
+        <div *ngIf="!isLoadingTable" class="row g-3">
+            <div *ngFor="let question of questions; trackBy: trackByQuestionId"
+                 class="col-12 col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm question-card"
+                     (click)="viewDetail(question.id!)"
+                     style="cursor: pointer; transition: transform 0.2s ease-in-out;"
+                     onmouseover="this.style.transform='translateY(-2px)'"
+                     onmouseout="this.style.transform='translateY(0)'">
+
+                    <!-- Card Header with Difficulty Badge -->
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
+                        <span [ngClass]="getDifficultyBadgeClass(question.difficulty || '')" class="badge">
+                            <i class="bi bi-speedometer me-1"></i>
+                            {{ question.difficulty || 'Unknown' }}
+                        </span>
+                        <small class="text-muted">
+                            {{ question.createdAt | localDateTime:'MMM d, y' }}
+                        </small>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body d-flex flex-column">
+                        <!-- Question Text -->
+                        <div class="mb-3 flex-grow-1">
+                            <h6 class="card-title mb-2">
+                                <i class="bi bi-question-circle me-1 text-primary"></i>
+                                Question
+                            </h6>
+                            <p class="card-text">
+                                {{ truncateText(question.questionText || 'No question text', 120) }}
+                            </p>
+                        </div>
+
+                        <!-- Source -->
+                        <div *ngIf="question.source" class="mb-2">
+                            <small class="text-muted">
+                                <i class="bi bi-book me-1"></i>
+                                <strong>Source:</strong> {{ question.source }}
+                            </small>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                <span *ngIf="question.tagIds && question.tagIds.length > 0"
+                                      class="badge bg-light text-dark">
+                                    <i class="bi bi-tag-fill me-1"></i>{{ question.tagIds.length }} tag(s)
+                                </span>
+                                <span *ngIf="!question.tagIds || question.tagIds.length === 0"
+                                      class="badge bg-light text-muted">
+                                    <i class="bi bi-tag me-1"></i>No tags
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Author Info -->
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="bi bi-person me-1"></i>
+                                <strong>Author:</strong> {{ question.userName || 'Unknown' }}
+                            </small>
+                        </div>
+
+                        <!-- Additional Info -->
+                        <div class="d-flex justify-content-between align-items-center text-muted small">
+                            <span>
+                                <i class="bi bi-info-circle me-1"></i>
+                                ID: {{ question.id?.substring(0, 8) }}...
+                            </span>
+                            <span>
+                                {{ question.createdAt | localDateTime:'h:mm a' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer with Actions -->
+                    <div class="card-footer bg-transparent border-top-0 pt-0">
+                        <div class="d-flex justify-content-center">
+                            <app-action-buttons
+                                    [entityId]="question.id!"
+                                    (view)="viewDetail($event.toString())"
+                                    (edit)="editQuestion($event.toString())"
+                                    (delete)="deleteQuestion($event.id.toString(), $event.event)">
+                            </app-action-buttons>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Pagination -->
     <app-pagination
-            *ngIf="!isLoading && questionPage && questionPage.totalElements > 0"
+            *ngIf="(!isLoadingList && questionPage && questionPage.totalElements > 0) || (isLoadingTable && questionPage)"
             [page]="questionPage"
             (pageChange)="onPageChange($event)"
             (sizeChange)="onPageSizeChange($event)">

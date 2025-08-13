@@ -2,6 +2,7 @@ package com.vladte.devhack.common.model.dto.global.ai;
 
 import com.vladte.devhack.common.model.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +43,13 @@ public class AiPromptDTO implements BaseDTO {
 
     @Schema(description = "Last update timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
+
+    @Schema(description = "Number of arguments expected by the prompt")
+    @Min(value = 0, message = "Amount of arguments must be zero or positive")
+    private Integer amountOfArguments;
+
+    @Schema(description = "Description of the arguments expected by the prompt")
+    private String argsDescription;
 
     @Schema(description = "Category ID", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID categoryId;

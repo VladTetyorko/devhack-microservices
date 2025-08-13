@@ -6,9 +6,9 @@ import com.vladte.devhack.entities.global.Tag;
 import com.vladte.devhack.entities.global.Vacancy;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,10 +16,10 @@ import java.util.Set;
 /**
  * Entity representing a response to a job vacancy.
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "vacancy_responses")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class VacancyResponse extends UserOwnedBasicEntity {

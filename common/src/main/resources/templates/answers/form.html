@@ -3,9 +3,12 @@
       th:replace="~{fragments/layout :: layout(${pageTitle}, ~{::section})}">
 <body>
 <section>
-    <div class="card">
-        <div class="card-header">
-            <h3 th:text="${answer.id == null ? 'Create New Answer' : 'Edit Answer'}">Answer Form</h3>
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-edit fa-2x me-3"></i>
+                <h3 class="mb-0" th:text="${answer.id == null ? 'Create New Answer' : 'Edit Answer'}">Answer Form</h3>
+            </div>
         </div>
 
 
@@ -35,12 +38,59 @@
                 <input type="hidden" th:field="*{id}"/>
 
                 <!-- Answer Text -->
-                <div class="mb-3">
-                    <label for="text" class="form-label">Answer Text</label>
+                <div class="mb-4">
+                    <label for="text" class="form-label fw-bold">
+                        <i class="fas fa-comment-alt me-2 text-primary"></i>Your Answer
+                    </label>
                     <textarea th:field="*{text}" class="form-control" id="text"
-                              rows="5" placeholder="Enter your answer" required></textarea>
+                              rows="8"
+                              placeholder="Write your detailed answer here... Be specific and provide examples where possible."
+                              required maxlength="5000" oninput="updateCharCount()"></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Provide a comprehensive answer with examples and explanations. Minimum 5 characters, maximum
+                            5000.
+                        </div>
+                        <small class="text-muted">
+                            <span id="charCount">0</span>/5000 characters
+                        </small>
+                    </div>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('text')}"
                          th:errors="*{text}">Answer text error
+                    </div>
+                </div>
+
+                <!-- Confidence Level -->
+                <div class="mb-4">
+                    <label for="confidenceLevel" class="form-label fw-bold">
+                        <i class="fas fa-chart-line me-2 text-success"></i>Confidence Level
+                    </label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="range" th:field="*{confidenceLevel}" class="form-range" id="confidenceRange"
+                                   min="1" max="10" value="5" oninput="updateConfidenceDisplay(this.value)">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="number" th:field="*{confidenceLevel}" class="form-control" id="confidenceLevel"
+                                   min="1" max="10" value="5" oninput="updateConfidenceRange(this.value)">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">Not Confident</small>
+                            <small class="text-muted">Very Confident</small>
+                        </div>
+                        <div class="mt-1">
+                            <span id="confidenceText" class="badge bg-info">Moderate Confidence</span>
+                        </div>
+                    </div>
+                    <div class="form-text mt-2">
+                        <i class="fas fa-info-circle me-1"></i>
+                        How confident are you in this answer? This helps track your learning progress.
+                    </div>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confidenceLevel')}"
+                         th:errors="*{confidenceLevel}">Confidence level error
                     </div>
                 </div>
 
@@ -63,13 +113,110 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a th:href="@{/answers}" class="btn btn-outline-secondary me-md-2">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Answer</button>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a th:href="@{/answers}" class="btn btn-outline-secondary me-md-2">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-1"></i>Save Answer
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- JavaScript for enhanced UX -->
+    <script>
+        // Character count functionality
+        function updateCharCount() {
+            const textarea = document.getElementById('text');
+            const charCount = document.getElementById('charCount');
+            const currentLength = textarea.value.length;
+            charCount.textContent = currentLength;
+
+            // Change color based on character count
+            if (currentLength < 5) {
+                charCount.className = 'text-danger';
+            } else if (currentLength > 4500) {
+                charCount.className = 'text-warning';
+            } else {
+                charCount.className = 'text-muted';
+            }
+        }
+
+        // Confidence level functionality
+        function updateConfidenceDisplay(value) {
+            const confidenceText = document.getElementById('confidenceText');
+            const confidenceNumber = document.getElementById('confidenceLevel');
+
+            confidenceNumber.value = value;
+
+            // Update text and badge color based on confidence level
+            if (value <= 3) {
+                confidenceText.textContent = 'Low Confidence';
+                confidenceText.className = 'badge bg-danger';
+            } else if (value <= 6) {
+                confidenceText.textContent = 'Moderate Confidence';
+                confidenceText.className = 'badge bg-warning';
+            } else if (value <= 8) {
+                confidenceText.textContent = 'Good Confidence';
+                confidenceText.className = 'badge bg-info';
+            } else {
+                confidenceText.textContent = 'High Confidence';
+                confidenceText.className = 'badge bg-success';
+            }
+        }
+
+        function updateConfidenceRange(value) {
+            const confidenceRange = document.getElementById('confidenceRange');
+            confidenceRange.value = value;
+            updateConfidenceDisplay(value);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize character count
+            updateCharCount();
+
+            // Initialize confidence display
+            const initialConfidence = document.getElementById('confidenceLevel').value || 5;
+            updateConfidenceDisplay(initialConfidence);
+
+            // Add real-time validation feedback
+            const textarea = document.getElementById('text');
+            textarea.addEventListener('input', function () {
+                updateCharCount();
+
+                // Real-time validation feedback
+                if (this.value.length < 5) {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                }
+            });
+
+            // Form submission validation
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (e) {
+                const text = document.getElementById('text').value;
+                const confidence = document.getElementById('confidenceLevel').value;
+
+                if (text.length < 5) {
+                    e.preventDefault();
+                    alert('Please provide an answer with at least 5 characters.');
+                    return false;
+                }
+
+                if (!confidence || confidence < 1 || confidence > 10) {
+                    e.preventDefault();
+                    alert('Please select a confidence level between 1 and 10.');
+                    return false;
+                }
+            });
+        });
+    </script>
 </section>
 </body>
 </html>

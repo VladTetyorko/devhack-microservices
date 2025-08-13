@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Injector} from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
 import {Router} from '@angular/router';
@@ -7,14 +7,17 @@ import {AuthService} from '../services/basic/auth.service';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-      private authService: AuthService,
+      private injector: Injector,
       private router: Router
   ) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // Get AuthService lazily to avoid circular dependency
+    const authService = this.injector.get(AuthService);
+
     // Get JWT token from auth service
-    const token = this.authService.getToken();
+    const token = authService.getToken();
 
     // Clone the request and add Authorization header if token exists
     let authRequest: HttpRequest<any>;
@@ -37,8 +40,11 @@ export class AuthInterceptor implements HttpInterceptor {
         catchError(error => {
           // Handle 401 Unauthorized responses
           if (error.status === 401) {
+            // Get AuthService lazily to avoid circular dependency
+            const authService = this.injector.get(AuthService);
+
             // Clear local auth state and redirect to login
-            this.authService.logout().subscribe({
+            authService.logout().subscribe({
               complete: () => {
                 this.router.navigate(['/login'], {
                   queryParams: {returnUrl: this.router.url}

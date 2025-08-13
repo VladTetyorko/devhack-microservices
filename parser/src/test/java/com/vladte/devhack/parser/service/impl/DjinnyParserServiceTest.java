@@ -1,6 +1,7 @@
 package com.vladte.devhack.parser.service.impl;
 
 import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.parser.service.impl.parser.DjinnyParserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

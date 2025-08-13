@@ -1,8 +1,6 @@
 package com.vladte.devhack.common.model.dto.global;
 
 import com.vladte.devhack.common.model.dto.UserOwnedDTO;
-import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
-import com.vladte.devhack.common.model.dto.personalized.NoteDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,10 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * DTO for InterviewQuestion entity.
@@ -40,11 +35,11 @@ public class InterviewQuestionDTO extends UserOwnedDTO {
     private String source;
 
     @Schema(description = "IDs of tags associated with this question", accessMode = Schema.AccessMode.READ_ONLY)
-    private Set<TagDTO> tags = new HashSet<>();
+    private Set<UUID> tagIds = new HashSet<>();
 
     @Schema(description = "IDs of answers to this question", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<AnswerDTO> answers = new ArrayList<>();
+    private List<UUID> answerIds = new ArrayList<>();
 
     @Schema(description = "IDs of notes related to this question", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<NoteDTO> notes = new ArrayList<>();
+    private List<UUID> noteIds = new ArrayList<>();
 }

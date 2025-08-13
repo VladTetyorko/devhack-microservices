@@ -2,8 +2,7 @@ package com.vladte.devhack.common.model.mapper.global;
 
 import com.vladte.devhack.common.model.dto.global.InterviewQuestionDTO;
 import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
-import com.vladte.devhack.common.model.mapper.personalized.NoteMapper;
+import com.vladte.devhack.entities.BasicEntity;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import org.springframework.stereotype.Component;
 
@@ -14,16 +13,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class InterviewQuestionMapper implements EntityDTOMapper<InterviewQuestion, InterviewQuestionDTO> {
-
-    private final TagMapper tagMapper;
-    private final AnswerMapper answerMapper;
-    private final NoteMapper noteMapper;
-
-    public InterviewQuestionMapper(TagMapper tagMapper, AnswerMapper answerMapper, NoteMapper noteMapper) {
-        this.tagMapper = tagMapper;
-        this.answerMapper = answerMapper;
-        this.noteMapper = noteMapper;
-    }
 
     @Override
     public InterviewQuestionDTO toDTO(InterviewQuestion entity) {
@@ -44,20 +33,20 @@ public class InterviewQuestionMapper implements EntityDTOMapper<InterviewQuestio
         }
 
         if (entity.getTags() != null) {
-            dto.setTags(entity.getTags().stream()
-                    .map(tagMapper::toDTO)
+            dto.setTagIds(entity.getTags().stream()
+                    .map(BasicEntity::getId)
                     .collect(Collectors.toSet()));
         }
 
         if (entity.getAnswers() != null) {
-            dto.setAnswers(entity.getAnswers().stream()
-                    .map(answerMapper::toDTO)
+            dto.setAnswerIds(entity.getAnswers().stream()
+                    .map(BasicEntity::getId)
                     .collect(Collectors.toList()));
         }
 
         if (entity.getNotes() != null) {
-            dto.setNotes(entity.getNotes().stream()
-                    .map(noteMapper::toDTO)
+            dto.setNoteIds(entity.getNotes().stream()
+                    .map(BasicEntity::getId)
                     .collect(Collectors.toList()));
         }
 

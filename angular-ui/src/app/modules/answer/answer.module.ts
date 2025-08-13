@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 
 import {AnswerListComponent} from '../../components/answer/answer-list/answer-list.component';
 import {AnswerDetailComponent} from '../../components/answer/answer-detail/answer-detail.component';
+import {AnswerCreateComponent} from '../../components/answer/answer-create/answer-create.component';
 
 import {AnswerRoutingModule} from './answer-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -12,7 +13,8 @@ import {SharedModule} from '../shared/shared.module';
 @NgModule({
   declarations: [
       AnswerListComponent,
-      AnswerDetailComponent
+      AnswerDetailComponent,
+      AnswerCreateComponent
   ],
   imports: [
     CommonModule,

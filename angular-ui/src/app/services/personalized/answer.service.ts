@@ -61,6 +61,16 @@ export class AnswerService extends PersonalizedService<AnswerDTO> {
     }
 
     /**
+     * Create a new answer for a specific question
+     * @param questionId - Question ID to answer
+     * @param answerData - Answer data to create
+     * @returns Observable created answer
+     */
+    createForQuestion(questionId: string, answerData: AnswerDTO): Observable<AnswerDTO> {
+        return this.http.post<AnswerDTO>(`${this.baseUrl}/for-question/${questionId}`, answerData);
+    }
+
+    /**
      * Evaluate answer using AI
      * @param id - Answer ID to evaluate
      * @returns Observable evaluated answer

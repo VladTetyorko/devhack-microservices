@@ -262,14 +262,14 @@
                     (click)="viewDetail(user.id!)">
                     <td class="align-middle">
                         <div class="d-flex align-items-center">
-                            <div class="avatar-circle me-3" [ngClass]="{'bg-warning': !user.profile}">
-                                {{ getInitials(user.profile?.name) }}
+                            <div class="avatar-circle me-3" [ngClass]="{'bg-warning': !getUserProfile(user.id!)}">
+                                {{ getInitials(getUserProfile(user.id!)?.name) }}
                             </div>
                             <div>
                                 <div class="fw-semibold">
-                                    {{ user.profile?.name || 'Unknown User' }}
+                                    {{ getUserProfile(user.id!)?.name || 'Unknown User' }}
                                     <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                       *ngIf="!user.profile"
+                                       *ngIf="!getUserProfile(user.id!)"
                                        title="Profile data missing"></i>
                                 </div>
                                 <small class="text-muted">ID: {{ user.id?.substring(0, 8) }}...</small>
@@ -279,49 +279,50 @@
                     <td class="align-middle">
                         <div>
                             <div class="fw-medium">
-                                {{ user.credentials?.[0]?.email || 'No email' }}
+                                {{ getUserCredentials(user.id!)[0].email || 'No email' }}
                                 <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                   *ngIf="!user.credentials || user.credentials.length === 0"
+                                   *ngIf="getUserCredentials(user.id!).length === 0"
                                    title="Credentials data missing"></i>
                             </div>
                             <small class="text-muted">
                                 <i class="bi bi-shield-check me-1"
-                                   [ngClass]="{'text-warning': !user.credentials || user.credentials.length === 0}"></i>
-                                {{ user.credentials?.[0]?.provider || 'Unknown' }} Auth
+                                   [ngClass]="{'text-warning': getUserCredentials(user.id!).length === 0}"></i>
+                                {{ getUserCredentials(user.id!)[0].provider || 'Unknown' }} Auth
                             </small>
                         </div>
                     </td>
                     <td class="align-middle">
-                            <span *ngIf="user.access?.role"
-                                  [ngClass]="getRoleBadgeClass(user.access?.role || '')"
+                            <span *ngIf="getUserAccess(user.id!)?.role"
+                                  [ngClass]="getRoleBadgeClass(getUserAccess(user.id!)?.role || '')"
                                   class="badge">
                                 <i class="bi bi-person-badge me-1"></i>
-                                {{ user.access?.role }}
+                                {{ getUserAccess(user.id!)?.role }}
                             </span>
-                        <span *ngIf="!user.access?.role" class="badge bg-light text-dark">
+                        <span *ngIf="!getUserAccess(user.id!)?.role" class="badge bg-light text-dark">
                                 <i class="bi bi-question-circle me-1"></i>
                                 No Role
                                 <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                   *ngIf="!user.access"
+                                   *ngIf="!getUserAccess(user.id!)"
                                    title="Access data missing"></i>
                             </span>
                     </td>
                     <td class="align-middle">
                         <div class="d-flex flex-column gap-1">
-                                <span *ngIf="user.access?.accountLocked !== undefined"
-                                      [ngClass]="user.access?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
+                                <span *ngIf="getUserAccess(user.id!)?.accountLocked !== undefined"
+                                      [ngClass]="getUserAccess(user.id!)?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
                                       class="badge">
-                                    <i class="bi" [ngClass]="user.access?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
-                                    {{ user.access?.accountLocked ? 'Locked' : 'Active' }}
+                                    <i class="bi"
+                                       [ngClass]="getUserAccess(user.id!)?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                    {{ getUserAccess(user.id!)?.accountLocked ? 'Locked' : 'Active' }}
                                 </span>
-                            <span *ngIf="user.profile?.isVisibleToRecruiters !== undefined"
-                                  [ngClass]="user.profile?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
+                            <span *ngIf="getUserProfile(user.id!)?.isVisibleToRecruiters !== undefined"
+                                  [ngClass]="getUserProfile(user.id!)?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
                                   class="badge small">
                                     <i class="bi"
-                                       [ngClass]="user.profile?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
-                                {{ user.profile?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                       [ngClass]="getUserProfile(user.id!)?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                {{ getUserProfile(user.id!)?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
                                 </span>
-                            <span *ngIf="!user.access" class="badge bg-light text-dark">
+                            <span *ngIf="!getUserAccess(user.id!)" class="badge bg-light text-dark">
                                     <i class="bi bi-question-circle me-1"></i>
                                     Unknown
                                 </span>
@@ -329,21 +330,22 @@
                     </td>
                     <td class="align-middle">
                         <div class="d-flex flex-column gap-1">
-                                <span *ngIf="user.access?.aiUsageAllowed !== undefined"
-                                      [ngClass]="user.access?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
+                                <span *ngIf="getUserAccess(user.id!)?.aiUsageAllowed !== undefined"
+                                      [ngClass]="getUserAccess(user.id!)?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
                                       class="badge">
                                     <i class="bi"
-                                       [ngClass]="user.access?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                                    {{ user.access?.aiUsageAllowed ? 'Allowed' : 'Denied' }}
+                                       [ngClass]="getUserAccess(user.id!)?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                    {{ getUserAccess(user.id!)?.aiUsageAllowed ? 'Allowed' : 'Denied' }}
                                 </span>
-                            <span *ngIf="user.profile?.aiUsageEnabled !== undefined"
-                                  [ngClass]="user.profile?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
+                            <span *ngIf="getUserProfile(user.id!)?.aiUsageEnabled !== undefined"
+                                  [ngClass]="getUserProfile(user.id!)?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
                                   class="badge small">
                                     <i class="bi"
-                                       [ngClass]="user.profile?.aiUsageEnabled ? 'bi-robot' : 'bi-robot'"></i>
-                                {{ user.profile?.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
+                                       [ngClass]="getUserProfile(user.id!)?.aiUsageEnabled ? 'bi-robot' : 'bi-robot'"></i>
+                                {{ getUserProfile(user.id!)?.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
                                 </span>
-                            <span *ngIf="!user.access && !user.profile" class="badge bg-light text-dark">
+                            <span *ngIf="!getUserAccess(user.id!) && !getUserProfile(user.id!)"
+                                  class="badge bg-light text-dark">
                                     <i class="bi bi-question-circle me-1"></i>
                                     Unknown
                                 </span>
@@ -351,20 +353,20 @@
                     </td>
                     <td class="align-middle">
                         <div class="d-flex flex-column gap-1">
-                                <span *ngIf="user.profile?.cvFileName"
-                                      [ngClass]="user.profile?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
+                                <span *ngIf="getUserProfile(user.id!)?.cvFileName"
+                                      [ngClass]="getUserProfile(user.id!)?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
                                       class="badge">
                                     <i class="bi"
-                                       [ngClass]="user.profile?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
-                                    {{ user.profile?.cvParsedSuccessfully ? 'Parsed' : 'Failed' }}
+                                       [ngClass]="getUserProfile(user.id!)?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                    {{ getUserProfile(user.id!)?.cvParsedSuccessfully ? 'Parsed' : 'Failed' }}
                                 </span>
-                            <span *ngIf="user.profile?.aiCvScore !== undefined && user.profile?.aiCvScore !== null"
-                                  [ngClass]="'badge ' + (user.profile?.aiCvScore! >= 80 ? 'bg-success' : user.profile?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
+                            <span *ngIf="getUserProfile(user.id!)?.aiCvScore !== undefined && getUserProfile(user.id!)?.aiCvScore !== null"
+                                  [ngClass]="'badge ' + (getUserProfile(user.id!)?.aiCvScore! >= 80 ? 'bg-success' : getUserProfile(user.id!)?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
                                   class="badge small">
                                     <i class="bi bi-star-fill"></i>
-                                {{ user.profile?.aiCvScore }}/100
+                                {{ getUserProfile(user.id!)?.aiCvScore }}/100
                                 </span>
-                            <span *ngIf="!user.profile?.cvFileName" class="badge bg-light text-dark">
+                            <span *ngIf="!getUserProfile(user.id!)?.cvFileName" class="badge bg-light text-dark">
                                     <i class="bi bi-file-earmark-x me-1"></i>
                                     No CV
                                 </span>
@@ -389,76 +391,78 @@
                 <div class="col-xl-3 col-lg-4 col-md-6" *ngFor="let user of filteredUsers; trackBy: trackByUserId">
                     <div class="card user-card h-100 shadow-sm" (click)="viewDetail(user.id!)">
                         <div class="card-body text-center">
-                            <div class="avatar-circle-large mx-auto mb-3" [ngClass]="{'bg-warning': !user.profile}">
-                                {{ getInitials(user.profile?.name) }}
+                            <div class="avatar-circle-large mx-auto mb-3"
+                                 [ngClass]="{'bg-warning': !getUserProfile(user.id!)}">
+                                {{ getInitials(getUserProfile(user.id!)?.name) }}
                             </div>
                             <h6 class="card-title mb-1">
-                                {{ user.profile?.name || 'Unknown User' }}
+                                {{ getUserProfile(user.id!)?.name || 'Unknown User' }}
                                 <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                   *ngIf="!user.profile"
+                                   *ngIf="!getUserProfile(user.id!)"
                                    title="Profile data missing"></i>
                             </h6>
                             <p class="card-text text-muted small mb-2">
-                                {{ user.credentials?.[0]?.email || 'No email' }}
+                                {{ getUserCredentials(user.id!)[0].email || 'No email' }}
                                 <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                   *ngIf="!user.credentials || user.credentials.length === 0"
+                                   *ngIf="getUserCredentials(user.id!).length === 0"
                                    title="Credentials data missing"></i>
                             </p>
-                            <span [ngClass]="getRoleBadgeClass(user.access?.role || '')" class="badge mb-2">
-                                {{ user.access?.role || 'No Role' }}
+                            <span [ngClass]="getRoleBadgeClass(getUserAccess(user.id!)?.role || '')" class="badge mb-2">
+                                {{ getUserAccess(user.id!)?.role || 'No Role' }}
                                 <i class="bi bi-exclamation-triangle text-warning ms-1"
-                                   *ngIf="!user.access"
+                                   *ngIf="!getUserAccess(user.id!)"
                                    title="Access data missing"></i>
                             </span>
 
                             <!-- Additional Status Information -->
                             <div class="mb-2">
                                 <div class="d-flex justify-content-center gap-1 mb-1">
-                                    <span *ngIf="user.access?.accountLocked !== undefined"
-                                          [ngClass]="user.access?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
+                                    <span *ngIf="getUserAccess(user.id!)?.accountLocked !== undefined"
+                                          [ngClass]="getUserAccess(user.id!)?.accountLocked ? 'badge bg-danger' : 'badge bg-success'"
                                           class="badge small">
                                         <i class="bi"
-                                           [ngClass]="user.access?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
-                                        {{ user.access?.accountLocked ? 'Locked' : 'Active' }}
+                                           [ngClass]="getUserAccess(user.id!)?.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                        {{ getUserAccess(user.id!)?.accountLocked ? 'Locked' : 'Active' }}
                                     </span>
-                                    <span *ngIf="user.profile?.isVisibleToRecruiters !== undefined"
-                                          [ngClass]="user.profile?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
+                                    <span *ngIf="getUserProfile(user.id!)?.isVisibleToRecruiters !== undefined"
+                                          [ngClass]="getUserProfile(user.id!)?.isVisibleToRecruiters ? 'badge bg-info' : 'badge bg-secondary'"
                                           class="badge small">
                                         <i class="bi"
-                                           [ngClass]="user.profile?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
-                                        {{ user.profile?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                           [ngClass]="getUserProfile(user.id!)?.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                        {{ getUserProfile(user.id!)?.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-center gap-1 mb-1">
-                                    <span *ngIf="user.access?.aiUsageAllowed !== undefined"
-                                          [ngClass]="user.access?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
+                                    <span *ngIf="getUserAccess(user.id!)?.aiUsageAllowed !== undefined"
+                                          [ngClass]="getUserAccess(user.id!)?.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'"
                                           class="badge small">
                                         <i class="bi"
-                                           [ngClass]="user.access?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                                        AI {{ user.access?.aiUsageAllowed ? 'OK' : 'No' }}
+                                           [ngClass]="getUserAccess(user.id!)?.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                        AI {{ getUserAccess(user.id!)?.aiUsageAllowed ? 'OK' : 'No' }}
                                     </span>
-                                    <span *ngIf="user.profile?.aiUsageEnabled !== undefined"
-                                          [ngClass]="user.profile?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
+                                    <span *ngIf="getUserProfile(user.id!)?.aiUsageEnabled !== undefined"
+                                          [ngClass]="getUserProfile(user.id!)?.aiUsageEnabled ? 'badge bg-primary' : 'badge bg-light text-dark'"
                                           class="badge small">
                                         <i class="bi bi-robot"></i>
-                                        {{ user.profile?.aiUsageEnabled ? 'On' : 'Off' }}
+                                        {{ getUserProfile(user.id!)?.aiUsageEnabled ? 'On' : 'Off' }}
                                     </span>
                                 </div>
                                 <div class="d-flex justify-content-center gap-1 mb-2">
-                                    <span *ngIf="user.profile?.cvFileName"
-                                          [ngClass]="user.profile?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
+                                    <span *ngIf="getUserProfile(user.id!)?.cvFileName"
+                                          [ngClass]="getUserProfile(user.id!)?.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'"
                                           class="badge small">
                                         <i class="bi"
-                                           [ngClass]="user.profile?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
-                                        CV {{ user.profile?.cvParsedSuccessfully ? 'OK' : 'Error' }}
+                                           [ngClass]="getUserProfile(user.id!)?.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                        CV {{ getUserProfile(user.id!)?.cvParsedSuccessfully ? 'OK' : 'Error' }}
                                     </span>
-                                    <span *ngIf="user.profile?.aiCvScore !== undefined && user.profile?.aiCvScore !== null"
-                                          [ngClass]="'badge ' + (user.profile?.aiCvScore! >= 80 ? 'bg-success' : user.profile?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
+                                    <span *ngIf="getUserProfile(user.id!)?.aiCvScore !== undefined && getUserProfile(user.id!)?.aiCvScore !== null"
+                                          [ngClass]="'badge ' + (getUserProfile(user.id!)?.aiCvScore! >= 80 ? 'bg-success' : getUserProfile(user.id!)?.aiCvScore! >= 60 ? 'bg-warning' : 'bg-danger')"
                                           class="badge small">
                                         <i class="bi bi-star-fill"></i>
-                                        {{ user.profile?.aiCvScore }}/100
+                                        {{ getUserProfile(user.id!)?.aiCvScore }}/100
                                     </span>
-                                    <span *ngIf="!user.profile?.cvFileName" class="badge bg-light text-dark small">
+                                    <span *ngIf="!getUserProfile(user.id!)?.cvFileName"
+                                          class="badge bg-light text-dark small">
                                         <i class="bi bi-file-earmark-x"></i>
                                         No CV
                                     </span>

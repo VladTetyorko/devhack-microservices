@@ -17,6 +17,6 @@ public interface UserRepository
      */
     Optional<User> findByAuthProvidersEmail(String email);
 
-    @Query("SELECT u FROM User u JOIN FETCH u.profile WHERE u.id = :id")
-    Optional<User> findWithProfileById(UUID id);
+    @Query("SELECT u FROM User u JOIN FETCH u.profile JOIN FETCH u.authProviders JOIN FETCH u.userAccess WHERE u.id = :id ")
+    Optional<User> loadWithRelatedDetails(UUID id);
 }

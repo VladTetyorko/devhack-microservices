@@ -249,10 +249,10 @@
                             </div>
                         </div>
 
-                        <div class="mb-3" *ngIf="user.credentials && user.credentials.length > 0">
+                        <div class="mb-3" *ngIf="userCredentials && userCredentials.length > 0">
                             <label class="form-label fw-bold">Authentication Providers</label>
                             <div class="d-flex flex-wrap gap-2">
-                                <span *ngFor="let credential of user.credentials" class="badge bg-info">
+                                <span *ngFor="let credential of userCredentials" class="badge bg-info">
                                     <i class="bi bi-shield-check me-1"></i>
                                     {{ credential.provider || 'Unknown' }} - {{ credential.email || 'No email' }}
                                 </span>
@@ -286,22 +286,22 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div *ngIf="user.profile; else noProfile">
+                    <div *ngIf="userProfile; else noProfile">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Profile ID</label>
-                                    <div class="form-control-plaintext">{{ user.profile.id || 'N/A' }}</div>
+                                    <div class="form-control-plaintext">{{ userProfile.id || 'N/A' }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Visible to Recruiters</label>
                                     <div class="form-control-plaintext">
-                                        <span [ngClass]="user.profile.isVisibleToRecruiters ? 'badge bg-success' : 'badge bg-secondary'">
+                                        <span [ngClass]="userProfile.isVisibleToRecruiters ? 'badge bg-success' : 'badge bg-secondary'">
                                             <i class="bi"
-                                               [ngClass]="user.profile.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
-                                            {{ user.profile.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
+                                               [ngClass]="userProfile.isVisibleToRecruiters ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                            {{ userProfile.isVisibleToRecruiters ? 'Visible' : 'Hidden' }}
                                         </span>
                                     </div>
                                 </div>
@@ -309,7 +309,7 @@
                         </div>
 
                         <!-- CV Information -->
-                        <div class="mb-4" *ngIf="user.profile.cvFileName">
+                        <div class="mb-4" *ngIf="userProfile.cvFileName">
                             <h6 class="text-muted mb-3">
                                 <i class="bi bi-file-earmark-text me-2"></i>CV Information
                             </h6>
@@ -317,20 +317,20 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">CV File Name</label>
-                                        <div class="form-control-plaintext">{{ user.profile.cvFileName }}</div>
+                                        <div class="form-control-plaintext">{{ userProfile.cvFileName }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">File Type</label>
-                                        <div class="form-control-plaintext">{{ user.profile.cvFileType || 'N/A' }}</div>
+                                        <div class="form-control-plaintext">{{ userProfile.cvFileType || 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">File Size</label>
                                         <div class="form-control-plaintext">
-                                            {{ user.profile.cvFileSize ? (user.profile.cvFileSize / 1024 / 1024 | number:'1.2-2') + ' MB' : 'N/A' }}
+                                            {{ userProfile.cvFileSize ? (userProfile.cvFileSize / 1024 / 1024 | number:'1.2-2') + ' MB' : 'N/A' }}
                                         </div>
                                     </div>
                                 </div>
@@ -339,26 +339,26 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Uploaded At</label>
-                                        <div class="form-control-plaintext">{{ user.profile.cvUploadedAt | localDateTime:'medium' || 'N/A' }}</div>
+                                        <div class="form-control-plaintext">{{ userProfile.cvUploadedAt | localDateTime:'medium' || 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Parsing Status</label>
                                         <div class="form-control-plaintext">
-                                            <span [ngClass]="user.profile.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'">
+                                            <span [ngClass]="userProfile.cvParsedSuccessfully ? 'badge bg-success' : 'badge bg-warning'">
                                                 <i class="bi"
-                                                   [ngClass]="user.profile.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
-                                                {{ user.profile.cvParsedSuccessfully ? 'Successfully Parsed' : 'Parsing Failed' }}
+                                                   [ngClass]="userProfile.cvParsedSuccessfully ? 'bi-check-circle' : 'bi-exclamation-triangle'"></i>
+                                                {{ userProfile.cvParsedSuccessfully ? 'Successfully Parsed' : 'Parsing Failed' }}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3" *ngIf="user.profile.cvFileHref">
+                            <div class="mb-3" *ngIf="userProfile.cvFileHref">
                                 <label class="form-label fw-bold">CV File</label>
                                 <div class="form-control-plaintext">
-                                    <a [href]="user.profile.cvFileHref" target="_blank"
+                                    <a [href]="userProfile.cvFileHref" target="_blank"
                                        class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-download me-1"></i>Download CV
                                     </a>
@@ -376,10 +376,10 @@
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">AI Usage Enabled</label>
                                         <div class="form-control-plaintext">
-                                            <span [ngClass]="user.profile.aiUsageEnabled ? 'badge bg-success' : 'badge bg-secondary'">
+                                            <span [ngClass]="userProfile.aiUsageEnabled ? 'badge bg-success' : 'badge bg-secondary'">
                                                 <i class="bi"
-                                                   [ngClass]="user.profile.aiUsageEnabled ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                                                {{ user.profile.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
+                                                   [ngClass]="userProfile.aiUsageEnabled ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                                {{ userProfile.aiUsageEnabled ? 'Enabled' : 'Disabled' }}
                                             </span>
                                         </div>
                                     </div>
@@ -387,30 +387,30 @@
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">Preferred Language</label>
-                                        <div class="form-control-plaintext">{{ user.profile.aiPreferredLanguage || 'N/A' }}</div>
+                                        <div class="form-control-plaintext">{{ userProfile.aiPreferredLanguage || 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label class="form-label fw-bold">CV Score</label>
                                         <div class="form-control-plaintext">
-                                            <span *ngIf="user.profile.aiCvScore !== null && user.profile.aiCvScore !== undefined"
-                                                  [ngClass]="'badge ' + (user.profile.aiCvScore >= 80 ? 'bg-success' : user.profile.aiCvScore >= 60 ? 'bg-warning' : 'bg-danger')">
-                                                {{ user.profile.aiCvScore }}/100
+                                            <span *ngIf="userProfile.aiCvScore !== null && userProfile.aiCvScore !== undefined"
+                                                  [ngClass]="'badge ' + (userProfile.aiCvScore >= 80 ? 'bg-success' : userProfile.aiCvScore >= 60 ? 'bg-warning' : 'bg-danger')">
+                                                {{ userProfile.aiCvScore }}/100
                                             </span>
-                                            <span *ngIf="user.profile.aiCvScore === null || user.profile.aiCvScore === undefined"
+                                            <span *ngIf="userProfile.aiCvScore === null || userProfile.aiCvScore === undefined"
                                                   class="text-muted">N/A</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="mb-3" *ngIf="user.profile.aiSkillsSummary">
+                            <div class="mb-3" *ngIf="userProfile.aiSkillsSummary">
                                 <label class="form-label fw-bold">Skills Summary</label>
-                                <div class="form-control-plaintext bg-light p-3 rounded">{{ user.profile.aiSkillsSummary }}</div>
+                                <div class="form-control-plaintext bg-light p-3 rounded">{{ userProfile.aiSkillsSummary }}</div>
                             </div>
-                            <div class="mb-3" *ngIf="user.profile.aiSuggestedImprovements">
+                            <div class="mb-3" *ngIf="userProfile.aiSuggestedImprovements">
                                 <label class="form-label fw-bold">Suggested Improvements</label>
-                                <div class="form-control-plaintext bg-light p-3 rounded">{{ user.profile.aiSuggestedImprovements }}</div>
+                                <div class="form-control-plaintext bg-light p-3 rounded">{{ userProfile.aiSuggestedImprovements }}</div>
                             </div>
                         </div>
                     </div>
@@ -433,12 +433,12 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div *ngIf="user.access; else noAccess">
+                    <div *ngIf="userAccess; else noAccess">
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Access ID</label>
-                                    <div class="form-control-plaintext">{{ user.access.id || 'N/A' }}</div>
+                                    <div class="form-control-plaintext">{{ userAccess.id || 'N/A' }}</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -447,7 +447,7 @@
                                     <div class="form-control-plaintext">
                                         <span class="badge bg-primary">
                                             <i class="bi bi-person-badge me-1"></i>
-                                            {{ user.access.role }}
+                                            {{ userAccess.role }}
                                         </span>
                                     </div>
                                 </div>
@@ -456,10 +456,10 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Account Status</label>
                                     <div class="form-control-plaintext">
-                                        <span [ngClass]="user.access.accountLocked ? 'badge bg-danger' : 'badge bg-success'">
+                                        <span [ngClass]="userAccess.accountLocked ? 'badge bg-danger' : 'badge bg-success'">
                                             <i class="bi"
-                                               [ngClass]="user.access.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
-                                            {{ user.access.accountLocked ? 'Locked' : 'Active' }}
+                                               [ngClass]="userAccess.accountLocked ? 'bi-lock' : 'bi-unlock'"></i>
+                                            {{ userAccess.accountLocked ? 'Locked' : 'Active' }}
                                         </span>
                                     </div>
                                 </div>
@@ -470,10 +470,10 @@
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">AI Usage Allowed</label>
                                     <div class="form-control-plaintext">
-                                        <span [ngClass]="user.access.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'">
+                                        <span [ngClass]="userAccess.aiUsageAllowed ? 'badge bg-success' : 'badge bg-secondary'">
                                             <i class="bi"
-                                               [ngClass]="user.access.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                                            {{ user.access.aiUsageAllowed ? 'Allowed' : 'Not Allowed' }}
+                                               [ngClass]="userAccess.aiUsageAllowed ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                                            {{ userAccess.aiUsageAllowed ? 'Allowed' : 'Not Allowed' }}
                                         </span>
                                     </div>
                                 </div>

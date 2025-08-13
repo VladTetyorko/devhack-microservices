@@ -10,19 +10,6 @@
             <input type="hidden" th:field="*{id}"/>
 
             <div class="mb-3">
-                <label for="userId" class="form-label">User</label>
-                <select id="userId" name="userId" class="form-select" required>
-                    <option value="">Select a user</option>
-                    <option th:each="user : ${users}"
-                            th:value="${user.id}"
-                            th:text="${user.name}"
-                            th:selected="${vacancyResponse.userId != null && vacancyResponse.userId == user.id}">
-                        User Name
-                    </option>
-                </select>
-            </div>
-
-            <div class="mb-3">
                 <label for="vacancyId" class="form-label">Vacancy</label>
                 <select id="vacancyId" name="vacancyId" class="form-select" required>
                     <option value="">Select a vacancy</option>

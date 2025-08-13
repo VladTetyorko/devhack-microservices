@@ -3,13 +3,12 @@ package com.vladte.devhack.entities.global.ai;
 import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.EqualsAndHashCode;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ai_prompts")
 public class AiPrompt extends BasicEntity {
@@ -28,6 +27,12 @@ public class AiPrompt extends BasicEntity {
 
     @Column(nullable = false)
     private Boolean active;
+
+    @Column(name = "amount_of_arguments")
+    private Integer amountOfArguments;
+
+    @Column(name = "args_description", columnDefinition = "TEXT")
+    private String argsDescription;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

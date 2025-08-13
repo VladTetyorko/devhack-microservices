@@ -1,4 +1,4 @@
-package com.vladte.devhack.parser.service.impl;
+package com.vladte.devhack.parser.service.impl.parser;
 
 import com.vladte.devhack.entities.global.Vacancy;
 import com.vladte.devhack.parser.service.VacancyParser;

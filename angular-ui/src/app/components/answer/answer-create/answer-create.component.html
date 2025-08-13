@@ -1,0 +1,170 @@
+<div class="container-fluid px-4">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading question details...</p>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="success" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ success }}
+        <button type="button" class="btn-close" (click)="success = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Main Content -->
+    <div *ngIf="!isLoading">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-pencil-square fa-2x me-3"></i>
+                    <h3 class="mb-0">Create New Answer</h3>
+                </div>
+            </div>
+
+            <!-- Question Preview (if a question is pre-selected) -->
+            <div class="card mt-4" *ngIf="question">
+                <div class="card-header">
+                    <h3 class="mb-0">Question Preview</h3>
+                </div>
+                <div class="card-body">
+                    <h5>{{ question.questionText }}</h5>
+                    <div class="mb-2">
+            <span [ngClass]="getDifficultyBadgeClass(question.difficulty)" class="badge">
+              {{ question.difficulty }}
+            </span>
+                        <span *ngIf="question.tagIds && question.tagIds.length > 0" class="badge bg-info ms-1">
+              <i class="bi bi-tag me-1"></i>{{ question.tagIds.length }} tag(s)
+            </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <form [formGroup]="answerForm" (ngSubmit)="onSubmit()">
+                    <!-- Answer Text -->
+                    <div class="mb-4">
+                        <label for="text" class="form-label fw-bold">
+                            <i class="bi bi-chat-square-text me-2 text-primary"></i>Your Answer
+                        </label>
+                        <textarea
+                                formControlName="text"
+                                class="form-control"
+                                id="text"
+                                rows="8"
+                                placeholder="Write your detailed answer here... Be specific and provide examples where possible."
+                                [class.is-invalid]="answerForm.get('text')?.invalid && answerForm.get('text')?.touched"
+                                [class.is-valid]="answerForm.get('text')?.valid && answerForm.get('text')?.touched">
+            </textarea>
+                        <div class="d-flex justify-content-between mt-1">
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Provide a comprehensive answer with examples and explanations.
+                                Minimum {{ minCharacters }} characters, maximum {{ maxCharacters }}.
+                            </div>
+                            <small [ngClass]="getCharacterCountClass()">
+                                {{ characterCount }}/{{ maxCharacters }} characters
+                            </small>
+                        </div>
+                        <div class="invalid-feedback"
+                             *ngIf="answerForm.get('text')?.invalid && answerForm.get('text')?.touched">
+                            <div *ngIf="answerForm.get('text')?.errors?.['required']">Answer text is required</div>
+                            <div *ngIf="answerForm.get('text')?.errors?.['minlength']">Answer must be at
+                                least {{ minCharacters }} characters
+                            </div>
+                            <div *ngIf="answerForm.get('text')?.errors?.['maxlength']">Answer must not
+                                exceed {{ maxCharacters }} characters
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confidence Level -->
+                    <div class="mb-4">
+                        <label for="confidenceLevel" class="form-label fw-bold">
+                            <i class="bi bi-graph-up me-2 text-success"></i>Confidence Level
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input
+                                        type="range"
+                                        formControlName="confidenceLevel"
+                                        class="form-range"
+                                        id="confidenceRange"
+                                        min="1"
+                                        max="10">
+                            </div>
+                            <div class="col-md-6">
+                                <input
+                                        type="number"
+                                        formControlName="confidenceLevel"
+                                        class="form-control"
+                                        id="confidenceLevel"
+                                        min="1"
+                                        max="10"
+                                        [class.is-invalid]="answerForm.get('confidenceLevel')?.invalid && answerForm.get('confidenceLevel')?.touched">
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Not Confident</small>
+                                <small class="text-muted">Very Confident</small>
+                            </div>
+                            <div class="mt-1">
+                <span [ngClass]="getConfidenceBadgeClass(answerForm.get('confidenceLevel')?.value)">
+                  {{ getConfidenceText(answerForm.get('confidenceLevel')?.value) }}
+                </span>
+                            </div>
+                        </div>
+                        <div class="form-text mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            How confident are you in this answer? This helps track your learning progress.
+                        </div>
+                        <div class="invalid-feedback"
+                             *ngIf="answerForm.get('confidenceLevel')?.invalid && answerForm.get('confidenceLevel')?.touched">
+                            <div *ngIf="answerForm.get('confidenceLevel')?.errors?.['required']">Confidence level is
+                                required
+                            </div>
+                            <div *ngIf="answerForm.get('confidenceLevel')?.errors?.['min'] || answerForm.get('confidenceLevel')?.errors?.['max']">
+                                Confidence level must be between 1 and 10
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="button" class="btn btn-outline-secondary me-md-2" (click)="onCancel()"
+                                [disabled]="isSubmitting">
+                            <i class="bi bi-x-circle me-1"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg"
+                                [disabled]="answerForm.invalid || isSubmitting">
+                            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"
+                                  role="status"></span>
+                            <i *ngIf="!isSubmitting" class="bi bi-check-circle me-1"></i>
+                            {{ isSubmitting ? 'Creating...' : 'Create Answer' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Question Selected State -->
+    <div *ngIf="!isLoading && !question && !questionId && !error" class="text-center py-5">
+        <i class="bi bi-question-circle display-1 text-muted"></i>
+        <h3 class="mt-3 text-muted">No Question Selected</h3>
+        <p class="text-muted">Please select a question to answer first.</p>
+        <button type="button" class="btn btn-primary" routerLink="/interview-questions">
+            <i class="bi bi-arrow-left me-2"></i>Browse Questions
+        </button>
+    </div>
+</div>

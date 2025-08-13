@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {InterviewQuestionService} from '../../../services/global/interview-question.service';
+import {GenerateQuestionsRequest, InterviewQuestionService} from '../../../services/global/interview-question.service';
 import {InterviewQuestionDTO} from '../../../models/global/interview-question.model';
 
 @Component({
@@ -70,15 +70,23 @@ export class InterviewQuestionDetailComponent implements OnInit {
     }
 
     generateQuestions(): void {
-        if (!this.question?.tags || this.question.tags.length === 0) {
+        if (!this.question?.tagIds || this.question.tagIds.length === 0) {
             this.error = 'Cannot generate questions: No tags associated with this question.';
             return;
         }
 
-        const tagName = this.question.tags[0].name;
+        // For now, we'll use a default topic since we only have tag IDs
+        // In a full implementation, we'd fetch tag details or use a different approach
+        const tagName = 'General'; // Fallback topic
         const difficulty = this.question.difficulty || 'MEDIUM';
 
-        this.questionService.generateQuestions(tagName, 5, difficulty).subscribe({
+        const request: GenerateQuestionsRequest = {
+            topic: tagName,
+            count: 5,
+            difficulty: difficulty
+        };
+
+        this.questionService.generateQuestions(request).subscribe({
             next: (result) => {
                 this.success = 'Question generation started successfully!';
                 setTimeout(() => this.success = '', 3000);
@@ -115,6 +123,14 @@ export class InterviewQuestionDetailComponent implements OnInit {
         this.router.navigate(['/interview-questions']);
     }
 
+    addAnswer(): void {
+        if (this.question?.id) {
+            this.router.navigate(['/answers/create'], {
+                queryParams: {questionId: this.question.id}
+            });
+        }
+    }
+
     // Utility methods for the template
     getDifficultyBadgeClass(difficulty?: string): string {
         switch (difficulty?.toUpperCase()) {
@@ -139,9 +155,11 @@ export class InterviewQuestionDetailComponent implements OnInit {
     }
 
     getTagsText(): string {
-        if (!this.question?.tags || this.question.tags.length === 0) {
+        if (!this.question?.tagIds || this.question.tagIds.length === 0) {
             return 'No tags';
         }
-        return this.question.tags.map(tag => tag.name).join(', ');
+        // Since we only have tag IDs, we'll show the count for now
+        // In a full implementation, we'd fetch tag details to show names
+        return `${this.question.tagIds.length} tag(s)`;
     }
 }

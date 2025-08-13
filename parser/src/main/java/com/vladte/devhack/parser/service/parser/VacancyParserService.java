@@ -1,7 +1,8 @@
-package com.vladte.devhack.parser.service;
+package com.vladte.devhack.parser.service.parser;
 
 import com.vladte.devhack.entities.global.Vacancy;
 import com.vladte.devhack.parser.repository.VacancyRepository;
+import com.vladte.devhack.parser.service.VacancyParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class VacancyService {
+public class VacancyParserService {
 
     private final VacancyRepository vacancyRepository;
     private final VacancyParserFactory parserFactory;
