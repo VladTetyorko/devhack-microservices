@@ -4,7 +4,6 @@ import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
-import com.vladte.devhack.common.service.kafka.concumers.QuestionKafkaConsumer;
 import com.vladte.devhack.common.service.kafka.producers.QuestionKafkaProvider;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import com.vladte.devhack.entities.global.Tag;
