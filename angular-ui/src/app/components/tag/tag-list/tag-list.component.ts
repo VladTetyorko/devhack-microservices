@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {TagService} from '../../../services/global/tag.service';
 import {TagDTO} from '../../../models/global/tag.model';
+import {ActionButton, ActionButtonEvent} from '../../shared/action-buttons/action-buttons.component';
 
 @Component({
   selector: 'app-tag-list',
@@ -146,5 +147,41 @@ export class TagListComponent implements OnInit {
    */
   viewCategory(categoryId: string): void {
     this.router.navigate(['/categories', categoryId]);
+  }
+
+  getTopicActions(topic: TagDTO): ActionButton[] {
+    const actions: ActionButton[] = [];
+
+    // Add "View Category" action if topic has a parent
+    if (topic.parent) {
+      actions.push({
+        id: 'viewCategory',
+        label: 'View Category',
+        icon: 'bi-folder',
+        cssClass: 'dropdown-item',
+        action: 'viewCategory',
+        visible: true
+      });
+    }
+
+    return actions;
+  }
+
+  getTopicButtonActions(): ActionButton[] {
+    // Button variant doesn't include custom actions or delete
+    return [];
+  }
+
+  handleCustomAction(event: ActionButtonEvent, topic: TagDTO): void {
+    switch (event.action) {
+      case 'viewCategory':
+        if (topic.parent) {
+          this.viewCategory(topic.parent.id!);
+        }
+        break;
+      default:
+        console.warn('Unknown custom action:', event.action);
+        break;
+    }
   }
 }

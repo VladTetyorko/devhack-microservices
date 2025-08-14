@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {InterviewStageService} from '../../../services/global/interview-stage.service';
 import {InterviewStageDTO} from '../../../models/global/interview-stage.model';
 import {Page, PageRequest} from '../../../models/basic/page.model';
+import {PAGINATION_DEFAULTS, SKELETON_CONFIG, ViewMode} from '../../../shared/constants/constraints';
 
 @Component({
   selector: 'app-interview-stage-list',
@@ -20,17 +21,17 @@ export class InterviewStageListComponent implements OnInit {
   searchTerm = '';
   selectedCategory = '';
   selectedActive = '';
-  viewMode = 'table'; // 'table' or 'cards'
+  viewMode = ViewMode.TABLE;
 
   // Pagination properties
   currentPageRequest: PageRequest = {
-    page: 0,
-    size: 10,
-    sort: ['orderIndex,asc']
+    page: PAGINATION_DEFAULTS.PAGE,
+    size: PAGINATION_DEFAULTS.SIZE,
+    sort: ['orderIndex,asc'] // Specific sort for stages by order index
   };
 
   // Skeleton loading
-  skeletonItems = Array(6).fill(0); // Show 6 skeleton items while loading
+  skeletonItems = SKELETON_CONFIG.ITEMS;
 
   constructor(
     private stageService: InterviewStageService,

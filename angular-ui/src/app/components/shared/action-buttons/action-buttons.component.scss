@@ -1,7 +1,81 @@
 // Action buttons component styles
 // Most styling is handled by Bootstrap classes
-// Add any custom styles here if needed
 
+// Button group variant styles
 .d-flex {
   justify-content: center;
+
+  .btn {
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+// Dropdown variant styles
+.dropdown {
+  .dropdown-toggle {
+    border: none;
+    background: transparent;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &::after {
+      display: none; // Hide default Bootstrap dropdown arrow
+    }
+  }
+
+  .dropdown-menu {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    min-width: 160px;
+
+    .dropdown-item {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        background-color: #f8f9fa;
+        color: #495057;
+      }
+
+      &.text-danger:hover {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      i {
+        width: 16px;
+        text-align: center;
+      }
+    }
+
+    .dropdown-divider {
+      margin: 0.25rem 0;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .d-flex .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .dropdown-menu {
+    min-width: 140px;
+
+    .dropdown-item {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+  }
 }

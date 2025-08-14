@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {AnswerService} from '../../../services/personalized/answer.service';
 import {AnswerDTO} from '../../../models/personalized/answer.model';
 import {Page, PageRequest} from '../../../models/basic/page.model';
+import {PAGINATION_DEFAULTS, SKELETON_CONFIG, ViewMode} from '../../../shared/constants/constraints';
 
 @Component({
   selector: 'app-answer-list',
@@ -18,17 +19,17 @@ export class AnswerListComponent implements OnInit {
 
   // Search and filter properties
   searchTerm = '';
-  viewMode = 'table'; // 'table' or 'cards'
+    viewMode = ViewMode.TABLE;
 
   // Pagination properties
   currentPageRequest: PageRequest = {
-    page: 0,
-    size: 10,
-    sort: ['createdAt,desc']
+      page: PAGINATION_DEFAULTS.PAGE,
+      size: PAGINATION_DEFAULTS.SIZE,
+      sort: PAGINATION_DEFAULTS.DEFAULT_SORT
   };
 
   // Skeleton loading
-  skeletonItems = Array(6).fill(0); // Show 6 skeleton items while loading
+    skeletonItems = SKELETON_CONFIG.ITEMS;
 
   constructor(
     private answerService: AnswerService,

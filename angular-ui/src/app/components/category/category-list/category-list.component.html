@@ -66,38 +66,15 @@
                             <i class="bi bi-folder-fill me-2 text-primary"></i>
                             {{ category.name }}
                         </h5>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                    type="button"
-                                    data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" (click)="viewDetail(category.id!)">
-                                        <i class="bi bi-eye me-2"></i> View Details
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" (click)="editCategory(category.id!)">
-                                        <i class="bi bi-pencil me-2"></i> Edit
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" (click)="viewTopics(category.id!)">
-                                        <i class="bi bi-tags me-2"></i> View Topics
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item text-danger" (click)="deleteCategory(category.id!, $event)">
-                                        <i class="bi bi-trash me-2"></i> Delete
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="category.id!"
+                                variant="dropdown"
+                                [customActions]="getCategoryActions()"
+                                (view)="viewDetail($event.toString())"
+                                (edit)="editCategory($event.toString())"
+                                (delete)="deleteCategory($event.id.toString(), $event.event)"
+                                (customAction)="handleCustomAction($event)">
+                        </app-action-buttons>
                     </div>
 
                     <p class="card-text text-muted flex-grow-1" *ngIf="category.description">
@@ -113,17 +90,14 @@
                                 <i class="bi bi-tags me-1"></i>
                                 {{ category.questionCount || 0 }} questions
                             </small>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" (click)="viewDetail(category.id!)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" (click)="editCategory(category.id!)">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-outline-info" (click)="viewTopics(category.id!)">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </div>
+                            <app-action-buttons
+                                    [entityId]="category.id!"
+                                    variant="buttons"
+                                    [customActions]="getCategoryButtonActions()"
+                                    (view)="viewDetail($event.toString())"
+                                    (edit)="editCategory($event.toString())"
+                                    (customAction)="handleCustomAction($event)">
+                            </app-action-buttons>
                         </div>
                     </div>
                 </div>

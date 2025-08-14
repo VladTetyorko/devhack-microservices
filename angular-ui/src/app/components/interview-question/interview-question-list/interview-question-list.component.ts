@@ -15,6 +15,13 @@ import {
 } from '../../../services/websocket/question-websocket.service';
 import {Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {
+    DIFFICULTY_LEVELS,
+    PAGINATION_DEFAULTS,
+    SEARCH_DEFAULTS,
+    SKELETON_CONFIG,
+    ViewMode
+} from '../../../shared/constants/constraints';
 
 @Component({
     selector: 'app-interview-question-list',
@@ -48,26 +55,22 @@ export class InterviewQuestionListComponent implements OnInit, OnDestroy {
     searchTerm = '';
     selectedDifficulty = '';
     selectedTagId = '';
-    viewMode = 'table'; // 'table' or 'cards'
+    viewMode = ViewMode.TABLE;
     showAdvancedSearch = false;
 
     // Available options for filters
     availableTags: TagModel[] = [];
-    difficultyLevels = [
-        {value: 'EASY', label: 'Easy'},
-        {value: 'MEDIUM', label: 'Medium'},
-        {value: 'HARD', label: 'Hard'}
-    ];
+    difficultyLevels = DIFFICULTY_LEVELS;
 
     // Pagination properties
     currentPageRequest: PageRequest = {
-        page: 0,
-        size: 10,
-        sort: ['createdAt,desc']
+        page: PAGINATION_DEFAULTS.PAGE,
+        size: PAGINATION_DEFAULTS.SIZE,
+        sort: PAGINATION_DEFAULTS.DEFAULT_SORT
     };
 
     // Skeleton loading
-    skeletonItems = Array(6).fill(0); // Show 6 skeleton items while loading
+    skeletonItems = SKELETON_CONFIG.ITEMS;
 
     constructor(
         private questionService: InterviewQuestionService,
@@ -100,7 +103,7 @@ export class InterviewQuestionListComponent implements OnInit, OnDestroy {
 
     setupDebouncedSearch(): void {
         this.searchSubscription = this.searchSubject.pipe(
-            debounceTime(1000), // Wait 300ms after user stops typing
+            debounceTime(SEARCH_DEFAULTS.DEBOUNCE_TIME), // Wait for user to stop typing
             distinctUntilChanged() // Only emit if search term has changed
         ).subscribe(searchTerm => {
             console.log('[DEBUG_LOG] Debounced search triggered for:', searchTerm);

@@ -6,10 +6,10 @@ import {TagCreateComponent} from '../../components/tag/tag-create/tag-create.com
 import {TagEditComponent} from '../../components/tag/tag-edit/tag-edit.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: TagListComponent
-  },
+    {
+        path: '',
+        component: TagListComponent
+    },
     {
         path: 'create',
         component: TagCreateComponent
@@ -21,11 +21,11 @@ const routes: Routes = [
     {
         path: ':id/edit',
         component: TagEditComponent
-  }
+    }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
 export class TagRoutingModule { }

@@ -5,6 +5,7 @@ import {InterviewQuestionService} from '../../../services/global/interview-quest
 import {TagService} from '../../../services/global/tag.service';
 import {InterviewQuestionDTO} from '../../../models/global/interview-question.model';
 import {TagDTO} from '../../../models/global/tag.model';
+import {DIFFICULTY_LEVELS, QUESTION_CONSTRAINTS} from '../../../shared/constants/constraints';
 
 /**
  * Component for creating new interview questions.
@@ -23,11 +24,7 @@ export class InterviewQuestionCreateComponent implements OnInit {
     availableTags: TagDTO[] = [];
     selectedTags: string[] = [];
 
-    difficultyLevels = [
-        {value: 'EASY', label: 'Easy'},
-        {value: 'MEDIUM', label: 'Medium'},
-        {value: 'HARD', label: 'Hard'}
-    ];
+    difficultyLevels = DIFFICULTY_LEVELS;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -49,13 +46,13 @@ export class InterviewQuestionCreateComponent implements OnInit {
         return this.formBuilder.group({
             questionText: ['', [
                 Validators.required,
-                Validators.minLength(10),
-                Validators.maxLength(1000)
+                Validators.minLength(QUESTION_CONSTRAINTS.MIN_QUESTION_LENGTH),
+                Validators.maxLength(QUESTION_CONSTRAINTS.MAX_QUESTION_LENGTH)
             ]],
             difficulty: ['MEDIUM', [Validators.required]],
-            source: ['', [Validators.maxLength(255)]],
-            expectedAnswer: ['', [Validators.maxLength(2000)]],
-            hints: ['', [Validators.maxLength(500)]],
+            source: ['', [Validators.maxLength(QUESTION_CONSTRAINTS.MAX_SOURCE_LENGTH)]],
+            expectedAnswer: ['', [Validators.maxLength(QUESTION_CONSTRAINTS.MAX_EXPECTED_ANSWER_LENGTH)]],
+            hints: ['', [Validators.maxLength(QUESTION_CONSTRAINTS.MAX_HINTS_LENGTH)]],
             tagNames: [[]]
         });
     }

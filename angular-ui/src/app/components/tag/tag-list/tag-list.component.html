@@ -79,38 +79,15 @@
                             <i class="bi bi-tag-fill me-2 text-primary"></i>
                             {{ topic.name }}
                         </h5>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                    type="button"
-                                    data-bs-toggle="dropdown">
-                                <i class="bi bi-three-dots"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item" (click)="viewDetail(topic.id!)">
-                                        <i class="bi bi-eye me-2"></i> View Details
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" (click)="editTopic(topic.id!)">
-                                        <i class="bi bi-pencil me-2"></i> Edit
-                                    </a>
-                                </li>
-                                <li *ngIf="topic.parent">
-                                    <a class="dropdown-item" (click)="viewCategory(topic.parent.id!)">
-                                        <i class="bi bi-folder me-2"></i> View Category
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item text-danger" (click)="deleteTopic(topic.id!, $event)">
-                                        <i class="bi bi-trash me-2"></i> Delete
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <app-action-buttons
+                                [entityId]="topic.id!"
+                                variant="dropdown"
+                                [customActions]="getTopicActions(topic)"
+                                (view)="viewDetail($event.toString())"
+                                (edit)="editTopic($event.toString())"
+                                (delete)="deleteTopic($event.id.toString(), $event.event)"
+                                (customAction)="handleCustomAction($event, topic)">
+                        </app-action-buttons>
                     </div>
 
                     <p class="card-text text-muted flex-grow-1" *ngIf="topic.description">
@@ -132,14 +109,15 @@
                                 <i class="bi bi-question-circle me-1"></i>
                                 {{ topic.questionCount || 0 }} questions
                             </small>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" (click)="viewDetail(topic.id!)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" (click)="editTopic(topic.id!)">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                            </div>
+                            <app-action-buttons
+                                    [entityId]="topic.id!"
+                                    variant="buttons"
+                                    [showDelete]="false"
+                                    [customActions]="getTopicButtonActions()"
+                                    (view)="viewDetail($event.toString())"
+                                    (edit)="editTopic($event.toString())"
+                                    (customAction)="handleCustomAction($event, topic)">
+                            </app-action-buttons>
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import {UserAccessDTO} from '../../../models/user/user-access.model';
 import {Page, PageRequest} from '../../../models/basic/page.model';
 import {forkJoin, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import {PAGINATION_DEFAULTS, SKELETON_CONFIG, ViewMode} from '../../../shared/constants/constraints';
 
 @Component({
     selector: 'app-user-list',
@@ -32,17 +33,17 @@ export class UserListComponent implements OnInit {
     // Search and filter properties
     searchTerm = '';
     selectedRole = '';
-    viewMode = 'table'; // 'table' or 'cards'
+    viewMode = ViewMode.TABLE;
 
     // Pagination properties
     currentPageRequest: PageRequest = {
-        page: 0,
-        size: 10,
-        sort: ['createdAt,desc']
+        page: PAGINATION_DEFAULTS.PAGE,
+        size: PAGINATION_DEFAULTS.SIZE,
+        sort: PAGINATION_DEFAULTS.DEFAULT_SORT
     };
 
     // Skeleton loading
-    skeletonItems = Array(6).fill(0); // Show 6 skeleton items while loading
+    skeletonItems = SKELETON_CONFIG.ITEMS;
 
     constructor(
         private userService: UserService,
@@ -184,7 +185,6 @@ export class UserListComponent implements OnInit {
     deleteUser(id: string, event: Event): void {
         event.stopPropagation();
 
-        const user = this.allUsers.find(u => u.id === id);
         const profile = this.getUserProfile(id);
         const userName = profile?.name || 'this user';
 

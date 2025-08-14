@@ -8,6 +8,7 @@ import {CategoryDetailComponent} from '../../components/category/category-detail
 import {CategoryCreateComponent} from '../../components/category/category-create/category-create.component';
 import {CategoryEditComponent} from '../../components/category/category-edit/category-edit.component';
 import {CategoryRoutingModule} from './category-routing.module';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import {CategoryRoutingModule} from './category-routing.module';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        CategoryRoutingModule
+        CategoryRoutingModule,
+        SharedModule
     ],
     exports: [
         CategoryListComponent,

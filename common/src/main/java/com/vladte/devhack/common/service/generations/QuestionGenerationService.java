@@ -23,5 +23,5 @@ public interface QuestionGenerationService {
     CompletableFuture<List<InterviewQuestion>> generateAndSaveQuestions(String tagName, int count, String difficulty);
 
     @Transactional
-    void saveQuestionsToDatabase(List<String> questionTexts, String difficulty, Tag tag, List<InterviewQuestion> savedQuestions);
+    List<InterviewQuestion> saveQuestionsToDatabase(List<String> questionTexts, String difficulty, Tag tag);
 }

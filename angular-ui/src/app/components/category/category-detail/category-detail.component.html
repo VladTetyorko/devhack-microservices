@@ -182,20 +182,13 @@
                                             {{ topic.questionCount || 0 }} questions
                                         </small>
                                     </div>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                                type="button"
-                                                data-bs-toggle="dropdown">
-                                            <i class="bi bi-three-dots"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" (click)="viewTopic(topic.id!)">
-                                                    <i class="bi bi-eye me-2"></i> View Details
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <app-action-buttons
+                                            [entityId]="topic.id!"
+                                            variant="dropdown"
+                                            [showEdit]="false"
+                                            [showDelete]="false"
+                                            (view)="viewTopic($event.toString())">
+                                    </app-action-buttons>
                                 </div>
                             </div>
                         </div>

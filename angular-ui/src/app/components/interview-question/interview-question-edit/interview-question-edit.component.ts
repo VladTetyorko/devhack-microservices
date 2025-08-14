@@ -5,6 +5,7 @@ import {InterviewQuestionService} from '../../../services/global/interview-quest
 import {TagService} from '../../../services/global/tag.service';
 import {InterviewQuestionDTO} from '../../../models/global/interview-question.model';
 import {TagDTO} from '../../../models/global/tag.model';
+import {DIFFICULTY_LEVELS, QUESTION_CONSTRAINTS} from '../../../shared/constants/constraints';
 
 /**
  * Component for editing existing interview questions.
@@ -26,11 +27,7 @@ export class InterviewQuestionEditComponent implements OnInit {
     availableTags: TagDTO[] = [];
     selectedTags: string[] = [];
 
-    difficultyLevels = [
-        {value: 'EASY', label: 'Easy'},
-        {value: 'MEDIUM', label: 'Medium'},
-        {value: 'HARD', label: 'Hard'}
-    ];
+    difficultyLevels = DIFFICULTY_LEVELS;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -60,11 +57,11 @@ export class InterviewQuestionEditComponent implements OnInit {
         return this.formBuilder.group({
             questionText: ['', [
                 Validators.required,
-                Validators.minLength(10),
-                Validators.maxLength(2000)
+                Validators.minLength(QUESTION_CONSTRAINTS.MIN_QUESTION_LENGTH),
+                Validators.maxLength(QUESTION_CONSTRAINTS.MAX_QUESTION_LENGTH)
             ]],
             difficulty: ['MEDIUM', [Validators.required]],
-            source: ['', [Validators.maxLength(255)]],
+            source: ['', [Validators.maxLength(QUESTION_CONSTRAINTS.MAX_SOURCE_LENGTH)]],
             tags: [[]]
         });
     }

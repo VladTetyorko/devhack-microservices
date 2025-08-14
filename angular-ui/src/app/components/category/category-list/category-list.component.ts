@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {TagService} from '../../../services/global/tag.service';
 import {TagDTO} from '../../../models/global/tag.model';
+import {ActionButton, ActionButtonEvent} from '../../shared/action-buttons/action-buttons.component';
 
 @Component({
     selector: 'app-category-list',
@@ -87,5 +88,42 @@ export class CategoryListComponent implements OnInit {
 
     viewTopics(categoryId: string): void {
         this.router.navigate(['/topics'], {queryParams: {category: categoryId}});
+    }
+
+    getCategoryActions(): ActionButton[] {
+        return [
+            {
+                id: 'viewTopics',
+                label: 'View Topics',
+                icon: 'bi-tags',
+                cssClass: 'dropdown-item',
+                action: 'viewTopics',
+                visible: true
+            }
+        ];
+    }
+
+    getCategoryButtonActions(): ActionButton[] {
+        return [
+            {
+                id: 'viewTopics',
+                label: 'View Topics',
+                icon: 'bi-arrow-right',
+                cssClass: 'btn btn-outline-info',
+                action: 'viewTopics',
+                visible: true
+            }
+        ];
+    }
+
+    handleCustomAction(event: ActionButtonEvent): void {
+        switch (event.action) {
+            case 'viewTopics':
+                this.viewTopics(event.entityId.toString());
+                break;
+            default:
+                console.warn('Unknown custom action:', event.action);
+                break;
+        }
     }
 }
