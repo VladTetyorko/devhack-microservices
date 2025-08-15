@@ -45,6 +45,10 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.4'
 
+    // Template engine and JSON Schema validation for PromptRenderServiceImpl
+    implementation 'com.github.spullara.mustache.java:compiler:0.9.10'
+    implementation 'com.networknt:json-schema-validator:1.5.8'
+
 
     // OpenAPI/Swagger documentation
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0'

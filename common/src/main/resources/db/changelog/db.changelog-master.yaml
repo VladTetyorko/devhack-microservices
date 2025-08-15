@@ -33,3 +33,7 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/16-add-arguments-fields-to-ai-prompts.sql
   - include:
       file: classpath:db/changelog/changes/17-add-ltree-support-to-tags.sql
+  - include:
+      file: classpath:db/changelog/changes/18-migrate-ai-prompts-to-new-schema.sql
+  - include:
+      file: classpath:db/changelog/changes/19-populate-initial-ai-prompts.sql

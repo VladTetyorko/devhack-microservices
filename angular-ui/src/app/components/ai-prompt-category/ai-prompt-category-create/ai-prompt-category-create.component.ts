@@ -46,7 +46,7 @@ export class AiPromptCategoryCreateComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
-                Validators.pattern(/^[A-Z0-9_]+$/) // Uppercase letters, numbers, underscores only
+                Validators.pattern(/^[A-Za-z0-9_]+$/) // Letters (uppercase/lowercase), numbers, underscores only
             ]],
             description: ['', [
                 Validators.maxLength(500)
@@ -68,7 +68,7 @@ export class AiPromptCategoryCreateComponent implements OnInit {
 
         const categoryData: Partial<AiPromptCategoryModel> = {
             name: this.categoryForm.get('name')?.value?.trim(),
-            code: this.categoryForm.get('code')?.value?.trim().toUpperCase(),
+            code: this.categoryForm.get('code')?.value?.trim(),
             description: this.categoryForm.get('description')?.value?.trim() || undefined
         };
 
@@ -153,7 +153,7 @@ export class AiPromptCategoryCreateComponent implements OnInit {
         }
         if (errors['pattern']) {
             if (fieldName === 'code') {
-                return `${fieldLabel} must contain only uppercase letters, numbers, and underscores.`;
+                return `${fieldLabel} must contain only letters, numbers, and underscores.`;
             }
             return `${fieldLabel} contains invalid characters. Only letters, numbers, spaces, hyphens, and underscores are allowed.`;
         }

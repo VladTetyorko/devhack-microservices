@@ -51,12 +51,20 @@ export class AiPromptDetailComponent implements OnInit {
         this.aiPromptService.getById(id).subscribe({
             next: (prompt) => {
                 console.log('[DEBUG_LOG] Loaded AI prompt details:', prompt);
-                this.prompt = prompt;
+                // Normalize to support legacy template bindings
+                const normalized: AiPromptModel = {
+                    ...prompt,
+                    code: prompt.key || prompt.code,
+                    prompt: (prompt as any).userTemplate || prompt.prompt,
+                    active: (prompt.enabled ?? (prompt as any).active) ?? false,
+                    language: (prompt as any).language || 'en'
+                };
+                this.prompt = normalized;
                 this.isLoading = false;
 
                 // Load category information if available
-                if (prompt.categoryId) {
-                    this.loadCategory(prompt.categoryId);
+                if (normalized.categoryId) {
+                    this.loadCategory(normalized.categoryId);
                 }
             },
             error: (err) => {
@@ -124,16 +132,24 @@ export class AiPromptDetailComponent implements OnInit {
     toggleActive(): void {
         if (!this.prompt || !this.promptId) return;
 
-        const action = this.prompt.active ? 'deactivate' : 'activate';
-        const service = this.prompt.active ?
+        const isEnabled = (this.prompt.enabled ?? this.prompt.active) ?? false;
+        const action = isEnabled ? 'deactivate' : 'activate';
+        const service = isEnabled ?
             this.aiPromptService.deactivate(this.promptId) :
             this.aiPromptService.activate(this.promptId);
 
         service.subscribe({
             next: (updatedPrompt) => {
                 console.log(`[DEBUG_LOG] AI prompt ${action}d successfully:`, updatedPrompt);
-                this.prompt = updatedPrompt;
-                this.successMessage = `AI Prompt "${this.prompt.code}" has been ${action}d successfully.`;
+                const normalized: AiPromptModel = {
+                    ...updatedPrompt,
+                    code: updatedPrompt.key || (updatedPrompt as any).code,
+                    prompt: (updatedPrompt as any).userTemplate || (updatedPrompt as any).prompt,
+                    active: (updatedPrompt.enabled ?? (updatedPrompt as any).active) ?? false
+                };
+                this.prompt = normalized;
+                const label = normalized.code || normalized.key || 'prompt';
+                this.successMessage = `AI Prompt "${label}" has been ${action}d successfully.`;
                 setTimeout(() => this.successMessage = '', 3000);
             },
             error: (err) => {
@@ -174,7 +190,16 @@ export class AiPromptDetailComponent implements OnInit {
             'ko': 'Korean'
         };
 
-        return languageMap[this.prompt?.language || 'en'] || this.prompt?.language || 'English';
+        return languageMap[(this.prompt as any)?.language || 'en'] || (this.prompt as any)?.language || 'English';
+    }
+
+    prettyPrintJson(value: any): string {
+        try {
+            if (!value) return '';
+            return JSON.stringify(value, null, 2);
+        } catch {
+            return '';
+        }
     }
 
     /**

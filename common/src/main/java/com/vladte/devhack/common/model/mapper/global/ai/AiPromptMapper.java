@@ -5,9 +5,6 @@ import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
 import com.vladte.devhack.entities.global.ai.AiPrompt;
 import org.springframework.stereotype.Component;
 
-/**
- * Mapper for converting between AiPrompt entity and AiPromptDTO.
- */
 @Component
 public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
 
@@ -18,13 +15,17 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
 
         AiPromptDTO dto = new AiPromptDTO();
         dto.setId(entity.getId());
-        dto.setCode(entity.getCode());
+        dto.setKey(entity.getKey());
+        dto.setSystemTemplate(entity.getSystemTemplate());
+        dto.setUserTemplate(entity.getUserTemplate());
+        dto.setEnabled(entity.getEnabled());
+        dto.setArgsSchema(entity.getArgsSchema());
+        dto.setDefaults(entity.getDefaults());
+        dto.setModel(entity.getModel());
+        dto.setParameters(entity.getParameters());
+        dto.setResponseContract(entity.getResponseContract());
+        dto.setVersion(entity.getVersion());
         dto.setDescription(entity.getDescription());
-        dto.setPrompt(entity.getPrompt());
-        dto.setLanguage(entity.getLanguage());
-        dto.setActive(entity.getActive());
-        dto.setAmountOfArguments(entity.getAmountOfArguments());
-        dto.setArgsDescription(entity.getArgsDescription());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
 
@@ -43,17 +44,18 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
 
         AiPrompt entity = new AiPrompt();
         entity.setId(dto.getId());
-        entity.setCode(dto.getCode());
+        entity.setKey(dto.getKey());
+        entity.setSystemTemplate(dto.getSystemTemplate());
+        entity.setUserTemplate(dto.getUserTemplate());
+        entity.setEnabled(dto.getEnabled());
+        entity.setArgsSchema(dto.getArgsSchema());
+        entity.setDefaults(dto.getDefaults());
+        entity.setModel(dto.getModel());
+        entity.setParameters(dto.getParameters());
+        entity.setResponseContract(dto.getResponseContract());
+        entity.setVersion(dto.getVersion());
         entity.setDescription(dto.getDescription());
-        entity.setPrompt(dto.getPrompt());
-        entity.setLanguage(dto.getLanguage());
-        entity.setActive(dto.getActive());
-        entity.setAmountOfArguments(dto.getAmountOfArguments());
-        entity.setArgsDescription(dto.getArgsDescription());
-
-        // Note: Category needs to be set by the service layer
-        // as it requires fetching the related entity from the database
-
+        // Category should be set in service layer if needed
         return entity;
     }
 
@@ -62,18 +64,17 @@ public class AiPromptMapper implements EntityDTOMapper<AiPrompt, AiPromptDTO> {
             return entity;
         }
 
-        entity.setCode(dto.getCode());
+        entity.setKey(dto.getKey());
+        entity.setSystemTemplate(dto.getSystemTemplate());
+        entity.setUserTemplate(dto.getUserTemplate());
+        entity.setEnabled(dto.getEnabled());
+        entity.setArgsSchema(dto.getArgsSchema());
+        entity.setDefaults(dto.getDefaults());
+        entity.setModel(dto.getModel());
+        entity.setParameters(dto.getParameters());
+        entity.setResponseContract(dto.getResponseContract());
+        entity.setVersion(dto.getVersion());
         entity.setDescription(dto.getDescription());
-        entity.setPrompt(dto.getPrompt());
-        entity.setLanguage(dto.getLanguage());
-        entity.setActive(dto.getActive());
-        entity.setAmountOfArguments(dto.getAmountOfArguments());
-        entity.setArgsDescription(dto.getArgsDescription());
-
-        // Note: Category needs to be updated by the service layer
-        // as it requires fetching the related entity from the database
-
         return entity;
     }
-
 }

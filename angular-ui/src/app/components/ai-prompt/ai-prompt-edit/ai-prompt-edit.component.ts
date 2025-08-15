@@ -56,19 +56,29 @@ export class AiPromptEditComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
-                Validators.pattern(/^[A-Z0-9_]+$/) // Uppercase letters, numbers, underscores only
+                Validators.pattern(/^[A-Za-z0-9_]+$/) // Letters (uppercase/lowercase), numbers, underscores only
             ]],
             prompt: ['', [
                 Validators.required,
                 Validators.minLength(10),
-                Validators.maxLength(2000)
+                Validators.maxLength(20000)
+            ]],
+            systemTemplate: ['', [
+                Validators.maxLength(20000)
             ]],
             description: ['', [
-                Validators.maxLength(500)
+                Validators.maxLength(5000)
             ]],
             categoryId: ['', [
                 Validators.required
             ]],
+            // UI-level fields mapped to DTO
+            model: ['gpt-3.5-turbo', [
+                Validators.maxLength(50)
+            ]],
+            version: [1],
+            enabled: [true],
+            // Legacy UI fields kept for compatibility
             language: ['en', [
                 Validators.maxLength(10)
             ]],
@@ -78,8 +88,13 @@ export class AiPromptEditComponent implements OnInit {
                 Validators.max(20)
             ]],
             argsDescription: ['', [
-                Validators.maxLength(500)
-            ]]
+                Validators.maxLength(5000)
+            ]],
+            // Advanced JSON configuration as string textareas
+            argsSchemaJson: [''],
+            defaultsJson: [''],
+            parametersJson: [''],
+            responseContractJson: ['']
         });
     }
 
@@ -129,15 +144,30 @@ export class AiPromptEditComponent implements OnInit {
      * Populate form with existing AI prompt data
      */
     private populateForm(prompt: AiPromptModel): void {
+        const normalized: AiPromptModel = {
+            ...prompt,
+            code: prompt.key || prompt.code || '',
+            prompt: (prompt as any).userTemplate || prompt.prompt || '',
+            active: (prompt.enabled ?? (prompt as any).active) ?? true,
+            language: (prompt as any).language || 'en'
+        };
         this.promptForm.patchValue({
-            code: prompt.code || '',
-            prompt: prompt.prompt || '',
-            description: prompt.description || '',
-            categoryId: prompt.categoryId || '',
-            language: prompt.language || 'en',
-            active: prompt.active ?? true,
-            amountOfArguments: prompt.amountOfArguments || 0,
-            argsDescription: prompt.argsDescription || ''
+            code: normalized.code,
+            prompt: normalized.prompt,
+            systemTemplate: (prompt as any).systemTemplate || '',
+            description: normalized.description || '',
+            categoryId: normalized.categoryId || '',
+            model: (prompt as any).model || 'gpt-3.5-turbo',
+            version: (prompt as any).version || 1,
+            enabled: (prompt as any).enabled ?? normalized.active ?? true,
+            language: normalized.language || 'en',
+            active: normalized.active ?? true,
+            amountOfArguments: normalized.amountOfArguments || 0,
+            argsDescription: normalized.argsDescription || '',
+            argsSchemaJson: this.safeStringify((prompt as any).argsSchema),
+            defaultsJson: this.safeStringify((prompt as any).defaults),
+            parametersJson: this.safeStringify((prompt as any).parameters),
+            responseContractJson: this.safeStringify((prompt as any).responseContract)
         });
     }
 
@@ -153,16 +183,37 @@ export class AiPromptEditComponent implements OnInit {
         this.isSubmitting = true;
         this.error = '';
 
+        // Transform to new DTO and preserve server-managed fields where possible
+        const key = this.promptForm.get('code')?.value?.trim();
+        const userTemplate = this.promptForm.get('prompt')?.value?.trim();
+        const enabled = this.promptForm.get('active')?.value ?? true;
+        const description = this.promptForm.get('description')?.value?.trim() || undefined;
+        const categoryId = this.promptForm.get('categoryId')?.value;
+
+        // Parse JSON configuration fields (fail-fast on invalid input)
+        const argsSchema = this.parseJsonControl('argsSchemaJson', this.originalPrompt?.argsSchema ?? {});
+        if (argsSchema === null) return; // error already set
+        const defaults = this.parseJsonControl('defaultsJson', this.originalPrompt?.defaults ?? {});
+        if (defaults === null) return;
+        const parameters = this.parseJsonControl('parametersJson', this.originalPrompt?.parameters ?? {});
+        if (parameters === null) return;
+        const responseContract = this.parseJsonControl('responseContractJson', this.originalPrompt?.responseContract ?? undefined);
+        if (responseContract === null) return;
+
         const promptData: Partial<AiPromptModel> = {
-            id: this.promptId,
-            code: this.promptForm.get('code')?.value?.trim().toUpperCase(),
-            prompt: this.promptForm.get('prompt')?.value?.trim(),
-            description: this.promptForm.get('description')?.value?.trim() || undefined,
-            categoryId: this.promptForm.get('categoryId')?.value,
-            language: this.promptForm.get('language')?.value?.trim() || 'en',
-            active: this.promptForm.get('active')?.value ?? true,
-            amountOfArguments: this.promptForm.get('amountOfArguments')?.value || 0,
-            argsDescription: this.promptForm.get('argsDescription')?.value?.trim() || undefined
+            id: this.promptId!,
+            key,
+            userTemplate,
+            systemTemplate: this.promptForm.get('systemTemplate')?.value?.trim() || undefined,
+            enabled: this.promptForm.get('enabled')?.value ?? enabled,
+            description,
+            categoryId,
+            model: this.promptForm.get('model')?.value || this.originalPrompt?.model || 'gpt-3.5-turbo',
+            version: this.promptForm.get('version')?.value || this.originalPrompt?.version || 1,
+            argsSchema: argsSchema as any,
+            defaults: defaults as any,
+            parameters: parameters as any,
+            responseContract: responseContract as any
         };
 
         console.log('[DEBUG_LOG] Updating AI prompt with data:', promptData);
@@ -170,7 +221,8 @@ export class AiPromptEditComponent implements OnInit {
         this.aiPromptService.update(this.promptId, promptData as AiPromptModel).subscribe({
             next: (updatedPrompt) => {
                 console.log('[DEBUG_LOG] AI prompt updated successfully:', updatedPrompt);
-                this.successMessage = `AI Prompt "${updatedPrompt.code}" has been updated successfully.`;
+                const label = (updatedPrompt as any).key || (updatedPrompt as any).code || 'prompt';
+                this.successMessage = `AI Prompt "${label}" has been updated successfully.`;
 
                 // Navigate to the updated prompt's detail page after a short delay
                 setTimeout(() => {
@@ -183,6 +235,30 @@ export class AiPromptEditComponent implements OnInit {
                 this.isSubmitting = false;
             }
         });
+    }
+
+    private safeStringify(value: any): string {
+        try {
+            if (value === undefined || value === null) return '';
+            return JSON.stringify(value, null, 2);
+        } catch {
+            return '';
+        }
+    }
+
+    private parseJsonControl(controlName: string, fallback: any): any | null {
+        const raw = this.promptForm.get(controlName)?.value;
+        if (!raw || (typeof raw === 'string' && raw.trim() === '')) {
+            return fallback;
+        }
+        try {
+            return JSON.parse(raw);
+        } catch (e: any) {
+            const label = this.getFieldLabel(controlName);
+            this.error = `${label} contains invalid JSON. Please fix it. ${e?.message ? '(' + e.message + ')' : ''}`;
+            this.isSubmitting = false;
+            return null;
+        }
     }
 
     /**
@@ -252,7 +328,7 @@ export class AiPromptEditComponent implements OnInit {
         }
         if (errors['pattern']) {
             if (fieldName === 'code') {
-                return `${fieldLabel} must contain only uppercase letters, numbers, and underscores.`;
+                return `${fieldLabel} must contain only letters, numbers, and underscores.`;
             }
             return `${fieldLabel} has invalid format.`;
         }
@@ -265,14 +341,22 @@ export class AiPromptEditComponent implements OnInit {
      */
     private getFieldLabel(fieldName: string): string {
         const labels: { [key: string]: string } = {
-            'code': 'Prompt code',
-            'prompt': 'Prompt text',
+            'code': 'Prompt key',
+            'prompt': 'User template',
+            'systemTemplate': 'System template',
             'description': 'Description',
             'categoryId': 'Category',
+            'model': 'Model',
+            'version': 'Version',
+            'enabled': 'Enabled',
             'language': 'Language',
             'active': 'Active status',
             'amountOfArguments': 'Number of arguments',
-            'argsDescription': 'Arguments description'
+            'argsDescription': 'Arguments description',
+            'argsSchemaJson': 'Arguments schema (JSON)',
+            'defaultsJson': 'Defaults (JSON)',
+            'parametersJson': 'Parameters (JSON)',
+            'responseContractJson': 'Response contract (JSON)'
         };
         return labels[fieldName] || fieldName;
     }
@@ -318,7 +402,7 @@ export class AiPromptEditComponent implements OnInit {
 
         const currentValues = this.promptForm.value;
         return (
-            currentValues.code?.trim().toUpperCase() !== this.originalPrompt.code ||
+            (currentValues.code?.trim() || '') !== ((this.originalPrompt as any).code || (this.originalPrompt as any).key || '') ||
             currentValues.prompt?.trim() !== this.originalPrompt.prompt ||
             (currentValues.description?.trim() || '') !== (this.originalPrompt.description || '') ||
             currentValues.categoryId !== this.originalPrompt.categoryId ||

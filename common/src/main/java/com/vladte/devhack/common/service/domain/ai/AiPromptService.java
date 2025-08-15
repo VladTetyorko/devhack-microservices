@@ -11,11 +11,11 @@ public interface AiPromptService {
 
     Optional<AiPrompt> findById(UUID id);
 
-    Optional<AiPrompt> findByCode(String code);
+    Optional<AiPrompt> findByKey(String key);
 
     List<AiPrompt> findByCategoryId(UUID categoryId);
 
-    List<AiPrompt> findActive();
+    List<AiPrompt> findEnabled();
 
     AiPrompt save(AiPrompt prompt);
 

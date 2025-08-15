@@ -139,7 +139,7 @@ export class AiPromptListComponent implements OnInit {
         deleteEvent.event.stopPropagation();
 
         const prompt = this.allPrompts.find(p => p.id === deleteEvent.id);
-        const promptCode = prompt?.code || 'this prompt';
+        const promptCode = prompt?.key || prompt?.code || 'this prompt';
 
         if (confirm(`Are you sure you want to delete "${promptCode}"? This action cannot be undone.`)) {
             this.aiPromptService.delete(deleteEvent.id.toString()).subscribe({
@@ -157,23 +157,25 @@ export class AiPromptListComponent implements OnInit {
     }
 
     toggleActive(prompt: AiPromptModel): void {
-        if (prompt.active) {
+        const isEnabled = (prompt.enabled ?? prompt.active) ?? false;
+        const promptLabel = prompt.key || prompt.code || 'prompt';
+        if (isEnabled) {
             this.aiPromptService.deactivate(prompt.id!).subscribe({
                 next: () => {
-                    this.successMessage = `AI Prompt "${prompt.code}" has been deactivated.`;
+                    this.successMessage = `AI Prompt "${promptLabel}" has been deactivated.`;
                     this.loadPrompts();
                     setTimeout(() => this.successMessage = '', 3000);
                 },
-                error: (err) => this.error = 'Failed to deactivate prompt. ' + err.message
+                error: (err) => this.error = 'Failed to deactivate prompt. ' + (err.error?.message || err.message)
             });
         } else {
             this.aiPromptService.activate(prompt.id!).subscribe({
                 next: () => {
-                    this.successMessage = `AI Prompt "${prompt.code}" has been activated.`;
+                    this.successMessage = `AI Prompt "${promptLabel}" has been activated.`;
                     this.loadPrompts();
                     setTimeout(() => this.successMessage = '', 3000);
                 },
-                error: (err) => this.error = 'Failed to activate prompt. ' + err.message
+                error: (err) => this.error = 'Failed to activate prompt. ' + (err.error?.message || err.message)
             });
         }
     }
@@ -200,7 +202,9 @@ export class AiPromptListComponent implements OnInit {
         if (this.searchTerm.trim()) {
             const searchLower = this.searchTerm.toLowerCase().trim();
             filtered = filtered.filter(prompt =>
+                prompt.key?.toLowerCase().includes(searchLower) ||
                 prompt.code?.toLowerCase().includes(searchLower) ||
+                prompt.userTemplate?.toLowerCase().includes(searchLower) ||
                 prompt.prompt?.toLowerCase().includes(searchLower) ||
                 prompt.description?.toLowerCase().includes(searchLower) ||
                 prompt.categoryName?.toLowerCase().includes(searchLower)
@@ -212,10 +216,10 @@ export class AiPromptListComponent implements OnInit {
             filtered = filtered.filter(prompt => prompt.categoryId === this.selectedCategoryId);
         }
 
-        // Apply active filter
+        // Apply active/enabled filter
         if (this.selectedActive !== '') {
             const isActive = this.selectedActive === 'true';
-            filtered = filtered.filter(prompt => prompt.active === isActive);
+            filtered = filtered.filter(prompt => (prompt.enabled ?? prompt.active) === isActive);
         }
 
         return filtered;

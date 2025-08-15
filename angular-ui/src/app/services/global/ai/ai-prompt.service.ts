@@ -19,12 +19,12 @@ export class AiPromptService extends BaseService<AiPromptModel> {
     }
 
     /**
-     * Get AI prompt by code
-     * @param code - Prompt code
+     * Get AI prompt by code (maps to new by-key endpoint for backward compatibility)
+     * @param code - Prompt key
      * @returns Observable AI prompt
      */
     getByCode(code: string): Observable<AiPromptModel> {
-        return this.http.get<AiPromptModel>(`${this.baseUrl}/by-code/${code}`);
+        return this.http.get<AiPromptModel>(`${this.baseUrl}/by-key/${code}`);
     }
 
     /**

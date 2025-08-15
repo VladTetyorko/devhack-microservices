@@ -30,8 +30,8 @@ public class AiPromptServiceImpl implements AiPromptService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<AiPrompt> findByCode(String code) {
-        return repository.findByCode(code);
+    public Optional<AiPrompt> findByKey(String key) {
+        return repository.findByKey(key);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class AiPromptServiceImpl implements AiPromptService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AiPrompt> findActive() {
-        return repository.findByActiveTrue();
+    public List<AiPrompt> findEnabled() {
+        return repository.findByEnabledTrue();
     }
 
     @Override

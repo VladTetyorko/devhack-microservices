@@ -10,9 +10,9 @@ import java.util.UUID;
 
 @Repository
 public interface AiPromptRepository extends JpaRepository<AiPrompt, UUID> {
-    Optional<AiPrompt> findByCode(String code);
+    Optional<AiPrompt> findByKey(String key);
 
     List<AiPrompt> findByCategoryId(UUID categoryId);
 
-    List<AiPrompt> findByActiveTrue();
+    List<AiPrompt> findByEnabledTrue();
 }

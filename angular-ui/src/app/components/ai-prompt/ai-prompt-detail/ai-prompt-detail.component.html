@@ -6,7 +6,7 @@
                 <i class="bi bi-chat-text-fill me-2 text-primary"></i>
                 AI Prompt Details
             </h2>
-            <p class="text-muted mb-0" *ngIf="prompt">{{ prompt.code }}</p>
+            <p class="text-muted mb-0" *ngIf="prompt">{{ prompt.key || prompt.code }}</p>
         </div>
         <button class="btn btn-outline-secondary" (click)="goBack()">
             <i class="bi bi-arrow-left me-2"></i> Back to Prompts
@@ -47,8 +47,9 @@
                         Basic Information
                     </h5>
                     <span [ngClass]="getActiveBadgeClass()" class="badge">
-                        <i class="bi" [ngClass]="prompt.active ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                        {{ prompt.active ? 'Active' : 'Inactive' }}
+                        <i class="bi"
+                           [ngClass]="(prompt.enabled ?? prompt.active) ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                        {{ (prompt.enabled ?? prompt.active) ? 'Active' : 'Inactive' }}
                     </span>
                 </div>
                 <div class="card-body">
@@ -56,10 +57,10 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-semibold text-muted">
-                                    <i class="bi bi-code-slash me-1"></i>
-                                    Prompt Code
+                                    <i class="bi bi-key me-1"></i>
+                                    Prompt Key
                                 </label>
-                                <p class="form-control-plaintext font-monospace fw-semibold">{{ prompt.code }}</p>
+                                <p class="form-control-plaintext font-monospace fw-semibold">{{ prompt.key || prompt.code }}</p>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-semibold text-muted">
@@ -123,17 +124,79 @@
                 </div>
             </div>
 
+            <!-- AI Settings Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-cpu me-2"></i> AI Settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Model</label>
+                            <p class="form-control-plaintext"><span
+                                    class="badge bg-info">{{ prompt.model || 'gpt-3.5-turbo' }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted">Version</label>
+                            <p class="form-control-plaintext"><span
+                                    class="badge bg-secondary">{{ prompt.version || 1 }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Template Card -->
+            <div class="card shadow-sm mb-4" *ngIf="prompt.systemTemplate">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i> System Template</h5>
+                </div>
+                <div class="card-body">
+                    <div class="prompt-text-container">
+                        <pre class="prompt-text">{{ prompt.systemTemplate }}</pre>
+                    </div>
+                </div>
+            </div>
+
             <!-- Prompt Text Card -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
                         <i class="bi bi-chat-text me-2"></i>
-                        Prompt Text
+                        User Template
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="prompt-text-container">
                         <pre class="prompt-text">{{ prompt.prompt }}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JSON Configuration Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-braces-asterisk me-2"></i> JSON Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6" *ngIf="prompt.argsSchema">
+                            <label class="form-label fw-semibold text-muted">Arguments Schema</label>
+                            <pre class="form-control-plaintext font-monospace">{{ prettyPrintJson(prompt.argsSchema) }}</pre>
+                        </div>
+                        <div class="col-md-6" *ngIf="prompt.defaults">
+                            <label class="form-label fw-semibold text-muted">Defaults</label>
+                            <pre class="form-control-plaintext font-monospace">{{ prettyPrintJson(prompt.defaults) }}</pre>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6" *ngIf="prompt.parameters">
+                            <label class="form-label fw-semibold text-muted">Model Parameters</label>
+                            <pre class="form-control-plaintext font-monospace">{{ prettyPrintJson(prompt.parameters) }}</pre>
+                        </div>
+                        <div class="col-md-6" *ngIf="prompt.responseContract">
+                            <label class="form-label fw-semibold text-muted">Response Contract</label>
+                            <pre class="form-control-plaintext font-monospace">{{ prettyPrintJson(prompt.responseContract) }}</pre>
+                        </div>
                     </div>
                 </div>
             </div>

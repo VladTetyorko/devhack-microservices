@@ -99,19 +99,19 @@
                 <thead class="table-light">
                 <tr>
                     <th class="border-0">
-                        <i class="bi bi-code-slash me-1"></i> Code
+                        <i class="bi bi-key me-1"></i> Key
                     </th>
                     <th class="border-0">
-                        <i class="bi bi-chat-text me-1"></i> Prompt
+                        <i class="bi bi-chat-text me-1"></i> User Template
                     </th>
                     <th class="border-0">
                         <i class="bi bi-collection me-1"></i> Category
                     </th>
                     <th class="border-0">
-                        <i class="bi bi-translate me-1"></i> Language
+                        <i class="bi bi-cpu me-1"></i> Model
                     </th>
                     <th class="border-0">
-                        <i class="bi bi-toggle-on me-1"></i> Status
+                        <i class="bi bi-toggle-on me-1"></i> Enabled
                     </th>
                     <th class="border-0">
                         <i class="bi bi-calendar me-1"></i> Created
@@ -127,11 +127,11 @@
                     (click)="viewDetail(prompt.id!)"
                     style="cursor: pointer;">
                     <td class="align-middle">
-                        <div class="fw-semibold font-monospace">{{ prompt.code }}</div>
+                        <div class="fw-semibold font-monospace">{{ prompt.key || prompt.code }}</div>
                         <small class="text-muted">ID: {{ prompt.id?.substring(0, 8) }}...</small>
                     </td>
                     <td class="align-middle">
-                        <div>{{ truncateText(prompt.prompt || 'No prompt text', 60) }}</div>
+                        <div>{{ truncateText(prompt.userTemplate || prompt.prompt || 'No template', 60) }}</div>
                         <small class="text-muted" *ngIf="prompt.description">
                             {{ truncateText(prompt.description, 40) }}
                         </small>
@@ -142,12 +142,13 @@
                         </span>
                     </td>
                     <td class="align-middle">
-                        <span class="badge bg-info">{{ prompt.language || 'en' }}</span>
+                        <span class="badge bg-info">{{ prompt.model || 'gpt-3.5-turbo' }}</span>
                     </td>
                     <td class="align-middle">
-                        <span [ngClass]="getActiveBadgeClass(prompt.active)" class="badge">
-                            <i class="bi" [ngClass]="prompt.active ? 'bi-check-circle' : 'bi-x-circle'"></i>
-                            {{ prompt.active ? 'Active' : 'Inactive' }}
+                        <span [ngClass]="getActiveBadgeClass(prompt.enabled ?? prompt.active)" class="badge">
+                            <i class="bi"
+                               [ngClass]="(prompt.enabled ?? prompt.active) ? 'bi-check-circle' : 'bi-x-circle'"></i>
+                            {{ (prompt.enabled ?? prompt.active) ? 'Active' : 'Inactive' }}
                         </span>
                     </td>
                     <td class="align-middle">
@@ -162,10 +163,10 @@
                                 (delete)="deletePrompt($event)">
                         </app-action-buttons>
                         <button class="btn btn-sm ms-1"
-                                [ngClass]="prompt.active ? 'btn-outline-warning' : 'btn-outline-success'"
+                                [ngClass]="(prompt.enabled ?? prompt.active) ? 'btn-outline-warning' : 'btn-outline-success'"
                                 (click)="toggleActive(prompt); $event.stopPropagation()"
-                                [title]="prompt.active ? 'Deactivate' : 'Activate'">
-                            <i class="bi" [ngClass]="prompt.active ? 'bi-pause' : 'bi-play'"></i>
+                                [title]="(prompt.enabled ?? prompt.active) ? 'Deactivate' : 'Activate'">
+                            <i class="bi" [ngClass]="(prompt.enabled ?? prompt.active) ? 'bi-pause' : 'bi-play'"></i>
                         </button>
                     </td>
                 </tr>

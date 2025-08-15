@@ -2,54 +2,61 @@ package com.vladte.devhack.common.model.dto.global.ai;
 
 import com.vladte.devhack.common.model.dto.BaseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
-/**
- * DTO for AiPrompt entity.
- * Implements BaseDTO for consistency with other DTOs.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "AI prompt data")
+@Schema(description = "AI prompt data (new schema)")
 public class AiPromptDTO implements BaseDTO {
 
     @Schema(description = "Unique identifier", accessMode = Schema.AccessMode.READ_ONLY)
     private UUID id;
 
-    @Schema(description = "Unique prompt code", example = "QUESTION_GENERATION", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String code;
+    @Schema(description = "Unique prompt key", example = "check_answer_feedback", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String key;
 
-    @Schema(description = "Prompt description", example = "Generate interview questions")
+    @Schema(description = "System template text")
+    private String systemTemplate;
+
+    @Schema(description = "User template text", requiredMode = Schema.RequiredMode.REQUIRED)
+    private String userTemplate;
+
+    @Schema(description = "Enabled status", example = "true")
+    private Boolean enabled;
+
+    @Schema(description = "Arguments JSON schema (object)")
+    private Map<String, Object> argsSchema;
+
+    @Schema(description = "Default parameter values (object)")
+    private Map<String, Object> defaults;
+
+    @Schema(description = "Model identifier", example = "gpt-3.5-turbo")
+    private String model;
+
+    @Schema(description = "Model parameters (object)")
+    private Map<String, Object> parameters;
+
+    @Schema(description = "Response contract schema (object)")
+    private Map<String, Object> responseContract;
+
+    @Schema(description = "Version", example = "1")
+    private Integer version;
+
+    @Schema(description = "Prompt description")
     private String description;
-
-    @Schema(description = "The actual prompt text", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String prompt;
-
-    @Schema(description = "Language code", example = "en")
-    private String language;
-
-    @Schema(description = "Is prompt active?", example = "true")
-    private Boolean active;
 
     @Schema(description = "Creation timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime createdAt;
 
     @Schema(description = "Last update timestamp", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
-
-    @Schema(description = "Number of arguments expected by the prompt")
-    @Min(value = 0, message = "Amount of arguments must be zero or positive")
-    private Integer amountOfArguments;
-
-    @Schema(description = "Description of the arguments expected by the prompt")
-    private String argsDescription;
 
     @Schema(description = "Category ID", requiredMode = Schema.RequiredMode.REQUIRED)
     private UUID categoryId;

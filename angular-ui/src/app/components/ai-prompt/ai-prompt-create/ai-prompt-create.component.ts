@@ -49,7 +49,7 @@ export class AiPromptCreateComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(2),
                 Validators.maxLength(50),
-                Validators.pattern(/^[A-Z0-9_]+$/) // Uppercase letters, numbers, underscores only
+                Validators.pattern(/^[A-Za-z0-9_]+$/) // Letters (uppercase/lowercase), numbers, underscores only
             ]],
             prompt: ['', [
                 Validators.required,
@@ -113,15 +113,19 @@ export class AiPromptCreateComponent implements OnInit {
         this.isSubmitting = true;
         this.error = '';
 
+        // Transform form to new DTO schema
         const promptData: Partial<AiPromptModel> = {
-            code: this.promptForm.get('code')?.value?.trim().toUpperCase(),
-            prompt: this.promptForm.get('prompt')?.value?.trim(),
+            key: this.promptForm.get('code')?.value?.trim(),
+            userTemplate: this.promptForm.get('prompt')?.value?.trim(),
             description: this.promptForm.get('description')?.value?.trim() || undefined,
             categoryId: this.promptForm.get('categoryId')?.value,
-            language: this.promptForm.get('language')?.value?.trim() || 'en',
-            active: this.promptForm.get('active')?.value ?? true,
-            amountOfArguments: this.promptForm.get('amountOfArguments')?.value || 0,
-            argsDescription: this.promptForm.get('argsDescription')?.value?.trim() || undefined
+            enabled: this.promptForm.get('active')?.value ?? true,
+            // Provide safe defaults for new schema
+            model: 'gpt-3.5-turbo',
+            version: 1,
+            argsSchema: {},
+            defaults: {},
+            parameters: {}
         };
 
         console.log('[DEBUG_LOG] Creating AI prompt with data:', promptData);
@@ -129,7 +133,8 @@ export class AiPromptCreateComponent implements OnInit {
         this.aiPromptService.create(promptData as AiPromptModel).subscribe({
             next: (createdPrompt) => {
                 console.log('[DEBUG_LOG] AI prompt created successfully:', createdPrompt);
-                this.successMessage = `AI Prompt "${createdPrompt.code}" has been created successfully.`;
+                const label = (createdPrompt as any).key || (createdPrompt as any).code || 'prompt';
+                this.successMessage = `AI Prompt "${label}" has been created successfully.`;
 
                 // Navigate to the created prompt's detail page after a short delay
                 setTimeout(() => {
@@ -211,7 +216,7 @@ export class AiPromptCreateComponent implements OnInit {
         }
         if (errors['pattern']) {
             if (fieldName === 'code') {
-                return `${fieldLabel} must contain only uppercase letters, numbers, and underscores.`;
+                return `${fieldLabel} must contain only letters, numbers, and underscores.`;
             }
             return `${fieldLabel} has invalid format.`;
         }
