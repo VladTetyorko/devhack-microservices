@@ -23,7 +23,7 @@
                 *ngFor="let node of flattenedNodes; trackBy: trackByTagId"
                 class="tree-node"
                 [class.selected]="isSelected(node.tag)"
-                [class.dragging]="draggedNode?.tag?.id && node.tag?.id && draggedNode?.tag?.id === node.tag?.id"
+                [class.dragging]="draggedNode?.tag?.id && node.tag.id && draggedNode?.tag?.id === node.tag.id"
                 [ngStyle]="getIndentStyle(node.level)"
                 draggable="{{draggable}}"
                 (dragstart)="onDragStart($event, node)"

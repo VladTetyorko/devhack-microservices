@@ -152,7 +152,7 @@
                 </div>
                 <div class="card-body">
                     <div class="prompt-text-container">
-                        <pre class="prompt-text">{{ prompt.systemTemplate }}</pre>
+                        <div [innerHTML]="systemTemplateHtml"></div>
                     </div>
                 </div>
             </div>
@@ -167,7 +167,7 @@
                 </div>
                 <div class="card-body">
                     <div class="prompt-text-container">
-                        <pre class="prompt-text">{{ prompt.prompt }}</pre>
+                        <div [innerHTML]="userTemplateHtml"></div>
                     </div>
                 </div>
             </div>

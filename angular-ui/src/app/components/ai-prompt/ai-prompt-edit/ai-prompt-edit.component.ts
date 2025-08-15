@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AiPromptService} from '../../../services/global/ai/ai-prompt.service';
@@ -26,17 +27,27 @@ export class AiPromptEditComponent implements OnInit {
     originalPrompt: AiPromptModel | null = null;
     availableCategories: AiPromptCategoryModel[] = [];
 
+    // Highlighting and schema validation state
+    highlightedUserTemplate?: SafeHtml;
+    highlightedSystemTemplate?: SafeHtml;
+    templateVariables: Set<string> = new Set<string>();
+    schemaVariables: Set<string> = new Set<string>();
+    missingVariables: string[] = [];
+
     constructor(
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
         private aiPromptService: AiPromptService,
-        private aiPromptCategoryService: AiPromptCategoryService
+        private aiPromptCategoryService: AiPromptCategoryService,
+        private sanitizer: DomSanitizer
     ) {
         this.promptForm = this.createForm();
     }
 
     ngOnInit(): void {
+        // initialize highlighting & schema check listeners
+        this.setupLivePreviewAndSchemaChecks();
         this.promptId = this.route.snapshot.paramMap.get('id');
         if (this.promptId) {
             this.loadPrompt();
@@ -144,6 +155,7 @@ export class AiPromptEditComponent implements OnInit {
      * Populate form with existing AI prompt data
      */
     private populateForm(prompt: AiPromptModel): void {
+        // ensure initial previews reflect loaded data after patchValue
         const normalized: AiPromptModel = {
             ...prompt,
             code: prompt.key || prompt.code || '',
@@ -169,6 +181,7 @@ export class AiPromptEditComponent implements OnInit {
             parametersJson: this.safeStringify((prompt as any).parameters),
             responseContractJson: this.safeStringify((prompt as any).responseContract)
         });
+        this.recomputeTemplateAndSchemaState();
     }
 
     /**
@@ -244,6 +257,97 @@ export class AiPromptEditComponent implements OnInit {
         } catch {
             return '';
         }
+    }
+
+    // Setup listeners for live preview and schema checks
+    private setupLivePreviewAndSchemaChecks(): void {
+        const update = () => this.recomputeTemplateAndSchemaState();
+        this.promptForm.get('prompt')?.valueChanges.subscribe(update);
+        this.promptForm.get('systemTemplate')?.valueChanges.subscribe(update);
+        this.promptForm.get('argsSchemaJson')?.valueChanges.subscribe(update);
+        // Run once initially in case form has defaults
+        setTimeout(update, 0);
+    }
+
+    private recomputeTemplateAndSchemaState(): void {
+        const userT = this.promptForm.get('prompt')?.value || '';
+        const sysT = this.promptForm.get('systemTemplate')?.value || '';
+
+        const vars = new Set<string>();
+        this.extractVariables(userT).forEach(v => vars.add(v));
+        this.extractVariables(sysT).forEach(v => vars.add(v));
+        this.templateVariables = vars;
+
+        // Build highlighted HTML
+        this.highlightedUserTemplate = this.buildHighlightedHtml(userT, vars);
+        this.highlightedSystemTemplate = this.buildHighlightedHtml(sysT, vars);
+
+        // Parse schema and compute allowed variable names
+        const schemaObj = this.tryParseSchema(this.promptForm.get('argsSchemaJson')?.value);
+        const schemaVars = new Set<string>(schemaObj);
+        this.schemaVariables = schemaVars;
+
+        // Missing vars: used in templates but absent in schema
+        this.missingVariables = Array.from(vars).filter(v => !schemaVars.has(v)).sort();
+
+        // Auto-update amountOfArguments to number of unique variables
+        const count = vars.size;
+        const ctrl = this.promptForm.get('amountOfArguments');
+        if (ctrl && ctrl.value !== count) {
+            ctrl.setValue(count, {emitEvent: false});
+        }
+    }
+
+    private tryParseSchema(raw: string): string[] {
+        if (!raw || (raw.trim() === '')) return [];
+        try {
+            const obj = JSON.parse(raw);
+            // Prefer JSON Schema style: { properties: { var1: {}, var2: {} } }
+            if (obj && typeof obj === 'object') {
+                if (obj.properties && typeof obj.properties === 'object') {
+                    return Object.keys(obj.properties);
+                }
+                // Fallback: use top-level keys if it's a plain object map
+                return Object.keys(obj);
+            }
+            return [];
+        } catch {
+            // Don't set global error here; live preview should be lenient
+            return [];
+        }
+    }
+
+    private extractVariables(text: string): string[] {
+        if (!text) return [];
+        const re = /\{\{\s*([a-zA-Z_][a-zA-Z0-9_\.]*)\s*\}\}/g;
+        const set = new Set<string>();
+        let m: RegExpExecArray | null;
+        while ((m = re.exec(text)) !== null) {
+            // keep full var name (including dot paths), but count by first segment for args names
+            const full = m[1];
+            const base = full.split('.')[0];
+            set.add(base);
+        }
+        return Array.from(set);
+    }
+
+    private buildHighlightedHtml(text: string, knownVars: Set<string>): SafeHtml {
+        if (!text) return '';
+        // Escape HTML first
+        const escape = (s: string) => s
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        const escaped = escape(text);
+        // Now replace variable tokens
+        const pattern = /\{\{\s*([a-zA-Z_][a-zA-Z0-9_\.]*)\s*\}\}/g;
+        const html = escaped.replace(pattern, (_match, p1) => {
+            const base = String(p1).split('.')[0];
+            const cls = knownVars.has(base) ? 'var-token' : 'var-token var-invalid';
+            return `<span class="${cls}">{{${p1}}}</span>`;
+        });
+        // Wrap in <pre> to preserve formatting
+        return this.sanitizer.bypassSecurityTrustHtml(`<pre class="template-preview">${html}</pre>`);
     }
 
     private parseJsonControl(controlName: string, fallback: any): any | null {

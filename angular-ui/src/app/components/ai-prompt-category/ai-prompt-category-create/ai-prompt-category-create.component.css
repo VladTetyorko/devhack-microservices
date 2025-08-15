@@ -1,19 +1,6 @@
 /* AI Prompt Category Create Component Styles */
 
-.required::after {
-    content: " *";
-    color: #dc3545;
-}
-
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.form-control.is-invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
+/* Shared form styles moved to global styles.scss */
 
 .card {
     border: none;
@@ -28,35 +15,6 @@
 .btn {
     border-radius: 0.375rem;
     font-weight: 500;
-}
-
-.btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.alert {
-    border-radius: 0.5rem;
-    border: none;
-}
-
-.page-header h2 {
-    font-weight: 600;
-    color: #212529;
-}
-
-.form-text {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-
-.invalid-feedback {
-    font-size: 0.875rem;
-}
-
-/* Code field styling */
-.font-monospace {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
 }
 
 /* Help section styling */

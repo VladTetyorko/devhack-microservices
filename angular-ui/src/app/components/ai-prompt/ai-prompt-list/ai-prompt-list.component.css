@@ -1,9 +1,5 @@
 /* AI Prompt List Component Styles */
 
-.page-header h2 {
-    font-weight: 600;
-    color: #212529;
-}
 
 .card {
     border: none;
@@ -24,10 +20,6 @@
     box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }
 
-.alert {
-    border-radius: 0.5rem;
-    border: none;
-}
 
 .form-control:focus,
 .form-select:focus {
@@ -81,11 +73,6 @@
     border: 1px solid #dee2e6;
 }
 
-/* Font styling */
-.font-monospace {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-}
 
 .fw-semibold {
     font-weight: 600;
@@ -110,11 +97,7 @@
     border-color: #198754;
 }
 
-/* Loading spinner */
-.spinner-border {
-    width: 2rem;
-    height: 2rem;
-}
+/* Loading spinner (centralized globally) */
 
 /* Empty state styling */
 .display-1 {
@@ -165,9 +148,6 @@
 }
 
 @media (max-width: 576px) {
-    .page-header h2 {
-        font-size: 1.5rem;
-    }
 
     .card-body {
         padding: 1rem;
@@ -222,10 +202,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.alert {
-    animation: fadeIn 0.3s ease-in-out;
 }
 
 /* Custom scrollbar for table */

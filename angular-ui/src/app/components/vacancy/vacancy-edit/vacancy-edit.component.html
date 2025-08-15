@@ -1,0 +1,118 @@
+<div class="container">
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <h2>Edit Vacancy</h2>
+        <div>
+            <a class="btn btn-outline-secondary me-2" [routerLink]="['/vacancies', vacancyId]">
+                <i class="bi bi-eye me-2"></i>View
+            </a>
+            <a class="btn btn-outline-primary" routerLink="/vacancies">
+                <i class="bi bi-list-ul me-2"></i>All Vacancies
+            </a>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/vacancies']"><i class="bi bi-list-ul me-2"></i>List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/vacancies', vacancyId]"><i class="bi bi-eye me-2"></i>View</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page"><i class="bi bi-pencil-square me-2"></i>Edit</a>
+        </li>
+    </ul>
+
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+        <button type="button" class="btn-close float-end" (click)="error = ''"></button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="!isLoading" novalidate>
+        <div class="card">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label required">Company Name</label>
+                        <input type="text" class="form-control" formControlName="companyName"/>
+                        <div class="invalid-feedback d-block"
+                             *ngIf="f['companyName'].touched && f['companyName'].invalid">
+                            Company name is required (2-100 chars).
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required">Position</label>
+                        <input type="text" class="form-control" formControlName="position"/>
+                        <div class="invalid-feedback d-block" *ngIf="f['position'].touched && f['position'].invalid">
+                            Position is required (2-100 chars).
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Technologies</label>
+                        <input type="text" class="form-control" formControlName="technologies"
+                               placeholder="Comma-separated e.g. Java, Spring, PostgreSQL"/>
+                        <div class="form-text">Comma-separated values will be shown as chips.</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Source</label>
+                        <input type="text" class="form-control" formControlName="source"/>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">URL</label>
+                        <input type="url" class="form-control" formControlName="url"/>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label required">Status</label>
+                        <select class="form-select" formControlName="status">
+                            <option *ngFor="let s of statusOptions" [value]="s.value">{{ s.label }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contact Person</label>
+                        <input type="text" class="form-control" formControlName="contactPerson"/>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Contact Email</label>
+                        <input type="email" class="form-control" formControlName="contactEmail"/>
+                        <div class="invalid-feedback d-block"
+                             *ngIf="f['contactEmail'].touched && f['contactEmail'].invalid">
+                            Please provide a valid email address.
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Deadline</label>
+                        <input type="datetime-local" class="form-control" formControlName="deadline"/>
+                        <div class="form-text">Optional. Application deadline (local time).</div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="remoteAllowed"
+                                   formControlName="remoteAllowed">
+                            <label class="form-check-label ms-2" for="remoteAllowed">Remote work allowed</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary" (click)="cancel()" [disabled]="isSaving">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary" [disabled]="isSaving || form.invalid">
+                    <span *ngIf="!isSaving"><i class="bi bi-save me-2"></i>Save</span>
+                    <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-2" role="status"
+                          aria-hidden="true"></span>
+                    <span *ngIf="isSaving">Saving...</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

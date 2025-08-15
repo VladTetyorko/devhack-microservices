@@ -126,21 +126,6 @@
     animation: pulse 1.5s ease-in-out infinite;
 }
 
-/* Custom alert styles */
-.alert {
-    border: none;
-    border-radius: 10px;
-    padding: 1rem 1.5rem;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-}
-
-.alert-danger .btn-close {
-    filter: brightness(0) invert(1);
-}
 
 /* Action buttons styling */
 .d-grid .btn {

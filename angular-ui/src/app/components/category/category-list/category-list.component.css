@@ -27,10 +27,6 @@
     margin-left: 0.255em;
 }
 
-.page-header h2 {
-    font-weight: 700;
-    color: #2c3e50;
-}
 
 .page-header p {
     font-size: 1.1rem;
@@ -57,10 +53,6 @@
     font-weight: 500;
 }
 
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
 
 .empty-state {
     padding: 4rem 2rem;
@@ -70,20 +62,6 @@
     opacity: 0.5;
 }
 
-.alert {
-    border: none;
-    border-radius: 0.5rem;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.alert-success {
-    background-color: #d1edff;
-    color: #0c5460;
-}
 
 .dropdown-menu {
     border: none;

@@ -1,21 +1,8 @@
-.page-header h2 {
-    font-weight: 700;
-    color: #2c3e50;
-}
 
 .page-header p {
     font-size: 1.1rem;
 }
 
-.card {
-    border: none;
-    border-radius: 0.75rem;
-}
-
-.card-header {
-    border-bottom: 1px solid #e9ecef;
-    border-radius: 0.75rem 0.75rem 0 0 !important;
-}
 
 .card-header h5 {
     font-weight: 600;
@@ -65,22 +52,6 @@
     margin-top: 0.25rem;
 }
 
-.btn {
-    border-radius: 0.5rem;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    transition: all 0.15s ease-in-out;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-    border: none;
-}
-
-.btn-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
-    transform: translateY(-1px);
-}
 
 .btn-primary:disabled {
     background: #6c757d;
@@ -115,37 +86,8 @@
     transform: translateY(-1px);
 }
 
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
+/* Spinner styling moved to global styles */
 
-.spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
-}
-
-.alert {
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 500;
-}
-
-.alert-success {
-    background-color: #d1edff;
-    color: #0c5460;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.alert-info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border-left: 4px solid #17a2b8;
-}
 
 .border-info {
     border-color: #17a2b8 !important;

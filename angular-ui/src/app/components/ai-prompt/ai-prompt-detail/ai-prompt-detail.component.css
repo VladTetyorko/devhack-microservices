@@ -1,33 +1,5 @@
 /* AI Prompt Detail Component Styles */
 
-.page-header h2 {
-    font-weight: 600;
-    color: #212529;
-}
-
-.card {
-    border: none;
-    border-radius: 0.5rem;
-}
-
-.card-header {
-    border-bottom: 1px solid #dee2e6;
-    border-radius: 0.5rem 0.5rem 0 0 !important;
-}
-
-.btn {
-    border-radius: 0.375rem;
-    font-weight: 500;
-}
-
-.btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.alert {
-    border-radius: 0.5rem;
-    border: none;
-}
 
 .form-label {
     margin-bottom: 0.25rem;
@@ -57,11 +29,6 @@
     border: 1px solid #dee2e6;
 }
 
-/* Font styling */
-.font-monospace {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-}
 
 /* Prompt text container */
 .prompt-text-container {
@@ -73,16 +40,6 @@
     overflow-y: auto;
 }
 
-.prompt-text {
-    margin: 0;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: #212529;
-    background: transparent;
-}
 
 /* Arguments description styling */
 .args-description {
@@ -96,25 +53,7 @@
     background: transparent;
 }
 
-/* Loading spinner */
-.spinner-border {
-    width: 2rem;
-    height: 2rem;
-}
-
-/* Loading animation */
-.spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
+/* Loading spinner and animation moved to global styles */
 
 /* Button styling */
 .btn-outline-warning:hover {
@@ -187,9 +126,6 @@
 }
 
 @media (max-width: 576px) {
-    .page-header h2 {
-        font-size: 1.5rem;
-    }
 
     .card-header h5 {
         font-size: 1rem;
@@ -228,10 +164,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.alert {
-    animation: fadeIn 0.3s ease-in-out;
 }
 
 /* Print styles */

@@ -5,6 +5,7 @@ import {RouterModule} from '@angular/router';
 
 import {VacancyListComponent} from '../../components/vacancy/vacancy-list/vacancy-list.component';
 import {VacancyDetailComponent} from '../../components/vacancy/vacancy-detail/vacancy-detail.component';
+import {VacancyEditComponent} from '../../components/vacancy/vacancy-edit/vacancy-edit.component';
 
 import {VacancyRoutingModule} from './vacancy-routing.module';
 import {SharedModule} from '../shared/shared.module';
@@ -12,7 +13,8 @@ import {SharedModule} from '../shared/shared.module';
 @NgModule({
     declarations: [
         VacancyListComponent,
-        VacancyDetailComponent
+        VacancyDetailComponent,
+        VacancyEditComponent
     ],
     imports: [
         CommonModule,

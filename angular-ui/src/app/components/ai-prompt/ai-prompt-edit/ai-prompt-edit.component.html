@@ -186,6 +186,13 @@
                                         <i class="bi bi-info-circle me-1"></i>
                                         This template is rendered with parameters and sent as the user message.
                                     </div>
+                                    <div class="mt-2">
+                                        <div class="small text-muted mb-1"><i class="bi bi-eye me-1"></i>Preview:</div>
+                                        <div [innerHTML]="highlightedUserTemplate"></div>
+                                        <div class="small mt-1">
+                                            <span class="badge bg-secondary me-2">Vars: {{ templateVariables.size }}</span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- System Template Field -->
@@ -209,6 +216,10 @@
                                     <div class="form-text">
                                         <i class="bi bi-info-circle me-1"></i>
                                         Optional system instructions prepended before the user template.
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="small text-muted mb-1"><i class="bi bi-eye me-1"></i>Preview:</div>
+                                        <div [innerHTML]="highlightedSystemTemplate"></div>
                                     </div>
                                 </div>
 
@@ -324,6 +335,11 @@
   "type": "object", ...
 }'></textarea>
                                     <div class="form-text">Defines allowed parameters and validation rules.</div>
+                                    <div *ngIf="missingVariables.length"
+                                         class="alert alert-warning mt-2 py-2 px-3 small" role="alert">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Missing in schema: <strong>{{ missingVariables.join(', ') }}</strong>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">

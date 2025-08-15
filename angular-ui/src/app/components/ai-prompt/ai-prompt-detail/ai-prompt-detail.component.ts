@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AiPromptService} from '../../../services/global/ai/ai-prompt.service';
 import {AiPromptCategoryService} from '../../../services/global/ai/ai-prompt-category.service';
@@ -23,11 +24,15 @@ export class AiPromptDetailComponent implements OnInit {
     successMessage = '';
     promptId: string | null = null;
 
+    systemTemplateHtml?: SafeHtml;
+    userTemplateHtml?: SafeHtml;
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private aiPromptService: AiPromptService,
-        private aiPromptCategoryService: AiPromptCategoryService
+        private aiPromptCategoryService: AiPromptCategoryService,
+        private sanitizer: DomSanitizer
     ) {
     }
 
@@ -60,6 +65,9 @@ export class AiPromptDetailComponent implements OnInit {
                     language: (prompt as any).language || 'en'
                 };
                 this.prompt = normalized;
+                // compute highlighted templates
+                this.systemTemplateHtml = this.highlightPrompt((prompt as any).systemTemplate || '');
+                this.userTemplateHtml = this.highlightPrompt(normalized.userTemplate || '');
                 this.isLoading = false;
 
                 // Load category information if available
@@ -191,6 +199,16 @@ export class AiPromptDetailComponent implements OnInit {
         };
 
         return languageMap[(this.prompt as any)?.language || 'en'] || (this.prompt as any)?.language || 'English';
+    }
+
+    private highlightPrompt(text: string): SafeHtml {
+        if (!text) return '';
+        const escape = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const escaped = escape(text);
+        const html = escaped.replace(/\{\{\s*([a-zA-Z_][a-zA-Z0-9_.]*)\s*}}/g, (_m, p1) => {
+            return `<span class="var-token">{{${p1}}}</span>`;
+        });
+        return this.sanitizer.bypassSecurityTrustHtml(`<pre class="prompt-text">${html}</pre>`);
     }
 
     prettyPrintJson(value: any): string {

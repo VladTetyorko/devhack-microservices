@@ -5,11 +5,6 @@
     border-bottom: 2px solid var(--border-color);
 }
 
-.page-header h2 {
-    color: var(--text-secondary);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
 
 .page-header p {
     color: var(--text-muted);
@@ -67,17 +62,10 @@
 }
 
 /* Loading State */
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
+/* Spinner sizing centralized in global styles */
 
 /* Alerts */
-.alert {
-    border-radius: 0.5rem;
-    border: none;
-    box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
-}
+/* Alert base styling centralized in global styles */
 
 .alert-dismissible .btn-close {
     padding: 0.75rem 1rem;
@@ -319,9 +307,6 @@
         padding-right: 1rem;
     }
 
-    .page-header h2 {
-        font-size: 1.5rem;
-    }
 
     .display-1 {
         font-size: 3rem;

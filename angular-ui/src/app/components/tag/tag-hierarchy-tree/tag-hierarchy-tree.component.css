@@ -223,11 +223,7 @@
     font-size: 0.875rem;
 }
 
-/* Loading State */
-.spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
-}
+/* Loading State - spinner sizing moved to global styles */
 
 /* Responsive Design */
 @media (max-width: 768px) {

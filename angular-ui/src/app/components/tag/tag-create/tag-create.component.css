@@ -117,31 +117,7 @@
 }
 
 /* Spinner */
-.spinner-border-sm {
-    width: 1rem;
-    height: 1rem;
-}
 
-/* Alert Styling */
-.alert {
-    border: none;
-    border-radius: 10px;
-    padding: 1rem 1.5rem;
-}
-
-.alert-success {
-    background: linear-gradient(135deg, #28a745, #1e7e34);
-    color: white;
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #dc3545, #c82333);
-    color: white;
-}
-
-.alert .btn-close {
-    filter: brightness(0) invert(1);
-}
 
 /* Help Card Styling */
 .card:last-child {
@@ -246,13 +222,4 @@
 
 .btn[disabled] .spinner-border {
     animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
 }

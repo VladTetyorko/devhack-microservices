@@ -99,14 +99,7 @@
 
 /* Alert Enhancements */
 .alert {
-    border-radius: 8px;
-    border: none;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.alert-danger {
-    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-    color: #721c24;
 }
 
 /* Quick Actions Section */

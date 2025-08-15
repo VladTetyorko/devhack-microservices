@@ -1,29 +1,6 @@
 /* AI Prompt Create Component Styles */
 
-.required::after {
-    content: " *";
-    color: #dc3545;
-}
-
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.form-control.is-invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
-
-.form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.form-select.is-invalid:focus {
-    border-color: #dc3545;
-    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
-}
+/* Shared form styles moved to global styles.scss */
 
 .card {
     border: none;
@@ -40,58 +17,6 @@
     font-weight: 500;
 }
 
-.btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-}
-
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.alert {
-    border-radius: 0.5rem;
-    border: none;
-}
-
-.page-header h2 {
-    font-weight: 600;
-    color: #212529;
-}
-
-.form-text {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-
-.invalid-feedback {
-    font-size: 0.875rem;
-}
-
-/* Code field styling */
-.font-monospace {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-}
-
-/* Textarea styling */
-textarea.form-control {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Form switch styling */
-.form-check-input:checked {
-    background-color: #198754;
-    border-color: #198754;
-}
-
-.form-check-input:focus {
-    border-color: #86b7fe;
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
 /* Help section styling */
 .border-info {
     border-color: #0dcaf0 !important;
@@ -101,55 +26,14 @@ textarea.form-control {
     background-color: rgba(13, 202, 240, 0.1) !important;
 }
 
-/* Loading spinner animation */
-.spin {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-/* Number input styling */
-input[type="number"] {
-    -moz-appearance: textfield;
-}
-
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Section divider styling */
-hr {
-    border: none;
-    border-top: 2px solid #e9ecef;
-    margin: 1.5rem 0;
-}
-
-/* Form section headers */
-h6 {
-    color: #495057;
-    font-weight: 600;
-}
-
-/* Icon styling */
-.bi {
-    font-size: 1rem;
-}
+/* Loading spinner animation moved to global styles */
 
 /* Button group spacing */
 .d-flex.gap-2 > .btn {
     margin-right: 0;
 }
 
-/* Form validation states */
+/* Form validation states kept local for checkmark visuals */
 .was-validated .form-control:valid,
 .form-control.is-valid {
     border-color: #198754;
