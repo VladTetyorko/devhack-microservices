@@ -3,21 +3,22 @@ import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/rout
 import {AuthService} from '../services/basic/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AuthGuard {
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    if (this.authService.isAuthenticated()) {
-      return true;
+    constructor(
+        private authService: AuthService,
+        private router: Router
+    ) {
     }
 
-    // Store the attempted URL for redirecting after login
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url }});
-    return false;
-  }
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        if (this.authService.isAuthenticated()) {
+            return true;
+        }
+
+        // Store the attempted URL for redirecting after login
+        this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}});
+        return false;
+    }
 }

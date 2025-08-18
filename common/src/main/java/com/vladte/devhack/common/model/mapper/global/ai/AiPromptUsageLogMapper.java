@@ -32,7 +32,7 @@ public class AiPromptUsageLogMapper implements EntityDTOMapper<AiPromptUsageLog,
 
         if (entity.getPrompt() != null) {
             dto.setPromptId(entity.getPrompt().getId());
-            dto.setPromptCode(entity.getPrompt().getCode());
+            dto.setPromptCode(entity.getPrompt().getKey());
         }
 
         return dto;

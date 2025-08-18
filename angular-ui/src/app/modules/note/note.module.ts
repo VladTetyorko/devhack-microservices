@@ -10,20 +10,21 @@ import {NoteRoutingModule} from './note-routing.module';
 import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [
-    NoteListComponent,
-    NoteByQuestionComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-      NoteRoutingModule,
-      SharedModule
-  ],
-  exports: [
-    NoteListComponent,
-    NoteByQuestionComponent
-  ]
+    declarations: [
+        NoteListComponent,
+        NoteByQuestionComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        RouterModule,
+        NoteRoutingModule,
+        SharedModule
+    ],
+    exports: [
+        NoteListComponent,
+        NoteByQuestionComponent
+    ]
 })
-export class NoteModule { }
+export class NoteModule {
+}

@@ -1,0 +1,54 @@
+/* AI Prompt Category Create Component Styles */
+
+/* Shared form styles moved to global styles.scss */
+
+.card {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.card-header {
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+/* Help section styling */
+.border-info {
+    border-color: #0dcaf0 !important;
+}
+
+.bg-info.bg-opacity-10 {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .d-flex.gap-2 {
+        width: 100%;
+    }
+
+    .btn {
+        flex: 1;
+    }
+}

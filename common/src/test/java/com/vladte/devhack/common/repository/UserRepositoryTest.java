@@ -102,7 +102,7 @@ class UserRepositoryTest extends BaseRepositoryTest {
         User savedUser = userRepository.save(user);
 
         // Act
-        Optional<User> foundUser = userRepository.findWithProfileById(savedUser.getId());
+        Optional<User> foundUser = userRepository.loadWithRelatedDetails(savedUser.getId());
 
         // Assert
         assertTrue(foundUser.isPresent());

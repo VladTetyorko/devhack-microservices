@@ -3,7 +3,9 @@ package com.vladte.devhack.common.controller.global.ai.rest;
 import com.vladte.devhack.common.model.dto.global.ai.AiPromptDTO;
 import com.vladte.devhack.common.model.mapper.global.ai.AiPromptMapper;
 import com.vladte.devhack.common.service.domain.ai.AiPromptService;
+import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
 import com.vladte.devhack.entities.global.ai.AiPrompt;
+import com.vladte.devhack.entities.global.ai.AiPromptCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,16 +39,17 @@ public class AiPromptRestController {
 
     private final AiPromptService aiPromptService;
     private final AiPromptMapper aiPromptMapper;
+    private final AiPromptCategoryService aiPromptCategoryService;
 
     /**
      * Constructor with service and mapper injection.
-     *
-     * @param aiPromptService the AI prompt service
-     * @param aiPromptMapper  the AI prompt mapper
      */
-    public AiPromptRestController(AiPromptService aiPromptService, AiPromptMapper aiPromptMapper) {
+    public AiPromptRestController(AiPromptService aiPromptService,
+                                  AiPromptMapper aiPromptMapper,
+                                  AiPromptCategoryService aiPromptCategoryService) {
         this.aiPromptService = aiPromptService;
         this.aiPromptMapper = aiPromptMapper;
+        this.aiPromptCategoryService = aiPromptCategoryService;
     }
 
     /**
@@ -117,6 +120,20 @@ public class AiPromptRestController {
     }
 
     /**
+     * Get an AI prompt by key.
+     */
+    @GetMapping("/by-key/{key}")
+    @Operation(summary = "Get an AI prompt by key", description = "Returns a single AI prompt by unique key")
+    public ResponseEntity<AiPromptDTO> getByKey(
+            @Parameter(description = "Key of the AI prompt to be retrieved")
+            @PathVariable String key) {
+        log.debug("REST request to get AI prompt with key: {}", key);
+        Optional<AiPrompt> prompt = aiPromptService.findByKey(key);
+        return prompt.map(p -> ResponseEntity.ok(aiPromptMapper.toDTO(p)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
      * Create a new AI prompt.
      *
      * @param dto the AI prompt to create as a DTO
@@ -135,6 +152,15 @@ public class AiPromptRestController {
             @Valid @RequestBody AiPromptDTO dto) {
         log.debug("REST request to create AI prompt: {}", dto);
         AiPrompt prompt = aiPromptMapper.toEntity(dto);
+        // Attach category from DTO
+        if (dto.getCategoryId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        Optional<AiPromptCategory> categoryOpt = aiPromptCategoryService.findById(dto.getCategoryId());
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        prompt.setCategory(categoryOpt.get());
         AiPrompt savedPrompt = aiPromptService.save(prompt);
         return ResponseEntity.status(HttpStatus.CREATED).body(aiPromptMapper.toDTO(savedPrompt));
     }
@@ -169,6 +195,17 @@ public class AiPromptRestController {
 
         AiPrompt prompt = existingPrompt.get();
         aiPromptMapper.updateEntityFromDTO(prompt, dto);
+
+        // Attach/Update category from DTO
+        if (dto.getCategoryId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        Optional<AiPromptCategory> categoryOpt = aiPromptCategoryService.findById(dto.getCategoryId());
+        if (categoryOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        prompt.setCategory(categoryOpt.get());
+
         AiPrompt savedPrompt = aiPromptService.save(prompt);
         return ResponseEntity.ok(aiPromptMapper.toDTO(savedPrompt));
     }
@@ -207,9 +244,37 @@ public class AiPromptRestController {
     @GetMapping("/active")
     @Operation(summary = "Get all active AI prompts", description = "Returns a list of all active AI prompts")
     public ResponseEntity<List<AiPromptDTO>> getActivePrompts() {
-        log.debug("REST request to get all active AI prompts");
-        List<AiPrompt> prompts = aiPromptService.findActive();
+        log.debug("REST request to get all enabled AI prompts");
+        List<AiPrompt> prompts = aiPromptService.findEnabled();
         return ResponseEntity.ok(aiPromptMapper.toDTOList(prompts));
+    }
+
+    /**
+     * Activate a prompt by ID (sets enabled=true).
+     */
+    @PatchMapping("/{id}/activate")
+    @Operation(summary = "Activate AI prompt", description = "Sets enabled=true for the prompt")
+    public ResponseEntity<AiPromptDTO> activate(@PathVariable UUID id) {
+        Optional<AiPrompt> existing = aiPromptService.findById(id);
+        if (existing.isEmpty()) return ResponseEntity.notFound().build();
+        AiPrompt prompt = existing.get();
+        prompt.setEnabled(true);
+        AiPrompt saved = aiPromptService.save(prompt);
+        return ResponseEntity.ok(aiPromptMapper.toDTO(saved));
+    }
+
+    /**
+     * Deactivate a prompt by ID (sets enabled=false).
+     */
+    @PatchMapping("/{id}/deactivate")
+    @Operation(summary = "Deactivate AI prompt", description = "Sets enabled=false for the prompt")
+    public ResponseEntity<AiPromptDTO> deactivate(@PathVariable UUID id) {
+        Optional<AiPrompt> existing = aiPromptService.findById(id);
+        if (existing.isEmpty()) return ResponseEntity.notFound().build();
+        AiPrompt prompt = existing.get();
+        prompt.setEnabled(false);
+        AiPrompt saved = aiPromptService.save(prompt);
+        return ResponseEntity.ok(aiPromptMapper.toDTO(saved));
     }
 
     /**

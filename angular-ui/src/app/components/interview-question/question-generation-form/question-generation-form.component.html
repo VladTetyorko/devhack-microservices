@@ -1,0 +1,317 @@
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-magic me-2"></i>
+                            Generate Interview Questions
+                        </h4>
+                        <button
+                                class="btn btn-light btn-sm"
+                                (click)="viewStats()"
+                                title="View Statistics">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Stats
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Loading State -->
+                    <div *ngIf="loading" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading available topics...</p>
+                    </div>
+
+                    <!-- Success Message -->
+                    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        {{ successMessage }}
+                        <div class="mt-2">
+                            <small class="text-muted">Redirecting to questions list in a few seconds...</small>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ error }}
+                        <div class="mt-2" *ngIf="isAiModuleError">
+                            <small class="text-muted">
+                                <strong>Tip:</strong> Make sure the AI module is running.
+                                <a href="#"
+                                   (click)="showAiSetupInstructions = !showAiSetupInstructions; $event.preventDefault()"
+                                   class="text-decoration-none">
+                                    Click here for setup instructions
+                                </a>
+                            </small>
+                        </div>
+                        <button type="button" class="btn-close"
+                                (click)="error = null; isAiModuleError = false"></button>
+                    </div>
+
+                    <!-- AI Setup Instructions -->
+                    <div *ngIf="showAiSetupInstructions" class="alert alert-info" role="alert">
+                        <h6><i class="fas fa-info-circle me-2"></i>AI Module Setup Instructions</h6>
+                        <p class="mb-2">To enable real AI question generation, start the AI module:</p>
+                        <code class="d-block bg-light p-2 rounded mb-2">
+                            cd /home/vladte/IdeaProjects/DevHack<br>
+                            ./gradlew :ai:bootRun --args='--spring.profiles.active=local'
+                        </code>
+                        <small class="text-muted">
+                            The AI module processes requests using OpenAI/GPT-J services via Kafka messaging.
+                            <a href="/AI_MODULE_SETUP.md" target="_blank" class="text-decoration-none ms-1">
+                                View full setup guide
+                            </a>
+                        </small>
+                        <button type="button" class="btn-close" (click)="showAiSetupInstructions = false"></button>
+                    </div>
+
+                    <!-- AI Processing Status -->
+                    <div *ngIf="generating" class="alert alert-info" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm me-3" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">
+                                    <i class="fas fa-robot me-2"></i>
+                                    AI is generating your questions...
+                                </h6>
+                                <p class="mb-2">{{ aiProcessingMessage }}</p>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                         role="progressbar"
+                                         [style.width.%]="aiProcessingProgress">
+                                    </div>
+                                </div>
+                                <small class="text-muted mt-1 d-block">
+                                    This usually takes 30-60 seconds. Please don't close this page.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Presets -->
+                    <div class="row mb-4" *ngIf="!loading">
+                        <div class="col-12">
+                            <h5 class="mb-3">
+                                <i class="fas fa-bolt me-2"></i>
+                                Quick Start Presets
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3" *ngFor="let preset of quickPresets">
+                                    <div class="card preset-card h-100" (click)="applyPreset(preset)">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">{{ preset.name }}</h6>
+                                            <p class="card-text small text-muted">
+                                                {{ preset.topic }} • {{ preset.count }} questions<br>
+                                                {{ preset.difficulty }} • {{ preset.experience }}
+                                            </p>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-play me-1"></i>
+                                                Apply
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generation Form -->
+                    <form [formGroup]="generationForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+                        <div class="row">
+                            <!-- Topic Selection -->
+                            <div class="col-md-6 mb-3">
+                                <label for="topic" class="form-label">
+                                    <i class="fas fa-tag me-1"></i>
+                                    Topic *
+                                </label>
+                                <div class="input-group">
+                                    <input
+                                            type="text"
+                                            class="form-control"
+                                            id="topic"
+                                            formControlName="topic"
+                                            [class.is-invalid]="hasError('topic', 'required') || hasError('topic', 'minlength')"
+                                            placeholder="Enter topic (e.g., JavaScript, Java, Python)"
+                                            list="topicsList">
+                                    <datalist id="topicsList">
+                                        <option *ngFor="let tag of tags" [value]="tag.name">{{ tag.name }}</option>
+                                    </datalist>
+                                </div>
+                                <div class="invalid-feedback"
+                                     *ngIf="hasError('topic', 'required') || hasError('topic', 'minlength')">
+                                    {{ getErrorMessage('topic') }}
+                                </div>
+                                <small class="form-text text-muted">
+                                    Choose from available topics or enter a custom one
+                                </small>
+                            </div>
+
+                            <!-- Question Count -->
+                            <div class="col-md-6 mb-3">
+                                <label for="count" class="form-label">
+                                    <i class="fas fa-hashtag me-1"></i>
+                                    Number of Questions *
+                                </label>
+                                <input
+                                        type="number"
+                                        class="form-control"
+                                        id="count"
+                                        formControlName="count"
+                                        [class.is-invalid]="hasError('count', 'min') || hasError('count', 'max')"
+                                        min="1"
+                                        max="20">
+                                <div class="invalid-feedback"
+                                     *ngIf="hasError('count', 'min') || hasError('count', 'max')">
+                                    {{ getErrorMessage('count') }}
+                                </div>
+                                <small class="form-text text-muted">
+                                    Between 1 and 20 questions
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Difficulty Level -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-signal me-1"></i>
+                                    Difficulty Level *
+                                </label>
+                                <div class="difficulty-options">
+                                    <div class="form-check" *ngFor="let option of difficultyOptions">
+                                        <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                [id]="'difficulty-' + option.value"
+                                                [value]="option.value"
+                                                formControlName="difficulty">
+                                        <label class="form-check-label" [for]="'difficulty-' + option.value">
+                                            <strong>{{ option.label }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ option.description }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Question Type -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-list-alt me-1"></i>
+                                    Question Type *
+                                </label>
+                                <div class="type-options">
+                                    <div class="form-check" *ngFor="let option of typeOptions">
+                                        <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                [id]="'type-' + option.value"
+                                                [value]="option.value"
+                                                formControlName="type">
+                                        <label class="form-check-label" [for]="'type-' + option.value">
+                                            <strong>{{ option.label }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ option.description }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Experience Level -->
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user-graduate me-1"></i>
+                                    Experience Level *
+                                </label>
+                                <div class="experience-options">
+                                    <div class="form-check" *ngFor="let option of experienceOptions">
+                                        <input
+                                                class="form-check-input"
+                                                type="radio"
+                                                [id]="'experience-' + option.value"
+                                                [value]="option.value"
+                                                formControlName="experience">
+                                        <label class="form-check-label" [for]="'experience-' + option.value">
+                                            <strong>{{ option.label }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ option.description }}</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button
+                                                type="submit"
+                                                class="btn btn-primary btn-lg"
+                                                [disabled]="generating || !generationForm.valid">
+                                            <span *ngIf="generating"
+                                                  class="spinner-border spinner-border-sm me-2"></span>
+                                            <i *ngIf="!generating" class="fas fa-magic me-2"></i>
+                                            {{ generating ? 'Generating...' : 'Generate Questions' }}
+                                        </button>
+                                        <button
+                                                type="button"
+                                                class="btn btn-outline-secondary"
+                                                (click)="resetForm()"
+                                                [disabled]="generating">
+                                            <i class="fas fa-undo me-2"></i>
+                                            Reset
+                                        </button>
+                                    </div>
+                                    <div class="text-muted small">
+                                        <i class="fas fa-clock me-1"></i>
+                                        Estimated time: ~30 seconds
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Auto-Generation Section -->
+                    <div class="row mt-5" *ngIf="tags.length > 0 && !loading">
+                        <div class="col-12">
+                            <hr>
+                            <h5 class="mb-3">
+                                <i class="fas fa-zap me-2"></i>
+                                Quick Auto-Generation
+                            </h5>
+                            <p class="text-muted mb-3">
+                                Generate 3 easy questions instantly for any topic
+                            </p>
+                            <div class="row">
+                                <div class="col-md-3 col-sm-6 mb-2" *ngFor="let tag of tags.slice(0, 8)">
+                                    <button
+                                            class="btn btn-outline-info btn-sm w-100"
+                                            (click)="autoGenerateEasy(tag.name)"
+                                            [disabled]="generating">
+                                        <i class="fas fa-bolt me-1"></i>
+                                        {{ tag.name }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mt-3" *ngIf="tags.length > 8">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Showing first 8 topics. Use the main form above for more options.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

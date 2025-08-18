@@ -4,16 +4,16 @@ import com.vladte.devhack.entities.UserOwnedBasicEntity;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "answers")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class Answer extends UserOwnedBasicEntity {
 
     @Column(name = "answer_text", nullable = false)

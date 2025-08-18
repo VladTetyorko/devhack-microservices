@@ -1,0 +1,283 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-collection-fill me-2 text-primary"></i>
+                Category Details
+            </h2>
+            <p class="text-muted mb-0">View and manage category information</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" (click)="goBack()">
+                <i class="bi bi-arrow-left me-2"></i> Back to Categories
+            </button>
+            <button class="btn btn-primary" (click)="editCategory()" *ngIf="category && !isLoading">
+                <i class="bi bi-pencil me-2"></i> Edit Category
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="card">
+        <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted">Loading category details...</p>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Category Details -->
+    <div *ngIf="!isLoading && category" class="row">
+        <!-- Main Information Card -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Category Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Category Name</label>
+                                <div class="d-flex align-items-center">
+                                    <div class="category-badge me-3">
+                                        <i class="bi bi-folder-fill text-primary"></i>
+                                    </div>
+                                    <h4 class="mb-0">{{ category.name || 'Unknown Category' }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Category ID</label>
+                                <div class="font-monospace text-muted">{{ category.id }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3" *ngIf="category.description">
+                        <label class="form-label text-muted">Description</label>
+                        <p class="mb-0">{{ category.description }}</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Created Date</label>
+                                <div>{{ category.createdAt | date:'MMM d, y h:mm a' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Last Updated</label>
+                                <div>{{ category.updatedAt | date:'MMM d, y h:mm a' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        Category Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-number text-info">{{ getCategoryStats()?.topicsCount || 0 }}</div>
+                                <div class="stat-label">Topics</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-number text-primary">{{ getCategoryStats()?.totalQuestions || 0 }}</div>
+                                <div class="stat-label">Total Questions</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-number text-success">{{ getCategoryStats()?.answeredQuestions || 0 }}</div>
+                                <div class="stat-label">Answered</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-number text-warning">{{ (getCategoryStats()?.totalQuestions || 0) - (getCategoryStats()?.answeredQuestions || 0) }}</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mt-4" *ngIf="category.progressPercentage !== undefined">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Overall Progress</span>
+                            <span class="badge" [ngClass]="getProgressBarClass(category.progressPercentage)">
+                                {{ getProgressStatus(category.progressPercentage) }}
+                            </span>
+                        </div>
+                        <div class="progress mb-2" style="height: 12px;">
+                            <div class="progress-bar"
+                                 [ngClass]="getProgressBarClass(category.progressPercentage)"
+                                 [style.width.%]="category.progressPercentage">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <small class="text-muted">{{ category.progressPercentage }}% complete</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics List -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tags me-2"></i>
+                        Topics in this Category
+                    </h5>
+                    <button class="btn btn-sm btn-outline-primary" (click)="createTopic()">
+                        <i class="bi bi-plus me-1"></i> Add Topic
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Loading Topics -->
+                    <div *ngIf="isLoadingTopics" class="text-center py-3">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                        <span class="text-muted">Loading topics...</span>
+                    </div>
+
+                    <!-- Topics List -->
+                    <div *ngIf="!isLoadingTopics && topics.length > 0" class="row g-3">
+                        <div class="col-md-6" *ngFor="let topic of topics">
+                            <div class="topic-card p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-tag me-1 text-secondary"></i>
+                                            {{ topic.name }}
+                                        </h6>
+                                        <p class="text-muted small mb-2" *ngIf="topic.description">
+                                            {{ topic.description }}
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="bi bi-question-circle me-1"></i>
+                                            {{ topic.questionCount || 0 }} questions
+                                        </small>
+                                    </div>
+                                    <app-action-buttons
+                                            [entityId]="topic.id!"
+                                            variant="dropdown"
+                                            [showEdit]="false"
+                                            [showDelete]="false"
+                                            (view)="viewTopic($event.toString())">
+                                    </app-action-buttons>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- No Topics -->
+                    <div *ngIf="!isLoadingTopics && topics.length === 0" class="text-center py-4">
+                        <i class="bi bi-tags display-4 text-muted mb-3"></i>
+                        <h6 class="text-muted">No Topics Yet</h6>
+                        <p class="text-muted mb-3">This category doesn't have any topics yet.</p>
+                        <button class="btn btn-primary" (click)="createTopic()">
+                            <i class="bi bi-plus me-2"></i> Create First Topic
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-gear me-2"></i>
+                        Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" (click)="editCategory()">
+                            <i class="bi bi-pencil me-2"></i> Edit Category
+                        </button>
+
+                        <button class="btn btn-outline-info" (click)="viewTopics()">
+                            <i class="bi bi-tags me-2"></i> View All Topics
+                        </button>
+
+                        <button class="btn btn-outline-success" (click)="createTopic()">
+                            <i class="bi bi-plus me-2"></i> Add New Topic
+                        </button>
+
+                        <button class="btn btn-outline-primary"
+                                [routerLink]="['/interview-questions']"
+                                [queryParams]="{categoryId: category.id}">
+                            <i class="bi bi-question-circle me-2"></i> View Questions
+                        </button>
+
+                        <hr>
+
+                        <button class="btn btn-outline-danger" (click)="deleteCategory()">
+                            <i class="bi bi-trash me-2"></i> Delete Category
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        Quick Stats
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span>Topics Count</span>
+                        <span class="badge bg-info">{{ topics.length }}</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span>Total Questions</span>
+                        <span class="badge bg-primary">{{ category.questionCount || 0 }}</span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-3"
+                         *ngIf="category.isPopular !== undefined">
+                        <span>Popular Category</span>
+                        <span class="badge" [ngClass]="category.isPopular ? 'bg-success' : 'bg-secondary'">
+                            {{ category.isPopular ? 'Yes' : 'No' }}
+                        </span>
+                    </div>
+
+                    <div class="text-muted small">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Categories organize topics into logical groups for better navigation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

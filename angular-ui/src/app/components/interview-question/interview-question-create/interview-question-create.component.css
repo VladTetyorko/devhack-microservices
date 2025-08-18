@@ -1,0 +1,324 @@
+/* Interview Question Create Component Styles */
+
+.page-header {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.card-header {
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-label.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.invalid-feedback {
+    display: block;
+    font-size: 0.875rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Tags Selection Styling */
+.tags-container {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    min-height: 120px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.tag-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.tag-item:hover {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+    transform: translateY(-1px);
+}
+
+.tag-item.selected {
+    border-color: #007bff;
+    background-color: #007bff;
+    color: white;
+}
+
+.tag-item.selected:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.tag-item i {
+    font-size: 1rem;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0056b3, #004085);
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover:not(:disabled) {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Spinner */
+
+
+/* Help Card Styling */
+.card:last-child {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.list-unstyled li {
+    padding: 0.25rem 0;
+    color: #495057;
+}
+
+/* Icons */
+.bi {
+    font-size: 1rem;
+}
+
+.page-header .bi {
+    font-size: 1.25rem;
+}
+
+/* Textarea specific styling */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .d-flex.gap-2 {
+        width: 100%;
+    }
+
+    .d-flex.gap-2 .btn {
+        flex: 1;
+    }
+
+    .tag-selection {
+        gap: 0.25rem;
+    }
+
+    .tag-item {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .form-control,
+    .form-select {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .tags-container {
+        min-height: 100px;
+        max-height: 200px;
+    }
+}
+
+/* Animation for form validation */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    animation: shake 0.3s ease-in-out;
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+}
+
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Loading state */
+.btn[disabled] {
+    position: relative;
+}
+
+.btn[disabled] .spinner-border {
+    animation: spin 1s linear infinite;
+}
+
+
+/* Custom scrollbar for tags container */
+.tags-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tags-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.tags-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.tags-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

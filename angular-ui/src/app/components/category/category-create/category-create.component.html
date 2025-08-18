@@ -1,0 +1,159 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-plus-circle-fill me-2 text-primary"></i>
+                Create New Category
+            </h2>
+            <p class="text-muted mb-0">Add a new category to organize interview topics</p>
+        </div>
+        <button class="btn btn-outline-secondary" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i> Back to Categories
+        </button>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Create Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-collection-fill me-2"></i>
+                        Category Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" novalidate>
+                        <!-- Category Name Field -->
+                        <div class="mb-4">
+                            <label for="name" class="form-label required">
+                                <i class="bi bi-folder me-1"></i>
+                                Category Name
+                            </label>
+                            <input
+                                    type="text"
+                                    id="name"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('name')"
+                                    formControlName="name"
+                                    placeholder="Enter category name (e.g., Programming Languages, Frameworks, Databases)"
+                                    maxlength="50"
+                            >
+                            <div class="invalid-feedback" *ngIf="hasFieldError('name')">
+                                {{ getFieldError('name') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Use descriptive names that clearly identify the main topic area.
+                            </div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label">
+                                <i class="bi bi-text-paragraph me-1"></i>
+                                Description
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <textarea
+                                    id="description"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('description')"
+                                    formControlName="description"
+                                    rows="4"
+                                    placeholder="Provide a brief description of what this category represents..."
+                                    maxlength="500"
+                            ></textarea>
+                            <div class="invalid-feedback" *ngIf="hasFieldError('description')">
+                                {{ getFieldError('description') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Help users understand what types of topics belong in this category.
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-2">
+                                <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        [disabled]="isSubmitting || categoryForm.invalid"
+                                >
+                                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"
+                                          role="status"></span>
+                                    <i *ngIf="!isSubmitting" class="bi bi-check-lg me-2"></i>
+                                    {{ isSubmitting ? 'Creating...' : 'Create Category' }}
+                                </button>
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        (click)="resetForm()"
+                                        [disabled]="isSubmitting"
+                                >
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    Reset
+                                </button>
+                            </div>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    (click)="cancel()"
+                                    [disabled]="isSubmitting"
+                            >
+                                <i class="bi bi-x-lg me-2"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info bg-opacity-10">
+                    <h6 class="mb-0 text-info">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Category Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li class="mb-2">
+                            <strong>Be Specific:</strong> Choose names that clearly represent the topic area (e.g.,
+                            "Frontend Frameworks" instead of just "Frontend").
+                        </li>
+                        <li class="mb-2">
+                            <strong>Avoid Duplication:</strong> Check if a similar category already exists before
+                            creating a new one.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Think Hierarchically:</strong> Categories will contain topics, so choose broad
+                            enough names to encompass multiple related topics.
+                        </li>
+                        <li class="mb-0">
+                            <strong>Use Standard Terms:</strong> Prefer commonly used industry terms that users will
+                            easily recognize.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@ package com.vladte.devhack.common.repository;
 
 import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
 import com.vladte.devhack.common.repository.global.TagRepository;
+import com.vladte.devhack.common.repository.global.specification.InterviewQuestionSpecification;
 import com.vladte.devhack.common.repository.user.UserRepository;
 import com.vladte.devhack.entities.enums.AuthProviderType;
 import com.vladte.devhack.entities.global.InterviewQuestion;
@@ -289,7 +290,8 @@ class InterviewQuestionRepositoryTest extends BaseRepositoryTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         // Act - Search by text
-        Page<InterviewQuestion> javaQuestions = questionRepository.searchQuestions("Java", null, null, pageable);
+        Page<InterviewQuestion> javaQuestions = questionRepository.findAll(
+                InterviewQuestionSpecification.searchQuestions("Java", null, null), pageable);
 
         // Assert
         assertEquals(2, javaQuestions.getContent().size());
@@ -297,21 +299,23 @@ class InterviewQuestionRepositoryTest extends BaseRepositoryTest {
         assertTrue(javaQuestions.getContent().stream().anyMatch(q -> q.getQuestionText().equals("JavaScript programming question?")));
 
         // Act - Search by difficulty
-        Page<InterviewQuestion> easyQuestions = questionRepository.searchQuestions(null, "Easy", null, pageable);
+        Page<InterviewQuestion> easyQuestions = questionRepository.findAll(
+                InterviewQuestionSpecification.searchQuestions(null, "Easy", null), pageable);
 
         // Assert
         assertEquals(1, easyQuestions.getContent().size());
         assertEquals("Java programming question?", easyQuestions.getContent().get(0).getQuestionText());
 
         // Act - Search by tag ID
-        Page<InterviewQuestion> taggedQuestions = questionRepository.searchQuestions(null, null, testTag.getId(), pageable);
+        Page<InterviewQuestion> taggedQuestions = questionRepository.findAll(
+                InterviewQuestionSpecification.searchQuestions(null, null, testTag.getId()), pageable);
 
         // Assert
         assertEquals(2, taggedQuestions.getContent().size());
 
         // Act - Search with all filters
-        Page<InterviewQuestion> filteredQuestions = questionRepository.searchQuestions(
-                "Java", "Easy", testTag.getId(), pageable);
+        Page<InterviewQuestion> filteredQuestions = questionRepository.findAll(
+                InterviewQuestionSpecification.searchQuestions("Java", "Easy", testTag.getId()), pageable);
 
         // Assert
         assertEquals(1, filteredQuestions.getContent().size());

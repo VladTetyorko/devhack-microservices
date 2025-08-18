@@ -5,9 +5,9 @@ import com.vladte.devhack.entities.personalized.Answer;
 import com.vladte.devhack.entities.personalized.Note;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,13 +16,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "interview_questions")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class InterviewQuestion extends UserOwnedBasicEntity {
 
-    @Column(name = "question_text", nullable = false)
+    @Column(name = "question_text", nullable = false, columnDefinition = "text")
     private String questionText;
 
     @Column(nullable = false)

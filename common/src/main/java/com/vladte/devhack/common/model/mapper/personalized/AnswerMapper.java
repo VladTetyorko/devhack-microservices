@@ -29,7 +29,9 @@ public class AnswerMapper implements EntityDTOMapper<Answer, AnswerDTO> {
 
         if (entity.getUser() != null) {
             dto.setUserId(entity.getUser().getId());
-            dto.setUserName(entity.getUser().getProfile().getName());
+            if (entity.getUser().getProfile() != null) {
+                dto.setUserName(entity.getUser().getProfile().getName());
+            }
         }
 
         if (entity.getQuestion() != null) {

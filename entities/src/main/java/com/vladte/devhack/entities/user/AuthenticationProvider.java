@@ -1,5 +1,7 @@
 package com.vladte.devhack.entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.vladte.devhack.entities.BasicEntity;
 import com.vladte.devhack.entities.enums.AuthProviderType;
 import jakarta.persistence.*;
@@ -7,7 +9,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(
         name = "user_auth_providers",
@@ -16,10 +17,12 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(columnNames = {"provider", "provider_user_id"}) // unique social ID
         }
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"user"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AuthenticationProvider extends BasicEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,15 +1,15 @@
 .answer-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 .answer-card:hover {
-  transform: translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 0 0.5rem 1rem var(--shadow-hover) !important;
 }
 
 .card {
-  border: none;
+    border: none;
     box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
 }
 
@@ -19,14 +19,14 @@
 
 /* Alert styling */
 .alert {
-  border: none;
-  border-radius: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
 }
 
 /* Empty state styling */
 .display-1 {
-  font-size: 4rem;
-  opacity: 0.5;
+    font-size: 4rem;
+    opacity: 0.5;
 }
 
 /* Badge colors */
@@ -56,19 +56,19 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: stretch !important;
-    gap: 1rem;
-  }
-  
-  .page-header .btn {
-    align-self: center;
-  }
+    .page-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        align-self: center;
+    }
 }
 
 /* Custom button group styling */
 .btn-group-sm .btn {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
 }

@@ -131,7 +131,6 @@ public class QuestionGenerationOrchestrationServiceImpl
                 })
                 .exceptionally(ex -> {
                     log.error("Generation failed for tag '{}': {}", tagName, ex.getMessage(), ex);
-                    // return empty list so caller isn’t blocked by exception
                     return Collections.emptyList();
                 });
     }

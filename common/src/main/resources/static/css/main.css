@@ -23,6 +23,7 @@ body {
     border-radius: 8px;
     background-color: #fff;
     margin-bottom: 1.5rem;
+    z-index: 0;
 }
 
 .card-header {

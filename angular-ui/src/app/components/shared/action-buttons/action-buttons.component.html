@@ -1,20 +1,35 @@
-<div class="d-flex gap-1">
-    <button *ngIf="showView"
-            class="btn btn-sm btn-outline-info"
-            (click)="onView()"
-            title="View">
-        <i class="bi bi-eye"></i>
+<!-- Button Group Variant -->
+<div *ngIf="variant === 'buttons'" class="d-flex gap-1">
+    <button *ngFor="let action of allActions"
+            [class]="action.cssClass + ' ' + buttonSizeClass"
+            (click)="onAction(action, $event)"
+            [title]="action.label">
+        <i [class]="'bi ' + action.icon"></i>
     </button>
-    <button *ngIf="showEdit"
-            class="btn btn-sm btn-outline-primary"
-            (click)="onEdit()"
-            title="Edit">
-        <i class="bi bi-pencil"></i>
+</div>
+
+<!-- Dropdown Variant -->
+<div *ngIf="variant === 'dropdown'" class="dropdown">
+    <button [class]="dropdownToggleClass"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false">
+        <i class="bi bi-three-dots"></i>
     </button>
-    <button *ngIf="showDelete"
-            class="btn btn-sm btn-outline-danger"
-            (click)="onDelete($event)"
-            title="Delete">
-        <i class="bi bi-trash"></i>
-    </button>
+    <ul class="dropdown-menu">
+        <ng-container *ngFor="let action of allActions; let last = last">
+            <li>
+                <a [class]="action.cssClass"
+                   (click)="onAction(action, $event)"
+                   style="cursor: pointer;">
+                    <i [class]="'bi ' + action.icon + ' me-2'"></i>
+                    {{ action.label }}
+                </a>
+            </li>
+            <!-- Add divider before delete action if it's not the only action -->
+            <li *ngIf="action.action === 'delete' && !last && allActions.length > 1">
+                <hr class="dropdown-divider">
+            </li>
+        </ng-container>
+    </ul>
 </div>

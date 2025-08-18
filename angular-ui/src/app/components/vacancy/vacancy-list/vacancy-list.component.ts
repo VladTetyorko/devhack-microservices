@@ -10,8 +10,13 @@ import {VacancyDTO} from '../../../models/global/vacancy.model';
 })
 export class VacancyListComponent implements OnInit {
     vacancies: VacancyDTO[] = [];
+    filteredVacancies: VacancyDTO[] = [];
     isLoading = true;
     error = '';
+
+    // UI filters
+    searchTerm = '';
+    remoteOnly = false;
 
     constructor(
         private vacancyService: VacancyService,
@@ -32,6 +37,7 @@ export class VacancyListComponent implements OnInit {
                     createdAt: this.convertDateFormat(vacancy.createdAt),
                     updatedAt: this.convertDateFormat(vacancy.updatedAt)
                 }));
+                this.applyFilters();
                 this.isLoading = false;
             },
             error: (err) => {
@@ -39,6 +45,32 @@ export class VacancyListComponent implements OnInit {
                 this.isLoading = false;
             }
         });
+    }
+
+    onSearchChange(value: string): void {
+        this.searchTerm = value;
+        this.applyFilters();
+    }
+
+    onRemoteToggle(checked: boolean): void {
+        this.remoteOnly = checked;
+        this.applyFilters();
+    }
+
+    applyFilters(): void {
+        let result = [...this.vacancies];
+        if (this.searchTerm && this.searchTerm.trim().length > 0) {
+            const q = this.searchTerm.toLowerCase();
+            result = result.filter(v =>
+                (v.companyName && v.companyName.toLowerCase().includes(q)) ||
+                (v.position && v.position.toLowerCase().includes(q)) ||
+                (v.technologies && v.technologies.toLowerCase().includes(q))
+            );
+        }
+        if (this.remoteOnly) {
+            result = result.filter(v => !!v.remoteAllowed);
+        }
+        this.filteredVacancies = result;
     }
 
     private convertDateFormat(dateString?: string): string | undefined {
@@ -66,7 +98,11 @@ export class VacancyListComponent implements OnInit {
         this.router.navigate(['/vacancies', id]);
     }
 
+    editVacancy(id: string): void {
+        this.router.navigate(['/vacancies', id, 'edit']);
+    }
+
     navigateToMyResponses(): void {
-        this.router.navigate(['/vacancies/my-responses']);
+        this.router.navigate(['/vacancy-responses', 'my-responses']);
     }
 }

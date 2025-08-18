@@ -72,12 +72,12 @@ export class VacancyDetailComponent implements OnInit {
     }
 
     navigateToMyResponses(): void {
-        this.router.navigate(['/vacancies/my-responses']);
+        this.router.navigate(['/vacancy-responses', 'my-responses']);
     }
 
     applyToVacancy(): void {
         // This would typically open a form or navigate to an application page
         // For now, we'll navigate to my responses
-        this.router.navigate(['/vacancies/my-responses']);
+        this.router.navigate(['/vacancy-responses', 'my-responses']);
     }
 }

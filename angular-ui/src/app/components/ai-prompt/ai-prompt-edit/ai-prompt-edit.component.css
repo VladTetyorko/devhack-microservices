@@ -1,0 +1,130 @@
+/* AI Prompt Edit Component Styles */
+
+/* Shared form styles moved to global styles.scss */
+
+/* Help section styling */
+.border-info {
+    border-color: #0dcaf0 !important;
+}
+
+.bg-info.bg-opacity-10 {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Loading spinner animation moved to global styles */
+
+/* Button group spacing */
+.d-flex.gap-2 > .btn {
+    margin-right: 0;
+}
+
+/* Form validation states kept local for checkmark visuals */
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    border-color: #198754;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.94-.94 1.44 1.44L7.4 4.5l.94.94L4.66 9.12z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.was-validated .form-select:valid,
+.form-select.is-valid {
+    border-color: #198754;
+    padding-right: calc(0.75em + 2.3125rem);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 6 6 6-6'/%3e%3c/svg%3e"), url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.94-.94 1.44 1.44L7.4 4.5l.94.94L4.66 9.12z'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center, center right 2.25rem;
+    background-size: 16px 12px, calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .d-flex.gap-2 {
+        width: 100%;
+    }
+
+    .btn {
+        flex: 1;
+    }
+
+    .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Animation for changes indicator */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading state styling */
+.text-center.py-5 {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Print styles */
+@media print {
+    .btn,
+    .alert {
+        display: none !important;
+    }
+
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #dee2e6 !important;
+        background: white !important;
+    }
+}

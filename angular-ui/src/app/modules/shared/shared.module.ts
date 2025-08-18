@@ -35,4 +35,5 @@ import {LocalDateTimePipe} from '../../pipes/local-date-time.pipe';
         LocalDateTimePipe
     ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

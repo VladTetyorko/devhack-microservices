@@ -109,7 +109,8 @@
                             <span *ngIf="answer.aiScore" [ngClass]="getScoreBadgeClass(answer.aiScore)" class="badge">
                                 <i class="bi bi-robot me-1"></i>{{ answer.aiScore }}/100
                             </span>
-                            <span *ngIf="answer.confidenceLevel" [ngClass]="getConfidenceBadgeClass(answer.confidenceLevel)" class="badge">
+                            <span *ngIf="answer.confidenceLevel"
+                                  [ngClass]="getConfidenceBadgeClass(answer.confidenceLevel)" class="badge">
                                 <i class="bi bi-speedometer me-1"></i>{{ answer.confidenceLevel }}%
                             </span>
                         </div>

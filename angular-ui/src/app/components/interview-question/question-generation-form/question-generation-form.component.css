@@ -1,0 +1,355 @@
+/* Question Generation Form Component Styles */
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    border-bottom: none;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+/* Preset Cards */
+.preset-card {
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.preset-card:hover {
+    border-color: #007bff;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15);
+}
+
+.preset-card .card-body {
+    padding: 1.5rem;
+}
+
+.preset-card .btn {
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.preset-card:hover .btn {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+/* Form Styling */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.75rem;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Radio Button Groups */
+.difficulty-options,
+.type-options,
+.experience-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-check {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.form-check:hover {
+    border-color: #007bff;
+    background: #f8f9ff;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: #007bff;
+}
+
+.form-check-input:checked ~ * {
+    color: #007bff;
+}
+
+.form-check-input {
+    margin-top: 0.25rem;
+    margin-right: 0.75rem;
+}
+
+.form-check-label {
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-outline-primary {
+    border: 2px solid #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #6c757d, #545b62);
+    border-color: #6c757d;
+}
+
+.btn-outline-info {
+    border: 2px solid #17a2b8;
+    color: #17a2b8;
+    font-size: 0.875rem;
+}
+
+.btn-outline-info:hover {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    border-color: #17a2b8;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Alert spacing */
+.alert {
+    margin-bottom: 1.5rem;
+}
+
+/* Loading States */
+
+/* Form Validation */
+.invalid-feedback {
+    display: block;
+    font-size: 0.875rem;
+    color: #dc3545;
+    margin-top: 0.25rem;
+}
+
+.form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Auto-generation Section */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e9ecef, transparent);
+    margin: 2rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .difficulty-options,
+    .type-options,
+    .experience-options {
+        gap: 0.75rem;
+    }
+
+    .form-check {
+        padding: 0.75rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .preset-card .card-body {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex.flex-wrap.gap-2 {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .justify-content-between {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+
+    .text-muted.small {
+        text-align: center;
+        margin-top: 1rem;
+    }
+}
+
+/* Animation Effects */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.preset-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.preset-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.preset-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+/* Focus States */
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Icon Enhancements */
+.fas {
+    transition: all 0.3s ease;
+}
+
+.btn:hover .fas {
+    transform: scale(1.1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Datalist Styling */
+datalist {
+    display: none;
+}
+
+/* Input Group Enhancements */
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .form-control:focus {
+    z-index: 3;
+}
+
+/* Success Animation */
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.alert-success {
+    animation: successPulse 0.6s ease-out;
+}

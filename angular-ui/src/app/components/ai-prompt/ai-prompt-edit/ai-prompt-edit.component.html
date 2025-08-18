@@ -1,0 +1,470 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-pencil-fill me-2 text-primary"></i>
+                Edit AI Prompt
+            </h2>
+            <p class="text-muted mb-0">Update AI prompt information</p>
+        </div>
+        <button class="btn btn-outline-secondary" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i> Back to Prompt
+        </button>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading prompt data...</p>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="!isLoading" class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-chat-text-fill me-2"></i>
+                        AI Prompt Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="promptForm" (ngSubmit)="onSubmit()" novalidate>
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <!-- Prompt Code Field -->
+                                <div class="mb-4">
+                                    <label for="code" class="form-label required">
+                                        <i class="bi bi-code-slash me-1"></i>
+                                        Prompt Code
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="code"
+                                            class="form-control font-monospace"
+                                            [class.is-invalid]="hasFieldError('code')"
+                                            formControlName="code"
+                                            placeholder="PROMPT_CODE"
+                                            maxlength="50"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('code')">
+                                        {{ getFieldError('code') }}
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Unique identifier using uppercase letters, numbers, and underscores.
+                                    </div>
+                                </div>
+
+                                <!-- Category Field -->
+                                <div class="mb-4">
+                                    <label for="categoryId" class="form-label required">
+                                        <i class="bi bi-collection me-1"></i>
+                                        Category
+                                    </label>
+                                    <select
+                                            id="categoryId"
+                                            class="form-select"
+                                            [class.is-invalid]="hasFieldError('categoryId')"
+                                            formControlName="categoryId"
+                                    >
+                                        <option value="">Select a category...</option>
+                                        <option *ngFor="let category of availableCategories" [value]="category.id">
+                                            {{ category.name }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('categoryId')">
+                                        {{ getFieldError('categoryId') }}
+                                    </div>
+                                    <div class="form-text" *ngIf="isLoadingCategories">
+                                        <i class="bi bi-arrow-clockwise spin me-1"></i>
+                                        Loading categories...
+                                    </div>
+                                    <div class="form-text" *ngIf="!isLoadingCategories && getSelectedCategoryName()">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Selected: {{ getSelectedCategoryName() }}
+                                    </div>
+                                </div>
+
+                                <!-- AI Settings -->
+                                <div class="mb-4">
+                                    <label for="model" class="form-label">
+                                        <i class="bi bi-cpu me-1"></i>
+                                        Model
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="model"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('model')"
+                                            formControlName="model"
+                                            placeholder="gpt-3.5-turbo"
+                                            maxlength="50"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('model')">
+                                        {{ getFieldError('model') }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="version" class="form-label">
+                                        <i class="bi bi-tag me-1"></i>
+                                        Version
+                                    </label>
+                                    <input
+                                            type="number"
+                                            id="version"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('version')"
+                                            formControlName="version"
+                                            min="1"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('version')">
+                                        {{ getFieldError('version') }}
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                id="enabled"
+                                                formControlName="enabled"
+                                        >
+                                        <label class="form-check-label" for="enabled">
+                                            <i class="bi bi-toggle-on me-1"></i>
+                                            Enabled
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Only enabled prompts are used in the system.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <!-- User Template Field -->
+                                <div class="mb-4">
+                                    <label for="prompt" class="form-label required">
+                                        <i class="bi bi-chat-text me-1"></i>
+                                        User Template
+                                    </label>
+                                    <textarea
+                                            id="prompt"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('prompt')"
+                                            formControlName="prompt"
+                                            rows="6"
+                                            [attr.placeholder]="'Enter the user prompt template here... Use {{variable}} for placeholders'"
+                                            maxlength="20000">
+                                    </textarea>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('prompt')">
+                                        {{ getFieldError('prompt') }}
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        This template is rendered with parameters and sent as the user message.
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="small text-muted mb-1"><i class="bi bi-eye me-1"></i>Preview:</div>
+                                        <div [innerHTML]="highlightedUserTemplate"></div>
+                                        <div class="small mt-1">
+                                            <span class="badge bg-secondary me-2">Vars: {{ templateVariables.size }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- System Template Field -->
+                                <div class="mb-4">
+                                    <label for="systemTemplate" class="form-label">
+                                        <i class="bi bi-shield-lock me-1"></i>
+                                        System Template
+                                    </label>
+                                    <textarea
+                                            id="systemTemplate"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('systemTemplate')"
+                                            formControlName="systemTemplate"
+                                            rows="6"
+                                            placeholder="Enter the system template (optional)"
+                                            maxlength="20000"
+                                    ></textarea>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('systemTemplate')">
+                                        {{ getFieldError('systemTemplate') }}
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Optional system instructions prepended before the user template.
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="small text-muted mb-1"><i class="bi bi-eye me-1"></i>Preview:</div>
+                                        <div [innerHTML]="highlightedSystemTemplate"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Description Field -->
+                                <div class="mb-4">
+                                    <label for="description" class="form-label">
+                                        <i class="bi bi-text-paragraph me-1"></i>
+                                        Description
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    <textarea
+                                            id="description"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('description')"
+                                            formControlName="description"
+                                            rows="3"
+                                            placeholder="Provide a brief description of what this prompt does..."
+                                            maxlength="500"
+                                    ></textarea>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('description')">
+                                        {{ getFieldError('description') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arguments Section -->
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="my-4">
+                                <h6 class="mb-3">
+                                    <i class="bi bi-gear me-2"></i>
+                                    Prompt Arguments Configuration
+                                </h6>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Amount of Arguments Field -->
+                                <div class="mb-4">
+                                    <label for="amountOfArguments" class="form-label">
+                                        <i class="bi bi-hash me-1"></i>
+                                        Number of Arguments
+                                    </label>
+                                    <input
+                                            type="number"
+                                            id="amountOfArguments"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('amountOfArguments')"
+                                            formControlName="amountOfArguments"
+                                            min="0"
+                                            max="20"
+                                            placeholder="0"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('amountOfArguments')">
+                                        {{ getFieldError('amountOfArguments') }}
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Number of parameters this prompt expects (0-20).
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <!-- Arguments Description Field -->
+                                <div class="mb-4">
+                                    <label for="argsDescription" class="form-label">
+                                        <i class="bi bi-list-ul me-1"></i>
+                                        Arguments Description
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    <textarea
+                                            id="argsDescription"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('argsDescription')"
+                                            formControlName="argsDescription"
+                                            rows="3"
+                                            placeholder="Describe the expected arguments (e.g., arg1: topic, arg2: difficulty level)..."
+                                            maxlength="500"
+                                    ></textarea>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('argsDescription')">
+                                        {{ getFieldError('argsDescription') }}
+                                    </div>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Describe what each argument represents and its expected format.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced JSON Configuration -->
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="my-4">
+                                <h6 class="mb-3">
+                                    <i class="bi bi-braces-asterisk me-2"></i>
+                                    Advanced JSON Configuration
+                                </h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="argsSchemaJson" class="form-label">
+                                        <i class="bi bi-diagram-3 me-1"></i>
+                                        Arguments Schema (JSON)
+                                    </label>
+                                    <textarea id="argsSchemaJson" class="form-control font-monospace" rows="8"
+                                              formControlName="argsSchemaJson" placeholder='{
+  "type": "object", ...
+}'></textarea>
+                                    <div class="form-text">Defines allowed parameters and validation rules.</div>
+                                    <div *ngIf="missingVariables.length"
+                                         class="alert alert-warning mt-2 py-2 px-3 small" role="alert">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Missing in schema: <strong>{{ missingVariables.join(', ') }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="defaultsJson" class="form-label">
+                                        <i class="bi bi-sliders me-1"></i>
+                                        Defaults (JSON)
+                                    </label>
+                                    <textarea id="defaultsJson" class="form-control font-monospace" rows="8"
+                                              formControlName="defaultsJson" placeholder='{
+  "count": 5
+}'></textarea>
+                                    <div class="form-text">Default values for missing parameters.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="parametersJson" class="form-label">
+                                        <i class="bi bi-gear-wide-connected me-1"></i>
+                                        Model Parameters (JSON)
+                                    </label>
+                                    <textarea id="parametersJson" class="form-control font-monospace" rows="8"
+                                              formControlName="parametersJson" placeholder='{
+  "temperature": 0.3
+}'></textarea>
+                                    <div class="form-text">AI model configuration like temperature, max_tokens, etc.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="responseContractJson" class="form-label">
+                                        <i class="bi bi-journal-code me-1"></i>
+                                        Response Contract (JSON)
+                                    </label>
+                                    <textarea id="responseContractJson" class="form-control font-monospace" rows="8"
+                                              formControlName="responseContractJson" placeholder='{
+  "type": "object"
+}'></textarea>
+                                    <div class="form-text">Expected structure of the AI response (optional).</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="d-flex gap-2">
+                                <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        [disabled]="isSubmitting || promptForm.invalid || !hasChanges()"
+                                >
+                                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"
+                                          role="status"></span>
+                                    <i *ngIf="!isSubmitting" class="bi bi-check-lg me-2"></i>
+                                    {{ isSubmitting ? 'Updating...' : 'Update Prompt' }}
+                                </button>
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        (click)="resetForm()"
+                                        [disabled]="isSubmitting || !hasChanges()"
+                                >
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    Reset Changes
+                                </button>
+                            </div>
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    (click)="cancel()"
+                                    [disabled]="isSubmitting"
+                            >
+                                <i class="bi bi-x-lg me-2"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Changes Indicator -->
+            <div *ngIf="hasChanges()" class="alert alert-warning mt-3" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <strong>Unsaved Changes:</strong> You have made changes to this prompt. Don't forget to save your
+                changes.
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info bg-opacity-10">
+                    <h6 class="mb-0 text-info">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        AI Prompt Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0 small">
+                        <li class="mb-2">
+                            <strong>Clear Instructions:</strong> Write prompts that give clear, specific instructions to
+                            the AI system.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Unique Codes:</strong> Prompt codes must be unique across the system. Avoid changing
+                            codes if they are being used elsewhere.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Arguments:</strong> If your prompt uses placeholders or variables, specify the
+                            number of arguments
+                            and describe what each one represents.
+                        </li>
+                        <li class="mb-2">
+                            <strong>Categories:</strong> Choose the appropriate category to help organize and find
+                            prompts easily.
+                        </li>
+                        <li class="mb-0">
+                            <strong>Testing:</strong> Test your prompts thoroughly before marking them as active to
+                            ensure they
+                            produce the expected results.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,7 +53,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // Public resources
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**")
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/ws/**")
                         .permitAll()
                         // Public pages
                         .requestMatchers("/", "/login", "/register", "/about")
@@ -87,7 +88,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 // Disable CSRF for stateless JWT authentication
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults());
 
         // Add JWT authentication filter if available
         if (jwtAuthenticationFilter != null) {

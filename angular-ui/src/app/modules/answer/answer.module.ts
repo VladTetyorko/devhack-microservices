@@ -5,26 +5,29 @@ import {RouterModule} from '@angular/router';
 
 import {AnswerListComponent} from '../../components/answer/answer-list/answer-list.component';
 import {AnswerDetailComponent} from '../../components/answer/answer-detail/answer-detail.component';
+import {AnswerCreateComponent} from '../../components/answer/answer-create/answer-create.component';
 
 import {AnswerRoutingModule} from './answer-routing.module';
 import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [
-      AnswerListComponent,
-      AnswerDetailComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    AnswerRoutingModule,
-    SharedModule
-  ],
-  exports: [
-      AnswerListComponent,
-      AnswerDetailComponent
-  ]
+    declarations: [
+        AnswerListComponent,
+        AnswerDetailComponent,
+        AnswerCreateComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterModule,
+        AnswerRoutingModule,
+        SharedModule
+    ],
+    exports: [
+        AnswerListComponent,
+        AnswerDetailComponent
+    ]
 })
-export class AnswerModule { }
+export class AnswerModule {
+}

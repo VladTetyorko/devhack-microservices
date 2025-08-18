@@ -1,7 +1,11 @@
 .page-header {
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--border-color);
+}
+
+.filters {
+    border: 1px solid var(--border-color);
 }
 
 .card {
@@ -30,4 +34,8 @@
 .spinner-border {
     width: 3rem;
     height: 3rem;
+}
+
+.badge.bg-light {
+    background-color: #f8f9fa !important;
 }

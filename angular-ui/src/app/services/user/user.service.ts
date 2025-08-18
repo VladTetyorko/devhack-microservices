@@ -5,6 +5,15 @@ import {UserDTO} from '../../models/user/user.model';
 import {BaseService} from '../base.service';
 
 /**
+ * Registration request interface for creating new users
+ */
+export interface UserRegistrationRequest {
+    name: string;
+    email: string;
+    role: string;
+}
+
+/**
  * Service for managing users.
  * Extends BaseService to inherit common CRUD operations and follows OOP principles.
  */
@@ -30,19 +39,19 @@ export class UserService extends BaseService<UserDTO> {
 
     /**
      * Register a new user
-     * @param user - User data for registration
+     * @param registrationData - User registration data
      * @returns Observable registered user
      */
-    register(user: UserDTO): Observable<UserDTO> {
-        return this.postToEndpoint('register', user);
+    register(registrationData: UserRegistrationRequest): Observable<UserDTO> {
+        return this.postToEndpoint('register', registrationData);
     }
 
     /**
      * Register a new manager user
-     * @param user - User data for manager registration
+     * @param registrationData - User registration data for manager
      * @returns Observable registered manager user
      */
-    registerManager(user: UserDTO): Observable<UserDTO> {
-        return this.postToEndpoint('register-manager', user);
+    registerManager(registrationData: UserRegistrationRequest): Observable<UserDTO> {
+        return this.postToEndpoint('register-manager', registrationData);
     }
 }

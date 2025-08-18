@@ -1,0 +1,134 @@
+.category-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid #e0e0e0;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.btn-group-sm .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.dropdown-toggle::after {
+    margin-left: 0.255em;
+}
+
+
+.page-header p {
+    font-size: 1.1rem;
+}
+
+.search-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.input-group-text {
+    border-right: none;
+}
+
+.form-control {
+    border-left: none;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+
+.empty-state {
+    padding: 4rem 2rem;
+}
+
+.empty-state i {
+    opacity: 0.5;
+}
+
+
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    z-index: 1050; /* Ensure dropdown appears above other elements */
+}
+
+.dropdown {
+    position: relative;
+    z-index: 1000; /* Ensure dropdown container has proper stacking context */
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+    }
+
+    .col-md-6 {
+        margin-bottom: 1rem;
+    }
+
+    .category-card .btn-group {
+        flex-direction: column;
+    }
+
+    .category-card .btn-group .btn {
+        margin-bottom: 0.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .dropdown-menu {
+        /* Remove position: static to allow proper overlay behavior */
+        /* position: static !important; */
+        /* transform: none !important; */
+        min-width: 200px; /* Ensure minimum width for readability */
+        margin-top: 0.25rem;
+    }
+}

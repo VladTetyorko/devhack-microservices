@@ -2,19 +2,15 @@ package com.vladte.devhack.entities.global.ai;
 
 import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "ai_prompts_categories")
 public class AiPromptCategory extends BasicEntity {

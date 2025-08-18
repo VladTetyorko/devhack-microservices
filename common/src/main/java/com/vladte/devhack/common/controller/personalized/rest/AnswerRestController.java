@@ -120,6 +120,47 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
     }
 
     /**
+     * Create a new answer for a specific question.
+     * This endpoint explicitly handles the question ID and user from authentication.
+     *
+     * @param questionId the ID of the question being answered
+     * @param answerDTO  the answer data
+     * @param user       the authenticated user
+     * @return the created answer
+     */
+    @PostMapping("/for-question/{questionId}")
+    @Operation(summary = "Create a new answer for a specific question",
+            description = "Creates a new answer for the specified question with the authenticated user")
+    public ResponseEntity<AnswerDTO> createAnswerForQuestion(
+            @Parameter(description = "ID of the question being answered")
+            @PathVariable UUID questionId,
+            @Parameter(description = "Answer data")
+            @RequestBody AnswerDTO answerDTO,
+            @Parameter(hidden = true)
+            @AuthenticationPrincipal User user) {
+        log.debug("REST request to create answer for question: {} by user: {}", questionId, user.getProfile().getName());
+
+        // Validate that the question exists
+        InterviewQuestion question = questionService.findById(questionId)
+                .orElseThrow(() -> new IllegalArgumentException("Question not found with ID: " + questionId));
+
+        // Set the question ID and user ID in the DTO
+        answerDTO.setQuestionId(questionId);
+        answerDTO.setUserId(user.getId());
+
+        // Convert DTO to entity and save
+        Answer entity = mapper.toEntity(answerDTO);
+        entity.setQuestion(question);
+        entity.setUser(user);
+
+        Answer savedEntity = service.save(entity);
+        AnswerDTO responseDTO = mapper.toDTO(savedEntity);
+
+        log.info("Answer created successfully for question: {} by user: {}", questionId, user.getProfile().getName());
+        return ResponseEntity.status(201).body(responseDTO);
+    }
+
+    /**
      * Check an answer using AI and update its score and feedback.
      *
      * @param id the ID of the answer to check

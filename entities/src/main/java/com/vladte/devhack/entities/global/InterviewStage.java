@@ -7,11 +7,11 @@ import lombok.*;
 
 import java.util.List;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "interview_stage",
         uniqueConstraints = @UniqueConstraint(columnNames = "code"))
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

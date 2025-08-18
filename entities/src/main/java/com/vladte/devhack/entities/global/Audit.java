@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
  * Entity for storing audit records.
  * Tracks operations performed on entities in the system.
  */
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "audits")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

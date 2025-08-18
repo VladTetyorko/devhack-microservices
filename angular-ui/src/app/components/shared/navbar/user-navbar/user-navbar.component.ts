@@ -3,6 +3,8 @@ import {Router} from "@angular/router";
 import {NavbarBase} from "../navbar.base";
 import {AuthService} from "../../../../services/basic/auth.service";
 import {Theme, ThemeService} from "../../../../services/theme/theme.service";
+import {ProfileService} from "../../../../services/user/profile.service";
+import {ProfileDTO} from "../../../../models/user/profile.model";
 import {Subscription} from "rxjs";
 
 @Component({
@@ -12,12 +14,14 @@ import {Subscription} from "rxjs";
 })
 export class UserNavbarComponent extends NavbarBase implements OnInit, OnDestroy {
     currentTheme: Theme = 'light';
+    currentUserProfile: ProfileDTO | null = null;
     private themeSubscription: Subscription | null = null;
 
     constructor(
         auth: AuthService,
         router: Router,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private profileService: ProfileService
     ) {
         super(auth, router);
     }
@@ -34,6 +38,29 @@ export class UserNavbarComponent extends NavbarBase implements OnInit, OnDestroy
 
         // Listen to system theme changes
         this.themeService.listenToSystemThemeChanges();
+
+        // Subscribe to auth state changes to load profile data
+        this.authService.authState$.subscribe(authState => {
+            if (authState.isAuthenticated && authState.user?.profileId) {
+                this.loadUserProfile(authState.user.profileId);
+            } else {
+                this.currentUserProfile = null;
+            }
+        });
+    }
+
+
+    private loadUserProfile(profileId: string): void {
+        this.profileService.getById(profileId).subscribe({
+            next: (profile) => {
+                this.currentUserProfile = profile;
+                console.log('[DEBUG_LOG] Loaded user profile for navbar:', profile);
+            },
+            error: (err) => {
+                console.error('[DEBUG_LOG] Error loading user profile for navbar:', err);
+                this.currentUserProfile = null;
+            }
+        });
     }
 
     override ngOnDestroy(): void {

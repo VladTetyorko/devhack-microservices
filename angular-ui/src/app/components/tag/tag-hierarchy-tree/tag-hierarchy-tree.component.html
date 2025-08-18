@@ -1,0 +1,141 @@
+<div class="tag-hierarchy-tree">
+    <!-- Tree Controls -->
+    <div class="tree-controls mb-3">
+        <button class="btn btn-sm btn-outline-secondary me-2" (click)="expandAll()" title="Expand All">
+            <i class="bi bi-arrows-expand"></i> Expand All
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" (click)="collapseAll()" title="Collapse All">
+            <i class="bi bi-arrows-collapse"></i> Collapse All
+        </button>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="loading" class="text-center py-3">
+        <div class="spinner-border spinner-border-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="ms-2">Processing...</span>
+    </div>
+
+    <!-- Tree Structure -->
+    <div class="tree-container" *ngIf="!loading">
+        <div
+                *ngFor="let node of flattenedNodes; trackBy: trackByTagId"
+                class="tree-node"
+                [class.selected]="isSelected(node.tag)"
+                [class.dragging]="draggedNode?.tag?.id && node.tag.id && draggedNode?.tag?.id === node.tag.id"
+                [ngStyle]="getIndentStyle(node.level)"
+                draggable="{{draggable}}"
+                (dragstart)="onDragStart($event, node)"
+                (dragover)="onDragOver($event)"
+                (drop)="onDrop($event, node)"
+                (click)="selectTag(node.tag)"
+                (contextmenu)="showContextMenu($event, node.tag)"
+        >
+            <!-- Expand/Collapse Button -->
+            <button
+                    *ngIf="node.children.length > 0"
+                    class="btn btn-sm btn-link expand-btn p-0 me-2"
+                    (click)="toggleNode(node); $event.stopPropagation()"
+                    title="{{node.expanded ? 'Collapse' : 'Expand'}}"
+            >
+                <i class="bi" [class.bi-chevron-down]="node.expanded" [class.bi-chevron-right]="!node.expanded"></i>
+            </button>
+
+            <!-- Spacer for leaf nodes -->
+            <span *ngIf="node.children.length === 0" class="expand-spacer me-2"></span>
+
+            <!-- Node Icon -->
+            <i class="bi me-2 node-icon" [class]="getNodeIcon(node)"></i>
+
+            <!-- Tag Content -->
+            <div class="tag-content flex-grow-1">
+                <div class="tag-info">
+                    <span class="tag-name">{{ node.tag.name }}</span>
+                    <span *ngIf="node.tag.slug" class="tag-slug text-muted ms-2">({{ node.tag.slug }})</span>
+                </div>
+
+                <div class="tag-meta">
+                    <small class="text-muted">
+            <span *ngIf="node.tag.questionCount !== undefined" class="me-2">
+              <i class="bi bi-question-circle"></i> {{ node.tag.questionCount }} questions
+            </span>
+                        <span *ngIf="node.tag.progressPercentage !== undefined" class="me-2">
+              <i class="bi bi-graph-up"></i> {{ node.tag.progressPercentage | number:'1.0-1' }}% progress
+            </span>
+                        <span *ngIf="node.tag.depth !== undefined" class="me-2">
+              <i class="bi bi-layers"></i> Level {{ node.tag.depth }}
+            </span>
+                    </small>
+                </div>
+            </div>
+
+            <!-- Tag Actions -->
+            <div class="tag-actions" *ngIf="showContextMenuOption">
+                <button
+                        class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        title="Actions"
+                        (click)="$event.stopPropagation()"
+                >
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" (click)="editTag(); $event.preventDefault()">
+                        <i class="bi bi-pencil me-2"></i>Edit
+                    </a></li>
+                    <li><a class="dropdown-item" href="#" (click)="addChildTag(); $event.preventDefault()">
+                        <i class="bi bi-plus-circle me-2"></i>Add Child
+                    </a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="#" (click)="deleteTag(); $event.preventDefault()">
+                        <i class="bi bi-trash me-2"></i>Delete
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="flattenedNodes.length === 0" class="empty-state text-center py-5">
+            <i class="bi bi-folder2-open display-4 text-muted"></i>
+            <h5 class="mt-3 text-muted">No tags found</h5>
+            <p class="text-muted">Create your first tag to get started with organizing your content.</p>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div
+            *ngIf="contextMenuVisible"
+            class="context-menu dropdown-menu show"
+            [ngStyle]="getContextMenuStyle()"
+            (click)="$event.stopPropagation()"
+    >
+        <a class="dropdown-item" href="#" (click)="editTag(); $event.preventDefault()">
+            <i class="bi bi-pencil me-2"></i>Edit Tag
+        </a>
+        <a class="dropdown-item" href="#" (click)="addChildTag(); $event.preventDefault()">
+            <i class="bi bi-plus-circle me-2"></i>Add Child Tag
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item text-danger" href="#" (click)="deleteTag(); $event.preventDefault()">
+            <i class="bi bi-trash me-2"></i>Delete Tag
+        </a>
+    </div>
+
+    <!-- Drop Zone Overlay -->
+    <div
+            *ngIf="draggedNode"
+            class="drop-zone-overlay"
+            (dragover)="onDragOver($event)"
+            (drop)="onDropToRoot($event)"
+    >
+        <div class="drop-zone-content">
+            <i class="bi bi-arrow-down-circle display-4"></i>
+            <h5>Drop here to move to root level</h5>
+        </div>
+    </div>
+</div>

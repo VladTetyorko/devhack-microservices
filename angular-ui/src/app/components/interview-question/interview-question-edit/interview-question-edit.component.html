@@ -1,0 +1,296 @@
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="bi bi-pencil-fill me-2 text-primary"></i>
+                Edit Interview Question
+            </h2>
+            <p class="text-muted mb-0">Update question information and settings</p>
+        </div>
+        <button class="btn btn-outline-secondary" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i> Back to Question
+        </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="card">
+        <div class="card-body text-center py-5">
+            <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted">Loading question data...</p>
+        </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <strong>Success!</strong> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Error!</strong> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''" aria-label="Close"></button>
+    </div>
+
+    <!-- Edit Form -->
+    <div *ngIf="!isLoading" class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="bi bi-question-circle-fill me-2"></i>
+                        Question Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" novalidate>
+                        <!-- Question Text Field -->
+                        <div class="mb-4">
+                            <label for="questionText" class="form-label required">
+                                <i class="bi bi-chat-quote me-1"></i>
+                                Question Text
+                            </label>
+                            <textarea
+                                    id="questionText"
+                                    class="form-control"
+                                    [class.is-invalid]="hasFieldError('questionText')"
+                                    formControlName="questionText"
+                                    rows="4"
+                                    placeholder="Enter the interview question..."
+                                    maxlength="2000"
+                            ></textarea>
+                            <div class="invalid-feedback" *ngIf="hasFieldError('questionText')">
+                                {{ getFieldError('questionText') }}
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Write a clear and concise interview question.
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Difficulty Field -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="difficulty" class="form-label required">
+                                        <i class="bi bi-speedometer2 me-1"></i>
+                                        Difficulty Level
+                                    </label>
+                                    <select
+                                            id="difficulty"
+                                            class="form-select"
+                                            [class.is-invalid]="hasFieldError('difficulty')"
+                                            formControlName="difficulty"
+                                    >
+                                        <option *ngFor="let level of difficultyLevels" [value]="level.value">
+                                            {{ level.label }}
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('difficulty')">
+                                        {{ getFieldError('difficulty') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Source Field -->
+                            <div class="col-md-6">
+                                <div class="mb-4">
+                                    <label for="source" class="form-label">
+                                        <i class="bi bi-link-45deg me-1"></i>
+                                        Source
+                                        <span class="text-muted">(Optional)</span>
+                                    </label>
+                                    <input
+                                            type="text"
+                                            id="source"
+                                            class="form-control"
+                                            [class.is-invalid]="hasFieldError('source')"
+                                            formControlName="source"
+                                            placeholder="e.g., LeetCode, Company Interview, Book"
+                                            maxlength="255"
+                                    >
+                                    <div class="invalid-feedback" *ngIf="hasFieldError('source')">
+                                        {{ getFieldError('source') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Tags Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="bi bi-tags me-1"></i>
+                                Tags
+                                <span class="text-muted">(Optional)</span>
+                            </label>
+                            <div class="tags-container">
+                                <div *ngIf="availableTags.length === 0" class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Loading tags...
+                                </div>
+                                <div *ngIf="availableTags.length > 0" class="tag-selection">
+                                    <div
+                                            *ngFor="let tag of availableTags"
+                                            class="tag-item"
+                                            [class.selected]="isTagSelected(tag.name)"
+                                            (click)="onTagToggle(tag.name)"
+                                    >
+                                        <i class="bi" [class.bi-check-square]="isTagSelected(tag.name)"
+                                           [class.bi-square]="!isTagSelected(tag.name)"></i>
+                                        {{ tag.name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Select relevant tags to categorize this question.
+                            </div>
+                        </div>
+
+                        <!-- Change Indicator -->
+                        <div *ngIf="hasChanges" class="alert alert-info d-flex align-items-center mb-4">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <span>You have unsaved changes.</span>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-2">
+                                <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                        [disabled]="isSubmitting || questionForm.invalid || !hasChanges"
+                                >
+                                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"
+                                          role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </span>
+                                    <i *ngIf="!isSubmitting" class="bi bi-check-lg me-2"></i>
+                                    {{ isSubmitting ? 'Updating...' : 'Update Question' }}
+                                </button>
+
+                                <button
+                                        type="button"
+                                        class="btn btn-outline-secondary"
+                                        (click)="resetForm()"
+                                        [disabled]="isSubmitting || !hasChanges"
+                                >
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    Reset
+                                </button>
+                            </div>
+
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-danger"
+                                    (click)="cancel()"
+                                    [disabled]="isSubmitting"
+                            >
+                                <i class="bi bi-x-lg me-2"></i>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Original Data Card -->
+            <div class="card shadow-sm mt-4" *ngIf="originalQuestion">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="bi bi-clock-history me-2"></i>
+                        Original Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Original Question</label>
+                                <div class="fw-medium">{{ originalQuestion.questionText || 'N/A' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Original Difficulty</label>
+                                <div>
+                                    <span class="badge"
+                                          [class.bg-success]="originalQuestion.difficulty === 'EASY'"
+                                          [class.bg-warning]="originalQuestion.difficulty === 'MEDIUM'"
+                                          [class.bg-danger]="originalQuestion.difficulty === 'HARD'">
+                                        {{ originalQuestion.difficulty || 'N/A' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Created Date</label>
+                                <div>{{ originalQuestion.createdAt | localDateTime:'MMM d, y h:mm a' }}</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-muted">Last Updated</label>
+                                <div>{{ originalQuestion.updatedAt | localDateTime:'MMM d, y h:mm a' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-0" *ngIf="originalQuestion.tagNames && originalQuestion.tagNames.length > 0">
+                        <label class="form-label text-muted">Original Tags</label>
+                        <div>
+                            <span *ngFor="let tagName of originalQuestion.tagNames" class="badge bg-secondary me-1">
+                                {{ tagName }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        Editing Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Important Notes
+                            </h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-dot"></i> Changes affect all associated answers</li>
+                                <li><i class="bi bi-dot"></i> Question text changes may impact search results</li>
+                                <li><i class="bi bi-dot"></i> Consider notifying team members of changes</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-warning">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Best Practices
+                            </h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-dot"></i> Be specific and clear in your question</li>
+                                <li><i class="bi bi-dot"></i> Choose appropriate difficulty level</li>
+                                <li><i class="bi bi-dot"></i> Add relevant tags for better organization</li>
+                                <li><i class="bi bi-dot"></i> Update expected answer to reflect changes</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

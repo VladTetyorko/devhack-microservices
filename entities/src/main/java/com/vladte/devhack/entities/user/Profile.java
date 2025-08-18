@@ -3,16 +3,16 @@ package com.vladte.devhack.entities.user;
 import com.vladte.devhack.entities.BasicEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true, exclude = {"user"})
 @Entity
 @Table(name = "user_profiles")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Profile extends BasicEntity {

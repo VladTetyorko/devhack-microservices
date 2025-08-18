@@ -4,6 +4,7 @@ import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
 import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
 import com.vladte.devhack.entities.global.InterviewQuestion;
 import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.entities.user.Profile;
 import com.vladte.devhack.entities.user.User;
 import io.qameta.allure.Description;
 import io.qameta.allure.Severity;
@@ -36,9 +37,13 @@ class AnswerMapperTest {
     void setUp() {
         answerMapper = new AnswerMapper();
 
-        // Create test user
+        // Create test user with profile
         user = new User();
         user.setId(USER_ID);
+
+        Profile profile = new Profile();
+        profile.setName("Test User");
+        user.setProfile(profile);
 
         // Create test question
         question = new InterviewQuestion();

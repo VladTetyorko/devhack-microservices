@@ -34,9 +34,16 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
 
-    // Tag routes (protected)
+    // Category routes (protected)
     {
-        path: 'tags',
+        path: 'categories',
+        loadChildren: () => import('./modules/category/category.module').then(m => m.CategoryModule),
+        canActivate: [AuthGuard]
+    },
+
+    // Topic routes (protected)
+    {
+        path: 'topics',
         loadChildren: () => import('./modules/tag/tag.module').then(m => m.TagModule),
         canActivate: [AuthGuard]
     },
