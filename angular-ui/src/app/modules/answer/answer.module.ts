@@ -11,22 +11,23 @@ import {AnswerRoutingModule} from './answer-routing.module';
 import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [
-      AnswerListComponent,
-      AnswerDetailComponent,
-      AnswerCreateComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    AnswerRoutingModule,
-    SharedModule
-  ],
-  exports: [
-      AnswerListComponent,
-      AnswerDetailComponent
-  ]
+    declarations: [
+        AnswerListComponent,
+        AnswerDetailComponent,
+        AnswerCreateComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterModule,
+        AnswerRoutingModule,
+        SharedModule
+    ],
+    exports: [
+        AnswerListComponent,
+        AnswerDetailComponent
+    ]
 })
-export class AnswerModule { }
+export class AnswerModule {
+}

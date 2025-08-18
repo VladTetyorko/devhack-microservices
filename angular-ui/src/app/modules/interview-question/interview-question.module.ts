@@ -26,29 +26,30 @@ import {InterviewQuestionRoutingModule} from './interview-question-routing.modul
 import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [
-      InterviewQuestionListComponent,
-      InterviewQuestionDetailComponent,
-      InterviewQuestionCreateComponent,
-      InterviewQuestionEditComponent,
-      QuestionGenerationStatsComponent,
-      QuestionGenerationFormComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    InterviewQuestionRoutingModule,
-    SharedModule
-  ],
-  exports: [
-      InterviewQuestionListComponent,
-      InterviewQuestionDetailComponent,
-      InterviewQuestionCreateComponent,
-      InterviewQuestionEditComponent,
-      QuestionGenerationStatsComponent,
-      QuestionGenerationFormComponent
-  ]
+    declarations: [
+        InterviewQuestionListComponent,
+        InterviewQuestionDetailComponent,
+        InterviewQuestionCreateComponent,
+        InterviewQuestionEditComponent,
+        QuestionGenerationStatsComponent,
+        QuestionGenerationFormComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterModule,
+        InterviewQuestionRoutingModule,
+        SharedModule
+    ],
+    exports: [
+        InterviewQuestionListComponent,
+        InterviewQuestionDetailComponent,
+        InterviewQuestionCreateComponent,
+        InterviewQuestionEditComponent,
+        QuestionGenerationStatsComponent,
+        QuestionGenerationFormComponent
+    ]
 })
-export class InterviewQuestionModule { }
+export class InterviewQuestionModule {
+}

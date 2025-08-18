@@ -13,27 +13,28 @@ import {TagRoutingModule} from './tag-routing.module';
 import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
-  declarations: [
-      TagListComponent,
-      TagDetailComponent,
-      TagCreateComponent,
-      TagEditComponent,
-      TagHierarchyTreeComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    RouterModule,
-    TagRoutingModule,
-    SharedModule
-  ],
-  exports: [
-      TagListComponent,
-      TagDetailComponent,
-      TagCreateComponent,
-      TagEditComponent,
-      TagHierarchyTreeComponent
-  ]
+    declarations: [
+        TagListComponent,
+        TagDetailComponent,
+        TagCreateComponent,
+        TagEditComponent,
+        TagHierarchyTreeComponent
+    ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        RouterModule,
+        TagRoutingModule,
+        SharedModule
+    ],
+    exports: [
+        TagListComponent,
+        TagDetailComponent,
+        TagCreateComponent,
+        TagEditComponent,
+        TagHierarchyTreeComponent
+    ]
 })
-export class TagModule { }
+export class TagModule {
+}

@@ -48,3 +48,4 @@ src/main/resources/application-*.properties
 /gradlew.bat
 /angular-ui/.angular/*
 /angular-ui/node_modules/*
+/angular-ui/dist/*

@@ -11,34 +11,34 @@ import {ProfileDTO} from "../models/user/profile.model";
 })
 export class HomeComponent implements OnInit {
     currentUser?: UserDTO | null;
-  currentUserProfile?: ProfileDTO | null;
+    currentUserProfile?: ProfileDTO | null;
 
-  constructor(
-      public auth: AuthService,
-      private profileService: ProfileService
-  ) {
+    constructor(
+        public auth: AuthService,
+        private profileService: ProfileService
+    ) {
     }
 
     ngOnInit(): void {
-      this.currentUser = this.auth.getCurrentUser();
+        this.currentUser = this.auth.getCurrentUser();
 
-      // Load profile data if user is authenticated and has profileId
-      if (this.currentUser?.profileId) {
-        this.loadUserProfile(this.currentUser.profileId);
-      }
+        // Load profile data if user is authenticated and has profileId
+        if (this.currentUser?.profileId) {
+            this.loadUserProfile(this.currentUser.profileId);
+        }
     }
 
-  private loadUserProfile(profileId: string): void {
-    this.profileService.getById(profileId).subscribe({
-      next: (profile) => {
-        this.currentUserProfile = profile;
-        console.log('[DEBUG_LOG] Loaded user profile for home:', profile);
-      },
-      error: (err) => {
-        console.error('[DEBUG_LOG] Error loading user profile for home:', err);
-        this.currentUserProfile = null;
-      }
-    });
+    private loadUserProfile(profileId: string): void {
+        this.profileService.getById(profileId).subscribe({
+            next: (profile) => {
+                this.currentUserProfile = profile;
+                console.log('[DEBUG_LOG] Loaded user profile for home:', profile);
+            },
+            error: (err) => {
+                console.error('[DEBUG_LOG] Error loading user profile for home:', err);
+                this.currentUserProfile = null;
+            }
+        });
     }
 
     get isAuthenticated(): boolean {

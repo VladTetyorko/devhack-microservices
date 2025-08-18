@@ -145,7 +145,8 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!isLoading && filteredStages.length === 0 && !searchTerm && !selectedCategory && !selectedActive" class="text-center py-5">
+    <div *ngIf="!isLoading && filteredStages.length === 0 && !searchTerm && !selectedCategory && !selectedActive"
+         class="text-center py-5">
         <div class="mb-4">
             <i class="bi bi-list-ol display-1 text-muted"></i>
         </div>
@@ -157,7 +158,8 @@
     </div>
 
     <!-- No Search Results -->
-    <div *ngIf="!isLoading && filteredStages.length === 0 && (searchTerm || selectedCategory || selectedActive)" class="text-center py-5">
+    <div *ngIf="!isLoading && filteredStages.length === 0 && (searchTerm || selectedCategory || selectedActive)"
+         class="text-center py-5">
         <div class="mb-4">
             <i class="bi bi-search display-1 text-muted"></i>
         </div>

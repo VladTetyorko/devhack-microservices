@@ -1,5 +1,5 @@
 .question-row {
-  transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 .question-row:hover {
@@ -9,60 +9,60 @@
 /* Skeleton loading styles */
 .skeleton {
     background: linear-gradient(90deg, var(--skeleton-bg-start) 25%, var(--skeleton-bg-middle) 50%, var(--skeleton-bg-end) 75%);
-  background-size: 200% 100%;
-  animation: loading 1.5s infinite;
-  border-radius: 4px;
-  height: 1rem;
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+    height: 1rem;
 }
 
 .skeleton-text.short {
-  width: 60%;
+    width: 60%;
 }
 
 .skeleton-text.medium {
-  width: 80%;
+    width: 80%;
 }
 
 .skeleton-text.long {
-  width: 100%;
+    width: 100%;
 }
 
 .skeleton-badge {
-  width: 80px;
-  height: 24px;
-  border-radius: 12px;
+    width: 80px;
+    height: 24px;
+    border-radius: 12px;
 }
 
 @keyframes loading {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .page-header {
-    flex-direction: column;
-    align-items: stretch !important;
-    gap: 1rem;
-  }
-  
-  .page-header .btn {
-    align-self: center;
-  }
-  
-  .table-responsive {
-    font-size: 0.875rem;
-  }
+    .page-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        align-self: center;
+    }
+
+    .table-responsive {
+        font-size: 0.875rem;
+    }
 }
 
 /* Custom button group styling */
 .btn-group-sm .btn {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
 }
 
 /* Difficulty badge colors */
@@ -84,7 +84,7 @@
 
 /* Card styling */
 .card {
-  border: none;
+    border: none;
     box-shadow: 0 0.125rem 0.25rem var(--shadow-light);
 }
 
@@ -94,14 +94,14 @@
 
 /* Alert styling */
 .alert {
-  border: none;
-  border-radius: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
 }
 
 /* Empty state styling */
 .display-1 {
-  font-size: 4rem;
-  opacity: 0.5;
+    font-size: 4rem;
+    opacity: 0.5;
 }
 
 /* Tag badges styling */
@@ -111,14 +111,14 @@
 
 /* Question text styling */
 .fw-semibold {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 /* Truncated text styling */
 .text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* Cards view specific styling */
