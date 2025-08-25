@@ -3,7 +3,7 @@ package com.vladte.devhack.ai.service.kafka.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.ai.service.api.OpenAiService;
 import com.vladte.devhack.infra.model.KafkaMessage;
-import com.vladte.devhack.infra.model.payload.request.VacancyParseRequestPayload;
+import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
 import com.vladte.devhack.infra.model.payload.response.VacancyParseResponsePayload;
 import com.vladte.devhack.infra.service.kafka.producer.publish.KafkaResponsePublisher;
 import com.vladte.devhack.infra.topics.Topics;
@@ -19,7 +19,7 @@ import java.util.Map;
  * Service for consuming vacancy parsing request messages.
  */
 @Service
-public class VacancyParsingConsumer extends KafkaAiRequestConsumer<VacancyParseRequestPayload, VacancyParseResponsePayload> {
+public class VacancyParsingConsumer extends KafkaAiRequestConsumer<AiRenderedRequestPayload, VacancyParseResponsePayload> {
 
     private static final Logger log = LoggerFactory.getLogger(VacancyParsingConsumer.class);
     private final OpenAiService openAiService;
@@ -27,7 +27,7 @@ public class VacancyParsingConsumer extends KafkaAiRequestConsumer<VacancyParseR
     public VacancyParsingConsumer(@Qualifier("VacancyKafkaProvider") KafkaResponsePublisher<VacancyParseResponsePayload> responsePublisher,
                                   OpenAiService aiService,
                                   ObjectMapper objectMapper) {
-        super(responsePublisher, objectMapper, VacancyParseRequestPayload.class);
+        super(responsePublisher, objectMapper, AiRenderedRequestPayload.class);
         this.openAiService = aiService;
     }
 
@@ -36,21 +36,21 @@ public class VacancyParsingConsumer extends KafkaAiRequestConsumer<VacancyParseR
             groupId = "${spring.kafka.consumer.group-id}",
             concurrency = "2"
     )
-    public void listen(KafkaMessage<VacancyParseRequestPayload> message) {
+    public void listen(KafkaMessage<AiRenderedRequestPayload> message) {
         processMessage(message);
     }
 
     @Override
-    protected VacancyParseResponsePayload performAiRequest(KafkaMessage<VacancyParseRequestPayload> message) {
-        VacancyParseRequestPayload payload = message.getPayload();
+    protected VacancyParseResponsePayload performAiRequest(KafkaMessage<AiRenderedRequestPayload> message) {
+        AiRenderedRequestPayload payload = message.getPayload();
 
-        if (payload == null || payload.getArguments() == null || payload.getArguments().necessaryArgumentsAreEmpty()) {
+        if (payload == null || payload.getArguments() == null) {
             log.error("Invalid vacancy parsing request payload: null");
             return VacancyParseResponsePayload.error("Invalid payload format for vacancy parsing");
         }
 
         try {
-            log.debug("Extracting vacancy model for payload: {}", payload.getArguments().getText());
+            log.debug("Extracting vacancy model for incoming payload");
             Map<String, Object> result = openAiService.extractVacancyModelFromDescription(payload).join();
 
             if (Boolean.TRUE.equals(result.get("success"))) {

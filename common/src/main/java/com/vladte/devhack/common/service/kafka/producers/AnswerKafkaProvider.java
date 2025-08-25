@@ -1,5 +1,7 @@
 package com.vladte.devhack.common.service.kafka.producers;
 
+import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.entities.personalized.Answer;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 
 import java.util.concurrent.CompletableFuture;
@@ -13,5 +15,5 @@ public interface AnswerKafkaProvider {
             String messageId, String questionText, String answerText);
 
     CompletableFuture<AnswerCheckResponseArguments> subscribeToAnswerFeedbackCheck(
-            String messageId, String questionText, String answerText);
+            String messageId, InterviewQuestion question, Answer answer);
 }

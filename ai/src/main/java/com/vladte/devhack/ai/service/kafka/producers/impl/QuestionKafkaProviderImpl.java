@@ -42,5 +42,4 @@ public class QuestionKafkaProviderImpl
     protected String getDestination() {
         return MessageDestinations.MAIN_APP;
     }
-
 }

@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
  * @param <KafkaMessageResponsePayload> The type of response payload to return
  */
 @Slf4j
-public abstract class KafkaAiRequestConsumer<KafkaMessageRequestPayload extends RequestPayload<?>, KafkaMessageResponsePayload extends ResponsePayload<?>>
+public abstract class KafkaAiRequestConsumer<KafkaMessageRequestPayload extends RequestPayload, KafkaMessageResponsePayload extends ResponsePayload<?>>
         extends KafkaMessageProcessor<KafkaMessageRequestPayload> {
 
     private final KafkaResponsePublisher<KafkaMessageResponsePayload> responsePublisher;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.ai.service.api.OpenAiService;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
-import com.vladte.devhack.infra.model.payload.request.AnswerCheckRequestPayload;
+import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
 import com.vladte.devhack.infra.model.payload.response.AnswerCheckResponsePayload;
 import com.vladte.devhack.infra.service.kafka.producer.publish.KafkaResponsePublisher;
 import com.vladte.devhack.infra.topics.Topics;
@@ -20,7 +20,7 @@ import java.util.Map;
  * Service for consuming answer feedback request messages.
  */
 @Service
-public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AnswerCheckRequestPayload, AnswerCheckResponsePayload> {
+public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AiRenderedRequestPayload, AnswerCheckResponsePayload> {
 
     private static final Logger log = LoggerFactory.getLogger(AnswerFeedbackConsumer.class);
     private final OpenAiService openAiService;
@@ -28,18 +28,18 @@ public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AnswerCheckRe
     public AnswerFeedbackConsumer(@Qualifier("AnswerKafkaProvider") KafkaResponsePublisher<AnswerCheckResponsePayload> responsePublisher,
                                   OpenAiService aiService,
                                   ObjectMapper objectMapper) {
-        super(responsePublisher, objectMapper, AnswerCheckRequestPayload.class);
+        super(responsePublisher, objectMapper, AiRenderedRequestPayload.class);
         this.openAiService = aiService;
     }
 
     @KafkaListener(topics = Topics.ANSWER_FEEDBACK_REQUEST, groupId = "${spring.kafka.consumer.group-id}", concurrency = "2")
-    protected void listen(KafkaMessage<AnswerCheckRequestPayload> message) {
+    protected void listen(KafkaMessage<AiRenderedRequestPayload> message) {
         processMessage(message);
     }
 
     @Override
-    protected AnswerCheckResponsePayload performAiRequest(KafkaMessage<AnswerCheckRequestPayload> message) {
-        AnswerCheckRequestPayload payload = message.getPayload();
+    protected AnswerCheckResponsePayload performAiRequest(KafkaMessage<AiRenderedRequestPayload> message) {
+        AiRenderedRequestPayload payload = message.getPayload();
 
         if (!isValidPayload(payload)) {
             log.error("Invalid payload received: null arguments");
@@ -61,19 +61,17 @@ public class AnswerFeedbackConsumer extends KafkaAiRequestConsumer<AnswerCheckRe
         }
     }
 
-    private boolean isValidPayload(AnswerCheckRequestPayload payload) {
-        return payload != null &&
-                payload.getArguments() != null &&
-                !payload.getArguments().necessaryArgumentsAreEmpty();
+    private boolean isValidPayload(AiRenderedRequestPayload payload) {
+        return payload != null && payload.getArguments() != null;
     }
 
-    private AnswerCheckResponsePayload handleCheatingCheck(AnswerCheckRequestPayload payload) {
+    private AnswerCheckResponsePayload handleCheatingCheck(AiRenderedRequestPayload payload) {
         log.debug("Handling CHECK_ANSWER_FOR_CHEATING message");
         Boolean isCheating = openAiService.checkAnswerForCheatingAsync(payload).join();
         return AnswerCheckResponsePayload.fromCheatingResult(isCheating);
     }
 
-    private AnswerCheckResponsePayload handleAnswerFeedback(AnswerCheckRequestPayload payload) {
+    private AnswerCheckResponsePayload handleAnswerFeedback(AiRenderedRequestPayload payload) {
         log.debug("Handling CHECK_ANSWER_WITH_FEEDBACK message");
         Map<String, Object> result = openAiService.checkAnswerWithFeedbackAsync(payload).join();
         return AnswerCheckResponsePayload.fromScoreAndFeedback(result);

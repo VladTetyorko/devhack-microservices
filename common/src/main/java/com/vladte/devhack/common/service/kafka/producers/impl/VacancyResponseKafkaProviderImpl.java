@@ -1,14 +1,18 @@
 package com.vladte.devhack.common.service.kafka.producers.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
+import com.vladte.devhack.common.service.domain.ai.AiPromptService;
 import com.vladte.devhack.common.service.kafka.producers.VacancyResponseKafkaProvider;
 import com.vladte.devhack.common.util.JsonFieldExtractor;
 import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.entities.global.ai.AiPrompt;
+import com.vladte.devhack.entities.global.ai.AiPromptCategory;
 import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
-import com.vladte.devhack.infra.model.arguments.request.VacancyParseFromTestRequestArguments;
 import com.vladte.devhack.infra.model.arguments.response.VacancyParseResultArguments;
-import com.vladte.devhack.infra.model.payload.request.VacancyParseRequestPayload;
+import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
 import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
 import com.vladte.devhack.infra.service.kafka.producer.subscribe.KafkaRequestSubscriber;
 import com.vladte.devhack.infra.topics.Topics;
@@ -18,44 +22,27 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 public class VacancyResponseKafkaProviderImpl
-        extends KafkaRequestSubscriber<VacancyParseRequestPayload, VacancyParseResultArguments>
+        extends KafkaRequestSubscriber<VacancyParseResultArguments>
         implements VacancyResponseKafkaProvider {
 
     private static final Logger log = LoggerFactory.getLogger(VacancyResponseKafkaProviderImpl.class);
 
-    private final static String VACANCY_TEXT_DESCRIPTION_PROMPT =
-            """
-                    You are a strict JSON generator.
-                    
-                    Input: A vacancy description.
-                    
-                    Your task:
-                    - Extract data from the vacancy description.
-                    - Return only a plain JSON object with these fields:
-                    %s
-                    
-                    Rules:
-                    - Output strictly valid JSON. No comments, explanations, or extra text.
-                    - If a field is missing, output an empty string for that field.
-                    - Include only the specified fields. Do not add any other fields or metadata.
-                    - The output must be valid JSON and start with { and end with }.
-                    - DONT ADD ANY EXPLANATIONS, ANY ADDITIONAL INFORMATION
-                    - OUTPUT STARTS WITH { AND ENDS WITH }
-                    - OUTPUT CONTAIN ONLY JSON OBJECT
-                    - status should be "OPEN" if not added another information, in uppercase as mentioned
-                    - Straightly follow this rules, DONT add anything extra, dont break any rule and structure
-                    
-                    Vacancy Description:
-                    %s
-                    """;
+    private final AiPromptService aiPromptService;
+    private final AiPromptCategoryService aiPromptCategoryService;
 
-    public VacancyResponseKafkaProviderImpl(KafkaTemplate<String, KafkaMessage<VacancyParseRequestPayload>> kafkaTemplate,
-                                            @Qualifier("vacancyPendingRequestManager") PendingRequestManager<VacancyParseResultArguments> pendingRequestManager) {
-        super(kafkaTemplate, pendingRequestManager);
+    public VacancyResponseKafkaProviderImpl(KafkaTemplate<String, KafkaMessage<AiRenderedRequestPayload>> kafkaTemplate,
+                                            @Qualifier("vacancyPendingRequestManager") PendingRequestManager<VacancyParseResultArguments> pendingRequestManager,
+                                            ObjectMapper objectMapper,
+                                            AiPromptService aiPromptService, AiPromptCategoryService aiPromptCategoryService) {
+        super(kafkaTemplate, pendingRequestManager, objectMapper);
+        this.aiPromptService = aiPromptService;
+        this.aiPromptCategoryService = aiPromptCategoryService;
     }
 
     @Override
@@ -81,20 +68,18 @@ public class VacancyResponseKafkaProviderImpl
     @Override
     public CompletableFuture<VacancyParseResultArguments> parseVacancyResponse(
             String messageId, String vacancyText) {
-        log.info("Sending request to check answer with AI with ID: {}", messageId);
-        VacancyParseRequestPayload payload = preparePayload(vacancyText);
+        log.info("Sending vacancy parsing request with ID: {}", messageId);
+
+
+        AiPromptCategory category = aiPromptCategoryService.findByCode(getTopic()).get();
+        AiPrompt prompt = aiPromptService.findLatestByCategory(category).get();
+
+        String fields = JsonFieldExtractor.parse(Vacancy.class);
+        Map<String, Object> args = new HashMap<>();
+        args.put("fields", fields);
+        args.put("vacancyText", vacancyText);
+
+        AiRenderedRequestPayload payload = super.buildAiMessagePayloadFromSources(prompt, args);
         return subscribeToResponse(messageId, payload);
     }
-
-    private static VacancyParseRequestPayload preparePayload(String vacancyText) {
-        VacancyParseFromTestRequestArguments arguments = new VacancyParseFromTestRequestArguments(
-                JsonFieldExtractor.parse(Vacancy.class), vacancyText);
-
-        return VacancyParseRequestPayload.builder()
-                .prompt(String.format(VACANCY_TEXT_DESCRIPTION_PROMPT, JsonFieldExtractor.parse(Vacancy.class), vacancyText))
-                .arguments(arguments)
-                .language("en")
-                .build();
-    }
-
 }

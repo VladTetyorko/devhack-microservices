@@ -19,11 +19,6 @@ import java.util.Map;
  */
 @Service("gptJService")
 public class GptJServiceImpl extends AbstractAiService {
-    private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
-
-    public GptJServiceImpl(ObjectMapper objectMapper) {
-        super(objectMapper);
-    }
 
     @Value("${gptj.api.key}")
     private String apiKey;
@@ -36,6 +31,12 @@ public class GptJServiceImpl extends AbstractAiService {
 
     @Value("${gptj.api.url}")
     private String apiUrl;
+
+    private static final Logger log = LoggerFactory.getLogger(GptJServiceImpl.class);
+
+    public GptJServiceImpl(ObjectMapper objectMapper) {
+        super(objectMapper);
+    }
 
 
     @Override
@@ -62,7 +63,7 @@ public class GptJServiceImpl extends AbstractAiService {
      * Override to create a request body appropriate for the completions API.
      */
     @Override
-    protected HttpEntity<Map<String, Object>> createApiRequest(String prompt) {
+    protected HttpEntity<Map<String, Object>> createApiRequestBody(String prompt) {
         log.debug("Creating API request for completions API with model: {}", getModel());
 
         HttpHeaders headers = new HttpHeaders();
