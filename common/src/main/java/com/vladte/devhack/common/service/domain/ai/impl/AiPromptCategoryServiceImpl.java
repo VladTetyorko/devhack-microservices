@@ -4,6 +4,8 @@ import com.vladte.devhack.common.repository.ai.AiPromptCategoryRepository;
 import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
 import com.vladte.devhack.entities.global.ai.AiPromptCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,11 @@ public class AiPromptCategoryServiceImpl implements AiPromptCategoryService {
     }
 
     @Override
+    public Page<AiPromptCategory> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Optional<AiPromptCategory> findById(UUID id) {
         return repository.findById(id);
@@ -38,5 +45,10 @@ public class AiPromptCategoryServiceImpl implements AiPromptCategoryService {
     @Transactional
     public void deleteById(UUID id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public Optional<AiPromptCategory> findByCode(String code) {
+        return repository.findByCode(code);
     }
 }

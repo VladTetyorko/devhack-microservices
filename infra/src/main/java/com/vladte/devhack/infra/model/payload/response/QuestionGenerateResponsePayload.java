@@ -11,7 +11,6 @@ import lombok.experimental.SuperBuilder;
 @ToString(callSuper = true)
 public class QuestionGenerateResponsePayload extends ResponsePayload<QuestionGenerateResponseArguments> {
 
-
     public static QuestionGenerateResponsePayload error(String invalidPayloadFormat) {
         return QuestionGenerateResponsePayload.builder()
                 .hasErrors(true)

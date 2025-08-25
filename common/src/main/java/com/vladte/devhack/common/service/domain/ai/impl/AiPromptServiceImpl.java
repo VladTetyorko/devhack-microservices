@@ -3,7 +3,10 @@ package com.vladte.devhack.common.service.domain.ai.impl;
 import com.vladte.devhack.common.repository.ai.AiPromptRepository;
 import com.vladte.devhack.common.service.domain.ai.AiPromptService;
 import com.vladte.devhack.entities.global.ai.AiPrompt;
+import com.vladte.devhack.entities.global.ai.AiPromptCategory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,11 @@ public class AiPromptServiceImpl implements AiPromptService {
     @Transactional(readOnly = true)
     public List<AiPrompt> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Page<AiPrompt> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
@@ -44,6 +52,11 @@ public class AiPromptServiceImpl implements AiPromptService {
     @Transactional(readOnly = true)
     public List<AiPrompt> findEnabled() {
         return repository.findByEnabledTrue();
+    }
+
+    @Override
+    public Optional<AiPrompt> findLatestByCategory(AiPromptCategory category) {
+        return repository.findLatestByCategoryId(category.getId());
     }
 
     @Override

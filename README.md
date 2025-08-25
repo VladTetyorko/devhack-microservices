@@ -191,6 +191,9 @@ To build a specific module:
 
 ## Usage Examples
 
+- See also: SJSON Schema, ArgsBinder and PromptEngine
+  guide: [SJSON_SCHEMA_AND_PROMPT_ENGINE_GUIDE.md](./SJSON_SCHEMA_AND_PROMPT_ENGINE_GUIDE.md)
+
 ### Generating Interview Questions
 
 1. Navigate to the Tags section

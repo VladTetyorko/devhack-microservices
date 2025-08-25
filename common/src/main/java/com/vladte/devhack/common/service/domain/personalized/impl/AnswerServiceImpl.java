@@ -163,8 +163,8 @@ public class AnswerServiceImpl extends PersonalizedService<Answer, UUID, AnswerR
 
         CompletableFuture<AnswerCheckResponseArguments> responseFuture =
                 answerKafkaProvider.subscribeToAnswerFeedbackCheck(messageId,
-                        answer.getQuestion().getQuestionText(),
-                        answer.getText());
+                        answer.getQuestion(),
+                        answer);
 
         AnswerCheckResponseArguments result = responseFuture.join();
 

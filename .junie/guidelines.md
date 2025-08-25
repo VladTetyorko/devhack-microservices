@@ -389,3 +389,5 @@ test/
 - Coder covers his code with tests
 - Coder adds docks to his code
 - User experience is in priority, if something can be better for user — it should be implemented
+- All namings should be consistent, Kamel-case(except static final variables), and provide context of variable; No
+  a/b/s-s, only words with consistency

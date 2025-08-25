@@ -41,6 +41,10 @@ dependencies {
 	implementation 'org.liquibase:liquibase-core'
 	implementation 'org.springframework.kafka:spring-kafka'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
+
+    // JSON Schema validation & Mustache templating
+    implementation 'com.networknt:json-schema-validator:1.0.86'
+    implementation 'com.samskivert:jmustache:1.15'
 	// JWT dependencies
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
