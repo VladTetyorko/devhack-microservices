@@ -209,7 +209,6 @@ public class PromptEngineDbDefaultPromptsTest {
         assertTrue(input.contains("We are hiring a Java Developer."));
         assertFalse(input.contains("{{vacancyText}"));
         assertTrue(input.contains("OUTPUT STARTS WITH { AND ENDS WITH }"));
-        System.out.printf(input);
     }
 
     @Test
@@ -258,6 +257,5 @@ public class PromptEngineDbDefaultPromptsTest {
         assertFalse(input.contains("{{tag}"));
         assertFalse(input.contains("{{count}"));
         assertFalse(input.contains("{{difficulty}"));
-        System.out.println(rendered.getInput());
     }
 }

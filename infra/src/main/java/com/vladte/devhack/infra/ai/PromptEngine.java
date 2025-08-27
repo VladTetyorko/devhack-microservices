@@ -83,7 +83,9 @@ public final class PromptEngine {
     }
 
     private String renderTemplate(String template, Map<String, Object> args) {
-        if (!notBlank(template)) return null;
+        if (!notBlank(template)) {
+            return null;
+        }
         return mustache.compile(template).execute(args);
     }
 

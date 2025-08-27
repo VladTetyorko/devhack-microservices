@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 public class ProfileMapper implements EntityDTOMapper<Profile, ProfileDTO> {
     @Override
     public ProfileDTO toDTO(Profile entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         ProfileDTO dto = new ProfileDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -30,7 +32,9 @@ public class ProfileMapper implements EntityDTOMapper<Profile, ProfileDTO> {
 
     @Override
     public Profile toEntity(ProfileDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         Profile entity = new Profile();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
@@ -51,7 +55,9 @@ public class ProfileMapper implements EntityDTOMapper<Profile, ProfileDTO> {
 
     @Override
     public Profile updateEntityFromDTO(Profile entity, ProfileDTO dto) {
-        if (entity == null || dto == null) return entity;
+        if (entity == null || dto == null) {
+            return entity;
+        }
         if (dto.getName() != null) entity.setName(dto.getName());
         if (dto.getCvFileHref() != null) entity.setCvFileHref(dto.getCvFileHref());
         if (dto.getCvFileName() != null) entity.setCvFileName(dto.getCvFileName());

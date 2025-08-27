@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 public class UserAccessMapper implements EntityDTOMapper<UserAccess, UserAccessDTO> {
     @Override
     public UserAccessDTO toDTO(UserAccess entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         UserAccessDTO dto = new UserAccessDTO();
         dto.setId(entity.getId());
         dto.setRole(entity.getRole());
@@ -20,7 +22,9 @@ public class UserAccessMapper implements EntityDTOMapper<UserAccess, UserAccessD
 
     @Override
     public UserAccess toEntity(UserAccessDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         UserAccess entity = new UserAccess();
         entity.setId(dto.getId());
         entity.setRole(dto.getRole());
@@ -31,7 +35,9 @@ public class UserAccessMapper implements EntityDTOMapper<UserAccess, UserAccessD
 
     @Override
     public UserAccess updateEntityFromDTO(UserAccess entity, UserAccessDTO dto) {
-        if (entity == null || dto == null) return entity;
+        if (entity == null || dto == null) {
+            return entity;
+        }
         if (dto.getRole() != null) entity.setRole(dto.getRole());
         if (dto.getAiUsageAllowed() != null) entity.setIsAiUsageAllowed(dto.getAiUsageAllowed());
         if (dto.getAccountLocked() != null) entity.setIsAccountLocked(dto.getAccountLocked());

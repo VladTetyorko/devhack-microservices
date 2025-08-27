@@ -26,7 +26,6 @@ public class JsonIdentityInfoCircularReferenceTest {
     @Test
     public void testJsonIdentityInfoPreventsStackOverflowError() {
         try {
-            System.out.println("[DEBUG_LOG] Testing @JsonIdentityInfo prevents StackOverflowError");
 
             // Create a test User with AuthenticationProvider (simulating the circular reference)
             User testUser = new User();
@@ -60,8 +59,6 @@ public class JsonIdentityInfoCircularReferenceTest {
             assertTrue(jsonString.length() > 0, "JSON string should not be empty");
             assertTrue(jsonString.contains("@id"), "JSON should contain @id references for identity handling");
 
-            System.out.println("[DEBUG_LOG] Direct ObjectMapper serialization successful, JSON length: " + jsonString.length());
-
             // Test deserialization
             User deserializedUser = objectMapper.readValue(jsonString, User.class);
             assertNotNull(deserializedUser, "Deserialized user should not be null");
@@ -75,13 +72,9 @@ public class JsonIdentityInfoCircularReferenceTest {
             assertNotNull(deserializedAuthProvider.getUser(), "AuthProvider user reference should not be null");
             assertEquals(testUser.getId(), deserializedAuthProvider.getUser().getId(), "Circular reference should be preserved");
 
-            System.out.println("[DEBUG_LOG] Direct ObjectMapper test passed - @JsonIdentityInfo working correctly");
-
         } catch (StackOverflowError e) {
-            System.out.println("[DEBUG_LOG] StackOverflowError occurred: " + e.getMessage());
             fail("@JsonIdentityInfo should prevent StackOverflowError: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Unexpected error: " + e.getMessage());
             e.printStackTrace();
             fail("JSON serialization should work without errors: " + e.getMessage());
         }
@@ -90,8 +83,6 @@ public class JsonIdentityInfoCircularReferenceTest {
     @Test
     public void testGenericJackson2JsonRedisSerializerWithCircularReference() {
         try {
-            System.out.println("[DEBUG_LOG] Testing GenericJackson2JsonRedisSerializer with circular reference");
-
             // Create a test User with AuthenticationProvider (simulating the circular reference)
             User testUser = new User();
             testUser.setId(UUID.randomUUID());
@@ -126,8 +117,6 @@ public class JsonIdentityInfoCircularReferenceTest {
             assertNotNull(serializedData, "Serialized data should not be null");
             assertTrue(serializedData.length > 0, "Serialized data should not be empty");
 
-            System.out.println("[DEBUG_LOG] Redis serializer serialization successful, size: " + serializedData.length + " bytes");
-
             // Test deserialization
             Object deserializedData = serializer.deserialize(serializedData);
             assertNotNull(deserializedData, "Deserialized data should not be null");
@@ -144,13 +133,9 @@ public class JsonIdentityInfoCircularReferenceTest {
             assertNotNull(deserializedAuthProvider.getUser(), "AuthProvider user reference should not be null");
             assertEquals(testUser.getId(), deserializedAuthProvider.getUser().getId(), "Circular reference should be preserved");
 
-            System.out.println("[DEBUG_LOG] Redis serializer test passed - @JsonIdentityInfo working correctly");
-
         } catch (StackOverflowError e) {
-            System.out.println("[DEBUG_LOG] StackOverflowError occurred: " + e.getMessage());
             fail("@JsonIdentityInfo should prevent StackOverflowError in Redis serializer: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Unexpected error: " + e.getMessage());
             e.printStackTrace();
             fail("Redis serialization should work without errors: " + e.getMessage());
         }
@@ -158,7 +143,6 @@ public class JsonIdentityInfoCircularReferenceTest {
 
     @Test
     public void testAnnotationsArePresent() {
-        System.out.println("[DEBUG_LOG] Testing that @JsonIdentityInfo annotations are present on entities");
 
         // Verify that User class has @JsonIdentityInfo annotation
         assertTrue(User.class.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonIdentityInfo.class),
@@ -174,14 +158,11 @@ public class JsonIdentityInfoCircularReferenceTest {
 
         assertEquals("id", userAnnotation.property(), "User @JsonIdentityInfo should use 'id' property");
         assertEquals("id", authProviderAnnotation.property(), "AuthenticationProvider @JsonIdentityInfo should use 'id' property");
-
-        System.out.println("[DEBUG_LOG] @JsonIdentityInfo annotations are properly configured on both entities");
     }
 
     @Test
     public void testMultipleCircularReferences() {
         try {
-            System.out.println("[DEBUG_LOG] Testing multiple circular references");
 
             // Create a user with multiple auth providers
             User testUser = new User();
@@ -228,13 +209,10 @@ public class JsonIdentityInfoCircularReferenceTest {
                 assertEquals(testUser.getId(), deserializedAuthProvider.getUser().getId(), "Circular reference should be preserved");
             }
 
-            System.out.println("[DEBUG_LOG] Multiple circular references test passed");
 
         } catch (StackOverflowError e) {
-            System.out.println("[DEBUG_LOG] StackOverflowError occurred with multiple references: " + e.getMessage());
             fail("@JsonIdentityInfo should handle multiple circular references: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Unexpected error with multiple references: " + e.getMessage());
             e.printStackTrace();
             fail("Multiple circular references should work without errors: " + e.getMessage());
         }

@@ -2,9 +2,11 @@ package com.vladte.devhack.parser.repository;
 
 import com.vladte.devhack.entities.global.Vacancy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -30,10 +32,10 @@ public interface VacancyRepository extends JpaRepository<Vacancy, UUID> {
     List<Vacancy> findBySource(String source);
 
     /**
-     * Find vacancies by URL.
-     *
-     * @param url The URL to search for
-     * @return A list of vacancies with the specified URL
+     * Find a vacancy by its URL.
      */
-    List<Vacancy> findByUrl(String url);
+    Optional<Vacancy> findByUrl(String url);
+
+    @Query(value = "SELECT * from vacancies where vacancies.source = :provider order by created_at desc limit 1", nativeQuery = true)
+    Optional<Vacancy> findLastSavedVacancyForProvider(String provider);
 }

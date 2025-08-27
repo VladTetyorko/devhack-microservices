@@ -13,7 +13,9 @@ public class UserMapper implements EntityDTOMapper<User, UserDTO> {
 
     @Override
     public UserDTO toDTO(User entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         UserDTO dto = new UserDTO();
         dto.setId(entity.getId());
         dto.setCreatedAt(entity.getCreatedAt());
@@ -40,7 +42,9 @@ public class UserMapper implements EntityDTOMapper<User, UserDTO> {
 
     @Override
     public User toEntity(UserDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         User entity = new User();
         entity.setId(dto.getId());
 
@@ -52,7 +56,9 @@ public class UserMapper implements EntityDTOMapper<User, UserDTO> {
 
     @Override
     public User updateEntityFromDTO(User entity, UserDTO dto) {
-        if (entity == null || dto == null) return entity;
+        if (entity == null || dto == null) {
+            return entity;
+        }
 
         // Note: AuthProviders, Profile, and UserAccess updates need to be handled by the service layer
         // as they require fetching the related entities from the database using the IDs

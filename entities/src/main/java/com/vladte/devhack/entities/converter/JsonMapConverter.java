@@ -20,7 +20,9 @@ public class JsonMapConverter implements AttributeConverter<Map<String, Object>,
 
     @Override
     public String convertToDatabaseColumn(Map<String, Object> attribute) {
-        if (attribute == null) return null;
+        if (attribute == null) {
+            return null;
+        }
         try {
             return OBJECT_MAPPER.writeValueAsString(attribute);
         } catch (JsonProcessingException e) {

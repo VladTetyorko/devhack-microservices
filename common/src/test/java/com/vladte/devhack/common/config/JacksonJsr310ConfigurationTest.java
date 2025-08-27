@@ -20,7 +20,6 @@ public class JacksonJsr310ConfigurationTest {
 
     @Test
     public void testObjectMapperWithJsr310CanSerializeLocalDateTime() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing ObjectMapper with JSR310 module for LocalDateTime serialization");
 
         // Create ObjectMapper with JSR310 module (same as in CacheConfig)
         ObjectMapper objectMapper = new ObjectMapper();
@@ -38,20 +37,16 @@ public class JacksonJsr310ConfigurationTest {
         assertNotNull(json, "JSON serialization should not be null");
         assertTrue(json.contains("createdAt"), "JSON should contain createdAt field");
 
-        System.out.println("[DEBUG_LOG] Serialized JSON: " + json);
-
         // Test deserialization
         @SuppressWarnings("unchecked")
         Map<String, Object> deserializedData = objectMapper.readValue(json, Map.class);
         assertNotNull(deserializedData, "Deserialized data should not be null");
         assertTrue(deserializedData.containsKey("createdAt"), "Deserialized data should contain createdAt");
 
-        System.out.println("[DEBUG_LOG] LocalDateTime serialization/deserialization test passed");
     }
 
     @Test
     public void testGenericJackson2JsonRedisSerializerWithJsr310() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing GenericJackson2JsonRedisSerializer with JSR310 module");
 
         // Create ObjectMapper with JSR310 module (same as in CacheConfig)
         ObjectMapper objectMapper = new ObjectMapper();
@@ -76,12 +71,10 @@ public class JacksonJsr310ConfigurationTest {
         Object deserializedData = serializer.deserialize(serializedData);
         assertNotNull(deserializedData, "Deserialized data should not be null");
 
-        System.out.println("[DEBUG_LOG] GenericJackson2JsonRedisSerializer with JSR310 test passed");
     }
 
     @Test
     public void testJavaTimeModuleIsRegistered() {
-        System.out.println("[DEBUG_LOG] Testing that JavaTimeModule is properly registered");
 
         // Create ObjectMapper with JSR310 module
         ObjectMapper objectMapper = new ObjectMapper();
@@ -91,12 +84,10 @@ public class JacksonJsr310ConfigurationTest {
         assertTrue(objectMapper.getRegisteredModuleIds().contains("com.fasterxml.jackson.datatype.jsr310.JavaTimeModule"),
                 "JavaTimeModule should be registered");
 
-        System.out.println("[DEBUG_LOG] JavaTimeModule registration test passed");
     }
 
     @Test
     public void testLocalDateTimeSerializationFormat() throws Exception {
-        System.out.println("[DEBUG_LOG] Testing LocalDateTime serialization format");
 
         // Create ObjectMapper with JSR310 module
         ObjectMapper objectMapper = new ObjectMapper();
@@ -112,8 +103,5 @@ public class JacksonJsr310ConfigurationTest {
         // Deserialize LocalDateTime
         LocalDateTime deserializedDateTime = objectMapper.readValue(json, LocalDateTime.class);
         assertEquals(testDateTime, deserializedDateTime, "Deserialized LocalDateTime should match original");
-
-        System.out.println("[DEBUG_LOG] LocalDateTime format: " + json);
-        System.out.println("[DEBUG_LOG] LocalDateTime serialization format test passed");
     }
 }

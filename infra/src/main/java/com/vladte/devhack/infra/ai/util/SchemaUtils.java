@@ -24,7 +24,9 @@ public final class SchemaUtils {
     }
 
     public static Map<String, Object> mergeSchemaDefaults(JsonNode props, Map<String, Object> defaults, Map<String, Object> values) {
-        if (defaults == null || defaults.isEmpty()) return new LinkedHashMap<>(values);
+        if (defaults == null || defaults.isEmpty()) {
+            return new LinkedHashMap<>(values);
+        }
         Map<String, Object> merged = new LinkedHashMap<>(values);
         if (props != null && props.isObject()) {
             Iterator<String> it = props.fieldNames();

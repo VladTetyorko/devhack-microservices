@@ -22,7 +22,9 @@ public final class JsonPathUtils {
     }
 
     public static JsonNode resolvePath(JsonNode source, String path) {
-        if (source == null || path == null || path.isBlank()) return MissingNode.getInstance();
+        if (source == null || path == null || path.isBlank()) {
+            return MissingNode.getInstance();
+        }
 
         try {
             if (path.startsWith("/")) { // JSON Pointer

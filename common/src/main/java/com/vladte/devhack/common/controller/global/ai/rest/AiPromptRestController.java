@@ -2,8 +2,8 @@ package com.vladte.devhack.common.controller.global.ai.rest;
 
 import com.vladte.devhack.common.model.dto.global.ai.AiPromptDTO;
 import com.vladte.devhack.common.model.mapper.global.ai.AiPromptMapper;
-import com.vladte.devhack.common.service.domain.ai.AiPromptService;
 import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
+import com.vladte.devhack.common.service.domain.ai.AiPromptService;
 import com.vladte.devhack.entities.global.ai.AiPrompt;
 import com.vladte.devhack.entities.global.ai.AiPromptCategory;
 import io.swagger.v3.oas.annotations.Operation;
@@ -256,7 +256,9 @@ public class AiPromptRestController {
     @Operation(summary = "Activate AI prompt", description = "Sets enabled=true for the prompt")
     public ResponseEntity<AiPromptDTO> activate(@PathVariable UUID id) {
         Optional<AiPrompt> existing = aiPromptService.findById(id);
-        if (existing.isEmpty()) return ResponseEntity.notFound().build();
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         AiPrompt prompt = existing.get();
         prompt.setEnabled(true);
         AiPrompt saved = aiPromptService.save(prompt);
@@ -270,7 +272,9 @@ public class AiPromptRestController {
     @Operation(summary = "Deactivate AI prompt", description = "Sets enabled=false for the prompt")
     public ResponseEntity<AiPromptDTO> deactivate(@PathVariable UUID id) {
         Optional<AiPrompt> existing = aiPromptService.findById(id);
-        if (existing.isEmpty()) return ResponseEntity.notFound().build();
+        if (existing.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         AiPrompt prompt = existing.get();
         prompt.setEnabled(false);
         AiPrompt saved = aiPromptService.save(prompt);

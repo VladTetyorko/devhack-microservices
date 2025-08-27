@@ -1,11 +1,14 @@
 package com.vladte.devhack.parser.service.parser;
 
+import com.vladte.devhack.parser.entities.QueryParameters;
+import com.vladte.devhack.parser.service.provider.VacancyScrappingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -15,20 +18,27 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class VacancyParserScheduler {
+public class VacancyScrappingScheduler {
 
-    private final VacancyParserService vacancyService;
-    private final RestTemplate restTemplate;
+    private final VacancyScrappingService scrappingService;
 
     @Value("${vacancy.parser.enabled:true}")
     private boolean parserEnabled;
 
-    // URLs for job websites
-    private final Map<String, String> sourceUrls = Map.of(
-            "djinny", "https://djinny.co/jobs/",
+    private final Map<String, String> providers = Map.of(
+            "djinni", "https://djinni.co/jobs/",
             "dou", "https://jobs.dou.ua/vacancies/",
             "linkedin", "https://www.linkedin.com/jobs/search/"
     );
+
+    /**
+     * Trigger an immediate parsing run once the application is ready.
+     */
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        log.info("Application ready: triggering initial vacancy parsing run");
+        parseAllSources();
+    }
 
     /**
      * Scheduled task to parse job vacancies from all sources.
@@ -43,7 +53,7 @@ public class VacancyParserScheduler {
 
         log.info("Starting scheduled parsing of job vacancies from all sources");
 
-        sourceUrls.forEach(this::parseSource);
+        providers.forEach(this::parseSource);
 
         log.info("Completed scheduled parsing of job vacancies from all sources");
     }
@@ -58,31 +68,15 @@ public class VacancyParserScheduler {
         log.info("Parsing job vacancies from source: {} ({})", source, url);
 
         try {
-            String htmlContent = fetchHtmlContent(url);
-            if (htmlContent == null || htmlContent.isEmpty()) {
-                log.error("Failed to fetch HTML content from URL: {}", url);
-                return;
-            }
+            QueryParameters params = new QueryParameters();
+            params.setUrl(url);
+            params.setMaxClicks(3);
+            params.setTopic("Java");
 
-            int savedCount = vacancyService.parseAndSave(source, htmlContent);
+            int savedCount = scrappingService.scrapVacancies(source, params).size();
             log.info("Saved {} new vacancies from source: {}", savedCount, source);
         } catch (Exception e) {
             log.error("Error parsing job vacancies from source: {} - {}", source, e.getMessage());
-        }
-    }
-
-    /**
-     * Fetch HTML content from a URL.
-     *
-     * @param url The URL to fetch HTML content from
-     * @return The HTML content
-     */
-    private String fetchHtmlContent(String url) {
-        try {
-            return restTemplate.getForObject(url, String.class);
-        } catch (Exception e) {
-            log.error("Error fetching HTML content from URL: {} - {}", url, e.getMessage());
-            return null;
         }
     }
 }

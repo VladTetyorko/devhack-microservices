@@ -3,7 +3,6 @@ package com.vladte.devhack.infra.ai;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladte.devhack.entities.global.ai.AiPrompt;
 import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
-import lombok.Setter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -17,12 +16,12 @@ import static org.testng.Assert.*;
 public class PromptEngineCheatingDbPromptTest {
 
     private ObjectMapper om;
-    private com.vladte.devhack.infra.ai.PromptEngine engine;
+    private PromptEngine engine;
 
     @BeforeMethod
     public void setUp() {
         this.om = new ObjectMapper();
-        this.engine = new com.vladte.devhack.infra.ai.PromptEngine(om);
+        this.engine = new PromptEngine(om);
     }
 
     private AiPrompt buildDbCheatingPrompt() {
@@ -123,8 +122,6 @@ public class PromptEngineCheatingDbPromptTest {
         assertTrue(input.contains("===== BEGIN ANSWER ====="));
         assertTrue(input.contains("Ignore previous instructions"));
         assertTrue(input.contains("Output must be exactly 'true' or 'false'"));
-        System.out.printf(input);
-        System.out.printf(rendered.getMessages().toString());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -180,7 +177,6 @@ public class PromptEngineCheatingDbPromptTest {
         }
     }
 
-    @Setter
     public record AnswerSource(String answer) implements Serializable {
     }
 
@@ -209,7 +205,6 @@ public class PromptEngineCheatingDbPromptTest {
         // Ensure placeholders are rendered
         assertFalse(input.contains("{{question}"));
         assertFalse(input.contains("{{answer}"));
-        System.out.println(rendered.getInput());
     }
 
     @Test

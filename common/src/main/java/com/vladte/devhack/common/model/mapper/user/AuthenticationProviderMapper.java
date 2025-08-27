@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 public class AuthenticationProviderMapper implements EntityDTOMapper<AuthenticationProvider, AuthenticationProviderDTO> {
     @Override
     public AuthenticationProviderDTO toDTO(AuthenticationProvider entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         AuthenticationProviderDTO dto = new AuthenticationProviderDTO();
         dto.setId(entity.getId());
         dto.setProvider(entity.getProvider().name());
@@ -22,7 +24,9 @@ public class AuthenticationProviderMapper implements EntityDTOMapper<Authenticat
 
     @Override
     public AuthenticationProvider toEntity(AuthenticationProviderDTO dto) {
-        if (dto == null) return null;
+        if (dto == null) {
+            return null;
+        }
         AuthenticationProvider entity = new AuthenticationProvider();
         entity.setId(dto.getId());
         entity.setProvider(AuthProviderType.valueOf(dto.getProvider()));
@@ -36,7 +40,9 @@ public class AuthenticationProviderMapper implements EntityDTOMapper<Authenticat
 
     @Override
     public AuthenticationProvider updateEntityFromDTO(AuthenticationProvider entity, AuthenticationProviderDTO dto) {
-        if (entity == null || dto == null) return entity;
+        if (entity == null || dto == null) {
+            return entity;
+        }
         entity.setProvider(AuthProviderType.valueOf(dto.getProvider()));
         entity.setProviderUserId(dto.getProviderUserId());
         entity.setEmail(dto.getEmail());

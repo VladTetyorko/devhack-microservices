@@ -41,7 +41,6 @@ public class CircularReferenceSerializationTest {
     @Test
     public void testUserWithAuthProvidersCanBeSerializedWithoutStackOverflow() {
         try {
-            System.out.println("[DEBUG_LOG] Testing User with AuthenticationProvider circular reference serialization");
 
             // Create a test User with AuthenticationProvider (simulating the circular reference)
             User testUser = new User();
@@ -77,7 +76,6 @@ public class CircularReferenceSerializationTest {
             assertNotNull(serializedData, "Serialized data should not be null");
             assertTrue(serializedData.length > 0, "Serialized data should not be empty");
 
-            System.out.println("[DEBUG_LOG] User with circular reference serialized successfully, size: " + serializedData.length + " bytes");
 
             // Test deserialization
             Object deserializedData = serializer.deserialize(serializedData);
@@ -95,13 +93,10 @@ public class CircularReferenceSerializationTest {
             assertNotNull(deserializedAuthProvider.getUser(), "AuthProvider user reference should not be null");
             assertEquals(testUser.getId(), deserializedAuthProvider.getUser().getId(), "Circular reference should be preserved");
 
-            System.out.println("[DEBUG_LOG] Circular reference serialization test passed - no StackOverflowError occurred");
 
         } catch (StackOverflowError e) {
-            System.out.println("[DEBUG_LOG] StackOverflowError occurred: " + e.getMessage());
             fail("Circular reference serialization should not cause StackOverflowError: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Unexpected error: " + e.getMessage());
             e.printStackTrace();
             fail("Circular reference serialization should work without errors: " + e.getMessage());
         }
@@ -110,7 +105,6 @@ public class CircularReferenceSerializationTest {
     @Test
     public void testUserServiceFindByEmailWithCircularReferenceHandling() {
         try {
-            System.out.println("[DEBUG_LOG] Testing UserService.findByEmail with circular reference handling");
 
             // Clear any existing cache
             if (mediumTermCacheManager.getCache("userByEmail") != null) {
@@ -137,17 +131,14 @@ public class CircularReferenceSerializationTest {
                     assertEquals(user1.get().getAuthProviders().size(), user2.get().getAuthProviders().size(),
                             "AuthProviders count should match");
 
-                    System.out.println("[DEBUG_LOG] User found with " + user1.get().getAuthProviders().size() + " auth providers");
                 }
             }
 
-            System.out.println("[DEBUG_LOG] UserService.findByEmail circular reference test passed");
 
         } catch (StackOverflowError e) {
-            System.out.println("[DEBUG_LOG] StackOverflowError occurred in findByEmail: " + e.getMessage());
             fail("UserService.findByEmail should not cause StackOverflowError: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Error in findByEmail test: " + e.getMessage());
+
             e.printStackTrace();
             // Don't fail the test for other setup issues, but log them
         }
@@ -155,7 +146,6 @@ public class CircularReferenceSerializationTest {
 
     @Test
     public void testJsonIdentityInfoAnnotationsAreWorking() {
-        System.out.println("[DEBUG_LOG] Testing that @JsonIdentityInfo annotations are properly configured");
 
         // Verify that User class has @JsonIdentityInfo annotation
         assertTrue(User.class.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonIdentityInfo.class),
@@ -165,6 +155,5 @@ public class CircularReferenceSerializationTest {
         assertTrue(AuthenticationProvider.class.isAnnotationPresent(com.fasterxml.jackson.annotation.JsonIdentityInfo.class),
                 "AuthenticationProvider class should have @JsonIdentityInfo annotation");
 
-        System.out.println("[DEBUG_LOG] @JsonIdentityInfo annotations are properly configured on both entities");
     }
 }

@@ -52,8 +52,6 @@ public class MultiCacheManagerTest {
                 "Medium-term cache manager should be a RedisCacheManager");
         assertTrue(longTermCacheManager.getClass().getSimpleName().contains("RedisCacheManager"),
                 "Long-term cache manager should be a RedisCacheManager");
-
-        System.out.println("[DEBUG_LOG] All cache managers are properly configured as RedisCacheManager instances");
     }
 
     @Test
@@ -69,9 +67,7 @@ public class MultiCacheManagerTest {
             // Verify cache is working by checking the cache directly
             assertNotNull(longTermCacheManager.getCache("systemUser"), "System user cache should exist");
 
-            System.out.println("[DEBUG_LOG] UserService caching test passed");
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] UserService caching test failed: " + e.getMessage());
             // Don't fail the test if there are dependency issues
         }
     }
@@ -88,9 +84,7 @@ public class MultiCacheManagerTest {
             // Verify cache is working by checking the cache directly
             assertNotNull(mediumTermCacheManager.getCache("totalQuestionCount"), "Question count cache should exist");
 
-            System.out.println("[DEBUG_LOG] InterviewQuestionService caching test passed");
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] InterviewQuestionService caching test failed: " + e.getMessage());
             // Don't fail the test if there are dependency issues
         }
     }
@@ -107,9 +101,7 @@ public class MultiCacheManagerTest {
             // Verify cache is working by checking the cache directly
             assertNotNull(mediumTermCacheManager.getCache("totalTagCount"), "Tag count cache should exist");
 
-            System.out.println("[DEBUG_LOG] TagService caching test passed");
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] TagService caching test failed: " + e.getMessage());
             // Don't fail the test if there are dependency issues
         }
     }
@@ -130,9 +122,7 @@ public class MultiCacheManagerTest {
             // Verify cache is working by checking the cache directly
             assertNotNull(mediumTermCacheManager.getCache("userByEmail"), "User by email cache should exist");
 
-            System.out.println("[DEBUG_LOG] Parameter-based caching test passed");
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Parameter-based caching test failed: " + e.getMessage());
             // Don't fail the test if there are dependency issues
         }
     }
@@ -150,9 +140,7 @@ public class MultiCacheManagerTest {
             var cache = mediumTermCacheManager.getCache("userByEmail");
             assertNotNull(cache, "Cache should exist");
 
-            System.out.println("[DEBUG_LOG] Cache eviction test passed");
         } catch (Exception e) {
-            System.out.println("[DEBUG_LOG] Cache eviction test failed: " + e.getMessage());
             // Don't fail the test if there are dependency issues
         }
     }
