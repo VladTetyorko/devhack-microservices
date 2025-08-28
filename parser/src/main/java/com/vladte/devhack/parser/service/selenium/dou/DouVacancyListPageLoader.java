@@ -49,9 +49,11 @@ public class DouVacancyListPageLoader extends AbstractSeleniumSupport {
      */
     public List<DouVacancyItem> fetchVacancies(QueryParameters queryParameters) {
         String startUrl = Optional.ofNullable(queryParameters.getUrl()).orElse(DEFAULT_JAVA_VACANCY_URL);
-        log.info("Starting to fetch vacancies from URL: {}", startUrl);
 
+        //todo remove params for prod
+        queryParameters.setFilters(Map.of("exp", "3-5", "remote", "", "category", "Java"));
         String targetUrl = populateUrlWithFilers(startUrl, queryParameters.getFilters());
+        log.info("Starting to fetch vacancies from URL: {}", targetUrl);
         log.debug("Target URL with filters: {}", targetUrl);
 
         webDriver.get(targetUrl);

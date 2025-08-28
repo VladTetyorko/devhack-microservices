@@ -8,6 +8,7 @@ import com.vladte.devhack.parser.repository.VacancyRepository;
 import com.vladte.devhack.parser.service.provider.AbstractVacancyScraper;
 import com.vladte.devhack.parser.service.selenium.dou.DouVacancyDetailsPageLoader;
 import com.vladte.devhack.parser.service.selenium.dou.DouVacancyListPageLoader;
+import com.vladte.devhack.parser.util.UaDateParsing;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.springframework.stereotype.Service;
@@ -34,58 +35,76 @@ public class DouVacancyScraper extends AbstractVacancyScraper {
 
     @Override
     public List<Vacancy> scrapeAndSave(QueryParameters queryParameters) {
-        Optional<Vacancy> last = getLastSaved(PROVIDER);
-        String lastSavedUrl = last.map(Vacancy::getUrl).orElse(null);
+        String lastSavedUrl = getLastSaved(PROVIDER).map(Vacancy::getUrl).orElse(null);
 
         try (DouVacancyListPageLoader listLoader = new DouVacancyListPageLoader(webDriver);
              DouVacancyDetailsPageLoader detailsLoader = new DouVacancyDetailsPageLoader(webDriver)) {
 
-            List<DouVacancyItem> loadedFromGlobalPage = listLoader.fetchVacancies(queryParameters);
-            DouVacancyItem lastSaved = loadedFromGlobalPage.stream().filter(item -> lastSavedUrl != null && lastSavedUrl.equals(item.getVacancyUrl())).findFirst().orElse(null);
-            int indexOfLaseSaved = loadedFromGlobalPage.contains(lastSaved) ? loadedFromGlobalPage.indexOf(lastSaved) : loadedFromGlobalPage.size();
-
-            if (loadedFromGlobalPage.isEmpty()) {
-                log.info("[DOU] No new vacancies found");
+            List<DouVacancyItem> listPageItems = listLoader.fetchVacancies(queryParameters);
+            if (listPageItems.isEmpty()) {
+                log.info("[DOU] No vacancies found on the list page.");
                 return List.of();
             }
 
-            List<Vacancy> populatedVacanciesFromDetailsPage = getVacanciesDetails(loadedFromGlobalPage.subList(0, indexOfLaseSaved), detailsLoader);
+            int indexOfLastSaved = findIndexOfUrl(listPageItems, lastSavedUrl);
+            if (indexOfLastSaved == 0) {
+                log.info("[DOU] No new vacancies since last saved one.");
+                return List.of();
+            } else if (indexOfLastSaved == -1) {
+                log.info("[DOU] No saved vacancies found. Skipping scraping...");
+                return List.of();
+            }
 
-            List<Vacancy> saved = saveAll(populatedVacanciesFromDetailsPage);
-            log.info("[DOU] Saved {} new vacancies", saved.size());
+            List<DouVacancyItem> newItems = listPageItems.subList(0, indexOfLastSaved);
 
+            List<Vacancy> detailed = newItems.stream()
+                    .map(detailsLoader::enrichVacancyItem)
+                    .map(this::mapToVacancy)
+                    .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+            List<Vacancy> saved = saveBatched(detailed);
+            log.info("[DOU] Saved {} new vacancies.", saved.size());
             return saved;
+
         } catch (Exception e) {
-            log.warn("[DOU] Scraping error: {}", e.getMessage());
+            log.warn("[DOU] Scraping error: {}", e.getMessage(), e);
             return List.of();
         } finally {
-            try {
-                if (webDriver != null) webDriver.quit();
-            } catch (Exception ignored) {
-            }
+            closeDriverQuietly();
         }
     }
 
-    private List<Vacancy> getVacanciesDetails(List<DouVacancyItem> newItems, DouVacancyDetailsPageLoader detailsLoader) {
-        List<Vacancy> toPersist = new ArrayList<>(newItems.size());
-        for (DouVacancyItem it : newItems) {
-            DouVacancyItem enriched = detailsLoader.enrichVacancyItem(it);
-            toPersist.add(mapToVacancy(enriched));
+    private int findIndexOfUrl(List<DouVacancyItem> items, String url) {
+        if (url == null) return items.size();
+        for (int i = 0; i < items.size(); i++) {
+            if (url.equals(items.get(i).getVacancyUrl())) return i;
         }
-        return toPersist;
+        return items.size();
     }
 
     private Vacancy mapToVacancy(DouVacancyItem item) {
-
+        LocalDateTime now = LocalDateTime.now();
         return Vacancy.builder()
                 .source(PROVIDER)
                 .status(VacancyStatus.OPEN)
                 .position(item.getVacancyTitle())
                 .companyName(item.getCompanyName())
+                .description(item.getVacancyDescription())
                 .url(item.getVacancyUrl())
-                .remoteAllowed(item.getVacancyLocation().contains("remote"))
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .remoteAllowed(isRemoteAllowed(item.getVacancyLocation()))
+                .createdAt(UaDateParsing.parseUaToLdt(item.getVacancyDateText()))
+                .updatedAt(now)
                 .build();
+    }
+
+    private boolean isRemoteAllowed(String location) {
+        return location != null && location.toLowerCase().contains("remote");
+    }
+
+    private void closeDriverQuietly() {
+        try {
+            Optional.ofNullable(webDriver).ifPresent(WebDriver::quit);
+        } catch (Exception ignored) {
+        }
     }
 }

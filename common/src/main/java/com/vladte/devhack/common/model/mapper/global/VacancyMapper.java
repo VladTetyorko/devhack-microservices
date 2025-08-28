@@ -72,6 +72,7 @@ public class VacancyMapper implements EntityDTOMapper<Vacancy, VacancyDTO> {
         dto.setRemoteAllowed(entity.getRemoteAllowed());
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
+        dto.setDescription(entity.getDescription());
     }
 
     private void populateEntity(Vacancy entity, VacancyDTO dto) {
@@ -86,5 +87,6 @@ public class VacancyMapper implements EntityDTOMapper<Vacancy, VacancyDTO> {
         entity.setContactEmail(dto.getContactEmail());
         entity.setDeadline(dto.getDeadline());
         entity.setRemoteAllowed(dto.getRemoteAllowed());
+        entity.setDescription(dto.getDescription());
     }
 }

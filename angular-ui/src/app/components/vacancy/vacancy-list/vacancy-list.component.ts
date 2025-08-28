@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {VacancyService} from '../../../services/global/vacancy.service';
 import {VacancyDTO} from '../../../models/global/vacancy.model';
+import {Page} from '../../../models/basic/page.model';
 
 @Component({
     selector: 'app-vacancy-list',
@@ -18,6 +19,12 @@ export class VacancyListComponent implements OnInit {
     searchTerm = '';
     remoteOnly = false;
 
+    // Paging state
+    page = 0;
+    size = 12;
+    sort: string[] = ['createdAt,desc'];
+    pageData?: Page<VacancyDTO>;
+
     constructor(
         private vacancyService: VacancyService,
         private router: Router
@@ -30,9 +37,10 @@ export class VacancyListComponent implements OnInit {
 
     loadVacancies(): void {
         this.isLoading = true;
-        this.vacancyService.getAll().subscribe({
-            next: (data) => {
-                this.vacancies = data.map(vacancy => ({
+        this.vacancyService.getAllPaged({page: this.page, size: this.size, sort: this.sort}).subscribe({
+            next: (resp: Page<VacancyDTO>) => {
+                this.pageData = resp;
+                this.vacancies = resp.content.map(vacancy => ({
                     ...vacancy,
                     createdAt: this.convertDateFormat(vacancy.createdAt),
                     updatedAt: this.convertDateFormat(vacancy.updatedAt)
@@ -47,26 +55,58 @@ export class VacancyListComponent implements OnInit {
         });
     }
 
+    goToPage(page: number): void {
+        if (!this.pageData) return;
+        if (page < 0 || page >= this.pageData.totalPages || page === this.page) return;
+        this.page = page;
+        this.loadVacancies();
+    }
+
+    onPageSizeChange(newSize: number): void {
+        if (newSize > 0 && newSize !== this.size) {
+            this.size = newSize;
+            this.page = 0;
+            this.loadVacancies();
+        }
+    }
+
     onSearchChange(value: string): void {
         this.searchTerm = value;
-        this.applyFilters();
+        const trimmed = (value || '').trim();
+        if (trimmed.length === 0) {
+            // Reset to paged list
+            this.page = 0;
+            this.loadVacancies();
+            return;
+        }
+        this.isLoading = true;
+        this.vacancyService.search({keyword: trimmed}).subscribe({
+            next: (data) => {
+                // When searching, we display all returned results without pagination for simplicity
+                this.pageData = undefined;
+                this.vacancies = data.map(vacancy => ({
+                    ...vacancy,
+                    createdAt: this.convertDateFormat(vacancy.createdAt),
+                    updatedAt: this.convertDateFormat(vacancy.updatedAt)
+                }));
+                this.applyFilters();
+                this.isLoading = false;
+            },
+            error: (err) => {
+                this.error = 'Failed to search vacancies. ' + err.message;
+                this.isLoading = false;
+            }
+        });
     }
 
     onRemoteToggle(checked: boolean): void {
         this.remoteOnly = checked;
+        // We keep remote filtering client-side to allow combining with search results
         this.applyFilters();
     }
 
     applyFilters(): void {
         let result = [...this.vacancies];
-        if (this.searchTerm && this.searchTerm.trim().length > 0) {
-            const q = this.searchTerm.toLowerCase();
-            result = result.filter(v =>
-                (v.companyName && v.companyName.toLowerCase().includes(q)) ||
-                (v.position && v.position.toLowerCase().includes(q)) ||
-                (v.technologies && v.technologies.toLowerCase().includes(q))
-            );
-        }
         if (this.remoteOnly) {
             result = result.filter(v => !!v.remoteAllowed);
         }

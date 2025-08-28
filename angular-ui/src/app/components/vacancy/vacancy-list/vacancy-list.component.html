@@ -9,12 +9,12 @@
     <!-- Filters toolbar -->
     <div class="filters card p-3 mb-3">
         <div class="row g-2 align-items-center">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <input #searchBox type="text" class="form-control"
                        placeholder="Search by company, position, or technologies..." [value]="searchTerm"
                        (input)="onSearchChange(searchBox.value)"/>
             </div>
-            <div class="col-md-4 d-flex justify-content-md-end align-items-center">
+            <div class="col-md-3 d-flex align-items-center">
                 <div class="form-check form-switch">
                     <input #remoteChk class="form-check-input" type="checkbox" id="remoteOnly" [checked]="remoteOnly"
                            (change)="onRemoteToggle(remoteChk.checked)">
@@ -81,4 +81,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Shared pagination -->
+    <app-pagination *ngIf="!isLoading && !searchTerm && pageData"
+                    [page]="pageData!"
+                    (pageChange)="goToPage($event)"
+                    (sizeChange)="onPageSizeChange($event)">
+    </app-pagination>
 </div>

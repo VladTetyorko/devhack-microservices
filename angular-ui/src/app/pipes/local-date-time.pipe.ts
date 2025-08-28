@@ -8,7 +8,6 @@ export class LocalDateTimePipe implements PipeTransform {
 
     transform(value: string | Date | null | undefined, format: string = 'medium'): string | null {
         if (!value) return null;
-
         let date: Date;
         if (typeof value === 'string') {
             // 1) handle comma-separated fields: "YYYY,MM,DD,hh,mm,ss,nanosecond"
@@ -35,14 +34,13 @@ export class LocalDateTimePipe implements PipeTransform {
         } else if (typeof value === 'object') {
             const objectToString = value.toString();
             const parts = objectToString.split(',').map(n => parseInt(n));
-            const [year, month, day, hour, minute, second, nano = 0] = parts;
+            const [year, month, day, hour, minute, second, nano = 0] = parts.length === 7 ? parts : parts.concat(0);
             const ms = Math.floor(nano / 1e6);
 
             date = new Date(year, month - 1, day, hour, minute, second, ms);
         } else {
             date = value;
         }
-
         return this.datePipe.transform(date, format);
     }
 }

@@ -68,4 +68,7 @@ public class Vacancy extends BasicEntity {
 
     @OneToMany(mappedBy = "vacancy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VacancyResponse> responses = new ArrayList<>();
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
 }

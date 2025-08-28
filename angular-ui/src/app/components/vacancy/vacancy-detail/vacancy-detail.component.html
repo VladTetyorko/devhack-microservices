@@ -89,6 +89,11 @@
                         </div>
                     </div>
 
+                    <div class="mb-4" *ngIf="vacancy.description">
+                        <h5><i class="bi bi-file-earmark-text me-2"></i>Description</h5>
+                        <div class="description-content white-space-prewrap" [innerText]="vacancy.description"></div>
+                    </div>
+
                     <div class="row" *ngIf="vacancy.deadline">
                         <div class="col-md-6">
                             <strong><i class="bi bi-calendar-event me-2"></i>Application Deadline:</strong>

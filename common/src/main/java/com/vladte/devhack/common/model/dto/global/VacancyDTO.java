@@ -74,4 +74,7 @@ public class VacancyDTO implements BaseDTO {
 
     @Schema(description = "Number of responses to this vacancy", accessMode = Schema.AccessMode.READ_ONLY)
     private int responseCount;
+
+    @Schema(description = "Full vacancy description text")
+    private String description;
 }
