@@ -1,6 +1,6 @@
 package com.vladte.devhack.parser.service.provider;
 
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.global.Vacancy;
 import com.vladte.devhack.parser.entities.QueryParameters;
 
 import java.util.List;

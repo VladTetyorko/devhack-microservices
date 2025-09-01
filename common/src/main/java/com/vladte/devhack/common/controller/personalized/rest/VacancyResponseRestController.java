@@ -1,15 +1,15 @@
 package com.vladte.devhack.common.controller.personalized.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
-import com.vladte.devhack.common.model.mapper.personalized.VacancyResponseMapper;
-import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.global.InterviewStage;
-import com.vladte.devhack.entities.global.Vacancy;
-import com.vladte.devhack.entities.personalized.VacancyResponse;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewStage;
+import com.vladte.devhack.domain.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.personalized.VacancyResponse;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.VacancyResponseDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.VacancyResponseMapper;
+import com.vladte.devhack.domain.service.global.VacancyService;
+import com.vladte.devhack.domain.service.personalized.VacancyResponseService;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,8 +72,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         log.debug("REST request to get all vacancy responses for user: {}", user.getProfile().getName());
-        Page<VacancyResponse> page = service.getVacancyResponsesByUser(user, pageable);
-        Page<VacancyResponseDTO> dtoPage = page.map(mapper::toDTO);
+        Page<VacancyResponse> page = relatedEntityService.getVacancyResponsesByUser(user, pageable);
+        Page<VacancyResponseDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -95,8 +95,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
             @RequestParam(required = false) InterviewStage stage,
             Pageable pageable) {
         log.debug("REST request to search vacancy responses with query: {} and stage: {}", query, stage);
-        Page<VacancyResponse> page = service.searchVacancyResponses(query, stage, pageable);
-        Page<VacancyResponseDTO> dtoPage = page.map(mapper::toDTO);
+        Page<VacancyResponse> page = relatedEntityService.searchVacancyResponses(query, stage, pageable);
+        Page<VacancyResponseDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -120,8 +120,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
         Vacancy vacancy = vacancyService.findById(vacancyId)
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy not found with ID: " + vacancyId));
 
-        VacancyResponse vacancyResponse = service.saveNewResponseForUserAndVacancy(user, vacancy);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(vacancyResponse));
+        VacancyResponse vacancyResponse = relatedEntityService.saveNewResponseForUserAndVacancy(user, vacancy);
+        return ResponseEntity.status(HttpStatus.CREATED).body(relatedEntityMapper.toDTO(vacancyResponse));
     }
 
     /**
@@ -141,8 +141,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
         Vacancy vacancy = vacancyService.findById(vacancyId)
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy not found with ID: " + vacancyId));
 
-        List<VacancyResponse> vacancyResponses = service.getVacancyResponsesByVacancy(vacancy);
-        return ResponseEntity.ok(mapper.toDTOList(vacancyResponses));
+        List<VacancyResponse> vacancyResponses = relatedEntityService.getVacancyResponsesByVacancy(vacancy);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancyResponses));
     }
 
     /**
@@ -164,8 +164,8 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        Page<VacancyResponse> page = service.getVacancyResponsesByUser(user, pageable);
-        Page<VacancyResponseDTO> dtoPage = page.map(mapper::toDTO);
+        Page<VacancyResponse> page = relatedEntityService.getVacancyResponsesByUser(user, pageable);
+        Page<VacancyResponseDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -189,7 +189,7 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
         log.debug("REST request to update status of vacancy response: {} to stage: {} by user: {}",
                 vacancyResponseId, request.getInterviewStage(), user.getProfile().getName());
 
-        VacancyResponse vacancyResponse = service.findById(vacancyResponseId)
+        VacancyResponse vacancyResponse = relatedEntityService.findById(vacancyResponseId)
                 .orElseThrow(() -> new IllegalArgumentException("Vacancy response not found with ID: " + vacancyResponseId));
 
         // Check if the current user owns this vacancy response
@@ -201,9 +201,9 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
 
         // Update the interview stage
         vacancyResponse.setInterviewStage(request.getInterviewStage());
-        VacancyResponse updatedResponse = service.save(vacancyResponse);
+        VacancyResponse updatedResponse = relatedEntityService.save(vacancyResponse);
 
-        return ResponseEntity.ok(mapper.toDTO(updatedResponse));
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(updatedResponse));
     }
 
     /**

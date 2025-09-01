@@ -1,16 +1,16 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
-import com.vladte.devhack.common.model.mapper.personalized.VacancyResponseMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewStageCategoryService;
-import com.vladte.devhack.common.service.domain.global.InterviewStageService;
-import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
-import com.vladte.devhack.entities.global.InterviewStage;
-import com.vladte.devhack.entities.global.InterviewStageCategory;
-import com.vladte.devhack.entities.personalized.VacancyResponse;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewStage;
+import com.vladte.devhack.domain.entities.global.InterviewStageCategory;
+import com.vladte.devhack.domain.entities.personalized.VacancyResponse;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.VacancyResponseDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.VacancyResponseMapper;
+import com.vladte.devhack.domain.service.global.InterviewStageCategoryService;
+import com.vladte.devhack.domain.service.global.InterviewStageService;
+import com.vladte.devhack.domain.service.personalized.VacancyResponseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

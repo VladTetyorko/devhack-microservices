@@ -1,4 +1,0 @@
-rootProject.name = 'entities'
-
-include ':infra'
-project(':infra').projectDir = new File(settingsDir, '../infra')

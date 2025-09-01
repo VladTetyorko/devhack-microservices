@@ -1,0 +1,91 @@
+package com.vladte.devhack.domain.model.mapper.global;
+
+import com.vladte.devhack.domain.entities.BasicEntity;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.model.dto.global.InterviewQuestionDTO;
+import com.vladte.devhack.domain.model.mapper.EntityDTOMapper;
+import org.springframework.stereotype.Component;
+
+import java.util.stream.Collectors;
+
+/**
+ * Mapper for converting between InterviewQuestion entity and InterviewQuestionDTO.
+ */
+@Component
+public class InterviewQuestionMapper implements EntityDTOMapper<InterviewQuestion, InterviewQuestionDTO> {
+
+    @Override
+    public InterviewQuestionDTO toDTO(InterviewQuestion entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        InterviewQuestionDTO dto = new InterviewQuestionDTO();
+        dto.setId(entity.getId());
+        dto.setQuestionText(entity.getQuestionText());
+        dto.setDifficulty(entity.getDifficulty());
+        dto.setSource(entity.getSource());
+        dto.setCreatedAt(entity.getCreatedAt());
+
+        if (entity.getUser() != null) {
+            dto.setUserId(entity.getUser().getId());
+            if (entity.getUser().getProfile() != null) {
+                dto.setUserName(entity.getUser().getProfile().getName());
+            }
+        }
+
+        if (entity.getTags() != null) {
+            dto.setTagIds(entity.getTags().stream()
+                    .map(BasicEntity::getId)
+                    .collect(Collectors.toSet()));
+        }
+
+        if (entity.getAnswers() != null) {
+            dto.setAnswerIds(entity.getAnswers().stream()
+                    .map(BasicEntity::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        if (entity.getNotes() != null) {
+            dto.setNoteIds(entity.getNotes().stream()
+                    .map(BasicEntity::getId)
+                    .collect(Collectors.toList()));
+        }
+
+        return dto;
+    }
+
+    @Override
+    public InterviewQuestion toEntity(InterviewQuestionDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        InterviewQuestion entity = new InterviewQuestion();
+        entity.setId(dto.getId());
+        entity.setQuestionText(dto.getQuestionText());
+        entity.setDifficulty(dto.getDifficulty());
+        entity.setSource(dto.getSource());
+
+        // Note: User, tags, answers, and notes need to be set by the service layer
+        // as they require fetching the related entities from the database
+
+        return entity;
+    }
+
+    @Override
+    public InterviewQuestion updateEntityFromDTO(InterviewQuestion entity, InterviewQuestionDTO dto) {
+        if (entity == null || dto == null) {
+            return entity;
+        }
+
+        entity.setQuestionText(dto.getQuestionText());
+        entity.setDifficulty(dto.getDifficulty());
+        entity.setSource(dto.getSource());
+
+        // Note: User, tags, answers, and notes need to be updated by the service layer
+        // as they require fetching the related entities from the database
+
+        return entity;
+    }
+}

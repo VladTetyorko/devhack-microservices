@@ -1,13 +1,14 @@
 package com.vladte.devhack.common.controller.global.basic.rest;
 
-import com.vladte.devhack.common.model.dto.auth.*;
-import com.vladte.devhack.common.model.dto.user.UserDTO;
-import com.vladte.devhack.common.model.mapper.user.UserMapper;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.security.JwtTokenProvider;
-import com.vladte.devhack.entities.user.AuthenticationProvider;
-import com.vladte.devhack.entities.user.Profile;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.enums.AuthProviderType;
+import com.vladte.devhack.domain.entities.user.AuthenticationProvider;
+import com.vladte.devhack.domain.entities.user.Profile;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.auth.*;
+import com.vladte.devhack.domain.model.dto.user.UserDTO;
+import com.vladte.devhack.domain.model.mapper.user.UserMapper;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -289,7 +290,7 @@ public class AuthRestController {
 
         // Create AuthenticationProvider for LOCAL authentication
         AuthenticationProvider localAuth = new AuthenticationProvider();
-        localAuth.setProvider(com.vladte.devhack.entities.enums.AuthProviderType.LOCAL);
+        localAuth.setProvider(AuthProviderType.LOCAL);
         localAuth.setEmail(registerRequest.getEmail());
         localAuth.setPasswordHash(registerRequest.getPassword()); // This will be encoded by the service
         localAuth.setUser(user);

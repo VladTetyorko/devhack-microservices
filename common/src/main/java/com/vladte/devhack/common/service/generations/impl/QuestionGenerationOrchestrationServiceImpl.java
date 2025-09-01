@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.generations.impl;
 
-import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.service.global.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

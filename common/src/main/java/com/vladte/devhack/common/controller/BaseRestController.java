@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.controller;
 
-import com.vladte.devhack.common.model.dto.BaseDTO;
-import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.service.domain.CrudService;
-import com.vladte.devhack.entities.BasicEntity;
+import com.vladte.devhack.domain.entities.BasicEntity;
+import com.vladte.devhack.domain.model.dto.BaseDTO;
+import com.vladte.devhack.domain.model.mapper.EntityDTOMapper;
+import com.vladte.devhack.domain.service.CrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,8 +35,8 @@ import java.util.Optional;
 @Slf4j
 public abstract class BaseRestController<E extends BasicEntity, D extends BaseDTO, ID, S extends CrudService<E, ID>, M extends EntityDTOMapper<E, D>> {
 
-    protected final S service;
-    protected final M mapper;
+    protected final S relatedEntityService;
+    protected final M relatedEntityMapper;
 
     /**
      * Constructor with service and mapper injection.
@@ -45,8 +45,8 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
      * @param mapper  the mapper
      */
     protected BaseRestController(S service, M mapper) {
-        this.service = service;
-        this.mapper = mapper;
+        this.relatedEntityService = service;
+        this.relatedEntityMapper = mapper;
     }
 
     /**
@@ -62,8 +62,8 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
     })
     public ResponseEntity<List<D>> getAll() {
         log.debug("REST request to get all entities");
-        List<E> entities = service.findAll();
-        return ResponseEntity.ok(mapper.toDTOList(entities));
+        List<E> entities = relatedEntityService.findAll();
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(entities));
     }
 
     /**
@@ -82,8 +82,8 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
             @Parameter(description = "Pagination information (page, size, sort)")
             Pageable pageable) {
         log.debug("REST request to get a page of entities");
-        Page<E> page = service.findAll(pageable);
-        Page<D> dtoPage = page.map(mapper::toDTO);
+        Page<E> page = relatedEntityService.findAll(pageable);
+        Page<D> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -105,8 +105,8 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
             @Parameter(description = "ID of the entity to be retrieved")
             @PathVariable ID id) {
         log.debug("REST request to get entity with ID: {}", id);
-        Optional<E> entity = service.findById(id);
-        return entity.map(e -> ResponseEntity.ok(mapper.toDTO(e)))
+        Optional<E> entity = relatedEntityService.findById(id);
+        return entity.map(e -> ResponseEntity.ok(relatedEntityMapper.toDTO(e)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -128,9 +128,9 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
             @Parameter(description = "Entity to be created")
             @Valid @RequestBody D dto) {
         log.debug("REST request to create entity: {}", dto);
-        E entity = mapper.toEntity(dto);
-        E savedEntity = service.save(entity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(savedEntity));
+        E entity = relatedEntityMapper.toEntity(dto);
+        E savedEntity = relatedEntityService.save(entity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(relatedEntityMapper.toDTO(savedEntity));
     }
 
     /**
@@ -156,15 +156,15 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
             @Parameter(description = "Updated entity")
             @Valid @RequestBody D dto) {
         log.debug("REST request to update entity with ID: {}", id);
-        Optional<E> existingEntity = service.findById(id);
+        Optional<E> existingEntity = relatedEntityService.findById(id);
         if (existingEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         E entity = existingEntity.get();
-        mapper.updateEntityFromDTO(entity, dto);
-        E savedEntity = service.save(entity);
-        return ResponseEntity.ok(mapper.toDTO(savedEntity));
+        relatedEntityMapper.updateEntityFromDTO(entity, dto);
+        E savedEntity = relatedEntityService.save(entity);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedEntity));
     }
 
     /**
@@ -184,12 +184,12 @@ public abstract class BaseRestController<E extends BasicEntity, D extends BaseDT
             @Parameter(description = "ID of the entity to be deleted")
             @PathVariable ID id) {
         log.debug("REST request to delete entity with ID: {}", id);
-        Optional<E> existingEntity = service.findById(id);
+        Optional<E> existingEntity = relatedEntityService.findById(id);
         if (existingEntity.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        service.deleteById(id);
+        relatedEntityService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }

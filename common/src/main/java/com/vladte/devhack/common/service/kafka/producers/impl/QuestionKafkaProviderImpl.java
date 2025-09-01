@@ -1,18 +1,18 @@
 package com.vladte.devhack.common.service.kafka.producers.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
-import com.vladte.devhack.common.service.domain.ai.AiPromptService;
+import com.vladte.devhack.common.service.kafka.KafkaRequestSubscriber;
 import com.vladte.devhack.common.service.kafka.producers.QuestionKafkaProvider;
-import com.vladte.devhack.entities.global.ai.AiPrompt;
-import com.vladte.devhack.entities.global.ai.AiPromptCategory;
+import com.vladte.devhack.domain.entities.global.ai.AiPrompt;
+import com.vladte.devhack.domain.entities.global.ai.AiPromptCategory;
+import com.vladte.devhack.domain.service.ai.AiPromptCategoryService;
+import com.vladte.devhack.domain.service.ai.AiPromptService;
 import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.arguments.response.QuestionGenerateResponseArguments;
 import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
 import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
-import com.vladte.devhack.infra.service.kafka.producer.subscribe.KafkaRequestSubscriber;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

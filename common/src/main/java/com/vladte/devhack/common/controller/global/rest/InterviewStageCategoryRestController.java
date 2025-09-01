@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.InterviewStageCategoryDTO;
-import com.vladte.devhack.common.model.mapper.global.InterviewStageCategoryMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewStageCategoryService;
-import com.vladte.devhack.entities.global.InterviewStageCategory;
+import com.vladte.devhack.domain.entities.global.InterviewStageCategory;
+import com.vladte.devhack.domain.model.dto.global.InterviewStageCategoryDTO;
+import com.vladte.devhack.domain.model.mapper.global.InterviewStageCategoryMapper;
+import com.vladte.devhack.domain.service.global.InterviewStageCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,8 +50,8 @@ public class InterviewStageCategoryRestController extends BaseRestController<Int
             @Parameter(description = "Category code to search for")
             @RequestParam String code) {
         log.debug("REST request to find interview stage category by code: {}", code);
-        Optional<InterviewStageCategory> category = service.findByCode(code);
-        return category.map(c -> ResponseEntity.ok(mapper.toDTO(c)))
+        Optional<InterviewStageCategory> category = relatedEntityService.findByCode(code);
+        return category.map(c -> ResponseEntity.ok(relatedEntityMapper.toDTO(c)))
                 .orElse(ResponseEntity.notFound().build());
     }
 }

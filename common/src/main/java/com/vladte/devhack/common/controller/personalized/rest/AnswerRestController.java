@@ -1,14 +1,15 @@
 package com.vladte.devhack.common.controller.personalized.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
-import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.personalized.AnswerService;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.personalized.Answer;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.common.service.generations.AnswerOperationsService;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.AnswerDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.AnswerMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.personalized.AnswerService;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +34,7 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
 
     private final InterviewQuestionService questionService;
     private final UserService userService;
+    private final AnswerOperationsService answerOperationsService;
 
     /**
      * Constructor with service and mapper injection.
@@ -45,10 +47,11 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
     public AnswerRestController(AnswerService answerService,
                                 AnswerMapper answerMapper,
                                 InterviewQuestionService questionService,
-                                UserService userService) {
+                                UserService userService, AnswerOperationsService answerOperationsService) {
         super(answerService, answerMapper);
         this.questionService = questionService;
         this.userService = userService;
+        this.answerOperationsService = answerOperationsService;
     }
 
     /**
@@ -66,8 +69,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         log.debug("REST request to get all answers for user: {}", user.getProfile().getName());
-        Page<Answer> page = service.findAnswersByUser(user, pageable);
-        Page<AnswerDTO> dtoPage = page.map(mapper::toDTO);
+        Page<Answer> page = relatedEntityService.findAnswersByUser(user, pageable);
+        Page<AnswerDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -90,8 +93,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
         InterviewQuestion question = questionService.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Question not found with ID: " + questionId));
 
-        Page<Answer> page = service.findAnswersByQuestion(question, pageable);
-        Page<AnswerDTO> dtoPage = page.map(mapper::toDTO);
+        Page<Answer> page = relatedEntityService.findAnswersByQuestion(question, pageable);
+        Page<AnswerDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -114,8 +117,8 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        Page<Answer> page = service.findAnswersByUser(user, pageable);
-        Page<AnswerDTO> dtoPage = page.map(mapper::toDTO);
+        Page<Answer> page = relatedEntityService.findAnswersByUser(user, pageable);
+        Page<AnswerDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -149,12 +152,12 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
         answerDTO.setUserId(user.getId());
 
         // Convert DTO to entity and save
-        Answer entity = mapper.toEntity(answerDTO);
+        Answer entity = relatedEntityMapper.toEntity(answerDTO);
         entity.setQuestion(question);
         entity.setUser(user);
 
-        Answer savedEntity = service.save(entity);
-        AnswerDTO responseDTO = mapper.toDTO(savedEntity);
+        Answer savedEntity = relatedEntityService.save(entity);
+        AnswerDTO responseDTO = relatedEntityMapper.toDTO(savedEntity);
 
         log.info("Answer created successfully for question: {} by user: {}", questionId, user.getProfile().getName());
         return ResponseEntity.status(201).body(responseDTO);
@@ -174,10 +177,10 @@ public class AnswerRestController extends BaseRestController<Answer, AnswerDTO, 
             @PathVariable UUID id) {
         log.debug("REST request to check answer with AI: {}", id);
 
-        service.findById(id)
+        relatedEntityService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Answer not found with ID: " + id));
 
-        service.checkAnswerWithAiAsync(id);
+        answerOperationsService.checkAnswerWithAiAsync(id);
 
         return ResponseEntity.ok("AI check initiated. The answer will be evaluated in the background.");
     }

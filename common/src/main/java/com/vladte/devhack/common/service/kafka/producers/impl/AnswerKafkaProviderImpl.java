@@ -1,20 +1,20 @@
 package com.vladte.devhack.common.service.kafka.producers.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
-import com.vladte.devhack.common.service.domain.ai.AiPromptService;
+import com.vladte.devhack.common.service.kafka.KafkaRequestSubscriber;
 import com.vladte.devhack.common.service.kafka.producers.AnswerKafkaProvider;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.ai.AiPrompt;
-import com.vladte.devhack.entities.global.ai.AiPromptCategory;
-import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.ai.AiPrompt;
+import com.vladte.devhack.domain.entities.global.ai.AiPromptCategory;
+import com.vladte.devhack.domain.entities.personalized.Answer;
+import com.vladte.devhack.domain.service.ai.AiPromptCategoryService;
+import com.vladte.devhack.domain.service.ai.AiPromptService;
 import com.vladte.devhack.infra.message.MessageDestinations;
 import com.vladte.devhack.infra.message.MessageTypes;
 import com.vladte.devhack.infra.model.KafkaMessage;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 import com.vladte.devhack.infra.model.payload.request.AiRenderedRequestPayload;
 import com.vladte.devhack.infra.service.kafka.PendingRequestManager;
-import com.vladte.devhack.infra.service.kafka.producer.subscribe.KafkaRequestSubscriber;
 import com.vladte.devhack.infra.topics.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,7 @@ public class AnswerKafkaProviderImpl
             String messageId, InterviewQuestion question, Answer answer) {
 
         log.info("Sending feedback request [id={}]", messageId);
-        AiPromptCategory category = aiPromptCategoryService.findByCode("ANSWERS_CHECK_ON_CHEATING").get();
+        AiPromptCategory category = aiPromptCategoryService.findByCode(getTopic()).get();
         AiPrompt prompt = aiPromptService.findLatestByCategory(category).get();
 
         AiRenderedRequestPayload payload = super.buildAiMessagePayloadFromSources(prompt, question, answer);

@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.domain.entities.global.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 

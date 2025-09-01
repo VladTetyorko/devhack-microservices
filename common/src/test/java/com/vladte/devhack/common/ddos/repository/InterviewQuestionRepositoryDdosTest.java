@@ -1,13 +1,13 @@
 package com.vladte.devhack.common.ddos.repository;
 
 import com.vladte.devhack.common.ddos.BaseRepositoryDdosTest;
-import com.vladte.devhack.common.repository.global.InterviewQuestionRepository;
-import com.vladte.devhack.common.repository.user.UserRepository;
-import com.vladte.devhack.entities.enums.AuthProviderType;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.user.AuthenticationProvider;
-import com.vladte.devhack.entities.user.Profile;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.enums.AuthProviderType;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.user.AuthenticationProvider;
+import com.vladte.devhack.domain.entities.user.Profile;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.repository.global.InterviewQuestionRepository;
+import com.vladte.devhack.domain.repository.user.UserRepository;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -35,13 +35,6 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.4'
 
-    // Access domain entities such as AiPrompt
-    implementation project(':entities')
-
-    // JSON Schema validation & Mustache templating for prompt rendering
-    implementation 'com.networknt:json-schema-validator:1.0.86'
-    implementation 'com.samskivert:jmustache:1.15'
-
     annotationProcessor 'org.projectlombok:lombok'
 
     // Testing

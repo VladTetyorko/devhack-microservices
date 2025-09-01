@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.AuditDTO;
-import com.vladte.devhack.common.model.mapper.global.AuditMapper;
-import com.vladte.devhack.common.service.domain.audit.AuditService;
-import com.vladte.devhack.entities.global.Audit;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.Audit;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.global.AuditDTO;
+import com.vladte.devhack.domain.model.mapper.global.AuditMapper;
+import com.vladte.devhack.domain.service.audit.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,8 +56,8 @@ public class AuditRestController extends BaseRestController<Audit, AuditDTO, UUI
 
         // Note: This would require adding a method to AuditService to filter by entity type
         // For now, we'll return all audits with pagination
-        Page<Audit> page = service.findAll(pageable);
-        Page<AuditDTO> dtoPage = page.map(mapper::toDTO);
+        Page<Audit> page = relatedEntityService.findAll(pageable);
+        Page<AuditDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -82,8 +82,8 @@ public class AuditRestController extends BaseRestController<Audit, AuditDTO, UUI
 
         // Note: This would require adding a method to AuditService to filter by entity type and ID
         // For now, we'll return all audits with pagination
-        Page<Audit> page = service.findAll(pageable);
-        Page<AuditDTO> dtoPage = page.map(mapper::toDTO);
+        Page<Audit> page = relatedEntityService.findAll(pageable);
+        Page<AuditDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -110,8 +110,8 @@ public class AuditRestController extends BaseRestController<Audit, AuditDTO, UUI
             @AuthenticationPrincipal User user) {
         log.debug("REST request to create audit record for create operation: {} {}", entityType, entityId);
 
-        Audit audit = service.auditCreate(entityType, entityId, user, details);
-        return ResponseEntity.ok(mapper.toDTO(audit));
+        Audit audit = relatedEntityService.auditCreate(entityType, entityId, user, details);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(audit));
     }
 
     /**
@@ -137,8 +137,8 @@ public class AuditRestController extends BaseRestController<Audit, AuditDTO, UUI
             @AuthenticationPrincipal User user) {
         log.debug("REST request to create audit record for update operation: {} {}", entityType, entityId);
 
-        Audit audit = service.auditUpdate(entityType, entityId, user, details);
-        return ResponseEntity.ok(mapper.toDTO(audit));
+        Audit audit = relatedEntityService.auditUpdate(entityType, entityId, user, details);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(audit));
     }
 
     /**
@@ -164,7 +164,7 @@ public class AuditRestController extends BaseRestController<Audit, AuditDTO, UUI
             @AuthenticationPrincipal User user) {
         log.debug("REST request to create audit record for delete operation: {} {}", entityType, entityId);
 
-        Audit audit = service.auditDelete(entityType, entityId, user, details);
-        return ResponseEntity.ok(mapper.toDTO(audit));
+        Audit audit = relatedEntityService.auditDelete(entityType, entityId, user, details);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(audit));
     }
 }

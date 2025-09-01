@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.InterviewStageDTO;
-import com.vladte.devhack.common.model.mapper.global.InterviewStageMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewStageService;
-import com.vladte.devhack.entities.global.InterviewStage;
+import com.vladte.devhack.domain.entities.global.InterviewStage;
+import com.vladte.devhack.domain.model.dto.global.InterviewStageDTO;
+import com.vladte.devhack.domain.model.mapper.global.InterviewStageMapper;
+import com.vladte.devhack.domain.service.global.InterviewStageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -47,8 +47,8 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
             @Parameter(description = "Stage code to search for")
             @RequestParam String code) {
         log.debug("REST request to find interview stage by code: {}", code);
-        Optional<InterviewStage> stage = service.findByCode(code);
-        return stage.map(s -> ResponseEntity.ok(mapper.toDTO(s)))
+        Optional<InterviewStage> stage = relatedEntityService.findByCode(code);
+        return stage.map(s -> ResponseEntity.ok(relatedEntityMapper.toDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -61,8 +61,8 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
     @Operation(summary = "Get all active stages", description = "Returns all active interview stages ordered by order index")
     public ResponseEntity<List<InterviewStageDTO>> getAllActive() {
         log.debug("REST request to get all active interview stages");
-        List<InterviewStage> stages = service.findAllActiveOrderByOrderIndex();
-        return ResponseEntity.ok(mapper.toDTOList(stages));
+        List<InterviewStage> stages = relatedEntityService.findAllActiveOrderByOrderIndex();
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(stages));
     }
 
     /**
@@ -77,8 +77,8 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
             @Parameter(description = "Category code to filter by")
             @RequestParam String categoryCode) {
         log.debug("REST request to find interview stages by category code: {}", categoryCode);
-        List<InterviewStage> stages = service.findByCategoryCode(categoryCode);
-        return ResponseEntity.ok(mapper.toDTOList(stages));
+        List<InterviewStage> stages = relatedEntityService.findByCategoryCode(categoryCode);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(stages));
     }
 
     /**
@@ -90,8 +90,8 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
     @Operation(summary = "Get all final stages", description = "Returns all final interview stages")
     public ResponseEntity<List<InterviewStageDTO>> getAllFinalStages() {
         log.debug("REST request to get all final interview stages");
-        List<InterviewStage> stages = service.findAllFinalStages();
-        return ResponseEntity.ok(mapper.toDTOList(stages));
+        List<InterviewStage> stages = relatedEntityService.findAllFinalStages();
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(stages));
     }
 
     /**
@@ -103,8 +103,8 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
     @Operation(summary = "Get all public stages", description = "Returns all non-internal interview stages visible to candidates")
     public ResponseEntity<List<InterviewStageDTO>> getAllNonInternalStages() {
         log.debug("REST request to get all non-internal interview stages");
-        List<InterviewStage> stages = service.findAllNonInternalStages();
-        return ResponseEntity.ok(mapper.toDTOList(stages));
+        List<InterviewStage> stages = relatedEntityService.findAllNonInternalStages();
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(stages));
     }
 
     /**
@@ -119,13 +119,13 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
             @Parameter(description = "Current stage ID")
             @PathVariable UUID stageId) {
         log.debug("REST request to get next stage for stage ID: {}", stageId);
-        Optional<InterviewStage> currentStage = service.findById(stageId);
+        Optional<InterviewStage> currentStage = relatedEntityService.findById(stageId);
         if (currentStage.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Optional<InterviewStage> nextStage = service.getNextStage(currentStage.get());
-        return nextStage.map(s -> ResponseEntity.ok(mapper.toDTO(s)))
+        Optional<InterviewStage> nextStage = relatedEntityService.getNextStage(currentStage.get());
+        return nextStage.map(s -> ResponseEntity.ok(relatedEntityMapper.toDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -141,13 +141,13 @@ public class InterviewStageRestController extends BaseRestController<InterviewSt
             @Parameter(description = "Current stage ID")
             @PathVariable UUID stageId) {
         log.debug("REST request to get previous stage for stage ID: {}", stageId);
-        Optional<InterviewStage> currentStage = service.findById(stageId);
+        Optional<InterviewStage> currentStage = relatedEntityService.findById(stageId);
         if (currentStage.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Optional<InterviewStage> previousStage = service.getPreviousStage(currentStage.get());
-        return previousStage.map(s -> ResponseEntity.ok(mapper.toDTO(s)))
+        Optional<InterviewStage> previousStage = relatedEntityService.getPreviousStage(currentStage.get());
+        return previousStage.map(s -> ResponseEntity.ok(relatedEntityMapper.toDTO(s)))
                 .orElse(ResponseEntity.notFound().build());
     }
 }

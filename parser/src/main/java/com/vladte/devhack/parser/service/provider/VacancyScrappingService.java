@@ -1,6 +1,6 @@
 package com.vladte.devhack.parser.service.provider;
 
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.global.Vacancy;
 import com.vladte.devhack.parser.entities.QueryParameters;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

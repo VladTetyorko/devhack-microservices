@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.statistics.DashboardService;
 import com.vladte.devhack.common.service.view.DashboardViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.statistics;
 
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.User;
 import lombok.Getter;
 
 import java.util.Map;

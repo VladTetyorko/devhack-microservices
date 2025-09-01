@@ -1,15 +1,14 @@
 package com.vladte.devhack.common.service.statistics.impl;
 
-import com.vladte.devhack.common.model.mapper.global.TagMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.common.service.domain.personalized.AnswerService;
-import com.vladte.devhack.common.service.domain.personalized.NoteService;
 import com.vladte.devhack.common.service.statistics.DashboardService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
-import com.vladte.devhack.entities.personalized.Answer;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.global.TagService;
+import com.vladte.devhack.domain.service.personalized.AnswerService;
+import com.vladte.devhack.domain.service.personalized.NoteService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

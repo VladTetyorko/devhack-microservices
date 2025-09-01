@@ -1,14 +1,14 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.model.dto.global.TagDTO;
-import com.vladte.devhack.common.model.mapper.global.TagMapper;
-import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.global.Tag;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.global.TagDTO;
+import com.vladte.devhack.domain.model.mapper.global.TagMapper;
+import com.vladte.devhack.domain.service.global.TagService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

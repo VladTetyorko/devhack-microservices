@@ -1,0 +1,96 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.vladte.devhack'
+version = '0.0.1-SNAPSHOT'
+
+// Configure as a library module
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Allure annotations (no Gradle plugin, no AspectJ weaving)
+    testImplementation 'io.qameta.allure:allure-junit5:2.24.0'
+    testImplementation 'io.qameta.allure:allure-java-commons:2.24.0'
+    // Spring Data JPA and core boot
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Swagger annotations for @Schema on DTOs/entities
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.22'
+
+    // Database drivers (runtime for Postgres in real env; tests use H2)
+    implementation 'org.postgresql:postgresql'
+
+    // Selected Spring features used by shared domain code
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework:spring-web' // MultipartFile, etc.
+
+    // Utilities
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.3'
+    implementation 'io.minio:minio:8.5.12'
+
+    // Jackson (pin to 2.15.x to align with project)
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.4'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.4'
+
+    // Security basics for shared code
+    implementation 'org.springframework.security:spring-security-core'
+    implementation 'org.springframework.security:spring-security-crypto'
+
+    // Lombok
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // AOP
+    implementation 'org.aspectj:aspectjweaver:1.9.20'
+    testImplementation 'org.aspectj:aspectjrt:1.9.20'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+}
+
+sourceSets {
+    main {
+        java {
+            exclude '**/*Test.java'
+        }
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+
+    // Enable Allure reporting for domain module tests
+    systemProperty 'allure.results.directory', "${layout.buildDirectory.get().asFile}/allure-results"
+}

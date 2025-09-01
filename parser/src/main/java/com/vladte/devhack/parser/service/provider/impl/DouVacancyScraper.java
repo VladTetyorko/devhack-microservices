@@ -1,10 +1,10 @@
 package com.vladte.devhack.parser.service.provider.impl;
 
-import com.vladte.devhack.entities.enums.VacancyStatus;
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.enums.VacancyStatus;
+import com.vladte.devhack.domain.entities.global.Vacancy;
+import com.vladte.devhack.domain.repository.global.VacancyRepository;
 import com.vladte.devhack.parser.entities.QueryParameters;
 import com.vladte.devhack.parser.entities.items.DouVacancyItem;
-import com.vladte.devhack.parser.repository.VacancyRepository;
 import com.vladte.devhack.parser.service.provider.AbstractVacancyScraper;
 import com.vladte.devhack.parser.service.selenium.dou.DouVacancyDetailsPageLoader;
 import com.vladte.devhack.parser.service.selenium.dou.DouVacancyListPageLoader;
@@ -92,7 +92,8 @@ public class DouVacancyScraper extends AbstractVacancyScraper {
                 .description(item.getVacancyDescription())
                 .url(item.getVacancyUrl())
                 .remoteAllowed(isRemoteAllowed(item.getVacancyLocation()))
-                .createdAt(UaDateParsing.parseUaToLdt(item.getVacancyDateText()))
+                .openAt(UaDateParsing.parseUaToLdt(item.getVacancyDateText()))
+                .createdAt(now)
                 .updatedAt(now)
                 .build();
     }

@@ -1,9 +1,9 @@
 package com.vladte.devhack.common.service.cache;
 
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.global.TagService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

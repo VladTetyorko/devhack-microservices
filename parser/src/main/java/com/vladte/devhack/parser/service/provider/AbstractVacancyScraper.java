@@ -1,7 +1,7 @@
 package com.vladte.devhack.parser.service.provider;
 
-import com.vladte.devhack.entities.global.Vacancy;
-import com.vladte.devhack.parser.repository.VacancyRepository;
+import com.vladte.devhack.domain.entities.global.Vacancy;
+import com.vladte.devhack.domain.repository.global.VacancyRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.WebDriver;
 

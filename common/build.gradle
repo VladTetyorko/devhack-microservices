@@ -19,6 +19,10 @@ repositories {
 }
 
 dependencies {
+
+    implementation project(":domain")
+    implementation project(':infra')
+
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.postgresql:postgresql'
@@ -45,9 +49,9 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.4'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.4'
 
-    // Template engine and JSON Schema validation for PromptRenderServiceImpl
-    implementation 'com.github.spullara.mustache.java:compiler:0.9.10'
-    implementation 'com.networknt:json-schema-validator:1.5.8'
+    // JSON Schema validation & Mustache templating for prompt rendering
+    implementation 'com.networknt:json-schema-validator:1.0.86'
+    implementation 'com.samskivert:jmustache:1.15'
 
 
     // OpenAPI/Swagger documentation
@@ -58,14 +62,13 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-    implementation project(':infra')
-    implementation project(':entities')
 
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.testng:testng:7.9.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // Allure reporting

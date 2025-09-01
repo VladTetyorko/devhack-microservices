@@ -1,15 +1,16 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
-import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.personalized.AnswerService;
-import com.vladte.devhack.common.service.domain.user.UserService;
+import com.vladte.devhack.common.service.generations.AnswerOperationsService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.personalized.Answer;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.AnswerDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.AnswerMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.personalized.AnswerService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -27,16 +28,18 @@ public class AnswerFormServiceImpl implements AnswerFormService {
     private final UserService userService;
     private final InterviewQuestionService questionService;
     private final AnswerMapper answerMapper;
+    private final AnswerOperationsService answerOperationsService;
 
 
     public AnswerFormServiceImpl(AnswerService answerService,
                                  UserService userService,
                                  InterviewQuestionService questionService,
-                                 AnswerMapper answerMapper) {
+                                 AnswerMapper answerMapper, AnswerOperationsService answerOperationsService) {
         this.answerService = answerService;
         this.userService = userService;
         this.questionService = questionService;
         this.answerMapper = answerMapper;
+        this.answerOperationsService = answerOperationsService;
     }
 
     @Override
@@ -107,7 +110,7 @@ public class AnswerFormServiceImpl implements AnswerFormService {
 
     @Override
     public void checkAnswerWithAiAsync(UUID id) {
-        answerService.checkAnswerWithAiAsync(id);
+        answerOperationsService.checkAnswerWithAiAsync(id);
     }
 
     @Override

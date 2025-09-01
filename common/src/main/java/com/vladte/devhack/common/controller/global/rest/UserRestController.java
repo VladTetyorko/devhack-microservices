@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.user.UserDTO;
-import com.vladte.devhack.common.model.mapper.user.UserMapper;
-import com.vladte.devhack.common.service.domain.files.CvStorageService;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.user.UserDTO;
+import com.vladte.devhack.domain.model.mapper.user.UserMapper;
+import com.vladte.devhack.domain.service.files.CvStorageService;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.jsonwebtoken.io.IOException;
 import io.minio.errors.MinioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,8 +73,8 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             @Parameter(description = "Email to search for")
             @RequestParam String email) {
         log.debug("REST request to find user by email: {}", email);
-        Optional<User> user = service.findByEmail(email);
-        return user.map(u -> ResponseEntity.ok(mapper.toDTO(u)))
+        Optional<User> user = relatedEntityService.findByEmail(email);
+        return user.map(u -> ResponseEntity.ok(relatedEntityMapper.toDTO(u)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -96,9 +96,9 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             @Parameter(description = "User to register")
             @Valid @RequestBody UserDTO dto) {
         log.debug("REST request to register user: {}", dto);
-        User user = mapper.toEntity(dto);
-        User registeredUser = service.register(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(registeredUser));
+        User user = relatedEntityMapper.toEntity(dto);
+        User registeredUser = relatedEntityService.register(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(relatedEntityMapper.toDTO(registeredUser));
     }
 
     /**
@@ -119,9 +119,9 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             @Parameter(description = "User to register as manager")
             @Valid @RequestBody UserDTO dto) {
         log.debug("REST request to register manager user: {}", dto);
-        User user = mapper.toEntity(dto);
-        User registeredUser = service.registerManager(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(registeredUser));
+        User user = relatedEntityMapper.toEntity(dto);
+        User registeredUser = relatedEntityService.registerManager(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(relatedEntityMapper.toDTO(registeredUser));
     }
 
     /**
@@ -137,8 +137,8 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
     })
     public ResponseEntity<UserDTO> getSystemUser() {
         log.debug("REST request to get system user");
-        User systemUser = service.getSystemUser();
-        return ResponseEntity.ok(mapper.toDTO(systemUser));
+        User systemUser = relatedEntityService.getSystemUser();
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(systemUser));
     }
 
 
@@ -163,13 +163,13 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             @Parameter(description = "CV file") @RequestParam("file") MultipartFile file) throws IOException, java.io.IOException {
         log.debug("REST request to upload CV for user {}", id);
 
-        User user = service.findById(id)
+        User user = relatedEntityService.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         String cvUrl = resumeStorageService.uploadUserCv(user.getId().toString(), file);
 
-        service.updateUsersSv(user, file.getName(), cvUrl, file.getContentType());
+        relatedEntityService.updateUsersSv(user, file.getName(), cvUrl, file.getContentType());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cvUrl);
     }
@@ -193,7 +193,7 @@ public class UserRestController extends BaseRestController<User, UserDTO, UUID, 
             throws IOException, MinioException, NoSuchAlgorithmException, InvalidKeyException, java.io.IOException, java.security.InvalidKeyException {
         log.debug("REST request to download CV for user {}", id);
 
-        User user = service.findById(id)
+        User user = relatedEntityService.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 

@@ -1,12 +1,12 @@
 package com.vladte.devhack.common.service.generations.impl;
 
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationService;
 import com.vladte.devhack.common.service.kafka.producers.QuestionKafkaProvider;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.global.TagService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;

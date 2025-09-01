@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.kafka.producers;
 
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.personalized.Answer;
 import com.vladte.devhack.infra.model.arguments.response.AnswerCheckResponseArguments;
 
 import java.util.concurrent.CompletableFuture;

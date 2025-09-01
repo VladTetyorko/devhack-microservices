@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.service.view.impl;
 
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.view.SearchService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.global.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,14 @@
 package com.vladte.devhack.common.controller.personalized.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.personalized.NoteDTO;
-import com.vladte.devhack.common.model.mapper.personalized.NoteMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.personalized.NoteService;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.personalized.Note;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.personalized.Note;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.NoteDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.NoteMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.personalized.NoteService;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,8 +63,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
         log.info("REST request to get all notes for user: {}", user.getProfile().getName());
-        List<Note> notes = service.findNotesByUser(user);
-        return ResponseEntity.ok(mapper.toDTOList(notes));
+        List<Note> notes = relatedEntityService.findNotesByUser(user);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(notes));
     }
 
     /**
@@ -84,8 +84,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
         InterviewQuestion question = questionService.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Question not found with ID: " + questionId));
 
-        List<Note> notes = service.findNotesByLinkedQuestion(question);
-        return ResponseEntity.ok(mapper.toDTOList(notes));
+        List<Note> notes = relatedEntityService.findNotesByLinkedQuestion(question);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(notes));
     }
 
     /**
@@ -105,8 +105,8 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
-        List<Note> notes = service.findNotesByUser(user);
-        return ResponseEntity.ok(mapper.toDTOList(notes));
+        List<Note> notes = relatedEntityService.findNotesByUser(user);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(notes));
     }
 
     /**
@@ -132,7 +132,7 @@ public class NoteRestController extends BaseRestController<Note, NoteDTO, UUID, 
         InterviewQuestion question = questionService.findById(questionId)
                 .orElseThrow(() -> new IllegalArgumentException("Question not found with ID: " + questionId));
 
-        List<Note> notes = service.findNotesByUserAndLinkedQuestion(user, question);
-        return ResponseEntity.ok(mapper.toDTOList(notes));
+        List<Note> notes = relatedEntityService.findNotesByUserAndLinkedQuestion(user, question);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(notes));
     }
 }

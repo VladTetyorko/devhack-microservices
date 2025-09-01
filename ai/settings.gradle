@@ -3,5 +3,5 @@ rootProject.name = 'ai'
 include ':infra'
 project(':infra').projectDir = new File(settingsDir, '../infra')
 
-include ':entities'
-project(':entities').projectDir = new File(settingsDir, '../entities')
+include ':domain'
+project(':domain').projectDir = new File(settingsDir, '../domain')

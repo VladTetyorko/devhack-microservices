@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.4'
 
     implementation project(':infra')
-    implementation project(':entities')
+    implementation project(':domain')
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'

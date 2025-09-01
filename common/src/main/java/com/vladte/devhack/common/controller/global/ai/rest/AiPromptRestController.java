@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.ai.rest;
 
-import com.vladte.devhack.common.model.dto.global.ai.AiPromptDTO;
-import com.vladte.devhack.common.model.mapper.global.ai.AiPromptMapper;
-import com.vladte.devhack.common.service.domain.ai.AiPromptCategoryService;
-import com.vladte.devhack.common.service.domain.ai.AiPromptService;
-import com.vladte.devhack.entities.global.ai.AiPrompt;
-import com.vladte.devhack.entities.global.ai.AiPromptCategory;
+import com.vladte.devhack.domain.entities.global.ai.AiPrompt;
+import com.vladte.devhack.domain.entities.global.ai.AiPromptCategory;
+import com.vladte.devhack.domain.model.dto.global.ai.AiPromptDTO;
+import com.vladte.devhack.domain.model.mapper.global.ai.AiPromptMapper;
+import com.vladte.devhack.domain.service.ai.AiPromptCategoryService;
+import com.vladte.devhack.domain.service.ai.AiPromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

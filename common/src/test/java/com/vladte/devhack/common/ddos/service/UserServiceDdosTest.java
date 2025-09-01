@@ -1,12 +1,12 @@
 package com.vladte.devhack.common.ddos.service;
 
 import com.vladte.devhack.common.ddos.BaseServiceDdosTest;
-import com.vladte.devhack.common.service.domain.user.UserService;
-import com.vladte.devhack.entities.enums.AuthProviderType;
-import com.vladte.devhack.entities.user.AuthenticationProvider;
-import com.vladte.devhack.entities.user.Profile;
-import com.vladte.devhack.entities.user.User;
-import com.vladte.devhack.entities.user.UserAccess;
+import com.vladte.devhack.domain.entities.enums.AuthProviderType;
+import com.vladte.devhack.domain.entities.user.AuthenticationProvider;
+import com.vladte.devhack.domain.entities.user.Profile;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.entities.user.UserAccess;
+import com.vladte.devhack.domain.service.user.UserService;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

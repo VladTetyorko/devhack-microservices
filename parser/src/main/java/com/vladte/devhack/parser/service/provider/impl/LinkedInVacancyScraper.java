@@ -1,8 +1,8 @@
 package com.vladte.devhack.parser.service.provider.impl;
 
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.global.Vacancy;
+import com.vladte.devhack.domain.repository.global.VacancyRepository;
 import com.vladte.devhack.parser.entities.QueryParameters;
-import com.vladte.devhack.parser.repository.VacancyRepository;
 import com.vladte.devhack.parser.service.provider.AbstractVacancyScraper;
 import com.vladte.devhack.parser.service.selenium.linkedin.LinkedInVacancyListPageLoader;
 import lombok.extern.slf4j.Slf4j;

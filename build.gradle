@@ -57,7 +57,7 @@ dependencies {
 	implementation project(':ai')
 	implementation project(':infra')
 	implementation project(':common')
-	implementation project(':entities')
+    implementation project(':domain')
 
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
