@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Enhanced global exception handler for REST controllers.
  * Provides consistent error responses across the API following SOLID and DRY principles.
- *
+ * <p>
  * Follows the Single Responsibility Principle by handling only exception-to-response conversion
  * and the Open/Closed Principle by being extensible for new exception types.
  */

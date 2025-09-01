@@ -89,9 +89,9 @@ public class QuestionGenerationServiceImpl implements QuestionGenerationService 
      * Save the generated questions to the database.
      * This method is separated to allow for transaction management.
      *
-     * @param questionTexts  the list of question texts to save
-     * @param difficulty     the difficulty level of the questions
-     * @param tag            the tag to associate with the questions
+     * @param questionTexts the list of question texts to save
+     * @param difficulty    the difficulty level of the questions
+     * @param tag           the tag to associate with the questions
      */
     @Transactional
     @Override

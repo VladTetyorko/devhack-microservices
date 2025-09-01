@@ -172,9 +172,9 @@ public class VacancyResponseRestController extends BaseRestController<VacancyRes
     /**
      * Update the interview stage of a vacancy response.
      *
-     * @param vacancyResponseId      the ID of the vacancy response
-     * @param request the request containing the new interview stage
-     * @param user    the authenticated user
+     * @param vacancyResponseId the ID of the vacancy response
+     * @param request           the request containing the new interview stage
+     * @param user              the authenticated user
      * @return the updated vacancy response
      */
     @PutMapping("/{id}/status")

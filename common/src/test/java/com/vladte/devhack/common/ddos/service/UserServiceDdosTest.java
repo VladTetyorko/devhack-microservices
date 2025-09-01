@@ -175,14 +175,10 @@ public class UserServiceDdosTest extends BaseServiceDdosTest {
         }
 
         return switch (operationType) {
-            case "READ" ->
-                result instanceof Optional || result instanceof User || result instanceof List;
-            case "WRITE", "UPDATE", "BULK_WRITE" ->
-                result instanceof User;
-            case "DELETE" ->
-                "DELETED".equals(result);
-            default ->
-                true;
+            case "READ" -> result instanceof Optional || result instanceof User || result instanceof List;
+            case "WRITE", "UPDATE", "BULK_WRITE" -> result instanceof User;
+            case "DELETE" -> "DELETED".equals(result);
+            default -> true;
         };
     }
 

@@ -1,11 +1,8 @@
 package com.vladte.devhack.domain;
 
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Minimal Spring Boot test configuration for the domain module.
