@@ -1,12 +1,12 @@
 package com.vladte.devhack.common.controller.user.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.user.AuthenticationProviderDTO;
-import com.vladte.devhack.common.model.mapper.user.AuthenticationProviderMapper;
-import com.vladte.devhack.common.service.domain.user.AuthenticationProviderService;
-import com.vladte.devhack.entities.enums.AuthProviderType;
-import com.vladte.devhack.entities.user.AuthenticationProvider;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.enums.AuthProviderType;
+import com.vladte.devhack.domain.entities.user.AuthenticationProvider;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.user.AuthenticationProviderDTO;
+import com.vladte.devhack.domain.model.mapper.user.AuthenticationProviderMapper;
+import com.vladte.devhack.domain.service.user.AuthenticationProviderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,8 +54,8 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get authentication providers for user: {}", user.getId());
 
-        List<AuthenticationProvider> providers = service.findAllByUserId(user.getId());
-        List<AuthenticationProviderDTO> dtoList = mapper.toDTOList(providers);
+        List<AuthenticationProvider> providers = relatedEntityService.findAllByUserId(user.getId());
+        List<AuthenticationProviderDTO> dtoList = relatedEntityMapper.toDTOList(providers);
         return ResponseEntity.ok(dtoList);
     }
 
@@ -73,8 +73,8 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @PathVariable UUID userId) {
         log.debug("REST request to get authentication providers for user: {}", userId);
 
-        List<AuthenticationProvider> providers = service.findAllByUserId(userId);
-        List<AuthenticationProviderDTO> dtoList = mapper.toDTOList(providers);
+        List<AuthenticationProvider> providers = relatedEntityService.findAllByUserId(userId);
+        List<AuthenticationProviderDTO> dtoList = relatedEntityMapper.toDTOList(providers);
         return ResponseEntity.ok(dtoList);
     }
 
@@ -95,8 +95,8 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @RequestParam String email) {
         log.debug("REST request to get authentication provider for provider: {} and email: {}", provider, email);
 
-        Optional<AuthenticationProvider> authProvider = service.findByProviderAndEmail(provider, email);
-        return authProvider.map(p -> ResponseEntity.ok(mapper.toDTO(p)))
+        Optional<AuthenticationProvider> authProvider = relatedEntityService.findByProviderAndEmail(provider, email);
+        return authProvider.map(p -> ResponseEntity.ok(relatedEntityMapper.toDTO(p)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -117,8 +117,8 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @RequestParam String providerUserId) {
         log.debug("REST request to get authentication provider for provider: {} and providerUserId: {}", provider, providerUserId);
 
-        Optional<AuthenticationProvider> authProvider = service.findByProviderAndProviderUserId(provider, providerUserId);
-        return authProvider.map(p -> ResponseEntity.ok(mapper.toDTO(p)))
+        Optional<AuthenticationProvider> authProvider = relatedEntityService.findByProviderAndProviderUserId(provider, providerUserId);
+        return authProvider.map(p -> ResponseEntity.ok(relatedEntityMapper.toDTO(p)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -139,8 +139,8 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @RequestParam String rawPassword) {
         log.debug("REST request to register local authentication provider for email: {}", email);
 
-        AuthenticationProvider authProvider = service.registerLocal(email, rawPassword);
-        return ResponseEntity.ok(mapper.toDTO(authProvider));
+        AuthenticationProvider authProvider = relatedEntityService.registerLocal(email, rawPassword);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(authProvider));
     }
 
     /**
@@ -163,7 +163,7 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             @RequestParam(required = false) String refreshToken) {
         log.debug("REST request to update tokens for authentication provider: {}", id);
 
-        Optional<AuthenticationProvider> authProviderOpt = service.findById(id);
+        Optional<AuthenticationProvider> authProviderOpt = relatedEntityService.findById(id);
         if (authProviderOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -176,7 +176,7 @@ public class AuthenticationProviderRestController extends BaseRestController<Aut
             authProvider.setRefreshToken(refreshToken);
         }
 
-        AuthenticationProvider savedAuthProvider = service.save(authProvider);
-        return ResponseEntity.ok(mapper.toDTO(savedAuthProvider));
+        AuthenticationProvider savedAuthProvider = relatedEntityService.save(authProvider);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedAuthProvider));
     }
 }

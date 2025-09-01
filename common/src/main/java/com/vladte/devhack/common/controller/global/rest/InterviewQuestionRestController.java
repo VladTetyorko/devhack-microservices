@@ -1,14 +1,14 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.InterviewQuestionDTO;
-import com.vladte.devhack.common.model.mapper.global.InterviewQuestionMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.global.TagService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.global.InterviewQuestionDTO;
+import com.vladte.devhack.domain.model.mapper.global.InterviewQuestionMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.global.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
@@ -75,8 +75,8 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
         Tag tag = tagService.findTagBySlug(tagSlug)
                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with slug: " + tagSlug));
 
-        Page<InterviewQuestion> page = service.findQuestionsByTag(tag, pageable);
-        Page<InterviewQuestionDTO> dtoPage = page.map(mapper::toDTO);
+        Page<InterviewQuestion> page = relatedEntityService.findQuestionsByTag(tag, pageable);
+        Page<InterviewQuestionDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -101,8 +101,8 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
             Pageable pageable) {
         log.debug("REST request to search questions with query: {}, difficulty: {}, tagId: {}", query, difficulty, tagId);
 
-        Page<InterviewQuestion> page = service.searchQuestions(query, difficulty, tagId, pageable);
-        Page<InterviewQuestionDTO> dtoPage = page.map(mapper::toDTO);
+        Page<InterviewQuestion> page = relatedEntityService.searchQuestions(query, difficulty, tagId, pageable);
+        Page<InterviewQuestionDTO> dtoPage = page.map(relatedEntityMapper::toDTO);
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -119,9 +119,9 @@ public class InterviewQuestionRestController extends BaseRestController<Intervie
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get question statistics for user: {}", user.getProfile().getName());
 
-        int totalQuestions = service.countAllQuestions();
-        int userQuestions = service.countQuestionsByUser(user);
-        int answeredQuestions = service.findAnsweredQuestionsByUser(user);
+        int totalQuestions = relatedEntityService.countAllQuestions();
+        int userQuestions = relatedEntityService.countQuestionsByUser(user);
+        int answeredQuestions = relatedEntityService.findAnsweredQuestionsByUser(user);
 
         Map<String, Integer> stats = new HashMap<>();
         stats.put("totalQuestions", totalQuestions);

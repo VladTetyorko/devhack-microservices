@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller;
 
-import com.vladte.devhack.common.model.dto.BaseDTO;
-import com.vladte.devhack.common.model.mapper.EntityDTOMapper;
-import com.vladte.devhack.common.service.domain.CrudService;
 import com.vladte.devhack.common.service.view.BaseCrudViewService;
 import com.vladte.devhack.common.service.view.BaseViewService;
-import com.vladte.devhack.entities.BasicEntity;
+import com.vladte.devhack.domain.entities.BasicEntity;
+import com.vladte.devhack.domain.model.dto.BaseDTO;
+import com.vladte.devhack.domain.model.mapper.EntityDTOMapper;
+import com.vladte.devhack.domain.service.CrudService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

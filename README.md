@@ -1,6 +1,8 @@
 # DevHack - Interview Preparation Platform
 
-DevHack is a comprehensive interview preparation platform designed to help job seekers practice for technical interviews. The application uses AI to generate interview questions, provide feedback on answers, and track progress across different technical topics.
+DevHack is a comprehensive interview preparation platform designed to help job seekers practice for technical
+interviews. The application uses AI to generate interview questions, provide feedback on answers, and track progress
+across different technical topics.
 
 ## Project Overview
 
@@ -158,21 +160,24 @@ docker-compose up -d postgres zookeeper kafka gptj
 
 ### Configuration Profiles
 
-- **Default Profile**: Uses service names for inter-service communication (e.g., `kafka:9092`, `postgres:5432`). This is suitable for running everything in Docker.
-- **Local Profile**: Uses `localhost` with appropriate ports for inter-service communication (e.g., `localhost:9092`, `localhost:5434`). This is suitable for running application services locally while infrastructure services run in Docker.
+- **Default Profile**: Uses service names for inter-service communication (e.g., `kafka:9092`, `postgres:5432`). This is
+  suitable for running everything in Docker.
+- **Local Profile**: Uses `localhost` with appropriate ports for inter-service communication (e.g., `localhost:9092`,
+  `localhost:5434`). This is suitable for running application services locally while infrastructure services run in
+  Docker.
 
 ### Available Services
 
 - **Common Module**: The main application service
-  - Default URL: http://localhost:8081
+    - Default URL: http://localhost:8081
 - **AI Module**: The AI processing service
-  - Default URL: http://localhost:8083
+    - Default URL: http://localhost:8083
 - **PostgreSQL**: Database service
-  - Default URL: jdbc:postgresql://localhost:5434/interview_prep
+    - Default URL: jdbc:postgresql://localhost:5434/interview_prep
 - **Kafka**: Message broker service
-  - Default URL: localhost:9092
+    - Default URL: localhost:9092
 - **GPT-J**: Local AI service
-  - Default URL: http://localhost:8086
+    - Default URL: http://localhost:8086
 
 ## Building the Project
 

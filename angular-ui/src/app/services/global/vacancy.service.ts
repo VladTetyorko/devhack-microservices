@@ -26,14 +26,21 @@ export class VacancyService extends BaseService<VacancyDTO> {
      * @returns Observable array of vacancies
      */
     override search(searchParams: { [key: string]: string | undefined }): Observable<VacancyDTO[]>;
-    override search(query?: string, location?: string, company?: string): Observable<VacancyDTO[]>;
+    override search(keyword?: string, location?: string, company?: string): Observable<VacancyDTO[]>;
     override search(queryOrParams?: string | {
         [key: string]: string | undefined
     }, location?: string, company?: string): Observable<VacancyDTO[]> {
         if (typeof queryOrParams === 'object') {
-            return super.search(queryOrParams);
+            // Ensure we map common aliases to backend-expected params
+            const params: { [key: string]: string | undefined } = {...queryOrParams};
+            if (params['query'] && !params['keyword']) {
+                params['keyword'] = params['query'];
+                delete params['query'];
+            }
+            return super.search(params);
         }
-        return super.search({query: queryOrParams, location, company});
+        // Backend expects 'keyword' param for search
+        return super.search({keyword: queryOrParams, location, company});
     }
 
     /**
@@ -64,6 +71,14 @@ export class VacancyService extends BaseService<VacancyDTO> {
         if (limit) params = params.set('limit', limit.toString());
 
         return this.http.get<VacancyDTO[]>(`${this.baseUrl}/recent`, {params});
+    }
+
+    /**
+     * Filter by remote allowed flag using existing REST endpoint
+     */
+    getByRemote(remoteAllowed: boolean): Observable<VacancyDTO[]> {
+        const params = new HttpParams().set('remoteAllowed', String(remoteAllowed));
+        return this.http.get<VacancyDTO[]>(`${this.baseUrl}/by-remote`, {params});
     }
 
     /**

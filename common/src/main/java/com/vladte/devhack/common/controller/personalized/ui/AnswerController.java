@@ -1,16 +1,16 @@
 package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
-import com.vladte.devhack.common.model.dto.personalized.AnswerDTO;
-import com.vladte.devhack.common.model.mapper.personalized.AnswerMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
-import com.vladte.devhack.common.service.domain.personalized.AnswerService;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.view.AnswerFormService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.personalized.Answer;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.personalized.Answer;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.AnswerDTO;
+import com.vladte.devhack.domain.model.mapper.personalized.AnswerMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
+import com.vladte.devhack.domain.service.personalized.AnswerService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

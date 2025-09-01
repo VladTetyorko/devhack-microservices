@@ -2,7 +2,7 @@ package com.vladte.devhack.ai.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.global.Vacancy;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;

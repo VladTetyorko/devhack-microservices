@@ -77,7 +77,6 @@ public abstract class AbstractAiService implements OpenAiService {
     }
 
     private String validateResponseBody(Map<String, Object> responseBody) {
-        System.out.println("responce body = " + responseBody);
         if (responseBody == null) {
             log.warn("Received null response body");
             return "Failed to generate text: null response";

@@ -1,16 +1,16 @@
 package com.vladte.devhack.common.controller.global.ui;
 
 import com.vladte.devhack.common.controller.BaseCrudController;
-import com.vladte.devhack.common.model.dto.global.InterviewQuestionDTO;
-import com.vladte.devhack.common.model.mapper.global.InterviewQuestionMapper;
-import com.vladte.devhack.common.service.domain.global.InterviewQuestionService;
 import com.vladte.devhack.common.service.generations.QuestionGenerationOrchestrationService;
 import com.vladte.devhack.common.service.view.DashboardViewService;
 import com.vladte.devhack.common.service.view.QuestionFormService;
 import com.vladte.devhack.common.service.view.SearchViewService;
 import com.vladte.devhack.common.service.view.TagQuestionService;
-import com.vladte.devhack.entities.global.InterviewQuestion;
-import com.vladte.devhack.entities.global.Tag;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.model.dto.global.InterviewQuestionDTO;
+import com.vladte.devhack.domain.model.mapper.global.InterviewQuestionMapper;
+import com.vladte.devhack.domain.service.global.InterviewQuestionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;

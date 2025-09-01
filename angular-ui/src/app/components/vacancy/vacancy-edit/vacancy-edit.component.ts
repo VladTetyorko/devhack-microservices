@@ -50,6 +50,7 @@ export class VacancyEditComponent implements OnInit, OnDestroy {
             contactEmail: ['', [Validators.email]],
             deadline: [''],
             remoteAllowed: [false],
+            description: ['']
         });
     }
 
@@ -84,6 +85,7 @@ export class VacancyEditComponent implements OnInit, OnDestroy {
                     contactEmail: v.contactEmail,
                     deadline: normalize(v.deadline),
                     remoteAllowed: v.remoteAllowed ?? false,
+                    description: v.description
                 });
                 this.isLoading = false;
             },

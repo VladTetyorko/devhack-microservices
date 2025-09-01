@@ -1,15 +1,15 @@
 package com.vladte.devhack.common.controller.personalized.ui;
 
 import com.vladte.devhack.common.controller.personalized.UserEntityController;
-import com.vladte.devhack.common.model.dto.personalized.VacancyResponseDTO;
-import com.vladte.devhack.common.service.domain.personalized.VacancyResponseService;
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.generations.VacancyParsingService;
 import com.vladte.devhack.common.service.view.VacancyResponseDashboardService;
 import com.vladte.devhack.common.service.view.VacancyResponseFormService;
 import com.vladte.devhack.common.service.view.VacancyResponseViewService;
-import com.vladte.devhack.entities.personalized.VacancyResponse;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.personalized.VacancyResponse;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.personalized.VacancyResponseDTO;
+import com.vladte.devhack.domain.service.personalized.VacancyResponseService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

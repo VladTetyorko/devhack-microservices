@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.entities.BasicEntity;
+import com.vladte.devhack.domain.entities.BasicEntity;
 import org.springframework.ui.Model;
 
 import java.util.List;

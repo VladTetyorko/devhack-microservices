@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.user.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.user.UserAccessDTO;
-import com.vladte.devhack.common.model.mapper.user.UserAccessMapper;
-import com.vladte.devhack.common.service.domain.user.UserAccessService;
-import com.vladte.devhack.entities.user.User;
-import com.vladte.devhack.entities.user.UserAccess;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.entities.user.UserAccess;
+import com.vladte.devhack.domain.model.dto.user.UserAccessDTO;
+import com.vladte.devhack.domain.model.mapper.user.UserAccessMapper;
+import com.vladte.devhack.domain.service.user.UserAccessService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,8 +52,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get user access for user: {}", user.getId());
 
-        Optional<UserAccess> userAccess = service.findByUserId(user.getId());
-        return userAccess.map(ua -> ResponseEntity.ok(mapper.toDTO(ua)))
+        Optional<UserAccess> userAccess = relatedEntityService.findByUserId(user.getId());
+        return userAccess.map(ua -> ResponseEntity.ok(relatedEntityMapper.toDTO(ua)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -71,8 +71,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @PathVariable UUID userId) {
         log.debug("REST request to get user access for user: {}", userId);
 
-        Optional<UserAccess> userAccess = service.findByUserId(userId);
-        return userAccess.map(ua -> ResponseEntity.ok(mapper.toDTO(ua)))
+        Optional<UserAccess> userAccess = relatedEntityService.findByUserId(userId);
+        return userAccess.map(ua -> ResponseEntity.ok(relatedEntityMapper.toDTO(ua)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -90,8 +90,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @PathVariable String role) {
         log.debug("REST request to get user access for role: {}", role);
 
-        List<UserAccess> userAccessList = service.findAllByRole(role);
-        List<UserAccessDTO> dtoList = mapper.toDTOList(userAccessList);
+        List<UserAccess> userAccessList = relatedEntityService.findAllByRole(role);
+        List<UserAccessDTO> dtoList = relatedEntityMapper.toDTOList(userAccessList);
         return ResponseEntity.ok(dtoList);
     }
 
@@ -112,7 +112,7 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @RequestParam String role) {
         log.debug("REST request to update role for user: {} to role: {}", userId, role);
 
-        Optional<UserAccess> userAccessOpt = service.findByUserId(userId);
+        Optional<UserAccess> userAccessOpt = relatedEntityService.findByUserId(userId);
         if (userAccessOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -120,8 +120,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
         UserAccess userAccess = userAccessOpt.get();
         userAccess.setRole(role);
 
-        UserAccess savedUserAccess = service.save(userAccess);
-        return ResponseEntity.ok(mapper.toDTO(savedUserAccess));
+        UserAccess savedUserAccess = relatedEntityService.save(userAccess);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedUserAccess));
     }
 
     /**
@@ -141,7 +141,7 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @RequestParam Boolean aiUsageAllowed) {
         log.debug("REST request to update AI usage for user: {} to: {}", userId, aiUsageAllowed);
 
-        Optional<UserAccess> userAccessOpt = service.findByUserId(userId);
+        Optional<UserAccess> userAccessOpt = relatedEntityService.findByUserId(userId);
         if (userAccessOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -149,8 +149,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
         UserAccess userAccess = userAccessOpt.get();
         userAccess.setIsAiUsageAllowed(aiUsageAllowed);
 
-        UserAccess savedUserAccess = service.save(userAccess);
-        return ResponseEntity.ok(mapper.toDTO(savedUserAccess));
+        UserAccess savedUserAccess = relatedEntityService.save(userAccess);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedUserAccess));
     }
 
     /**
@@ -170,7 +170,7 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @RequestParam Boolean accountLocked) {
         log.debug("REST request to update lock status for user: {} to: {}", userId, accountLocked);
 
-        Optional<UserAccess> userAccessOpt = service.findByUserId(userId);
+        Optional<UserAccess> userAccessOpt = relatedEntityService.findByUserId(userId);
         if (userAccessOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -178,8 +178,8 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
         UserAccess userAccess = userAccessOpt.get();
         userAccess.setIsAccountLocked(accountLocked);
 
-        UserAccess savedUserAccess = service.save(userAccess);
-        return ResponseEntity.ok(mapper.toDTO(savedUserAccess));
+        UserAccess savedUserAccess = relatedEntityService.save(userAccess);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedUserAccess));
     }
 
     /**
@@ -205,7 +205,7 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             @RequestParam(required = false) Boolean accountLocked) {
         log.debug("REST request to update access settings for user: {}", userId);
 
-        Optional<UserAccess> userAccessOpt = service.findByUserId(userId);
+        Optional<UserAccess> userAccessOpt = relatedEntityService.findByUserId(userId);
         if (userAccessOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -222,7 +222,7 @@ public class UserAccessRestController extends BaseRestController<UserAccess, Use
             userAccess.setIsAccountLocked(accountLocked);
         }
 
-        UserAccess savedUserAccess = service.save(userAccess);
-        return ResponseEntity.ok(mapper.toDTO(savedUserAccess));
+        UserAccess savedUserAccess = relatedEntityService.save(userAccess);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedUserAccess));
     }
 }

@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.TagDTO;
-import com.vladte.devhack.common.model.mapper.global.TagMapper;
-import com.vladte.devhack.common.service.domain.global.TagService;
-import com.vladte.devhack.entities.global.Tag;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.global.Tag;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.global.TagDTO;
+import com.vladte.devhack.domain.model.mapper.global.TagMapper;
+import com.vladte.devhack.domain.service.global.TagService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -49,8 +49,8 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag name to search for")
             @RequestParam String name) {
         log.debug("REST request to find tag by name: {}", name);
-        Optional<Tag> tag = service.findTagByName(name);
-        return tag.map(t -> ResponseEntity.ok(mapper.toDTO(t)))
+        Optional<Tag> tag = relatedEntityService.findTagByName(name);
+        return tag.map(t -> ResponseEntity.ok(relatedEntityMapper.toDTO(t)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -66,8 +66,8 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag slug to search for")
             @RequestParam String slug) {
         log.debug("REST request to find tag by slug: {}", slug);
-        Optional<Tag> tag = service.findTagBySlug(slug);
-        return tag.map(t -> ResponseEntity.ok(mapper.toDTO(t)))
+        Optional<Tag> tag = relatedEntityService.findTagBySlug(slug);
+        return tag.map(t -> ResponseEntity.ok(relatedEntityMapper.toDTO(t)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -83,9 +83,9 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get all tags with progress for user: {}", user.getProfile().getName());
-        List<Tag> tags = service.findAll();
-        List<Tag> tagsWithProgress = service.calculateProgressForAll(tags, user);
-        return ResponseEntity.ok(mapper.toDTOList(tagsWithProgress));
+        List<Tag> tags = relatedEntityService.findAll();
+        List<Tag> tagsWithProgress = relatedEntityService.calculateProgressForAll(tags, user);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(tagsWithProgress));
     }
 
     /**
@@ -100,8 +100,8 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(hidden = true)
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get tag statistics for user: {}", user.getProfile().getName());
-        int totalTags = service.countAllTags();
-        int userTags = service.countTagsByUser(user);
+        int totalTags = relatedEntityService.countAllTags();
+        int userTags = relatedEntityService.countTagsByUser(user);
 
         TagStats stats = new TagStats(totalTags, userTags);
         return ResponseEntity.ok(stats);
@@ -118,8 +118,8 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
     @Operation(summary = "Get all root tags", description = "Returns all tags that have no parent (root level tags)")
     public ResponseEntity<List<TagDTO>> getRootTags() {
         log.debug("REST request to get all root tags");
-        List<Tag> rootTags = service.findRootTags();
-        return ResponseEntity.ok(mapper.toDTOList(rootTags));
+        List<Tag> rootTags = relatedEntityService.findRootTags();
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(rootTags));
     }
 
     /**
@@ -134,12 +134,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Parent tag ID")
             @PathVariable UUID parentId) {
         log.debug("REST request to get children of tag: {}", parentId);
-        Optional<Tag> parentTag = service.findById(parentId);
+        Optional<Tag> parentTag = relatedEntityService.findById(parentId);
         if (parentTag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        List<Tag> children = service.findChildren(parentTag.get());
-        return ResponseEntity.ok(mapper.toDTOList(children));
+        List<Tag> children = relatedEntityService.findChildren(parentTag.get());
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(children));
     }
 
     /**
@@ -154,12 +154,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Parent tag ID")
             @PathVariable UUID parentId) {
         log.debug("REST request to get descendants of tag: {}", parentId);
-        Optional<Tag> parentTag = service.findById(parentId);
+        Optional<Tag> parentTag = relatedEntityService.findById(parentId);
         if (parentTag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        List<Tag> descendants = service.findDescendants(parentTag.get());
-        return ResponseEntity.ok(mapper.toDTOList(descendants));
+        List<Tag> descendants = relatedEntityService.findDescendants(parentTag.get());
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(descendants));
     }
 
     /**
@@ -174,12 +174,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag ID")
             @PathVariable UUID tagId) {
         log.debug("REST request to get ancestors of tag: {}", tagId);
-        Optional<Tag> tag = service.findById(tagId);
+        Optional<Tag> tag = relatedEntityService.findById(tagId);
         if (tag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        List<Tag> ancestors = service.findAncestors(tag.get());
-        return ResponseEntity.ok(mapper.toDTOList(ancestors));
+        List<Tag> ancestors = relatedEntityService.findAncestors(tag.get());
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(ancestors));
     }
 
     /**
@@ -197,12 +197,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Maximum depth to include")
             @RequestParam int depth) {
         log.debug("REST request to get subtree of tag: {} with depth: {}", parentId, depth);
-        Optional<Tag> parentTag = service.findById(parentId);
+        Optional<Tag> parentTag = relatedEntityService.findById(parentId);
         if (parentTag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        List<Tag> subtree = service.findSubtree(parentTag.get(), depth);
-        return ResponseEntity.ok(mapper.toDTOList(subtree));
+        List<Tag> subtree = relatedEntityService.findSubtree(parentTag.get(), depth);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(subtree));
     }
 
     /**
@@ -217,12 +217,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Tag ID")
             @PathVariable UUID tagId) {
         log.debug("REST request to get siblings of tag: {}", tagId);
-        Optional<Tag> tag = service.findById(tagId);
+        Optional<Tag> tag = relatedEntityService.findById(tagId);
         if (tag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        List<Tag> siblings = service.findSiblings(tag.get());
-        return ResponseEntity.ok(mapper.toDTOList(siblings));
+        List<Tag> siblings = relatedEntityService.findSiblings(tag.get());
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(siblings));
     }
 
     /**
@@ -237,8 +237,8 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Depth level (0 for root)")
             @PathVariable int depth) {
         log.debug("REST request to get tags at depth: {}", depth);
-        List<Tag> tags = service.findTagsByDepth(depth);
-        return ResponseEntity.ok(mapper.toDTOList(tags));
+        List<Tag> tags = relatedEntityService.findTagsByDepth(depth);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(tags));
     }
 
     /**
@@ -256,21 +256,21 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "New parent ID (optional)")
             @RequestParam(required = false) UUID newParentId) {
         log.debug("REST request to validate move of tag: {} to parent: {}", tagId, newParentId);
-        Optional<Tag> tag = service.findById(tagId);
+        Optional<Tag> tag = relatedEntityService.findById(tagId);
         if (tag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         Tag newParent = null;
         if (newParentId != null) {
-            Optional<Tag> parentOpt = service.findById(newParentId);
+            Optional<Tag> parentOpt = relatedEntityService.findById(newParentId);
             if (parentOpt.isEmpty()) {
                 return ResponseEntity.ok(new TagValidationResponse(false, "New parent tag not found"));
             }
             newParent = parentOpt.get();
         }
 
-        boolean isValid = service.validateMove(tag.get(), newParent);
+        boolean isValid = relatedEntityService.validateMove(tag.get(), newParent);
         String message = isValid ? null : "Move would create a cycle or violate constraints";
         return ResponseEntity.ok(new TagValidationResponse(isValid, message));
     }
@@ -284,9 +284,9 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
     @Operation(summary = "Get complete hierarchy", description = "Returns complete tag hierarchy with root tags and all tags")
     public ResponseEntity<TagHierarchyResponse> getHierarchy() {
         log.debug("REST request to get complete tag hierarchy");
-        List<Tag> rootTags = service.findRootTags();
-        List<Tag> allTags = service.findAll();
-        return ResponseEntity.ok(new TagHierarchyResponse(mapper.toDTOList(rootTags), mapper.toDTOList(allTags)));
+        List<Tag> rootTags = relatedEntityService.findRootTags();
+        List<Tag> allTags = relatedEntityService.findAll();
+        return ResponseEntity.ok(new TagHierarchyResponse(relatedEntityMapper.toDTOList(rootTags), relatedEntityMapper.toDTOList(allTags)));
     }
 
     /**
@@ -302,15 +302,15 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
 
         Tag parent = null;
         if (request.parentId() != null) {
-            Optional<Tag> parentOpt = service.findById(UUID.fromString(request.parentId()));
+            Optional<Tag> parentOpt = relatedEntityService.findById(UUID.fromString(request.parentId()));
             if (parentOpt.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
             parent = parentOpt.get();
         }
 
-        Tag createdTag = service.createTag(request.name(), parent);
-        return ResponseEntity.ok(mapper.toDTO(createdTag));
+        Tag createdTag = relatedEntityService.createTag(request.name(), parent);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(createdTag));
     }
 
     /**
@@ -324,22 +324,22 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
     public ResponseEntity<TagDTO> moveTag(@RequestBody TagMoveRequest request) {
         log.debug("REST request to move tag: {}", request);
 
-        Optional<Tag> tag = service.findById(UUID.fromString(request.tagId()));
+        Optional<Tag> tag = relatedEntityService.findById(UUID.fromString(request.tagId()));
         if (tag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         Tag newParent = null;
         if (request.newParentId() != null) {
-            Optional<Tag> parentOpt = service.findById(UUID.fromString(request.newParentId()));
+            Optional<Tag> parentOpt = relatedEntityService.findById(UUID.fromString(request.newParentId()));
             if (parentOpt.isEmpty()) {
                 return ResponseEntity.badRequest().build();
             }
             newParent = parentOpt.get();
         }
 
-        Tag movedTag = service.moveTag(tag.get(), newParent);
-        return ResponseEntity.ok(mapper.toDTO(movedTag));
+        Tag movedTag = relatedEntityService.moveTag(tag.get(), newParent);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(movedTag));
     }
 
     /**
@@ -357,12 +357,12 @@ public class TagRestController extends BaseRestController<Tag, TagDTO, UUID, Tag
             @Parameter(description = "Whether to cascade delete children")
             @RequestParam(defaultValue = "false") boolean cascade) {
         log.debug("REST request to delete tag: {} with cascade: {}", id, cascade);
-        Optional<Tag> tag = service.findById(id);
+        Optional<Tag> tag = relatedEntityService.findById(id);
         if (tag.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        service.deleteTag(tag.get(), cascade);
+        relatedEntityService.deleteTag(tag.get(), cascade);
         return ResponseEntity.noContent().build();
     }
 

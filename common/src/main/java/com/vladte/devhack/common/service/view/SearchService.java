@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.service.view;
 
-import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

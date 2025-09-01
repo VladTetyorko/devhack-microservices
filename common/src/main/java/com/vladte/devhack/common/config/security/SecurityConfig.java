@@ -1,6 +1,6 @@
 package com.vladte.devhack.common.config.security;
 
-import com.vladte.devhack.common.service.domain.user.UserService;
+import com.vladte.devhack.domain.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

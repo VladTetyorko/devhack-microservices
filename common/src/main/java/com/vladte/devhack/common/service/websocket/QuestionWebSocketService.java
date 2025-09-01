@@ -1,7 +1,7 @@
 package com.vladte.devhack.common.service.websocket;
 
-import com.vladte.devhack.common.model.mapper.global.InterviewQuestionMapper;
-import com.vladte.devhack.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.entities.global.InterviewQuestion;
+import com.vladte.devhack.domain.model.mapper.global.InterviewQuestionMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

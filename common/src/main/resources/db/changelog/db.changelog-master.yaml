@@ -37,3 +37,5 @@ databaseChangeLog:
       file: classpath:db/changelog/changes/18-migrate-ai-prompts-to-new-schema.sql
   - include:
       file: classpath:db/changelog/changes/19-populate-initial-ai-prompts.sql
+  - include:
+      file: classpath:db/changelog/changes/20-add-description-to-vacancies.sql

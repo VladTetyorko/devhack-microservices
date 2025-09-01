@@ -1,11 +1,11 @@
 package com.vladte.devhack.common.controller.user.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.user.ProfileDTO;
-import com.vladte.devhack.common.model.mapper.user.ProfileMapper;
-import com.vladte.devhack.common.service.domain.user.ProfileService;
-import com.vladte.devhack.entities.user.Profile;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.Profile;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.model.dto.user.ProfileDTO;
+import com.vladte.devhack.domain.model.mapper.user.ProfileMapper;
+import com.vladte.devhack.domain.service.user.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,8 +51,8 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             @AuthenticationPrincipal User user) {
         log.debug("REST request to get profile for user: {}", user.getId());
 
-        Optional<Profile> profile = service.findByUserId(user.getId());
-        return profile.map(p -> ResponseEntity.ok(mapper.toDTO(p)))
+        Optional<Profile> profile = relatedEntityService.findByUserId(user.getId());
+        return profile.map(p -> ResponseEntity.ok(relatedEntityMapper.toDTO(p)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -70,8 +70,8 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             @PathVariable UUID userId) {
         log.debug("REST request to get profile for user: {}", userId);
 
-        Optional<Profile> profile = service.findByUserId(userId);
-        return profile.map(p -> ResponseEntity.ok(mapper.toDTO(p)))
+        Optional<Profile> profile = relatedEntityService.findByUserId(userId);
+        return profile.map(p -> ResponseEntity.ok(relatedEntityMapper.toDTO(p)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -101,8 +101,8 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             @RequestParam(required = false) String cvFileType) {
         log.debug("REST request to update profile for user: {}", user.getId());
 
-        Profile updatedProfile = service.updateProfile(user.getId(), name, cvFileHref, cvFileName, cvFileType);
-        return ResponseEntity.ok(mapper.toDTO(updatedProfile));
+        Profile updatedProfile = relatedEntityService.updateProfile(user.getId(), name, cvFileHref, cvFileName, cvFileType);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(updatedProfile));
     }
 
     /**
@@ -125,7 +125,7 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             @RequestParam(required = false) String aiPreferredLanguage) {
         log.debug("REST request to update AI settings for user: {}", user.getId());
 
-        Optional<Profile> profileOpt = service.findByUserId(user.getId());
+        Optional<Profile> profileOpt = relatedEntityService.findByUserId(user.getId());
         if (profileOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -138,8 +138,8 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             profile.setAiPreferredLanguage(aiPreferredLanguage);
         }
 
-        Profile savedProfile = service.save(profile);
-        return ResponseEntity.ok(mapper.toDTO(savedProfile));
+        Profile savedProfile = relatedEntityService.save(profile);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedProfile));
     }
 
     /**
@@ -159,7 +159,7 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
             @RequestParam Boolean isVisibleToRecruiters) {
         log.debug("REST request to update visibility settings for user: {}", user.getId());
 
-        Optional<Profile> profileOpt = service.findByUserId(user.getId());
+        Optional<Profile> profileOpt = relatedEntityService.findByUserId(user.getId());
         if (profileOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -167,7 +167,7 @@ public class ProfileRestController extends BaseRestController<Profile, ProfileDT
         Profile profile = profileOpt.get();
         profile.setVisibleToRecruiters(isVisibleToRecruiters);
 
-        Profile savedProfile = service.save(profile);
-        return ResponseEntity.ok(mapper.toDTO(savedProfile));
+        Profile savedProfile = relatedEntityService.save(profile);
+        return ResponseEntity.ok(relatedEntityMapper.toDTO(savedProfile));
     }
 }

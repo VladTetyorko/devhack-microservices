@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * This allows the module to be run as a separate Spring Boot application.
  */
 @SpringBootApplication
-@EntityScan(basePackages = {"com.vladte.devhack.entities"})
-@EnableJpaRepositories
+@EntityScan(basePackages = {"com.vladte.devhack.domain.entities"})
+@EnableJpaRepositories(basePackages = "com.vladte.devhack.domain.repository")
 public class ParserApplication {
 
     public static void main(String[] args) {

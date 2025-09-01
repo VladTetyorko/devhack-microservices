@@ -1,10 +1,10 @@
 package com.vladte.devhack.common.controller.global.rest;
 
 import com.vladte.devhack.common.controller.BaseRestController;
-import com.vladte.devhack.common.model.dto.global.VacancyDTO;
-import com.vladte.devhack.common.model.mapper.global.VacancyMapper;
-import com.vladte.devhack.common.service.domain.global.VacancyService;
-import com.vladte.devhack.entities.global.Vacancy;
+import com.vladte.devhack.domain.entities.global.Vacancy;
+import com.vladte.devhack.domain.model.dto.global.VacancyDTO;
+import com.vladte.devhack.domain.model.mapper.global.VacancyMapper;
+import com.vladte.devhack.domain.service.global.VacancyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -52,8 +52,8 @@ public class VacancyRestController extends BaseRestController<Vacancy, VacancyDT
             @Parameter(description = "Company name to search for")
             @RequestParam String companyName) {
         log.debug("REST request to find vacancies by company name: {}", companyName);
-        List<Vacancy> vacancies = service.findByCompanyName(companyName);
-        return ResponseEntity.ok(mapper.toDTOList(vacancies));
+        List<Vacancy> vacancies = relatedEntityService.findByCompanyName(companyName);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancies));
     }
 
     /**
@@ -68,8 +68,8 @@ public class VacancyRestController extends BaseRestController<Vacancy, VacancyDT
             @Parameter(description = "Position to search for")
             @RequestParam String position) {
         log.debug("REST request to find vacancies by position: {}", position);
-        List<Vacancy> vacancies = service.findByPosition(position);
-        return ResponseEntity.ok(mapper.toDTOList(vacancies));
+        List<Vacancy> vacancies = relatedEntityService.findByPosition(position);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancies));
     }
 
     /**
@@ -84,8 +84,8 @@ public class VacancyRestController extends BaseRestController<Vacancy, VacancyDT
             @Parameter(description = "Source to search for")
             @RequestParam String source) {
         log.debug("REST request to find vacancies by source: {}", source);
-        List<Vacancy> vacancies = service.findBySource(source);
-        return ResponseEntity.ok(mapper.toDTOList(vacancies));
+        List<Vacancy> vacancies = relatedEntityService.findBySource(source);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancies));
     }
 
     /**
@@ -100,8 +100,8 @@ public class VacancyRestController extends BaseRestController<Vacancy, VacancyDT
             @Parameter(description = "Remote allowed status to search for")
             @RequestParam Boolean remoteAllowed) {
         log.debug("REST request to find vacancies by remote allowed status: {}", remoteAllowed);
-        List<Vacancy> vacancies = service.findByRemoteAllowed(remoteAllowed);
-        return ResponseEntity.ok(mapper.toDTOList(vacancies));
+        List<Vacancy> vacancies = relatedEntityService.findByRemoteAllowed(remoteAllowed);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancies));
     }
 
     /**
@@ -116,8 +116,8 @@ public class VacancyRestController extends BaseRestController<Vacancy, VacancyDT
             @Parameter(description = "Keyword to search for")
             @RequestParam String keyword) {
         log.debug("REST request to search vacancies by keyword: {}", keyword);
-        List<Vacancy> vacancies = service.searchByKeyword(keyword);
-        return ResponseEntity.ok(mapper.toDTOList(vacancies));
+        List<Vacancy> vacancies = relatedEntityService.searchByKeyword(keyword);
+        return ResponseEntity.ok(relatedEntityMapper.toDTOList(vacancies));
     }
 
     /**

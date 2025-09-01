@@ -14,6 +14,7 @@ export interface VacancyDTO {
     createdAt?: string;
     updatedAt?: string;
     responseCount?: number;
+    description?: string;
 }
 
 export interface VacancySearchRequest {

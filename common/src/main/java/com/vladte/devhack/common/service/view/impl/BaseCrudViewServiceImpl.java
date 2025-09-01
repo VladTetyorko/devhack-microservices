@@ -2,7 +2,7 @@ package com.vladte.devhack.common.service.view.impl;
 
 import com.vladte.devhack.common.service.view.BaseCrudViewService;
 import com.vladte.devhack.common.service.view.ModelBuilder;
-import com.vladte.devhack.entities.BasicEntity;
+import com.vladte.devhack.domain.entities.BasicEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 

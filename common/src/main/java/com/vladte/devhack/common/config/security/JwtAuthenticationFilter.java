@@ -1,8 +1,8 @@
 package com.vladte.devhack.common.config.security;
 
-import com.vladte.devhack.common.service.domain.user.UserService;
 import com.vladte.devhack.common.service.security.JwtTokenProvider;
-import com.vladte.devhack.entities.user.User;
+import com.vladte.devhack.domain.entities.user.User;
+import com.vladte.devhack.domain.service.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

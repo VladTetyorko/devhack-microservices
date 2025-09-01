@@ -49,3 +49,5 @@ src/main/resources/application-*.properties
 /angular-ui/.angular/*
 /angular-ui/node_modules/*
 /angular-ui/dist/*
+/.junie/
+/.run/
